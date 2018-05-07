@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>resources/sp_red_h.png</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>resources/sp_yellow_h.png</file>
+    </qresource>
+</RCC>
