@@ -15,6 +15,8 @@ public:
 
     int exec(void);
 
+    void updateDisplay(void);
+
 //alerts display:
      virtual void pdz_display(bool);
      virtual void pcw_display(bool);
@@ -28,6 +30,9 @@ public slots:
 private:
 //    MainWindow * mw;
     CanManager * canmgr;
+    QObject * objImage;
+    bool pcw_flag;
+    bool pdz_flag;
 };
 
 #endif // MAINPROCESS_H

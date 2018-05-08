@@ -14,6 +14,13 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 {
   //  mw = new MainWindow();
 
+    QQmlComponent component(engine, "qrc:/main.qml");
+    QObject *object = component.create();
+    objImage = object->findChild<QObject *>("objAlert");
+
+    pdz_flag = true;
+    pcw_flag = false;
+
     //Init QtQuick Objects:
 
     // //////////////////////////////
@@ -28,9 +35,33 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 int MainProcess::exec()
 {
     canmgr->start();
-  //  mw->show();
     return 0;
 }
+
+
+//TODO extract to different thread:
+void MainProcess::updateDisplay(void)
+{
+
+    while(1)
+    {
+        //Display Visibility Update:
+        if(!(pcw_flag||pdz_flag))
+        {
+
+          objImage->setProperty("visible",QString("false"));
+        }
+        else
+        {
+           objImage->setProperty("visible",QString("true"));
+        }
+
+
+        //QThread.yieldCurrentThread();
+        //////////////////////
+    }
+}
+
 
 void MainProcess::handleResults(const QString &)
 {
@@ -45,12 +76,16 @@ void MainProcess::pdz_display(bool on)
     if(on)
     {
        // mw->move(40,40);
+
+        if(objImage)
+        {
+           objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_yellow_h.png"));
+           pdz_flag = true;
+        }
     }
     else
     {
-
-       // mw->move(0,0);
-
+        pdz_flag = false;
     }
 }
 
@@ -59,12 +94,14 @@ void MainProcess::pcw_display(bool on)
 
     if(on)
     {
-      //  mw->move(20,20);
+        if(objImage)
+        {
+           objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_red_h.png"));
+           pcw_flag = true;
+        };
     }
     else
     {
-
-       // mw->move(0,0);
-
+       pcw_flag =  false;
     }
 }

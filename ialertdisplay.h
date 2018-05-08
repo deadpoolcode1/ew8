@@ -18,6 +18,9 @@ class IAlertDisplay : public QObject
     virtual void pdz_display(bool) = 0;
     virtual void pcw_display(bool) = 0;
 
+    //TODO exclude from interface:
+    virtual void updateDisplay() = 0;
+
 };
 
 

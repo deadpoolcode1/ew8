@@ -87,9 +87,13 @@ void CanManager::run()
 
     while(1)
     {
-        //this->read_frame();
-        // std::cout << "next" << std::endl;
-
+#if 0
+        this->read_frame();
+#else
+        mydisplays->pdz_display(true);
+        mydisplays->pcw_display(false);
+#endif
+        mydisplays->updateDisplay();
 
 
     }

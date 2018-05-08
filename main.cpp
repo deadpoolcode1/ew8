@@ -13,14 +13,18 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
+#if 0
     QQmlComponent component(&engine, "qrc:/main.qml");
     QObject *object = component.create();
     QObject * objImage = object->findChild<QObject *>("objAlert");
+
 
     if(objImage)
     {
        objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_yellow_h.png"));
     }
+#endif
 
     if (engine.rootObjects().isEmpty())
     {
