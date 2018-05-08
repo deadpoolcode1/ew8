@@ -4,5 +4,6 @@
         <file>resources/sp_red_h.png</file>
         <file>qtquickcontrols2.conf</file>
         <file>resources/sp_yellow_h.png</file>
+        <file>MyImage.qml</file>
     </qresource>
 </RCC>

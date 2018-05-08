@@ -2,7 +2,6 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 
-
 ApplicationWindow {
 
 
@@ -20,7 +19,11 @@ ApplicationWindow {
 
         id: imgAlert
 
-        source:"resources/sp_red_h.png"
+        objectName: "objAlert"
+
+        source:"qrc:/resources/sp_red_h.png"
 
     }
+
+    /*put Image here*/
 }

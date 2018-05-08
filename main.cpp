@@ -1,5 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlComponent>
+
 #include "mainprocess.h"
 
 int main(int argc, char *argv[])
@@ -8,12 +10,24 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
-        return -1;
+    QQmlComponent component(&engine, "qrc:/main.qml");
+    QObject *object = component.create();
+    QObject * objImage = object->findChild<QObject *>("objAlert");
 
-    MainProcess mp;
+    if(objImage)
+    {
+       objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_yellow_h.png"));
+    }
+
+    if (engine.rootObjects().isEmpty())
+    {
+        return -1;
+    }
+
+    MainProcess mp(&engine);
 
     mp.exec();
 

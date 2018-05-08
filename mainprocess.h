@@ -5,12 +5,13 @@
 //#include "mainwindow.h"
 #include "canmanager.h"
 #include "ialertdisplay.h"
+#include <QQmlApplicationEngine>
 
 class MainProcess : public IAlertDisplay
 {
     Q_OBJECT
 public:
-    explicit MainProcess();//(QObject *parent = nullptr);
+    explicit MainProcess(QQmlApplicationEngine *  engine);//(QObject *parent = nullptr);
 
     int exec(void);
 

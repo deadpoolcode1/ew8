@@ -5,9 +5,20 @@
 
 #include <QThread>
 
-MainProcess::MainProcess()//(QObject *parent) : QObject(parent)
+#include <QQmlApplicationEngine>
+#include <QQmlComponent>
+#include <QFile>
+#include <iostream>
+
+MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
 {
   //  mw = new MainWindow();
+
+    //Init QtQuick Objects:
+
+    // //////////////////////////////
+
+
     canmgr = new CanManager(this);
 
     //connect(canmgr, &CanManager::resultReady, this, &MainProcess::handleResults);
