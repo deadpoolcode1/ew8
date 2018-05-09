@@ -31,6 +31,9 @@ private:
 //    MainWindow * mw;
     CanManager * canmgr;
     QObject * objImage;
+
+    QObject *componentObject;
+
     bool pcw_flag;
     bool pdz_flag;
 };

@@ -87,13 +87,37 @@ void CanManager::run()
 
     while(1)
     {
+
+        ulong switcher =  100000;
+
+        while(switcher--)
+        {
 #if 0
         this->read_frame();
 #else
+      if(switcher > 50000)
+      {
+
         mydisplays->pdz_display(true);
         mydisplays->pcw_display(false);
+
+           mydisplays->updateDisplay();
+
+       }
+      else
+      {
+
+
+
+        mydisplays->pdz_display(false);
+        mydisplays->pcw_display(true);
+
+
+
 #endif
         mydisplays->updateDisplay();
+       }
+      }
 
 
     }

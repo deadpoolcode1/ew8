@@ -15,8 +15,9 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
   //  mw = new MainWindow();
 
     QQmlComponent component(engine, "qrc:/main.qml");
-    QObject *object = component.create();
-    objImage = object->findChild<QObject *>("objAlert");
+    componentObject = component.create();
+
+    objImage = componentObject->findChild<QObject *>("objAlert");
 
     pdz_flag = true;
     pcw_flag = false;
@@ -43,9 +44,8 @@ int MainProcess::exec()
 void MainProcess::updateDisplay(void)
 {
 
-    while(1)
-    {
         //Display Visibility Update:
+
         if(!(pcw_flag||pdz_flag))
         {
 
@@ -59,7 +59,6 @@ void MainProcess::updateDisplay(void)
 
         //QThread.yieldCurrentThread();
         //////////////////////
-    }
 }
 
 
@@ -80,8 +79,8 @@ void MainProcess::pdz_display(bool on)
         if(objImage)
         {
            objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_yellow_h.png"));
-           pdz_flag = true;
         }
+        pdz_flag = true;
     }
     else
     {
@@ -97,8 +96,9 @@ void MainProcess::pcw_display(bool on)
         if(objImage)
         {
            objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_red_h.png"));
-           pcw_flag = true;
         };
+        pcw_flag = true;
+
     }
     else
     {
