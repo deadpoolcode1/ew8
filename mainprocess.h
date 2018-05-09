@@ -36,6 +36,7 @@ private:
 
     bool pcw_flag;
     bool pdz_flag;
+    bool flag_updated;
 };
 
 #endif // MAINPROCESS_H

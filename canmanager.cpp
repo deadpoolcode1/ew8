@@ -88,14 +88,17 @@ void CanManager::run()
     while(1)
     {
 
-        ulong switcher =  100000;
+        volatile ulong switcher =  0;
+
+
+        switcher =  9000000;
 
         while(switcher--)
         {
 #if 0
         this->read_frame();
 #else
-      if(switcher > 50000)
+      if(switcher > 6000000)
       {
 
         mydisplays->pdz_display(true);
@@ -104,13 +107,22 @@ void CanManager::run()
            mydisplays->updateDisplay();
 
        }
+      else if(switcher >  3000000)
+      {
+
+          mydisplays->pdz_display(false);
+          mydisplays->pcw_display(true);
+
+              mydisplays->updateDisplay();
+
+      }
       else
       {
 
 
 
         mydisplays->pdz_display(false);
-        mydisplays->pcw_display(true);
+        mydisplays->pcw_display(false);
 
 
 
@@ -118,6 +130,8 @@ void CanManager::run()
         mydisplays->updateDisplay();
        }
       }
+
+
 
 
     }

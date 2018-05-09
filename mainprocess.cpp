@@ -21,6 +21,7 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 
     pdz_flag = true;
     pcw_flag = false;
+    flag_updated = false;
 
     //Init QtQuick Objects:
 
@@ -44,21 +45,34 @@ int MainProcess::exec()
 void MainProcess::updateDisplay(void)
 {
 
-        //Display Visibility Update:
+    QVariant msg;
 
-        if(!(pcw_flag||pdz_flag))
-        {
+    //Display Visibility Update:
 
-          objImage->setProperty("visible",QString("false"));
-        }
-        else
-        {
-           objImage->setProperty("visible",QString("true"));
-        }
+if(flag_updated)
+{
+    if(pcw_flag)
+    {
+        msg = QVariant("pcw");
+
+    }
+    else if(pdz_flag)
+
+    {
+        msg= QVariant("pdz");
+
+    }
+    else
+    {
+        msg= QVariant("noalerts");
+    }
 
 
-        //QThread.yieldCurrentThread();
-        //////////////////////
+    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg));
+
+    flag_updated = false;
+}
+
 }
 
 
@@ -74,16 +88,19 @@ void MainProcess::pdz_display(bool on)
 
     if(on)
     {
-       // mw->move(40,40);
-
-        if(objImage)
+        if(pdz_flag == false)
         {
-           objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_yellow_h.png"));
+            flag_updated = true;
         }
         pdz_flag = true;
     }
     else
     {
+        if(pdz_flag == true)
+        {
+            flag_updated = true;
+        }
+
         pdz_flag = false;
     }
 }
@@ -93,15 +110,20 @@ void MainProcess::pcw_display(bool on)
 
     if(on)
     {
-        if(objImage)
+        if(pcw_flag == false)
         {
-           objImage->setProperty("source",QStringLiteral("qrc:/resources/sp_red_h.png"));
-        };
+            flag_updated = true;
+        }
         pcw_flag = true;
 
     }
     else
     {
+        if(pcw_flag == true)
+        {
+            flag_updated = true;
+        }
+
        pcw_flag =  false;
     }
 }
