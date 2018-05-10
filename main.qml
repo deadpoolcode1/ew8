@@ -4,6 +4,51 @@ import QtQuick.Controls 2.2
 
 ApplicationWindow {
 
+
+    function switchVisibility()
+    {
+        imgAlert.visible = (imgAlert.visible == true? false : true)
+    }
+
+
+    Timer {
+
+        id: blinkTimer
+
+        interval: 0
+        running: false
+        repeat: true
+        onTriggered: switchVisibility()
+    }
+
+
+
+
+
+    function startBlinking(freq)
+    {
+
+     var interval = 0
+
+     if(freq !== 0)
+     {
+       interval = 1000/(freq*2)
+         //start
+
+       blinkTimer.interval = interval
+       blinkTimer.running = true
+
+     }
+    }
+
+
+     function stopBlinking()
+     {
+        //stop
+         blinkTimer.running = false
+     }
+
+
     function setAlert(msg)
     {
 
@@ -11,28 +56,31 @@ ApplicationWindow {
         {
         case 'pcw':
 
-            //imgAlert.setProperty(0,"visible",true)
-            //imgAlert.setProperty(0,"source","qrc:/resources/sp_yellow_h.png")
-
             imgAlert.visible = true;
 
             imgAlert.source = "qrc:/resources/sp_red_h.png"
+
+
+            startBlinking(3)
 
             break;
 
         case 'pdz':
 
-            //imgAlert.setProperty(0,"visible",true)
-            //imgAlert.setProperty(0,"source","qrc:/resources/sp_red_h.png")
+            stopBlinking()
 
             imgAlert.visible = true;
 
             imgAlert.source = "qrc:/resources/sp_yellow_h.png"
 
+
+
             break;
 
         default:
             //switch alerts off
+
+            stopBlinking()
 
             imgAlert.visible = false;
 
@@ -60,7 +108,7 @@ ApplicationWindow {
 
         source:"qrc:/resources/sp_red_h.png"
 
+        visible: false
     }
 
-    /*put Image here*/
 }
