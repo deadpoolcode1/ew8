@@ -84,7 +84,6 @@ ApplicationWindow {
 
             imgAlert.visible = false;
 
-            //imgAlert.setProperty(0,"visible",false)
         }
      }
 

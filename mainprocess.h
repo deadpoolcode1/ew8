@@ -7,11 +7,13 @@
 #include "ialertdisplay.h"
 #include <QQmlApplicationEngine>
 
-class MainProcess : public IAlertDisplay
+class MainProcess : public QThread, IAlertDisplay
 {
     Q_OBJECT
 public:
     explicit MainProcess(QQmlApplicationEngine *  engine);//(QObject *parent = nullptr);
+
+    void run() override;
 
     int exec(void);
 

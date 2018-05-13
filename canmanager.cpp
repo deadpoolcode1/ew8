@@ -18,6 +18,7 @@
 #include <linux/can/raw.h>
 
 #include <QThread>
+#include <QMutex>
 
 #include <iostream>
 
@@ -104,7 +105,7 @@ void CanManager::run()
         mydisplays->pdz_display(true);
         mydisplays->pcw_display(false);
 
-           mydisplays->updateDisplay();
+          // mydisplays->updateDisplay();
 
        }
       else if(switcher >  3000000)
@@ -113,7 +114,7 @@ void CanManager::run()
           mydisplays->pdz_display(false);
           mydisplays->pcw_display(true);
 
-              mydisplays->updateDisplay();
+             // mydisplays->updateDisplay();
 
       }
       else
@@ -127,7 +128,7 @@ void CanManager::run()
 
 
 #endif
-        mydisplays->updateDisplay();
+         // mydisplays->updateDisplay();
        }
       }
 
@@ -151,6 +152,9 @@ void CanManager::parse_frame(struct can_frame * frame)
         std::cout<<std::endl;
 
     //display information:
+
+        mydisplays->mutex.lock();
+
         switch((uint32_t)frame->data[0])
         {
 
@@ -175,5 +179,7 @@ void CanManager::parse_frame(struct can_frame * frame)
               mydisplays->pcw_display(true);
 
         }
+
+        mydisplays->mutex.unlock();
 
 }

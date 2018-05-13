@@ -4,6 +4,7 @@
 #include "ialertdisplay.h"
 
 #include <QThread>
+#include <QMutex>
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -32,9 +33,27 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
     //connect(canmgr, &CanManager::finished, canmgr, &QObject::deleteLater);
 }
 
+
+void MainProcess::run()
+{
+    while(1)
+    {
+
+      updateDisplay();
+
+    }
+
+}
+
+
+
+
 int MainProcess::exec()
 {
     canmgr->start();
+
+    this->start();
+
     return 0;
 }
 
@@ -49,6 +68,11 @@ void MainProcess::updateDisplay(void)
 
 if(flag_updated)
 {
+
+    flag_updated = false;
+
+    mutex.lock();
+
     if(pcw_flag)
     {
         msg = QVariant("pcw");
@@ -65,10 +89,15 @@ if(flag_updated)
         msg= QVariant("noalerts");
     }
 
+    mutex.unlock();
+
 
     QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg));
 
-    flag_updated = false;
+
+
+
+
 }
 
 }
@@ -84,44 +113,31 @@ void MainProcess::handleResults(const QString &)
 void MainProcess::pdz_display(bool on)
 {
 
-    if(on)
+    if(on && !pdz_flag)
     {
-        if(pdz_flag == false)
-        {
-            flag_updated = true;
-        }
-        pdz_flag = true;
+       pdz_flag = true;
+       flag_updated = true;
     }
-    else
+    else if(!on && pdz_flag)
     {
-        if(pdz_flag == true)
-        {
-            flag_updated = true;
-        }
-
         pdz_flag = false;
+        flag_updated = true;
     }
+
 }
 
 void MainProcess::pcw_display(bool on)
 {
 
-    if(on)
+    if(on && !pcw_flag)
     {
-        if(pcw_flag == false)
-        {
-            flag_updated = true;
-        }
         pcw_flag = true;
-
+        flag_updated = true;
     }
-    else
+    else if(!on && pcw_flag)
     {
-        if(pcw_flag == true)
-        {
-            flag_updated = true;
-        }
-
-       pcw_flag =  false;
+        pcw_flag =  false;
+        flag_updated = true;
     }
+
 }
