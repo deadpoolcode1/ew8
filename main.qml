@@ -7,7 +7,7 @@ ApplicationWindow {
 
     function switchVisibility()
     {
-        imgAlert.visible = (imgAlert.visible == true? false : true)
+        imgAlert.visible = ((imgAlert.visible == true) ? false : true)
     }
 
 

@@ -17,8 +17,6 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
     QQmlComponent component(engine, "qrc:/main.qml");
     componentObject = component.create();
 
-    objImage = componentObject->findChild<QObject *>("objAlert");
-
     pdz_flag = true;
     pcw_flag = false;
     flag_updated = false;

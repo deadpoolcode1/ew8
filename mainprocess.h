@@ -30,7 +30,6 @@ public slots:
 private:
 //    MainWindow * mw;
     CanManager * canmgr;
-    QObject * objImage;
 
     QObject *componentObject;
 
