@@ -1,13 +1,14 @@
 #include "canmanager.h"
-#include <linux/types.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 
+#ifndef WIN32
 #include <can_netlink.h>
 #include <libsocketcan.h>
 
 #include <net/if.h>
+#include <linux/types.h>
 
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -16,6 +17,8 @@
 
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#endif
+
 
 #include <QThread>
 #include <QMutex>
@@ -35,6 +38,7 @@ CanManager::CanManager(IAlertDisplay * alertdisp)
 void CanManager::init(void)
 {
 
+#ifndef WIN32
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
     strcpy(ifr.ifr_name, "can0" );
@@ -45,11 +49,12 @@ void CanManager::init(void)
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
     std::cout << "can0 initiated"<<std::endl;
+#endif
 }
 
 void CanManager::read_frame(void)
 {
-
+#ifndef WIN32
     struct can_frame frame;
 
     ssize_t nbytes = 0;
@@ -73,7 +78,7 @@ void CanManager::read_frame(void)
         parse_frame(&frame);
     }
 
-
+#endif
 }
 
 void CanManager::write_frame(void)
@@ -140,6 +145,7 @@ void CanManager::run()
     emit resultReady(result);
 }
 
+#ifndef WIN32
 void CanManager::parse_frame(struct can_frame * frame)
 {
 
@@ -183,3 +189,4 @@ void CanManager::parse_frame(struct can_frame * frame)
         mydisplays->mutex.unlock();
 
 }
+#endif

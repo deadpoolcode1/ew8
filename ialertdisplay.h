@@ -5,12 +5,6 @@
 #include <QObject>
 #include <QMutex>
 
-#include <linux/types.h>
-#include <net/if.h>
-#include <sys/socket.h>
-#include <linux/can.h>
-
-
 class IAlertDisplay
 {
 
