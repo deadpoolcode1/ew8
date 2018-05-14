@@ -104,36 +104,45 @@ void CanManager::run()
 #if 0
         this->read_frame();
 #else
+
+
+
       if(switcher > 6000000)
       {
+
+      mydisplays->mutex.lock();
 
         mydisplays->pdz_display(true);
         mydisplays->pcw_display(false);
 
-          // mydisplays->updateDisplay();
+      mydisplays->mutex.unlock();
 
        }
       else if(switcher >  3000000)
       {
 
+      mydisplays->mutex.lock();
+
           mydisplays->pdz_display(false);
           mydisplays->pcw_display(true);
 
-             // mydisplays->updateDisplay();
+      mydisplays->mutex.unlock();
+
+
 
       }
       else
       {
 
-
+       mydisplays->mutex.lock();
 
         mydisplays->pdz_display(false);
         mydisplays->pcw_display(false);
 
-
+       mydisplays->mutex.unlock();
 
 #endif
-         // mydisplays->updateDisplay();
+
        }
       }
 
