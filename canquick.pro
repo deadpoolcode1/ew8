@@ -38,3 +38,8 @@ HEADERS += \
     canmanager.h \
     ialertdisplay.h \
     mainprocess.h
+
+win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
+
+win32: INCLUDEPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
+win32: DEPENDPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'

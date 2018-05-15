@@ -17,6 +17,11 @@
 
 #include <linux/can.h>
 #include <linux/can/raw.h>
+
+#else
+
+#include "canlib.h"
+
 #endif
 
 
@@ -49,6 +54,14 @@ void CanManager::init(void)
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
     std::cout << "can0 initiated"<<std::endl;
+#else
+      canInitializeLibrary();
+
+      //Channel initialization
+      hnd = canOpenChannel(1, 0);
+      stat = canSetBusParams(hnd, canBITRATE_500K, 0, 0, 0, 0, 0);
+      stat = canBusOn(hnd);
+
 #endif
 }
 
@@ -77,6 +90,35 @@ void CanManager::read_frame(void)
     {
         parse_frame(&frame);
     }
+#else
+      stat = canOK;
+
+      struct can_frame frame;
+
+      unsigned int flags;
+
+      /*
+      long id;
+      unsigned int dlc, flags;
+      unsigned char data[8];
+      */
+      DWORD time;
+
+      //Waits up to 100 ms for a message
+         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 100);
+         if (stat == canOK){
+           if (flags & canMSG_ERROR_FRAME){
+             printf("***ERROR FRAME RECEIVED***");
+           }
+           else {
+             parse_frame(&frame);
+           }
+         }
+         //Break the loop if something goes wrong
+         else if (stat != canERR_NOMSG){
+
+         }
+
 
 #endif
 }
@@ -94,17 +136,15 @@ void CanManager::run()
     while(1)
     {
 
-        volatile ulong switcher =  0;
-
-
-        switcher =  9000000;
-
-        while(switcher--)
-        {
-#if 0
+#if 1
         this->read_frame();
 #else
 
+    volatile ulong switcher =  0;
+    switcher =  9000000;
+
+    while(switcher--)
+    {
 
 
       if(switcher > 6000000)
@@ -141,12 +181,11 @@ void CanManager::run()
 
        mydisplays->mutex.unlock();
 
-#endif
+
 
        }
       }
-
-
+#endif
 
 
     }
@@ -154,7 +193,7 @@ void CanManager::run()
     emit resultReady(result);
 }
 
-#ifndef WIN32
+
 void CanManager::parse_frame(struct can_frame * frame)
 {
 
@@ -198,4 +237,3 @@ void CanManager::parse_frame(struct can_frame * frame)
         mydisplays->mutex.unlock();
 
 }
-#endif

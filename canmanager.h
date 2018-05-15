@@ -6,12 +6,29 @@
 #include <net/if.h>
 #include <sys/socket.h>
 #include <linux/can.h>
+#else
+#include "canlib.h"
 #endif
 
 
 #include <QThread>
 
 #include "ialertdisplay.h"
+
+
+#ifdef WIN32
+
+struct can_frame {
+      long can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+      uint    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+      uchar    __pad;   /* padding */
+      uchar    __res0;  /* reserved / padding */
+      uchar    __res1;  /* reserved / padding */
+      uchar    data[8];
+};
+
+#endif
+
 
 class CanManager :  public QThread
 {
@@ -30,13 +47,17 @@ signals:
 private:
     //inner functions:
     void init(void);
-#ifndef WIN32
     void parse_frame(struct can_frame * frame);
+#ifndef WIN32
+
 
     //inner variables
     int32_t socknum;
     struct sockaddr_can addr;
     struct ifreq ifr;
+#else
+    canHandle  hnd;
+    canStatus  stat;
 #endif
 
     IAlertDisplay * mydisplays;
