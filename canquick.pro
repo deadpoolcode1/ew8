@@ -15,7 +15,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     canmanager.cpp \
-    mainprocess.cpp
+    mainprocess.cpp \
+    qmltreeparser.cpp \
+    rootedtreenode.cpp \
+    rootedtree.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,12 +35,21 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     resources/sp_red_h.png \
-    resources/sp_yellow_h.png
+    resources/sp_yellow_h.png \
+    resources/alfa_romeo_PNG75.png \
+    resources/camaro_PNG34.png \
+    Layer.qml \
+    Layer_pdz.qml \
+    Layer_pcw.qml
 
 HEADERS += \
     canmanager.h \
     ialertdisplay.h \
-    mainprocess.h
+    mainprocess.h \
+    qmltreeparser.h \
+    rootedtreenode.h \
+    rootedtree.h \
+    defs.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

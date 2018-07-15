@@ -11,6 +11,7 @@
 #include <QFile>
 #include <iostream>
 
+
 MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
 {
   //  mw = new MainWindow();
@@ -28,6 +29,11 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 
 
     canmgr = new CanManager(this);
+
+    qmlTreeParser = new QmlTreeParser(componentObject);
+
+    qmlTreeParser->constructTree();
+
 
     //connect(canmgr, &CanManager::resultReady, this, &MainProcess::handleResults);
     //connect(canmgr, &CanManager::finished, canmgr, &QObject::deleteLater);
@@ -63,6 +69,7 @@ void MainProcess::updateDisplay(void)
 {
 
     QVariant msg;
+    QVariant is_active;
 
     //Display Visibility Update:
 
@@ -76,23 +83,28 @@ if(flag_updated)
     if(pcw_flag)
     {
         msg = QVariant("pcw");
+        is_active = QVariant(true);
 
     }
     else if(pdz_flag)
 
     {
         msg= QVariant("pdz");
-
+        is_active = QVariant(true);
     }
     else
     {
         msg= QVariant("noalerts");
+        is_active = QVariant(false);
     }
 
     mutex.unlock();
 
 
-    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg));
+
+
+
+    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
 
 

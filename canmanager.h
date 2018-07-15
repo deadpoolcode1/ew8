@@ -10,6 +10,8 @@
 #include "canlib.h"
 #endif
 
+#include "defs.h"
+
 
 #include <QThread>
 
@@ -48,9 +50,13 @@ private:
     //inner functions:
     void init(void);
     void parse_frame(struct can_frame * frame);
+
+
+    struct can_frame prev_frame[CAN_MESSAGES_TYPES_NUM];
+
+
+
 #ifndef WIN32
-
-
     //inner variables
     int32_t socknum;
     struct sockaddr_can addr;

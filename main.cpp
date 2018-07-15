@@ -4,8 +4,16 @@
 
 #include "mainprocess.h"
 
+#include <queue>
+
+
+void qutest();
+
 int main(int argc, char *argv[])
 {
+
+    qutest();
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -25,4 +33,14 @@ int main(int argc, char *argv[])
 
 
     return app.exec();
+}
+
+void qutest()
+{
+    std::queue<int> qu;
+
+    qu.push(5);
+
+
+
 }

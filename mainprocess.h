@@ -5,6 +5,7 @@
 //#include "mainwindow.h"
 #include "canmanager.h"
 #include "ialertdisplay.h"
+#include "qmltreeparser.h"
 #include <QQmlApplicationEngine>
 
 class MainProcess : public QThread, IAlertDisplay
@@ -34,6 +35,8 @@ private:
     CanManager * canmgr;
 
     QObject *componentObject;
+
+    QmlTreeParser * qmlTreeParser;
 
     bool pcw_flag;
     bool pdz_flag;

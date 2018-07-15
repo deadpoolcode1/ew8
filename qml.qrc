@@ -4,5 +4,11 @@
         <file>resources/sp_red_h.png</file>
         <file>qtquickcontrols2.conf</file>
         <file>resources/sp_yellow_h.png</file>
+        <file>resources/alfa_romeo_PNG75.png</file>
+        <file>resources/camaro_PNG34.png</file>
+        <file>myfunctions.js</file>
+        <file>Layer.qml</file>
+        <file>Layer_pdz.qml</file>
+        <file>Layer_pcw.qml</file>
     </qresource>
 </RCC>

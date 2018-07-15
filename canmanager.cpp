@@ -86,10 +86,9 @@ void CanManager::read_frame(void)
     }
 
         /* do something with the received CAN frame */
-    if(frame.can_id == 0x110)
-    {
-        parse_frame(&frame);
-    }
+
+   parse_frame(&frame);
+
 #else
       stat = canOK;
 
@@ -196,16 +195,19 @@ void CanManager::run()
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
+     //check for replications
 
-    //print the frame:
-        for(size_t i = 0; i < frame->can_dlc ; i++)
-        {
-            std::cout << "0x" << std::hex << (uint32_t)frame->data[i] << " ";
-        }
 
-        std::cout<<std::endl;
+
+
+
 
     //display information:
+
+
+
+
+
 
         mydisplays->mutex.lock();
 
