@@ -43,6 +43,11 @@ CanManager::CanManager(IAlertDisplay * alertdisp)
 void CanManager::init(void)
 {
 
+ for(size_t i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
+ {
+    init_frame(&(prev_frame[i]));
+ }
+
 #ifndef WIN32
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
@@ -122,6 +127,25 @@ void CanManager::read_frame(void)
 #endif
 }
 
+
+
+void CanManager::init_frame(struct can_frame * frame)
+{
+      frame->can_id =  0x0;
+      frame->can_dlc = 0x0;
+      frame->__pad =   0x0;
+      frame->__res0 =  0x0;
+      frame->__res1 =  0x0;
+      frame->data[0] = 0x0;
+      frame->data[1] = 0x0;
+      frame->data[2] = 0x0;
+      frame->data[3] = 0x0;
+      frame->data[4] = 0x0;
+      frame->data[5] = 0x0;
+      frame->data[6] = 0x0;
+      frame->data[7] = 0x0;
+}
+
 void CanManager::write_frame(void)
 {
 
@@ -135,57 +159,7 @@ void CanManager::run()
     while(1)
     {
 
-#if 1
         this->read_frame();
-#else
-
-    volatile ulong switcher =  0;
-    switcher =  9000000;
-
-    while(switcher--)
-    {
-
-
-      if(switcher > 6000000)
-      {
-
-      mydisplays->mutex.lock();
-
-        mydisplays->pdz_display(true);
-        mydisplays->pcw_display(false);
-
-      mydisplays->mutex.unlock();
-
-       }
-      else if(switcher >  3000000)
-      {
-
-      mydisplays->mutex.lock();
-
-          mydisplays->pdz_display(false);
-          mydisplays->pcw_display(true);
-
-      mydisplays->mutex.unlock();
-
-
-
-      }
-      else
-      {
-
-       mydisplays->mutex.lock();
-
-        mydisplays->pdz_display(false);
-        mydisplays->pcw_display(false);
-
-       mydisplays->mutex.unlock();
-
-
-
-       }
-      }
-#endif
-
 
     }
 
@@ -195,9 +169,25 @@ void CanManager::run()
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
-     //check for replications
+    can_id_t received_id = can_id_undefined;
+    bool is_frame_updated = false;
 
+    for (size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+    {
+         if(can_id_values_table[i].value == frame->can_id)
+         {
+             received_id = can_id_values_table[i].mnemonic;
+             
+             i = CAN_MESSAGES_TYPES_NUM;
+         }
+    }
 
+    //TODO compare with received:
+
+   if(0 != memcmp(&prev_frame[received_id], frame, sizeof(struct can_frame)))
+   {
+     is_frame_updated = true;
+   }
 
 
 
@@ -205,6 +195,11 @@ void CanManager::parse_frame(struct can_frame * frame)
     //display information:
 
 
+   if(!is_frame_updated)
+   {
+   }
+   else
+   {
 
 
 
@@ -237,5 +232,6 @@ void CanManager::parse_frame(struct can_frame * frame)
         }
 
         mydisplays->mutex.unlock();
+   }
 
 }

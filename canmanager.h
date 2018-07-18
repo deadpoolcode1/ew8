@@ -54,6 +54,8 @@ private:
 
     struct can_frame prev_frame[CAN_MESSAGES_TYPES_NUM];
 
+    void init_frame(struct can_frame * frame);
+
 
 
 #ifndef WIN32

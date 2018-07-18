@@ -49,7 +49,8 @@ HEADERS += \
     qmltreeparser.h \
     rootedtreenode.h \
     rootedtree.h \
-    defs.h
+    defs.h \
+    alerttypes.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 
