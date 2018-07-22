@@ -30,10 +30,18 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 
     canmgr = new CanManager(this);
 
-    qmlTreeParser = new QmlTreeParser(componentObject);
+    QObject * rootQobjectMainPannel = componentObject->findChild<QObject*>("main_panel_root");
+    if (!rootQobjectMainPannel)
+    {
+        // TBD display general error and go
+    }
+    // build a tree
+    RootedTree* mainPanelTree = new RootedTree(rootQobjectMainPannel);
+#if 0
+    QmlTreeParser* qmlTreeParser = new QmlTreeParser();
 
-    qmlTreeParser->constructTree();
-
+    qmlTreeParser->constructTree(rootQobjectMainPannel, mainPanelTree);
+#endif
 
     //connect(canmgr, &CanManager::resultReady, this, &MainProcess::handleResults);
     //connect(canmgr, &CanManager::finished, canmgr, &QObject::deleteLater);

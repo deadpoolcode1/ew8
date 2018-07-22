@@ -1,13 +1,19 @@
+import MyQMLenums 0.1
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 //import "qrc:/myfunctions.js" as MyScripts
+//import my.namespace 1.0
+
 
 
 ApplicationWindow {
 
 
+
     property var current_layerid: dummy_layer
+
+    property int canEntityType: Alert.ALERT_FCW
 
 
     function switchVisibility()

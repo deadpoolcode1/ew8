@@ -1,11 +1,15 @@
+#include <QVariant>
 #include "rootedtreenode.h"
+#include "alerttypes.h"
+#include "entitytype.h"
+#include "layerspriorityq.h"
 
-
+EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
 
 
 RootedTreeNode::RootedTreeNode()
 {
-     is_active =  false;
+//     is_active =  false;
 }
 
 RootedTreeNode::RootedTreeNode(QObject * qobject)
@@ -19,19 +23,29 @@ void RootedTreeNode::setParent(RootedTreeNode * rtn)
     parent = rtn;
 }
 
-
-
-
-void RootedTreeNode::appendChild(RootedTreeNode *rtn)
+void RootedTreeNode::appendChild(RootedTreeNode * rtn)
 {
-  children.append(rtn);
+  children->getQueue()->push(*rtn);
 }
 
+#if 0
+void findEntityType1(void)
+{
+    return;
+}
+#endif
 
 void RootedTreeNode::convertfromQObject(QObject * qobject)
 {
     this->qmlItem = qobject;
 
+    QVariant vlayer = qobject->property("layer");
+    layer = vlayer.toInt(); // priority
+
+    AlertTypes::EnAlert type = (AlertTypes::EnAlert)(qobject->property("canEntityType").toInt());
+    RootedTreeNode* typeObj = EntityType::findEntityType(type);
+    addChildrenFromObject(qobject);
+//    this->entityType->_type = qobject->property("canEntityType");//.toString();
 }
 
 void RootedTreeNode::addChildrenFromObject(QObject * qobject)

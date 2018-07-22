@@ -18,7 +18,9 @@ SOURCES += \
     mainprocess.cpp \
     qmltreeparser.cpp \
     rootedtreenode.cpp \
-    rootedtree.cpp
+    rootedtree.cpp \
+    layerspriorityq.cpp \
+    entitytype.cpp
 
 RESOURCES += qml.qrc
 
@@ -49,7 +51,10 @@ HEADERS += \
     qmltreeparser.h \
     rootedtreenode.h \
     rootedtree.h \
-    defs.h
+    defs.h \
+    layerspriorityq.h \
+    entitytype.h \
+    alerttypes.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 
