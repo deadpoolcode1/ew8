@@ -11,6 +11,7 @@
 
 void qutest();
 
+
 int main(int argc, char *argv[])
 {
 
@@ -30,6 +31,24 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+#if 0
+ // Register qml enum
+    qmlRegisterUncreatableMetaObject(
+          AlertTypes::staticMetaObject, // static meta object
+          "my.namespace",                // import statement (can be any string)
+          1, 0,                          // major and minor version of the import
+          "AlertTypes",                 // name in QML (does not have to match C++ name)
+          "Error: only enums"            // error in case someone tries to create an object
+        );
+
+#endif
+
+    //Usage of QML enum in C++:
+     AlertTypes::declareQML();
+
+     AlertTypes::EnAlert enAlert = AlertTypes::ALERT_FCW;
+     //////////////////////////////
 
 
 

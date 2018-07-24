@@ -1,22 +1,24 @@
 #ifndef QMLTREEPARSER_H
 #define QMLTREEPARSER_H
 
+#include "rootedtree.h"
 #include "rootedtreenode.h"
 #include <QObject>
 
-class QmlTreeParser : public QObject
+class QmlTreeParser //: public QObject
 {
-    Q_OBJECT
+//    Q_OBJECT
 public:
-    explicit QmlTreeParser(QObject *aComponentObject);
-    void constructTree(void);
+//    explicit QmlTreeParser(RootedTree* aComponentObject);
+//    DISPLAY_ERRORS_t constructTree(QObject * componentObject, RootedTree* aComponentObject);
+//    DISPLAY_ERRORS_t expandChildren(RootedTreeNode* node, QObjectList& currentChildrenLevel);
 
 
 private:
 
-QObject * componentObject;
+//QObject * componentObject;
 
-RootedTreeNode * root;
+//RootedTree * tree;
 
 signals:
 

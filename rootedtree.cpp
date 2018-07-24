@@ -1,8 +1,8 @@
 #include "rootedtree.h"
 
-RootedTree::RootedTree()
+RootedTree::RootedTree(QObject * qobject)
 {
-    root = new RootedTreeNode();
+    root = new RootedTreeNode(qobject);
     root->setParent(NULL);
 }
 

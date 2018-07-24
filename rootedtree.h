@@ -7,7 +7,7 @@
 class RootedTree
 {
 public:
-    RootedTree();
+    RootedTree(QObject * qobject);
 private:
 
     RootedTreeNode * root;

@@ -9,7 +9,6 @@
 
 class AlertTypes : public QObject
 {
-    Q_OBJECT
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
 

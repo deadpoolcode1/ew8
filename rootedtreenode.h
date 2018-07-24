@@ -2,7 +2,11 @@
 #define ROOTEDTREENODE_H
 
 #include <QObject>
-#include <QList>
+//#include <QList>
+
+
+class LayersPriorityQ;  // forward declaration
+class EntityType;
 
 class RootedTreeNode
 {
@@ -15,7 +19,8 @@ public:
     void appendChild(RootedTreeNode * rtn);
     void addChildrenFromObject(QObject * qobject);
 
-
+//    bool operator<(const RootedTreeNode& lhs, const RootedTreeNode& rhs);
+    int getLayer() {return layer;}
 
 private:
 
@@ -23,14 +28,20 @@ private:
 
 
     QObject * qmlItem;
-    bool is_active;
-    bool visibility;
     RootedTreeNode * parent;
-    QList<RootedTreeNode *> children;
+    //   QList<RootedTreeNode *> children;
+    LayersPriorityQ * children;
+//    std::priority_queue<RootedTreeNode, std::vector<RootedTreeNode>, CompareChildrenLayers> children;
 
+//    bool is_active;
+    EntityType* entityType;
+    int layer; // defines visualization priority in the "children" priority queue of parent
+    int activationSemaphore;  // if higher than 0 - active
+    bool visibility; // needed?
 
     //TODO add alert type
 
 };
+
 
 #endif // ROOTEDTREENODE_H

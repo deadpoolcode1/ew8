@@ -5,6 +5,13 @@
 
 #define CAN_MESSAGES_TYPES_NUM 1
 
+typedef enum DISPLAY_ERRORS
+{
+    OK= 0,
+    GENERAL_ERROR = 1,
+    EMPTY_TREE_QML = 2
+
+} DISPLAY_ERRORS_t;
 
 typedef enum can_id_e {
 

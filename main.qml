@@ -1,19 +1,19 @@
 import MyQMLenums 0.1
-
-
 import QtQuick 2.9
-//import mynamespace 1.0
 import QtQuick.Controls 2.2
 
-
 //import "qrc:/myfunctions.js" as MyScripts
+//import my.namespace 1.0
+
 
 
 ApplicationWindow {
 
+
+
     property var current_layerid: dummy_layer
 
-    property int alert: Alert.ALERT_FCW
+    property int canEntityType: Alert.ALERT_FCW
 
 
     function switchVisibility()
@@ -119,8 +119,6 @@ Item {
     visible: true
 
 
-
-
 Rectangle {
  id: left_panel
 
@@ -132,8 +130,6 @@ Rectangle {
  width: parent.width/5
  height: parent.height*9/10
  anchors.left: parent.left
-
-
 
  visible: true
 }
