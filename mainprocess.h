@@ -21,8 +21,8 @@ public:
     void updateDisplay(void);
 
 //alerts display:
-     virtual void display(AlertTypes::EnAlert at);
-     virtual void hide(AlertTypes::EnAlert at);
+    virtual void activate(AlertTypes::EnAlert at);
+    virtual void deactivate(AlertTypes::EnAlert at);
 
 //signals:
 //    void operate(const QString &);
@@ -34,12 +34,15 @@ private:
 //    MainWindow * mw;
     CanManager * canmgr;
 
+// pointers to display static panels trees
+    RootedTree* mainPanelTree;
+    RootedTree* tsrPanelTree;
+    RootedTree* statusPanelTree;
+    RootedTree* smartADASPanelTree;
+
+// pointer to QML defining trees for all panels.
     QObject *componentObject;
 
-    QmlTreeParser * qmlTreeParser;
-
-    bool pcw_flag;
-    bool pdz_flag;
     bool flag_updated;
 };
 

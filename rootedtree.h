@@ -8,13 +8,11 @@ class RootedTree
 {
 public:
     RootedTree(QObject * qobject);
+
+    void updateVisibility();
+
 private:
-
     RootedTreeNode * root;
-
-    RootedTreeNode * current;
-
-
 
 };
 

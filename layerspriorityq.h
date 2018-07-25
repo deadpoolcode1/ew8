@@ -7,11 +7,12 @@
 
 // forward declaration
 class RootedTreeNode;
+typedef std::vector<RootedTreeNode*> LayersPriorityQ_t;
 
 struct CompareChildrenLayers {
-    bool operator()(RootedTreeNode & n1, RootedTreeNode & n2) {
+    bool operator()(RootedTreeNode * n1, RootedTreeNode * n2) {
         // return "true" if layer of "n1" is ordered higher than layer of "n2" (zero is a highest)
-        return n1.getLayer() < n2.getLayer();
+        return n1->getLayer() < n2->getLayer();
     }
 };
 
@@ -21,9 +22,11 @@ class LayersPriorityQ
 public:
     LayersPriorityQ();
 
-    std::priority_queue<RootedTreeNode, std::vector<RootedTreeNode>, CompareChildrenLayers>* getQueue() {return &pqueue;}
+    LayersPriorityQ_t* getQueue() {return &queue;}
+//    std::priority_queue<RootedTreeNode*, std::vector<RootedTreeNode*>, CompareChildrenLayers>* getQueue() {return &pqueue;}
 private:
-    std::priority_queue<RootedTreeNode, std::vector<RootedTreeNode>, CompareChildrenLayers> pqueue;
+    LayersPriorityQ_t queue;
+//    std::priority_queue<RootedTreeNode*, std::vector<RootedTreeNode*>, CompareChildrenLayers> pqueue;
 
 };
 

@@ -211,23 +211,23 @@ void CanManager::parse_frame(struct can_frame * frame)
 
 
           case 0x0:
-              mydisplays->hide(AlertTypes::ALERT_PDZ);
-              mydisplays->hide(AlertTypes::ALERT_PCW);
+              mydisplays->deactivate(AlertTypes::ALERT_PDZ);
+              mydisplays->deactivate(AlertTypes::ALERT_PCW);
             break;
 
           case 0x1:
-              mydisplays->display(AlertTypes::ALERT_PDZ);
-              mydisplays->hide(AlertTypes::ALERT_PCW);
+              mydisplays->activate(AlertTypes::ALERT_PDZ);
+              mydisplays->deactivate(AlertTypes::ALERT_PCW);
             break;
 
           case 0x2:
-              mydisplays->hide(AlertTypes::ALERT_PDZ);
-              mydisplays->display(AlertTypes::ALERT_PCW);
+              mydisplays->deactivate(AlertTypes::ALERT_PDZ);
+              mydisplays->activate(AlertTypes::ALERT_PCW);
             break;
 
           case 0x3:
-              mydisplays->display(AlertTypes::ALERT_PDZ);
-              mydisplays->display(AlertTypes::ALERT_PCW);
+              mydisplays->activate(AlertTypes::ALERT_PDZ);
+              mydisplays->activate(AlertTypes::ALERT_PCW);
             break;
         }
 

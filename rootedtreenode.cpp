@@ -4,16 +4,12 @@
 #include "entitytype.h"
 #include "layerspriorityq.h"
 
+// map initialization of EntityType should be done here for some magic reason...
 EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
-
-
-RootedTreeNode::RootedTreeNode()
-{
-
-}
 
 RootedTreeNode::RootedTreeNode(QObject * qobject)
 {
+    activationSemaphore = 0;
     convertfromQObject(qobject);
 }
 
@@ -25,7 +21,23 @@ void RootedTreeNode::setParent(RootedTreeNode * rtn)
 
 void RootedTreeNode::appendChild(RootedTreeNode * rtn)
 {
-  children->getQueue()->push(*rtn);
+    LayersPriorityQ_t* queue = children->getQueue();
+    LayersPriorityQ_t::iterator it;
+    bool appended = false;
+
+    for (it = queue->begin(); it < queue->end(); it++ )
+    {
+        if ((*it)->getLayer() >= (*it)->getLayer()  )
+        {
+            queue->insert(it, rtn);
+            appended = true;
+            break;
+        }
+    }
+    if (!appended)
+    {
+        queue->push_back(rtn);
+    }
 }
 
 #if 0
@@ -37,16 +49,30 @@ void findEntityType1(void)
 
 void RootedTreeNode::convertfromQObject(QObject * qobject)
 {
+// esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
     QVariant vlayer = qobject->property("layer");
     layer = vlayer.toInt(); // priority
 
+
+// esteblish link between atomic entityes (C++) and Alerts by EntityType  (map)
     AlertTypes::EnAlert type = (AlertTypes::EnAlert)(qobject->property("canEntityType").toInt());
-#if 0
-    RootedTreeNode* typeObj = EntityType::findEntityType(type);
-#endif
-    EntityType::getMap()[type] =  this;
+    if (type != AlertTypes::QtQG) // no link between groups and alert types!
+    {
+        RootedTreeNode* typeObj = EntityType::findByEntityType(type);
+        if (typeObj == NULL)
+        {
+            // add exception
+        }
+
+        DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
+        if (res == GENERAL_ERROR)
+        {
+            // add exception
+        }
+        //EntityType::getMap()[type] =  this;
+    }
 
     addChildrenFromObject(qobject);
 
@@ -70,4 +96,65 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
 
    }
 
+}
+
+// recursive activation
+void RootedTreeNode::activate()
+{
+    activationSemaphore++;
+    if (parent == NULL)
+    {
+        return;
+    }
+    parent->activate();
+}
+
+void RootedTreeNode::deactivate()
+{
+    if (!activationSemaphore)
+    {
+        // TBD exception
+    }
+    activationSemaphore--;
+    if (parent == NULL)
+    {
+        return;
+    }
+    parent->deactivate();
+}
+
+// recursive visibility update
+void RootedTreeNode::updateVisibility(bool layerForcedInvis)
+{
+    if (layerForcedInvis)
+    {
+        this->qmlItem->property("visibility") = false;
+
+        LayersPriorityQ_t* queue = children->getQueue();
+        LayersPriorityQ_t::iterator it;
+        for (it = queue->begin(); it < queue->end(); it++ )
+        {
+            (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
+        }
+        return;
+    }
+    else
+    {
+        if (activationSemaphore)
+        {
+            this->qmlItem->property("visibility") = true;
+
+            LayersPriorityQ_t* queue = children->getQueue();
+            LayersPriorityQ_t::iterator it;
+            for (it = queue->begin(); it < queue->end(); it++ )
+            {
+                (*it)->updateVisibility(false);  // propagate invisibility to entire sub-tree.
+            }
+        }
+        else
+        {
+            this->qmlItem->property("visibility") = false;  // entire sub-tree is set to invisible
+            return;
+        }
+    }
 }

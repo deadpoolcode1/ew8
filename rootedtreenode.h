@@ -21,6 +21,11 @@ public:
 
 //    bool operator<(const RootedTreeNode& lhs, const RootedTreeNode& rhs);
     int getLayer() {return layer;}
+    int getActivSem() {return activationSemaphore;}
+
+    void activate();
+    void deactivate();
+    void updateVisibility(bool layerForcedInvis);
 
 private:
 

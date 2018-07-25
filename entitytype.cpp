@@ -15,11 +15,6 @@ EntityType::EntityType()
 
 }
 
-EntityType::EntityType(AlertTypes::EnAlert type)
-{
-    _type = type;
-    _node = nullptr;
-}
 
 std::map<AlertTypes::EnAlert, RootedTreeNode*>* EntityType::getMap()
 {
@@ -36,17 +31,38 @@ void EntityType::generateTypes()
     {
         type =  (AlertTypes::EnAlert)type_itr;
 
-        //EntityType* typeObj = new EntityType(type);
-
-        RootedTreeNode * nodeToInsert = new RootedTreeNode();
+        RootedTreeNode * nodeToInsert = null;  //new RootedTreeNode();
 
         EntityType::_typesMap.insert(std::pair<AlertTypes::EnAlert, RootedTreeNode*>(type,nodeToInsert));
     }
 }
 
+
 #if 0
+DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node)
+{
+    if (_typesMap.find(type) != _typesMap.end())
+    {
+        return GENERAL_ERROR;
+    }
+
+    RootedTreeNode* nodeInMap = _typesMap.find(type)->second;
+    if (nodeInMap != NULL)
+    {
+        return GENERAL_ERROR;  // RootedTreeNode is unique per type
+    }
+    else
+    {
+        _typesMap[type] = node;
+    }
+    return OK;
+}
+
+
 RootedTreeNode* EntityType::findEntityType(AlertTypes::EnAlert type)
 {
     return EntityType::_typesMap.find(type)->second;
 }
+
+
 #endif

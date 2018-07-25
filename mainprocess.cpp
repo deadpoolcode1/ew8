@@ -1,7 +1,3 @@
-#include "mainprocess.h"
-#include "canmanager.h"
-#include "ialertdisplay.h"
-
 #include <QThread>
 #include <QMutex>
 
@@ -9,6 +5,14 @@
 #include <QQmlComponent>
 #include <QFile>
 #include <iostream>
+
+#include "mainprocess.h"
+#include "canmanager.h"
+#include "ialertdisplay.h"
+#include "alerttypes.h"
+#include "entitytype.h"
+#include "rootedtreenode.h"
+
 
 
 MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
@@ -18,8 +22,6 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
     QQmlComponent component(engine, "qrc:/main.qml");
     componentObject = component.create();
 
-    pdz_flag = true;
-    pcw_flag = false;
     flag_updated = false;
 
     //Init QtQuick Objects:
@@ -34,8 +36,12 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
     {
         // TBD display general error and go
     }
-    // build a tree
-    RootedTree* mainPanelTree = new RootedTree(rootQobjectMainPannel);
+
+// build panels trees
+    mainPanelTree = new RootedTree(rootQobjectMainPannel);
+//    tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
+//    statusPanelTree = new RootedTree(rootQobjectStatusPannel);
+ //   smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
 #if 0
     QmlTreeParser* qmlTreeParser = new QmlTreeParser();
 
@@ -51,11 +57,14 @@ void MainProcess::run()
 {
     while(1)
     {
-
-      updateDisplay();
-
+        if (flag_updated)
+        {
+            mutex.lock();
+            updateDisplay();
+            mutex.unlock();
+        }
+        sleep(10);
     }
-
 }
 
 
@@ -74,50 +83,14 @@ int MainProcess::exec()
 //TODO extract to different thread:
 void MainProcess::updateDisplay(void)
 {
-
-    QVariant msg;
-    QVariant is_active;
-
-    //Display Visibility Update:
-
-if(flag_updated)
-{
-
-    flag_updated = false;
-
-    mutex.lock();
-
-    if(pcw_flag)
+    if (!mainPanelTree)
     {
-        msg = QVariant("pcw");
-        is_active = QVariant(true);
-
-    }
-    else if(pdz_flag)
-
-    {
-        msg= QVariant("pdz");
-        is_active = QVariant(true);
-    }
-    else
-    {
-        msg= QVariant("noalerts");
-        is_active = QVariant(false);
+        return;
     }
 
-    mutex.unlock();
+    mainPanelTree->updateVisibility();
 
-
-
-
-
-    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
-
-
-
-
-
-}
+//    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
 }
 
@@ -129,17 +102,38 @@ void MainProcess::handleResults(const QString &)
 
 }
 
-void MainProcess::display(AlertTypes::EnAlert at)
+void MainProcess::activate(AlertTypes::EnAlert alert)
 {
+    mutex.tryLock();
 
+    RootedTreeNode* nodeCGRT = EntityType::findByEntityType(alert);
+    if (nodeCGRT == NULL)
+    {
+        // add exception
+    }
+    if (nodeCGRT->getActivSem() > 0)
+    {
+        return; // activated - no need for re-activation
+    }
+    nodeCGRT->activate();
+    return;
+}
+
+void MainProcess::deactivate(AlertTypes::EnAlert alert)
+{
+    RootedTreeNode* nodeCGRT = EntityType::findByEntityType(alert);
+    if (nodeCGRT == NULL)
+    {
+        // add exception
+    }
+
+    if (!(nodeCGRT->getActivSem()))
+    {
+        return; // deactivated - no need for deactivation
+    }
 
 }
 
-void MainProcess::hide(AlertTypes::EnAlert at)
-{
-
-
-}
 
 #if 0
 void MainProcess::pdz_display(bool on)

@@ -10,7 +10,6 @@
 class AlertTypes : public QObject
 {
 
-    Q_OBJECT
 
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
@@ -18,11 +17,12 @@ public:
 
     enum EnAlert
             {
-                ALERT_NONE = 0,
-                ALERT_FCW = 1,
-                ALERT_PDZ = 2,
-                ALERT_PCW = 3,
-                ALERT_END_OF_TYPE = 4,
+                QtQG = 0,  // group
+                ALERT_NONE = 1,
+                ALERT_FCW = 2,
+                ALERT_PDZ = 3,
+                ALERT_PCW = 4,
+                ALERT_END_OF_TYPE = 5
             };
             Q_ENUMS(EnAlert)
 

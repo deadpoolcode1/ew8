@@ -8,3 +8,11 @@ RootedTree::RootedTree(QObject * qobject)
 
 
 
+void RootedTree::updateVisibility()
+{
+    if (!root)
+    {
+        return;  // TBD exception
+    }
+    root->updateVisibility(false);  // no forced invisibility
+}
