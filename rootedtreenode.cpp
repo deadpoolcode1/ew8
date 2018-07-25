@@ -43,8 +43,14 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     layer = vlayer.toInt(); // priority
 
     AlertTypes::EnAlert type = (AlertTypes::EnAlert)(qobject->property("canEntityType").toInt());
+#if 0
     RootedTreeNode* typeObj = EntityType::findEntityType(type);
+#endif
+    EntityType::getMap()[type] =  this;
+
     addChildrenFromObject(qobject);
+
+
 //    this->entityType->_type = qobject->property("canEntityType");//.toString();
 }
 
