@@ -4,13 +4,14 @@
 
 #include <QObject>
 #include <QMutex>
+#include "alerttypes.h"
 
 class IAlertDisplay
 {
 
   public:
-    virtual void pdz_display(bool) = 0;
-    virtual void pcw_display(bool) = 0;
+    virtual void display(AlertTypes::EnAlert at) = 0;
+    virtual void hide(AlertTypes::EnAlert at) = 0;
 
 
     QMutex mutex;

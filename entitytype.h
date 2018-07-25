@@ -27,7 +27,9 @@ public:
     RootedTreeNode* getNode();
 
 private:
+
     static t_TreeNodesTypeMap _typesMap;
+
 
     RootedTreeNode* _node;
     AlertTypes::EnAlert _type;

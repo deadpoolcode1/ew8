@@ -42,7 +42,44 @@ DISTFILES += \
     resources/camaro_PNG34.png \
     Layer.qml \
     Layer_pdz.qml \
-    Layer_pcw.qml
+    Layer_pcw.qml \
+    resources/EWAlerts/Artboard 88.png \
+    resources/EWAlerts/Artboard 88 copy.png \
+    resources/EWAlerts/Artboard 88 copy 2.png \
+    resources/EWAlerts/Artboard 88 copy 3.png \
+    resources/EWAlerts/Artboard 88 copy 4.png \
+    resources/EWAlerts/Artboard 88 copy 5.png \
+    resources/EWAlerts/Artboard 88 copy 6.png \
+    resources/EWAlerts/Artboard 88 copy 7.png \
+    resources/EWAlerts/Artboard 88 copy 8.png \
+    resources/EWAlerts/Artboard 88 copy 9.png \
+    resources/EWAlerts/Artboard 88 copy 10.png \
+    resources/EWAlerts/Artboard 88 copy 11.png \
+    resources/EWAlerts/Artboard 88 copy 12.png \
+    resources/EWAlerts/Artboard 88 copy 13.png \
+    resources/EWAlerts/Artboard 88 copy 14.png \
+    resources/EWAlerts/Artboard 88 copy 15.png \
+    resources/EWAlerts/Artboard 88 copy 16.png \
+    resources/EWAlerts/Artboard 88 copy 17.png \
+    resources/EWAlerts/Artboard 88 copy 18.png \
+    resources/EWAlerts/Artboard 88 copy 19.png \
+    resources/EWAlerts/Artboard 88 copy 20.png \
+    resources/EWAlerts/Artboard 88 copy 21.png \
+    resources/EWAlerts/Artboard 88 copy 22.png \
+    resources/EWAlerts/Artboard 88 copy 23.png \
+    resources/EWAlerts/Artboard 88 copy 24.png \
+    resources/EWAlerts/Artboard 88 copy 25.png \
+    resources/EWAlerts/Artboard 88 copy 26.png \
+    resources/EWAlerts/Artboard 88 copy 27.png \
+    resources/EWAlerts/Artboard 88 copy 28.png \
+    resources/EWAlerts/Artboard 88 copy 29.png \
+    resources/EWAlerts/Artboard 88 copy 30.png \
+    resources/EWAlerts/Artboard 88 copy 31.png \
+    resources/EWAlerts/Artboard 88 copy 32.png \
+    resources/EWAlerts/Artboard 88 copy 33.png \
+    resources/EWAlerts/Artboard 88 copy 34.png \
+    resources/EWAlerts/Artboard 88 copy 35.png \
+    resources/EWAlerts/Artboard 88 copy 36.png
 
 HEADERS += \
     canmanager.h \

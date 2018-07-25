@@ -1,9 +1,9 @@
 #include "canmanager.h"
-//#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 
 #ifndef WIN32
+#include <unistd.h>
 #include <can_netlink.h>
 #include <libsocketcan.h>
 
@@ -211,24 +211,24 @@ void CanManager::parse_frame(struct can_frame * frame)
 
 
           case 0x0:
-              mydisplays->pdz_display(false);
-              mydisplays->pcw_display(false);
+              mydisplays->hide(AlertTypes::ALERT_PDZ);
+              mydisplays->hide(AlertTypes::ALERT_PCW);
             break;
 
           case 0x1:
-              mydisplays->pdz_display(true);
-              mydisplays->pcw_display(false);
+              mydisplays->display(AlertTypes::ALERT_PDZ);
+              mydisplays->hide(AlertTypes::ALERT_PCW);
             break;
 
           case 0x2:
-              mydisplays->pdz_display(false);
-              mydisplays->pcw_display(true);
+              mydisplays->hide(AlertTypes::ALERT_PDZ);
+              mydisplays->display(AlertTypes::ALERT_PCW);
             break;
 
           case 0x3:
-              mydisplays->pdz_display(true);
-              mydisplays->pcw_display(true);
-
+              mydisplays->display(AlertTypes::ALERT_PDZ);
+              mydisplays->display(AlertTypes::ALERT_PCW);
+            break;
         }
 
         mydisplays->mutex.unlock();

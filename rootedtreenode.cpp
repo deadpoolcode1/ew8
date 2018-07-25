@@ -9,7 +9,7 @@ EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
 
 RootedTreeNode::RootedTreeNode()
 {
-//     is_active =  false;
+
 }
 
 RootedTreeNode::RootedTreeNode(QObject * qobject)

@@ -1,6 +1,5 @@
 #include "mainprocess.h"
 #include "canmanager.h"
-//#include "mainwindow.h"
 #include "ialertdisplay.h"
 
 #include <QThread>
@@ -130,6 +129,19 @@ void MainProcess::handleResults(const QString &)
 
 }
 
+void MainProcess::display(AlertTypes::EnAlert at)
+{
+
+
+}
+
+void MainProcess::hide(AlertTypes::EnAlert at)
+{
+
+
+}
+
+#if 0
 void MainProcess::pdz_display(bool on)
 {
 
@@ -161,3 +173,4 @@ void MainProcess::pcw_display(bool on)
     }
 
 }
+#endif

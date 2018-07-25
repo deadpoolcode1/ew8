@@ -21,8 +21,8 @@ public:
     void updateDisplay(void);
 
 //alerts display:
-     virtual void pdz_display(bool);
-     virtual void pcw_display(bool);
+     virtual void display(AlertTypes::EnAlert at);
+     virtual void hide(AlertTypes::EnAlert at);
 
 //signals:
 //    void operate(const QString &);

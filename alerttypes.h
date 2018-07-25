@@ -9,15 +9,20 @@
 
 class AlertTypes : public QObject
 {
+
+    Q_OBJECT
+
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
 
 
     enum EnAlert
             {
-                ALERT_FCW,
-                ALERT_PDZ,
-                ALERT_PCW,
+                ALERT_NONE = 0,
+                ALERT_FCW = 1,
+                ALERT_PDZ = 2,
+                ALERT_PCW = 3,
+                ALERT_END_OF_TYPE = 4,
             };
             Q_ENUMS(EnAlert)
 

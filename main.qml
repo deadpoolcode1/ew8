@@ -183,7 +183,7 @@ Rectangle {
     Layer_pcw {
         id: layer0;
         property int priority: 1;
-        property string myid: "layer0";
+        property int layer: 0;
     }
 
     Layer_pdz {id: layer1; property int priority: 0; property string myid: "layer1";}
