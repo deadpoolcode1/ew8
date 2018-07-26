@@ -52,7 +52,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 // esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
-    QVariant vlayer = qobject->property("layer");
+    QVariant vlayer = qobject->property("layer_pri");
     layer = vlayer.toInt(); // priority
 
 

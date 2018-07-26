@@ -23,9 +23,11 @@ public:
                 ALERT_FCW = 2,
                 ALERT_PDZ = 3,
                 ALERT_PCW = 4,
-                ALERT_LLDW = 5,
-                ALERT_RLDW = 6,
-                ALERT_END_OF_TYPE = 7,
+                ALERT_LDWOFF = 5,
+                ALERT_LDWON = 6,
+                ALERT_LLDW = 7,
+                ALERT_RLDW = 8,
+                ALERT_END_OF_TYPE = 9,
             };
             Q_ENUMS(EnAlert)
 

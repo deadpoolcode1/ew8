@@ -2,19 +2,7 @@ import MyQMLenums 0.1
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 
-//import "qrc:/myfunctions.js" as MyScripts
-//import my.namespace 1.0
-
-
-
 ApplicationWindow {
-
-
-
-    property var current_layerid: dummy_layer
-
-    property int canEntityType: Alert.ALERT_FCW
-
 
     function switchVisibility()
     {
@@ -152,7 +140,6 @@ Rectangle {
 
 Rectangle {
   id: status_panel
-  property string myid: "status_panel"
 
   objectName: "status_panel_root"
 
@@ -170,50 +157,159 @@ Rectangle {
     anchors.right: right_panel.left
 
     id: main_panel
-    property  string  myid: "main_panel"
 
     objectName: "main_panel_root"
 
     visible: true
 
+    //tree instance:
+    Item {
+        id: group1
 
-    Layer { id: dummy_layer }
+        property int layer_pri: 0
 
+        visible: true
 
-    Layer_pcw {
-        id: layer0;
-        property int priority: 1;
-        property int layer: 0;
-    }
+        ////////////////////////////////
+        //Atomic items:
+        Image { id: alert_pcw; visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+               source:"qrc:/resources/EWAlerts/Artboard 88 copy 7.png"; rotation: 0;
 
-    Layer_pdz {id: layer1; property int priority: 0; property string myid: "layer1";}
+               property int layer_pri: 0
+               property int canEntitityType: Alert.ALERT_PCW
+           }
+        ///////////////////////////////
 
-
-}
-
-    property var cur: main_panel.children[0];
-
-
-    Component.onCompleted: {
-
-
-
-        for(var i = 0; i < main_panel.children.length; ++i)
+        //Groups:
+        Item
         {
+            id: group2
+
+            property int layer_pri: 1
+
+            visible: true
 
 
-           cur = main_panel.children[i];
+            ////////////////////////////////
+            //Atomic items:
 
-            console.log("myid:"+cur.myid+""+cur.priority+"is_active:"+cur.is_active);
+            Image { id: alert_fcw; visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                   source:"qrc:/resources/EWAlerts/Artboard 88 copy 6.png"; rotation: 0;
 
-            if(main_panel.children[i].priority === 0)
+                   property int layer_pri: 0
+                   property int canEntitityType: Alert.ALERT_FCW
+               }
+            ///////////////////////////////
+
+
+            //Groups:
+            Item
             {
-                console.log("got one with 0 priority")
+               id: group3
+
+               property int layer_pri: 1
+
+               visible: true
+
+               ////////////////////////////////
+               //Atomic items:
+
+               //TODO group lines with Items:
+
+               Item {
+                   id: alert_ldwoff; visible: true;
+
+
+                   property int layer_pri: 2
+                   property int canEntitityType: Alert.ALERT_LDWOFF
+
+                   Image {visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy 3.png"; rotation: 0;
+                      }
+
+                   Image {visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy 2.png"; rotation: 0;
+                      }
+               }//LDWOFF
+
+               Item {
+                   id: alert_ldwon; visible: true;
+
+                   property int layer_pri: 1
+                   property int canEntitityType: Alert.ALERT_LDWON
+
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy.png"; rotation: 0;}
+
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88.png"; rotation: 0;}
+
+               }//LDWON
+
+               Item {id: alert_lldw; visible: true;
+
+                   property int layer_pri: 0
+                   property int canEntitityType: Alert.ALERT_LLDW
+                   
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy 5.png"; rotation: 0;}
+
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88.png"; rotation: 0;}
+               }
+               }
+
+               Item {id: alert_rldw; visible: true;
+
+                   property int layer_pri: 0
+                   property int canEntitityType: Alert.ALERT_RLDW
+
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy.png"; rotation: 0;}
+
+                   Image { visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                          source:"qrc:/resources/EWAlerts/Artboard 88 copy 4.png"; rotation: 0
+                      }
+               }
+
+               ///////////////////////////////
+
+
+            }
+
+            Item
+            {
+               id: group4
+
+               property int layer_pri: 1
+
+               visible: true
+
+               ////////////////////////////////
+               //Atomic items:
+               Image { id: alert_pdz; visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                      source:"qrc:/resources/sp_yellow_h.png"; rotation: 90;
+
+                      property int layer_pri: 0
+                      property int canEntitityType: Alert.ALERT_PDZ
+                  }
+               ///////////////////////////////
+
+
             }
 
 
         }
 
+
+    }
+
+
+
+}
+
+    Component.onCompleted: {
+    //TBD
      }
 }
-}
+

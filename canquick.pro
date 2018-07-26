@@ -40,9 +40,6 @@ DISTFILES += \
     resources/sp_yellow_h.png \
     resources/alfa_romeo_PNG75.png \
     resources/camaro_PNG34.png \
-    Layer.qml \
-    Layer_pdz.qml \
-    Layer_pcw.qml \
     resources/EWAlerts/Artboard 88.png \
     resources/EWAlerts/Artboard 88 copy.png \
     resources/EWAlerts/Artboard 88 copy 2.png \
