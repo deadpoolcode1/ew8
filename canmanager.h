@@ -56,7 +56,8 @@ private:
 
     void init_frame(struct can_frame * frame);
 
-
+    //returns 1 to switch Inactive2Active, -1 to Active2Inactive, 0 to preserve the state:
+    qint32 alertStateCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
 
 #ifndef WIN32
     //inner variables

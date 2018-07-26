@@ -16,7 +16,7 @@ EntityType::EntityType()
 }
 
 
-std::map<AlertTypes::EnAlert, RootedTreeNode*>* EntityType::getMap()
+std::map<AlertTypes::EnAlert, RootedTreeNode*> * EntityType::getMap()
 {
    return &(EntityType::_typesMap);
 }
@@ -31,7 +31,7 @@ void EntityType::generateTypes()
     {
         type =  (AlertTypes::EnAlert)type_itr;
 
-        RootedTreeNode * nodeToInsert = null;  //new RootedTreeNode();
+        RootedTreeNode * nodeToInsert = nullptr;  //new RootedTreeNode();
 
         EntityType::_typesMap.insert(std::pair<AlertTypes::EnAlert, RootedTreeNode*>(type,nodeToInsert));
     }

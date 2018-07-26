@@ -10,6 +10,7 @@
 class AlertTypes : public QObject
 {
 
+    Q_OBJECT
 
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
@@ -22,7 +23,9 @@ public:
                 ALERT_FCW = 2,
                 ALERT_PDZ = 3,
                 ALERT_PCW = 4,
-                ALERT_END_OF_TYPE = 5
+                ALERT_LLDW = 5,
+                ALERT_RLDW = 6,
+                ALERT_END_OF_TYPE = 7,
             };
             Q_ENUMS(EnAlert)
 

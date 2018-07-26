@@ -1,6 +1,7 @@
 #include "canmanager.h"
 #include <string.h>
 #include <stdio.h>
+#include "defs.h"
 
 #ifndef WIN32
 #include <unistd.h>
@@ -167,6 +168,19 @@ void CanManager::run()
 }
 
 
+qint32 CanManager::alertStateCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask)
+{
+    quint32 ret = 0;
+
+    quint32 prevState = (prev->data[byte]&mask)? 1 : 0;
+
+    quint32 recvState = (recv->data[byte]&mask)? 1 : 0;
+
+    ret = recvState - prevState;
+
+    return ret;
+}
+
 void CanManager::parse_frame(struct can_frame * frame)
 {
     can_id_t received_id = can_id_undefined;
@@ -197,41 +211,89 @@ void CanManager::parse_frame(struct can_frame * frame)
 
    if(!is_frame_updated)
    {
+       //skip
    }
    else
    {
 
 
+       struct can_frame * preframe = &prev_frame[received_id];
+
+       qint32 alertAction;
 
 
-        mydisplays->mutex.lock();
-
-        switch((uint32_t)frame->data[0])
+        switch(received_id)
         {
+               case can_id_master:
+
+                   mydisplays->mutex.lock();
+
+                   //byte 4:
+
+                   if(1 == (alertAction = alertStateCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
+                   {
+                      //TODO activate off LDWOFF alert
+                   }
+                   else if (-1 == alertAction)
+                   {
 
 
-          case 0x0:
-              mydisplays->deactivate(AlertTypes::ALERT_PDZ);
-              mydisplays->deactivate(AlertTypes::ALERT_PCW);
-            break;
+                   }
 
-          case 0x1:
-              mydisplays->activate(AlertTypes::ALERT_PDZ);
-              mydisplays->deactivate(AlertTypes::ALERT_PCW);
-            break;
+                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
+                   {
+                      mydisplays->activate(AlertTypes::ALERT_LLDW);
+                   }
+                   else if (-1 == alertAction)
+                   {
+                     mydisplays->deactivate(AlertTypes::ALERT_LLDW);
+                   }
 
-          case 0x2:
-              mydisplays->deactivate(AlertTypes::ALERT_PDZ);
-              mydisplays->activate(AlertTypes::ALERT_PCW);
-            break;
 
-          case 0x3:
-              mydisplays->activate(AlertTypes::ALERT_PDZ);
-              mydisplays->activate(AlertTypes::ALERT_PCW);
-            break;
+                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
+                   {
+                      mydisplays->activate(AlertTypes::ALERT_RLDW);
+                   }
+                   else if (-1 == alertAction)
+                   {
+                     mydisplays->deactivate(AlertTypes::ALERT_RLDW);
+                   }
+
+                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
+                   {
+                      mydisplays->activate(AlertTypes::ALERT_FCW);
+                   }
+                   else if (-1 == alertAction)
+                   {
+                     mydisplays->deactivate(AlertTypes::ALERT_FCW);
+                   }
+
+                   //byte 5:
+
+
+                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
+                   {
+                      mydisplays->activate(AlertTypes::ALERT_PCW);
+                   }
+                   else if (-1 == alertAction)
+                   {
+                     mydisplays->deactivate(AlertTypes::ALERT_PCW);
+                   }
+
+                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
+                   {
+                      mydisplays->activate(AlertTypes::ALERT_PDZ);
+                   }
+                   else if (-1 == alertAction)
+                   {
+                     mydisplays->deactivate(AlertTypes::ALERT_PDZ);
+                   }
+
+                   mydisplays->mutex.unlock();
+               break;
         }
 
-        mydisplays->mutex.unlock();
+        memcpy(frame, &prev_frame[received_id], sizeof(struct can_frame));
    }
 
 }

@@ -16,7 +16,7 @@ public:
     EntityType();
 //    EntityType(AlertTypes::EnAlert type);
 
-    static std::map<AlertTypes::EnAlert, RootedTreeNode*>* getMap() {return &_typesMap;}
+    static std::map<AlertTypes::EnAlert, RootedTreeNode*>* getMap();
     static void generateTypes();
 
     static RootedTreeNode* findByEntityType(AlertTypes::EnAlert type)

@@ -38,4 +38,22 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_right, 0x620},
 };
 
+#define CAN_MSG_MASTER_LDW_OFF_BYTE 4
+#define CAN_MSG_MASTER_LDW_OFF_MSK 0x01
+
+#define CAN_MSG_MASTER_LLDW_BYTE 4
+#define CAN_MSG_MASTER_LLDW_MSK 0x02
+
+#define CAN_MSG_MASTER_RLDW_BYTE 4
+#define CAN_MSG_MASTER_RLDW_MSK 0x04
+
+#define CAN_MSG_MASTER_FCW_BYTE 4
+#define CAN_MSG_MASTER_FCW_MSK 0x08
+
+#define CAN_MSG_MASTER_PCW_BYTE 5
+#define CAN_MSG_MASTER_PCW_MSK 0x02
+
+#define CAN_MSG_MASTER_PDZ_BYTE 5
+#define CAN_MSG_MASTER_PDZ_MSK 0x04
+
 #endif // DEFS_H
