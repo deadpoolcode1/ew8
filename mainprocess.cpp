@@ -92,6 +92,7 @@ void MainProcess::updateDisplay(void)
 
 //    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
+    flag_updated = false;
 }
 
 
@@ -116,6 +117,9 @@ void MainProcess::activate(AlertTypes::EnAlert alert)
         return; // activated - no need for re-activation
     }
     nodeCGRT->activate();
+
+    flag_updated = true;
+
     return;
 }
 
@@ -131,6 +135,12 @@ void MainProcess::deactivate(AlertTypes::EnAlert alert)
     {
         return; // deactivated - no need for deactivation
     }
+    nodeCGRT->deactivate();
+
+    //TODO only when a semaphore is changed
+    flag_updated = true;
+
+    return;
 
 }
 

@@ -10,6 +10,7 @@ EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
 RootedTreeNode::RootedTreeNode(QObject * qobject)
 {
     activationSemaphore = 0;
+    visibility = false;
     convertfromQObject(qobject);
 }
 
@@ -129,12 +130,12 @@ void RootedTreeNode::deactivate()
 // recursive visibility update
 void RootedTreeNode::updateVisibility(bool layerForcedInvis)
 {
+    LayersPriorityQ_t* queue = children->getQueue();
+    LayersPriorityQ_t::iterator it;
+
     if (layerForcedInvis)
     {
-        this->qmlItem->property("visibility") = false;
-
-        LayersPriorityQ_t* queue = children->getQueue();
-        LayersPriorityQ_t::iterator it;
+        this->qmlItem->property("visible") = false;
         for (it = queue->begin(); it < queue->end(); it++ )
         {
             (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
@@ -145,10 +146,7 @@ void RootedTreeNode::updateVisibility(bool layerForcedInvis)
     {
         if (activationSemaphore)
         {
-            this->qmlItem->property("visibility") = true;
-
-            LayersPriorityQ_t* queue = children->getQueue();
-            LayersPriorityQ_t::iterator it;
+            this->qmlItem->property("visible") = true;
             for (it = queue->begin(); it < queue->end(); it++ )
             {
                 (*it)->updateVisibility(false);  // propagate invisibility to entire sub-tree.
@@ -156,7 +154,11 @@ void RootedTreeNode::updateVisibility(bool layerForcedInvis)
         }
         else
         {
-            this->qmlItem->property("visibility") = false;  // entire sub-tree is set to invisible
+            this->qmlItem->property("visible") = false;  // entire sub-tree is set to invisible
+            for (it = queue->begin(); it < queue->end(); it++ )
+            {
+                (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
+            }
             return;
         }
     }

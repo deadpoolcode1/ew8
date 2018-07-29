@@ -159,9 +159,11 @@ void CanManager::run()
 
     while(1)
     {
-
+        mydisplays->mutex.lock();
         this->read_frame();
+        mydisplays->mutex.unlock();
 
+        sleep(1);
     }
 
     emit resultReady(result);
@@ -226,7 +228,7 @@ void CanManager::parse_frame(struct can_frame * frame)
         {
                case can_id_master:
 
-                   mydisplays->mutex.lock();
+//                    mydisplays->mutex.lock();
 
                    //byte 4:
 
@@ -289,11 +291,11 @@ void CanManager::parse_frame(struct can_frame * frame)
                      mydisplays->deactivate(AlertTypes::ALERT_PDZ);
                    }
 
-                   mydisplays->mutex.unlock();
+ //                  mydisplays->mutex.unlock();
                break;
         }
 
-        memcpy(frame, &prev_frame[received_id], sizeof(struct can_frame));
+        memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
    }
 
 }

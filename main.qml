@@ -82,7 +82,7 @@ Rectangle {
 
     objectName: "main_panel_root"
 
-    visible: true
+    visible: false
 
     //tree instance:
     Item {
@@ -92,7 +92,7 @@ Rectangle {
 
         property int canEntityType: Alert.QtQG
 
-        visible: true
+        visible: false
 
         ////////////////////////////////
         //Atomic items:
@@ -101,9 +101,10 @@ Rectangle {
             id: alert_pcw
             objectName: "PCW_ALERT"
             property int layer_pri: 0
-            property int canEntitityType: Alert.ALERT_PCW
+            property int canEntityType: Alert.ALERT_PCW
 
-            visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+            visible: false; x: 000; y: 00; width: 300; height: 200;
+            fillMode: Image.PreserveAspectFit;
             source:"qrc:/resources/EWAlerts/Artboard 88 copy 7.png"; rotation: 0;
 
         }
@@ -119,7 +120,7 @@ Rectangle {
 
             property int layer_pri: 1
 
-            visible: true
+            visible: false
 
 
             ////////////////////////////////
@@ -132,7 +133,8 @@ Rectangle {
                 property int layer_pri: 0
                 property int canEntityType: Alert.ALERT_FCW
 
-                visible: true; x: 000; y: 00; width: 300; height: 200; fillMode: Image.PreserveAspectFit;
+                visible: false; x: 000; y: 00; width: 300; height: 200;
+                fillMode: Image.PreserveAspectFit;
                 source:"qrc:/resources/EWAlerts/Artboard 88 copy 6.png"; rotation: 0;
 
 

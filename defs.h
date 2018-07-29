@@ -26,7 +26,7 @@ can_id_right =  2,
 typedef struct can_id_values_table_row_s
 {
   can_id_t mnemonic;
-  uint32_t   value;
+  uint32_t value;
 } can_id_values_table_row_t;
 
 
@@ -51,9 +51,9 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_FCW_MSK 0x08
 
 #define CAN_MSG_MASTER_PCW_BYTE 5
-#define CAN_MSG_MASTER_PCW_MSK 0x02
+#define CAN_MSG_MASTER_PCW_MSK 0x04
 
 #define CAN_MSG_MASTER_PDZ_BYTE 5
-#define CAN_MSG_MASTER_PDZ_MSK 0x04
+#define CAN_MSG_MASTER_PDZ_MSK 0x02
 
 #endif // DEFS_H
