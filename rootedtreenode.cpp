@@ -52,6 +52,8 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 // esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
+//    qname = qobject->objectName();
+
     QVariant vlayer = qobject->property("layer_pri");
     layer = vlayer.toInt(); // priority
 
@@ -84,6 +86,7 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
 {
 
    RootedTreeNode * curnode;
+   children = new LayersPriorityQ();  // priority queue of children for C++ node
 
    foreach(QObject * curchild, qobject->children())
    {

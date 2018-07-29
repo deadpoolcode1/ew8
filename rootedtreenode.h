@@ -44,6 +44,8 @@ private:
     int activationSemaphore;  // if higher than 0 - active
     bool visibility; // needed?
 
+//    QString qname;
+
     //TODO add alert type
 
 };
