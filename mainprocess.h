@@ -43,7 +43,7 @@ private:
 // pointer to QML defining trees for all panels.
     QObject *componentObject;
 
-    bool flag_updated;
+    bool flag_tree_changed;
 };
 
 #endif // MAINPROCESS_H

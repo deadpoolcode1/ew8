@@ -82,7 +82,7 @@ Rectangle {
 
     objectName: "main_panel_root"
 
-    visible: false
+    visible: true
 
     //tree instance:
     Item {
@@ -92,6 +92,10 @@ Rectangle {
 
         property int canEntityType: Alert.QtQG
 
+        function setVisible(TrueFalse)
+        {
+           visible = TrueFalse
+        }
         visible: false
 
         ////////////////////////////////
@@ -103,9 +107,16 @@ Rectangle {
             property int layer_pri: 0
             property int canEntityType: Alert.ALERT_PCW
 
-            visible: false; x: 000; y: 00; width: 300; height: 200;
+            function setVisible(TrueFalse)
+            {
+               visible = TrueFalse
+            }
+
+            visible: false;
+            x: 000; y: 00; width: 300; height: 200;
             fillMode: Image.PreserveAspectFit;
-            source:"qrc:/resources/EWAlerts/Artboard 88 copy 7.png"; rotation: 0;
+            source:"qrc:/resources/EWAlerts/Artboard 88 copy 7.png";
+            rotation: 0;
 
         }
         ///////////////////////////////
@@ -120,6 +131,10 @@ Rectangle {
 
             property int layer_pri: 1
 
+            function setVisible(TrueFalse)
+            {
+               visible = TrueFalse
+            }
             visible: false
 
 
@@ -128,14 +143,21 @@ Rectangle {
 
             Image {
 
+                function setVisible(TrueFalse)
+                {
+                   visible = TrueFalse
+                }
+
                 id: alert_fcw;
                 objectName: "FCW_ALERT"
                 property int layer_pri: 0
                 property int canEntityType: Alert.ALERT_FCW
 
-                visible: false; x: 000; y: 00; width: 300; height: 200;
+                visible: false;
+                x: 000; y: 00; width: 300; height: 200;
                 fillMode: Image.PreserveAspectFit;
-                source:"qrc:/resources/EWAlerts/Artboard 88 copy 6.png"; rotation: 0;
+                source:"qrc:/resources/EWAlerts/Artboard 88 copy 6.png";
+                rotation: 0;
 
 
             }

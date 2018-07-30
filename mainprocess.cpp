@@ -5,6 +5,9 @@
 #include <QQmlComponent>
 #include <QFile>
 #include <iostream>
+#include <chrono>
+#include <thread>
+
 
 #include "mainprocess.h"
 #include "canmanager.h"
@@ -22,7 +25,7 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
     QQmlComponent component(engine, "qrc:/main.qml");
     componentObject = component.create();
 
-    flag_updated = false;
+    flag_tree_changed = false;
 
     //Init QtQuick Objects:
 
@@ -57,13 +60,14 @@ void MainProcess::run()
 {
     while(1)
     {
-        if (flag_updated)
+        if (flag_tree_changed)
         {
             mutex.lock();
             updateDisplay();
+            flag_tree_changed = false;
             mutex.unlock();
         }
-        sleep(10);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -92,7 +96,7 @@ void MainProcess::updateDisplay(void)
 
 //    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
-    flag_updated = false;
+    flag_tree_changed = false;
 }
 
 
@@ -118,7 +122,7 @@ void MainProcess::activate(AlertTypes::EnAlert alert)
     }
     nodeCGRT->activate();
 
-    flag_updated = true;
+    flag_tree_changed = true;
 
     return;
 }
@@ -138,43 +142,10 @@ void MainProcess::deactivate(AlertTypes::EnAlert alert)
     nodeCGRT->deactivate();
 
     //TODO only when a semaphore is changed
-    flag_updated = true;
+    flag_tree_changed = true;
 
     return;
 
 }
 
 
-#if 0
-void MainProcess::pdz_display(bool on)
-{
-
-    if(on && !pdz_flag)
-    {
-       pdz_flag = true;
-       flag_updated = true;
-    }
-    else if(!on && pdz_flag)
-    {
-        pdz_flag = false;
-        flag_updated = true;
-    }
-
-}
-
-void MainProcess::pcw_display(bool on)
-{
-
-    if(on && !pcw_flag)
-    {
-        pcw_flag = true;
-        flag_updated = true;
-    }
-    else if(!on && pcw_flag)
-    {
-        pcw_flag =  false;
-        flag_updated = true;
-    }
-
-}
-#endif

@@ -128,25 +128,37 @@ void RootedTreeNode::deactivate()
 }
 
 // recursive visibility update
-void RootedTreeNode::updateVisibility(bool layerForcedInvis)
+DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
 {
     LayersPriorityQ_t* queue = children->getQueue();
     LayersPriorityQ_t::iterator it;
+    DISPLAY_ERRORS_t res;
 
     if (layerForcedInvis)
     {
         this->qmlItem->property("visible") = false;
+        res = updateVisibilityByInvoke(false); //make invisible
+        if (res!= OK)
+        {
+            return res;
+        }
+
         for (it = queue->begin(); it < queue->end(); it++ )
         {
             (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
         }
-        return;
+        return OK;
     }
     else
     {
         if (activationSemaphore)
         {
             this->qmlItem->property("visible") = true;
+            res = updateVisibilityByInvoke(true); //make visible
+            if (res!= OK)
+            {
+                return res;
+            }
             for (it = queue->begin(); it < queue->end(); it++ )
             {
                 (*it)->updateVisibility(false);  // propagate invisibility to entire sub-tree.
@@ -154,12 +166,27 @@ void RootedTreeNode::updateVisibility(bool layerForcedInvis)
         }
         else
         {
-            this->qmlItem->property("visible") = false;  // entire sub-tree is set to invisible
+            res = updateVisibilityByInvoke(false); //make invisible
+            if (res!= OK)
+            {
+                return res;
+            }
             for (it = queue->begin(); it < queue->end(); it++ )
             {
                 (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
             }
-            return;
         }
+        return OK;
     }
+}
+
+
+DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
+{
+    if (!this->qmlItem)
+    {
+        return GENERAL_ERROR;  // TBD add exception handling
+    }
+    QMetaObject::invokeMethod(this->qmlItem,"setVisible",Q_ARG(QVariant, visible));
+    return OK;
 }

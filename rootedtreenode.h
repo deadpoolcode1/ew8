@@ -3,6 +3,8 @@
 
 #include <QObject>
 //#include <QList>
+#include "defs.h"
+
 
 
 class LayersPriorityQ;  // forward declaration
@@ -21,15 +23,18 @@ public:
 
 //    bool operator<(const RootedTreeNode& lhs, const RootedTreeNode& rhs);
     int getLayer() {return layer;}
+    QObject* getQmlItem() {return qmlItem;}
     int getActivSem() {return activationSemaphore;}
 
     void activate();
     void deactivate();
-    void updateVisibility(bool layerForcedInvis);
+    DISPLAY_ERRORS_t updateVisibility(bool layerForcedInvis);
+
 
 private:
 
     void convertfromQObject(QObject * qobject);
+    DISPLAY_ERRORS_t updateVisibilityByInvoke(bool visible);
 
 
     QObject * qmlItem;
