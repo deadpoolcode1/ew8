@@ -25,11 +25,17 @@ public:
     int getLayer() {return layer;}
     QObject* getQmlItem() {return qmlItem;}
     int getActivSem() {return activationSemaphore;}
+    LayersPriorityQ* getChildren() {return children;}
+
+    const bool getMutexGroup() {return mutexGroup;}
 
     void activate();
     void deactivate();
-    DISPLAY_ERRORS_t updateVisibility(bool layerForcedInvis);
+    void deactivateItemInMutexGroup();
+    void handleMutexGroup();
 
+
+    DISPLAY_ERRORS_t updateVisibility(bool layerForcedInvis);
 
 private:
 
@@ -49,6 +55,7 @@ private:
     int activationSemaphore;  // if higher than 0 - active
     bool visibility; // needed?
 
+    bool mutexGroup;
 //    QString qname;
 
     //TODO add alert type

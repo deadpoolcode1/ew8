@@ -75,12 +75,14 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
             // add exception
         }
         //EntityType::getMap()[type] =  this;
+        mutexGroup = false; // default value for Atomic Item
+    }
+    else
+    {
+        mutexGroup = qobject->property("mutexGroup").toBool();  // real value for group
     }
 
     addChildrenFromObject(qobject);
-
-
-//    this->entityType->_type = qobject->property("canEntityType");//.toString();
 }
 
 void RootedTreeNode::addChildrenFromObject(QObject * qobject)
@@ -102,13 +104,43 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
 
 }
 
+void RootedTreeNode::deactivateItemInMutexGroup()
+{
+    RootedTreeNode::activationSemaphore = 0;
+}
+
+// handle mutexGroup. Important! Current implementation assumes mutex Group only for Atomic Items
+void RootedTreeNode::handleMutexGroup()
+{
+    LayersPriorityQ_t* childrenQueue = getChildren()->getQueue();
+    if (!childrenQueue || childrenQueue->empty() )
+    {
+        // TBD exception
+    }
+    else
+    {
+        LayersPriorityQ_t::iterator it;
+        for (it = childrenQueue->begin(); it < childrenQueue->end(); it++ )
+        {
+            (*it)->deactivateItemInMutexGroup();
+        }
+    }
+}
+
+
+
 // recursive activation
 void RootedTreeNode::activate()
 {
+    if (parent != NULL && parent->mutexGroup)  // the item is apart of Mutex Group
+    {
+        parent->handleMutexGroup(); // handle mutex if the item belongs to mutexGroup. Important! Current implementation assumes mutex Group only for Atomic Items
+    }
+
     activationSemaphore++;
     if (parent == NULL)
     {
-        return;
+        return;  // root is detected
     }
     parent->activate();
 }

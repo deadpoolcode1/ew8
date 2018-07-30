@@ -88,6 +88,8 @@ Rectangle {
     Item {
         id: group1
         objectName: "PCW_QtQG"
+        property bool mutexGroup: false
+
         property int layer_pri: 0
 
         property int canEntityType: Alert.QtQG
@@ -126,6 +128,7 @@ Rectangle {
         {
             id: group2
             objectName: "FCW_QtQG"
+            property bool mutexGroup: false
 
             property int canEntityType: Alert.QtQG
 
