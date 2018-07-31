@@ -1,48 +1,42 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>resources/sp_red_h.png</file>
         <file>qtquickcontrols2.conf</file>
-        <file>resources/sp_yellow_h.png</file>
-        <file>resources/alfa_romeo_PNG75.png</file>
-        <file>resources/camaro_PNG34.png</file>
         <file>myfunctions.js</file>
-        <file>resources/EWAlerts/Artboard 88.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 2.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 3.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 4.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 5.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 6.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 7.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 8.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 9.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 10.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 11.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 12.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 13.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 14.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 15.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 16.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 17.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 18.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 19.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 20.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 21.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 22.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 23.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 24.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 25.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 26.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 27.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 28.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 29.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 30.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 31.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 32.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 33.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 34.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 35.png</file>
-        <file>resources/EWAlerts/Artboard 88 copy 36.png</file>
+        <file>resources/EWAlerts/blinkers.png</file>
+        <file>resources/EWAlerts/fcw.png</file>
+        <file>resources/EWAlerts/fla_armed.png</file>
+        <file>resources/EWAlerts/hmwa03.png</file>
+        <file>resources/EWAlerts/hmwa04.png</file>
+        <file>resources/EWAlerts/hmwa05.png</file>
+        <file>resources/EWAlerts/hmwa06.png</file>
+        <file>resources/EWAlerts/hmwa07.png</file>
+        <file>resources/EWAlerts/hmwa08.png</file>
+        <file>resources/EWAlerts/hmwm06.png</file>
+        <file>resources/EWAlerts/hmwm07.png</file>
+        <file>resources/EWAlerts/hmwm08.png</file>
+        <file>resources/EWAlerts/hmwm09.png</file>
+        <file>resources/EWAlerts/hmwm10.png</file>
+        <file>resources/EWAlerts/hmwm11.png</file>
+        <file>resources/EWAlerts/hmwm12.png</file>
+        <file>resources/EWAlerts/hmwm13.png</file>
+        <file>resources/EWAlerts/hmwm14.png</file>
+        <file>resources/EWAlerts/hmwm15.png</file>
+        <file>resources/EWAlerts/hmwm16.png</file>
+        <file>resources/EWAlerts/hmwm17.png</file>
+        <file>resources/EWAlerts/hmwm18.png</file>
+        <file>resources/EWAlerts/hmwm19.png</file>
+        <file>resources/EWAlerts/hmwm21.png</file>
+        <file>resources/EWAlerts/hmwm22.png</file>
+        <file>resources/EWAlerts/hmwm23.png</file>
+        <file>resources/EWAlerts/hmwm24.png</file>
+        <file>resources/EWAlerts/hmwm25.png</file>
+        <file>resources/EWAlerts/ldwoff.png</file>
+        <file>resources/EWAlerts/ldwon.png</file>
+        <file>resources/EWAlerts/lldw.png</file>
+        <file>resources/EWAlerts/pcw.png</file>
+        <file>resources/EWAlerts/pdz.png</file>
+        <file>resources/EWAlerts/rldw.png</file>
+        <file>resources/EWAlerts/sli.png</file>
     </qresource>
 </RCC>

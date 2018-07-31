@@ -20,7 +20,7 @@ SOURCES += \
     rootedtreenode.cpp \
     rootedtree.cpp \
     layerspriorityq.cpp \
-    entitytype.cpp
+    entitytype.cpp \
 
 RESOURCES += qml.qrc
 
@@ -36,47 +36,41 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    resources/sp_red_h.png \
-    resources/sp_yellow_h.png \
-    resources/alfa_romeo_PNG75.png \
-    resources/camaro_PNG34.png \
-    resources/EWAlerts/Artboard 88.png \
-    resources/EWAlerts/Artboard 88 copy.png \
-    resources/EWAlerts/Artboard 88 copy 2.png \
-    resources/EWAlerts/Artboard 88 copy 3.png \
-    resources/EWAlerts/Artboard 88 copy 4.png \
-    resources/EWAlerts/Artboard 88 copy 5.png \
-    resources/EWAlerts/Artboard 88 copy 6.png \
-    resources/EWAlerts/Artboard 88 copy 7.png \
-    resources/EWAlerts/Artboard 88 copy 8.png \
-    resources/EWAlerts/Artboard 88 copy 9.png \
-    resources/EWAlerts/Artboard 88 copy 10.png \
-    resources/EWAlerts/Artboard 88 copy 11.png \
-    resources/EWAlerts/Artboard 88 copy 12.png \
-    resources/EWAlerts/Artboard 88 copy 13.png \
-    resources/EWAlerts/Artboard 88 copy 14.png \
-    resources/EWAlerts/Artboard 88 copy 15.png \
-    resources/EWAlerts/Artboard 88 copy 16.png \
-    resources/EWAlerts/Artboard 88 copy 17.png \
-    resources/EWAlerts/Artboard 88 copy 18.png \
-    resources/EWAlerts/Artboard 88 copy 19.png \
-    resources/EWAlerts/Artboard 88 copy 20.png \
-    resources/EWAlerts/Artboard 88 copy 21.png \
-    resources/EWAlerts/Artboard 88 copy 22.png \
-    resources/EWAlerts/Artboard 88 copy 23.png \
-    resources/EWAlerts/Artboard 88 copy 24.png \
-    resources/EWAlerts/Artboard 88 copy 25.png \
-    resources/EWAlerts/Artboard 88 copy 26.png \
-    resources/EWAlerts/Artboard 88 copy 27.png \
-    resources/EWAlerts/Artboard 88 copy 28.png \
-    resources/EWAlerts/Artboard 88 copy 29.png \
-    resources/EWAlerts/Artboard 88 copy 30.png \
-    resources/EWAlerts/Artboard 88 copy 31.png \
-    resources/EWAlerts/Artboard 88 copy 32.png \
-    resources/EWAlerts/Artboard 88 copy 33.png \
-    resources/EWAlerts/Artboard 88 copy 34.png \
-    resources/EWAlerts/Artboard 88 copy 35.png \
-    resources/EWAlerts/Artboard 88 copy 36.png
+    resources/EWAlerts/blinkers.png \
+    resources/EWAlerts/fcw.png \
+    resources/EWAlerts/fla_armed.png \
+    resources/EWAlerts/hmwa03.png \
+    resources/EWAlerts/hmwa04.png \
+    resources/EWAlerts/hmwa05.png \
+    resources/EWAlerts/hmwa06.png \
+    resources/EWAlerts/hmwa07.png \
+    resources/EWAlerts/hmwa08.png \
+    resources/EWAlerts/hmwm06.png \
+    resources/EWAlerts/hmwm07.png \
+    resources/EWAlerts/hmwm08.png \
+    resources/EWAlerts/hmwm09.png \
+    resources/EWAlerts/hmwm10.png \
+    resources/EWAlerts/hmwm11.png \
+    resources/EWAlerts/hmwm12.png \
+    resources/EWAlerts/hmwm13.png \
+    resources/EWAlerts/hmwm14.png \
+    resources/EWAlerts/hmwm15.png \
+    resources/EWAlerts/hmwm16.png \
+    resources/EWAlerts/hmwm17.png \
+    resources/EWAlerts/hmwm18.png \
+    resources/EWAlerts/hmwm19.png \
+    resources/EWAlerts/hmwm21.png \
+    resources/EWAlerts/hmwm22.png \
+    resources/EWAlerts/hmwm23.png \
+    resources/EWAlerts/hmwm24.png \
+    resources/EWAlerts/hmwm25.png \
+    resources/EWAlerts/ldwoff.png \
+    resources/EWAlerts/ldwon.png \
+    resources/EWAlerts/lldw.png \
+    resources/EWAlerts/pcw.png \
+    resources/EWAlerts/pdz.png \
+    resources/EWAlerts/rldw.png \
+    resources/EWAlerts/sli.png
 
 HEADERS += \
     canmanager.h \
@@ -88,7 +82,7 @@ HEADERS += \
     defs.h \
     layerspriorityq.h \
     entitytype.h \
-    alerttypes.h
+    alerttypes.h \
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

@@ -117,7 +117,7 @@ Rectangle {
             visible: false;
             x: 000; y: 00; width: 300; height: 200;
             fillMode: Image.PreserveAspectFit;
-            source:"qrc:/resources/EWAlerts/Artboard 88 copy 7.png";
+            source:"qrc:/resources/EWAlerts/pcw.png";
             rotation: 0;
 
         }
@@ -159,7 +159,7 @@ Rectangle {
                 visible: false;
                 x: 000; y: 00; width: 300; height: 200;
                 fillMode: Image.PreserveAspectFit;
-                source:"qrc:/resources/EWAlerts/Artboard 88 copy 6.png";
+                source:"qrc:/resources/EWAlerts/fcw.png";
                 rotation: 0;
 
 
