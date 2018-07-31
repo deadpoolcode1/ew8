@@ -163,7 +163,11 @@ void CanManager::run()
         this->read_frame();
         mydisplays->mutex.unlock();
 
+#ifdef WIN32
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
+#else
+        msleep(2);
+#endif
     }
 
     emit resultReady(result);
