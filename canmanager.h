@@ -57,7 +57,10 @@ private:
     void init_frame(struct can_frame * frame);
 
     //returns 1 to switch Inactive2Active, -1 to Active2Inactive, 0 to preserve the state:
-    qint32 alertStateCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
+    qint32 alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
+    void hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
+
+    AlertTypes::EnAlert fromHMWField(quint32 field);
 
 #ifndef WIN32
     //inner variables

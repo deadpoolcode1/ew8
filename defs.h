@@ -56,4 +56,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_PDZ_BYTE 5
 #define CAN_MSG_MASTER_PDZ_MSK 0x02
 
+#define CAN_MSG_MASTER_HMW_BYTE 2
+#define CAN_MSG_MASTER_HMW_MSK  0xFE
+
 #endif // DEFS_H

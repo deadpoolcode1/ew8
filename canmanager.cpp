@@ -174,7 +174,7 @@ void CanManager::run()
 }
 
 
-qint32 CanManager::alertStateCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask)
+qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask)
 {
     quint32 ret = 0;
 
@@ -185,6 +185,52 @@ qint32 CanManager::alertStateCmp(struct can_frame * prev, struct can_frame * rec
     ret = recvState - prevState;
 
     return ret;
+}
+
+AlertTypes::EnAlert CanManager::fromHMWField(quint32 field)
+{
+    AlertTypes::EnAlert ret;
+
+
+    //WARNING: ALERT_HMWXX are suggested to be ordered according to their indices
+    ret = (AlertTypes::EnAlert)((field) + (quint32) AlertTypes::ALERT_HMW0) ;
+
+    return ret;
+
+}
+
+void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
+{
+    qint32 byte = CAN_MSG_MASTER_HMW_BYTE;
+    qint32 mask = CAN_MSG_MASTER_LDW_OFF_MSK;
+
+    qint32 shift = 1;
+
+    qint32 prevState = ((prev->data[byte]&mask) >> shift);
+
+    qint32 recvState = ((recv->data[byte]&mask) >> shift);
+
+
+    //when state is bigger than 16 a green car is present
+    if (prevState >= 16)
+    {
+        prevState = 16;
+    }
+
+
+    if (recvState >= 16)
+    {
+        recvState = 16;
+    }
+
+
+
+    if(recvState != prevState)
+    {
+        mydisplays->deactivate(fromHMWField(prevState));
+
+        mydisplays->activate(fromHMWField(recvState));
+    }
 }
 
 void CanManager::parse_frame(struct can_frame * frame)
@@ -234,9 +280,13 @@ void CanManager::parse_frame(struct can_frame * frame)
 
 //                    mydisplays->mutex.lock();
 
+                   //byte 2:
+
+                   hmwStateParseAndProcess(preframe,frame);
+
                    //byte 4:
 
-                   if(1 == (alertAction = alertStateCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
                    {
                       //TODO activate off LDWOFF alert
                    }
@@ -246,7 +296,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
                    }
 
-                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
                    {
                       mydisplays->activate(AlertTypes::ALERT_LLDW);
                    }
@@ -256,7 +306,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                    }
 
 
-                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
                    {
                       mydisplays->activate(AlertTypes::ALERT_RLDW);
                    }
@@ -265,7 +315,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                      mydisplays->deactivate(AlertTypes::ALERT_RLDW);
                    }
 
-                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
                    {
                       mydisplays->activate(AlertTypes::ALERT_FCW);
                    }
@@ -277,7 +327,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                    //byte 5:
 
 
-                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
                    {
                       mydisplays->activate(AlertTypes::ALERT_PCW);
                    }
@@ -286,7 +336,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                      mydisplays->deactivate(AlertTypes::ALERT_PCW);
                    }
 
-                   if(1 == (alertAction = alertStateCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
+                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
                    {
                       mydisplays->activate(AlertTypes::ALERT_PDZ);
                    }

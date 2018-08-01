@@ -143,7 +143,6 @@ Rectangle {
 
             ////////////////////////////////
             //Atomic items:
-
             Image {
 
                 function setVisible(TrueFalse)
@@ -162,6 +161,404 @@ Rectangle {
                 source:"qrc:/resources/EWAlerts/fcw.png";
                 rotation: 0;
 
+
+            }
+
+
+        }
+        Item
+        {
+            id: groupGAG
+            objectName: "GAG_QtQG"
+            property bool mutexGroup: false
+
+            property int canEntityType: Alert.QtQG
+
+            property int layer_pri: 2
+
+            function setVisible(TrueFalse)
+            {
+               visible = TrueFalse
+            }
+            visible: false
+
+
+            Item {
+                id: groupErrors
+                objectName: "ERR_QtQG"
+                property bool mutexGroup: false
+
+                function setVisible(TrueFalse)
+                {
+                   visible = TrueFalse
+                }
+
+                property int layer_pri: 0
+                property int canEntityType: Alert.QtQG
+
+                visible: false;
+            }
+            Item {
+                id: groupLanes
+                objectName: "LANES_QtQG"
+                property bool mutexGroup: true
+
+                function setVisible(TrueFalse)
+                {
+                   visible = TrueFalse
+                }
+
+                property int layer_pri: 1
+                property int canEntityType: Alert.QtQG
+
+                visible: false;
+
+                ////////////////////////////////
+                //Atomic items:
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: ldw_off;
+                    objectName: "ALERT_LDWOFF"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_LDWOFF
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/ldwoff.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: ldw_on;
+                    objectName: "ALERT_LDWON"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_LDWON
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/ldwon.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_lldw;
+                    objectName: "ALERT_LLDW"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_LLDW
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/lldw.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_rldw;
+                    objectName: "ALERT_RLDW"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_RLDW
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/rldw.png";
+                    rotation: 0;
+                }
+
+            }
+
+            Item {
+                id: groupCIPV
+                objectName: "CIPV_QtQG"
+                property bool mutexGroup: true
+
+                function setVisible(TrueFalse)
+                {
+                   visible = TrueFalse
+                }
+
+                property int layer_pri: 1
+                property int canEntityType: Alert.QtQG
+
+                visible: false;
+
+                ////////////////////////////////
+                //Atomic items:
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw3;
+                    objectName: "ALERT_HMW3"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW3
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa04.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw4;
+                    objectName: "ALERT_HMW4"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW4
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa05.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw5;
+                    objectName: "ALERT_HMW5"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW5
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa06.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw6;
+                    objectName: "ALERT_HMW6"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW6
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa07.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw7;
+                    objectName: "ALERT_HMW7"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW7
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa08.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw8;
+                    objectName: "ALERT_HMW8"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW8
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa09.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw9;
+                    objectName: "ALERT_HMW9"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW9
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa10.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw10;
+                    objectName: "ALERT_HMW10"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW10
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa12.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw11;
+                    objectName: "ALERT_HMW11"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW11
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa14.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw12;
+                    objectName: "ALERT_HMW12"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW12
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa16.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw13;
+                    objectName: "ALERT_HMW13"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW13
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa18.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw14;
+                    objectName: "ALERT_HMW14"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW14
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa20.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw15;
+                    objectName: "ALERT_HMW15"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW15
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa25.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw_green;
+                    objectName: "ALERT_HMW_GREEN"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW_GREEN
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmw_green.png";
+                    rotation: 0;
+                }
 
             }
 
