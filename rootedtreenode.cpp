@@ -169,7 +169,7 @@ void RootedTreeNode::deactivate()
 }
 
 // recursive visibility update
-DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
+DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis)
 {
     LayersPriorityQ_t* queue = children->getQueue();
     LayersPriorityQ_t::iterator it;
@@ -201,11 +201,25 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
                 return res;
             }
 
+            // manage visualization priorities in children
             int activatedLayer = -1; // priority in group
             int curLayer = 0; // priority in group
             for (it = queue->begin(); it < queue->end(); it++ )
             {
-                (*it)->updateVisibility(false);  // propagate invisibility to entire sub-tree.
+                curLayer = (*it)->getLayer();
+                int curActivSem = (*it)->getActivSem();
+                if (activatedLayer == -1 && curActivSem)
+                {
+                    activatedLayer = curLayer;
+                }
+                if (curLayer <= activatedLayer && curActivSem)  // manage visualization of children by layer priorities
+                {
+                    (*it)->updateVisibility(DO_NOT_FORCE_INVISIBILITY);  // explore sub-tree.
+                }
+                else
+                {
+                    (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
+                }
             }
         }
         else

@@ -14,5 +14,5 @@ void RootedTree::updateVisibility()
     {
         return;  // TBD exception
     }
-    root->updateVisibility(false);  // no forced invisibility
+    root->updateVisibility(DO_NOT_FORCE_INVISIBILITY);  // no forced invisibility
 }

@@ -35,7 +35,7 @@ public:
     void handleMutexGroup();
 
 
-    DISPLAY_ERRORS_t updateVisibility(bool layerForcedInvis);
+    DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
 
 private:
 
