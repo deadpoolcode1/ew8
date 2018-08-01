@@ -81,6 +81,8 @@ Rectangle {
     id: main_panel
 
     objectName: "main_panel_root"
+    property int canEntityType: Alert.QtQG
+    property bool mutexGroup: false
 
     visible: true
 
@@ -314,6 +316,60 @@ Rectangle {
                        visible = TrueFalse
                     }
 
+                    id: alert_hmw0;
+                    objectName: "ALERT_HMW0"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW0
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa03.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw1;
+                    objectName: "ALERT_HMW1"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW1
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa03.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_hmw2;
+                    objectName: "ALERT_HMW2"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_HMW2
+
+                    visible: false;
+                    x: 000; y: 00; width: 300; height: 200;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/hmwa03.png";
+                    rotation: 0;
+                }
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
                     id: alert_hmw3;
                     objectName: "ALERT_HMW3"
                     property int layer_pri: 0
@@ -412,7 +468,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa09.png";
+                    source:"qrc:/resources/EWAlerts/hmwm09.png";
                     rotation: 0;
                 }
                 Image {
@@ -430,7 +486,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa10.png";
+                    source:"qrc:/resources/EWAlerts/hmwm10.png";
                     rotation: 0;
                 }
                 Image {
@@ -448,7 +504,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa12.png";
+                    source:"qrc:/resources/EWAlerts/hmwm12.png";
                     rotation: 0;
                 }
                 Image {
@@ -466,7 +522,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa14.png";
+                    source:"qrc:/resources/EWAlerts/hmwm14.png";
                     rotation: 0;
                 }
                 Image {
@@ -484,7 +540,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa16.png";
+                    source:"qrc:/resources/EWAlerts/hmwm16.png";
                     rotation: 0;
                 }
                 Image {
@@ -502,7 +558,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa18.png";
+                    source:"qrc:/resources/EWAlerts/hmwm18.png";
                     rotation: 0;
                 }
                 Image {
@@ -520,7 +576,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa20.png";
+                    source:"qrc:/resources/EWAlerts/hmwm21.png";
                     rotation: 0;
                 }
                 Image {
@@ -538,7 +594,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmwa25.png";
+                    source:"qrc:/resources/EWAlerts/hmwm25.png";
                     rotation: 0;
                 }
                 Image {
@@ -556,7 +612,7 @@ Rectangle {
                     visible: false;
                     x: 000; y: 00; width: 300; height: 200;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/hmw_green.png";
+                    source:"qrc:/resources/EWAlerts/hmwm25.png";
                     rotation: 0;
                 }
 

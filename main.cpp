@@ -35,9 +35,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    MainProcess mp(&engine);
+    MainProcess* mp = MainProcess::getInstance(&engine);
 
-    mp.exec();
+    mp->exec();
 
 
     return app.exec();

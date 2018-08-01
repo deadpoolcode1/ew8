@@ -16,12 +16,23 @@
 #include "entitytype.h"
 #include "rootedtreenode.h"
 
+MainProcess* MainProcess::instance = nullptr;
+
+
+MainProcess* MainProcess::getInstance(QQmlApplicationEngine *  engine)
+{
+    if (instance == 0)
+      {
+          instance = new MainProcess(engine);
+      }
+
+      return instance;
+}
 
 
 MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
 {
   //  mw = new MainWindow();
-
     QQmlComponent component(engine, "qrc:/main.qml");
     componentObject = component.create();
 
@@ -34,11 +45,14 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 
     canmgr = new CanManager(this);
 
-    QObject * rootQobjectMainPannel = componentObject->findChild<QObject*>("main_panel_root");
+    QObject * rootQobjectMainPannel = MainProcess::componentObject->findChild<QObject*>("main_panel_root");
     if (!rootQobjectMainPannel)
     {
         // TBD display general error and go
     }
+
+    // generate map for alertTypes<->Objects
+    EntityType::generateTypes();
 
 // build panels trees
     mainPanelTree = new RootedTree(rootQobjectMainPannel);

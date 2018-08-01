@@ -9,9 +9,16 @@ typedef enum DISPLAY_ERRORS
 {
     OK= 0,
     GENERAL_ERROR = 1,
-    EMPTY_TREE_QML = 2
+    EMPTY_TREE_QML = 2,
+    OBJECT_ALREADY_EXISTS_IN_MAP =3
 
 } DISPLAY_ERRORS_t;
+
+typedef enum FORCE_INVISIBILITY
+{
+    DO_NOT_FORCE_INVISIBILITY = 0,
+    FORCE_INVISIBILITY = 1
+} FORCE_INVISIBILITY_t;
 
 typedef enum can_id_e {
 

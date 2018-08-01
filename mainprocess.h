@@ -12,6 +12,7 @@ class MainProcess : public QThread, IAlertDisplay
 {
     Q_OBJECT
 public:
+
     explicit MainProcess(QQmlApplicationEngine *  engine);//(QObject *parent = nullptr);
 
     void run() override;
@@ -27,10 +28,13 @@ public:
 //signals:
 //    void operate(const QString &);
 
+    static MainProcess* getInstance(QQmlApplicationEngine *  engine);
 public slots:
     void handleResults(const QString &);
 
 private:
+    static MainProcess* instance;
+
 //    MainWindow * mw;
     CanManager * canmgr;
 

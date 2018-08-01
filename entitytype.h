@@ -19,6 +19,18 @@ public:
     static std::map<AlertTypes::EnAlert, RootedTreeNode*>* getMap();
     static void generateTypes();
 
+    static bool keyExist(AlertTypes::EnAlert type)
+    {
+       if (EntityType::_typesMap.find(type) != _typesMap.end())
+       {
+        return  true;
+       }
+       else
+       {
+        return false;
+       }
+    }
+
     static RootedTreeNode* findByEntityType(AlertTypes::EnAlert type)
     {
        if (EntityType::_typesMap.find(type) != _typesMap.end())
@@ -35,7 +47,7 @@ public:
 //    static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node);
     static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node)
     {
-        if (_typesMap.find(type) != _typesMap.end())
+        if (_typesMap.find(type) == _typesMap.end())
         {
             return GENERAL_ERROR;
         }
@@ -43,7 +55,7 @@ public:
         RootedTreeNode* nodeInMap = _typesMap.find(type)->second;
         if (nodeInMap != NULL)
         {
-            return GENERAL_ERROR;  // RootedTreeNode is unique per type
+            return OBJECT_ALREADY_EXISTS_IN_MAP;  // RootedTreeNode is unique per type
         }
         else
         {

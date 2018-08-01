@@ -28,7 +28,7 @@ void RootedTreeNode::appendChild(RootedTreeNode * rtn)
 
     for (it = queue->begin(); it < queue->end(); it++ )
     {
-        if ((*it)->getLayer() >= (*it)->getLayer()  )
+        if ((*it)->getLayer() >= rtn->getLayer()  )
         {
             queue->insert(it, rtn);
             appended = true;
@@ -63,16 +63,22 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     AlertTypes::EnAlert type = (AlertTypes::EnAlert)(qobject->property("canEntityType").toInt());
     if (type != AlertTypes::QtQG) // no link between groups and alert types!
     {
-        RootedTreeNode* typeObj = EntityType::findByEntityType(type);
-        if (typeObj == NULL)
+        bool keyExist = EntityType::keyExist(type);
+        if (!keyExist)
         {
+            throw std::exception(/*"Object type does not exist"*/);
             // add exception
         }
 
         DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
         if (res == GENERAL_ERROR)
         {
+            throw std::exception(/*"Object link to type failed"*/);
             // add exception
+        }
+        else if(res == OBJECT_ALREADY_EXISTS_IN_MAP)
+        {
+            // add handling duplicated entries
         }
         //EntityType::getMap()[type] =  this;
         mutexGroup = false; // default value for Atomic Item
@@ -149,14 +155,17 @@ void RootedTreeNode::deactivate()
 {
     if (!activationSemaphore)
     {
-        // TBD exception
+        // TBD exception ???
     }
-    activationSemaphore--;
-    if (parent == NULL)
+    else
     {
-        return;
+        activationSemaphore--;
+        if (parent == NULL)
+        {
+            return;
+        }
+        parent->deactivate();
     }
-    parent->deactivate();
 }
 
 // recursive visibility update
@@ -177,7 +186,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
 
         for (it = queue->begin(); it < queue->end(); it++ )
         {
-            (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
+            (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
         }
         return OK;
     }
@@ -191,6 +200,9 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
             {
                 return res;
             }
+
+            int activatedLayer = -1; // priority in group
+            int curLayer = 0; // priority in group
             for (it = queue->begin(); it < queue->end(); it++ )
             {
                 (*it)->updateVisibility(false);  // propagate invisibility to entire sub-tree.
@@ -205,7 +217,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(bool layerForcedInvis)
             }
             for (it = queue->begin(); it < queue->end(); it++ )
             {
-                (*it)->updateVisibility(true);  // propagate invisibility to entire sub-tree.
+                (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
             }
         }
         return OK;

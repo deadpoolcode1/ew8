@@ -202,7 +202,7 @@ AlertTypes::EnAlert CanManager::fromHMWField(quint32 field)
 void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {
     qint32 byte = CAN_MSG_MASTER_HMW_BYTE;
-    qint32 mask = CAN_MSG_MASTER_LDW_OFF_MSK;
+    qint32 mask = CAN_MSG_MASTER_HMW_MSK;
 
     qint32 shift = 1;
 
