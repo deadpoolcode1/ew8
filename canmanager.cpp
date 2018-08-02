@@ -204,11 +204,19 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
     qint32 byte = CAN_MSG_MASTER_HMW_BYTE;
     qint32 mask = CAN_MSG_MASTER_HMW_MSK;
 
+    qint32 en_byte =  CAN_MSG_MASTER_HMWEN_BYTE;
+    qint32 en_msk = CAN_MSG_MASTER_HMWEN_MSK;
+
+
     qint32 shift = 1;
 
     qint32 prevState = ((prev->data[byte]&mask) >> shift);
 
     qint32 recvState = ((recv->data[byte]&mask) >> shift);
+
+    qint32 prevValidState = ((prev->data[en_byte]&en_msk)? 1 : 0);
+
+    qint32 recvValidState = ((recv->data[en_byte]&en_msk)? 1 : 0);
 
 
     //when state is bigger than 16 a green car is present
@@ -224,13 +232,20 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
     }
 
 
-
-    if(recvState != prevState)
+    if ((prevValidState && !recvValidState) || (recvState != prevState))
     {
         mydisplays->deactivate(fromHMWField(prevState));
+    }
 
+
+    if(recvValidState && ((!prevValidState) || (recvState != prevState)))
+    {
         mydisplays->activate(fromHMWField(recvState));
     }
+
+
+
+
 }
 
 void CanManager::parse_frame(struct can_frame * frame)

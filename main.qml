@@ -8,11 +8,11 @@ ApplicationWindow {
     property bool cond: true;
     id: page
     
-    width: 320
-    height: 240
+    //width: 320
+    //height: 240
 
-    //width: 800
-    //height: 640
+    width: 800
+    height: 640
 
     visible: true
 
@@ -24,7 +24,7 @@ Item {
 
     x: 0
 
-    y: 0
+    y: 20
 
     width: parent.width
 
@@ -121,7 +121,7 @@ Rectangle {
             }
 
             visible: false;
-            x: 000; y: 00; width: 300; height: 200;
+            x: 0; y: 20; width: 210; height: 140;
             fillMode: Image.PreserveAspectFit;
             source:"qrc:/resources/EWAlerts/pcw.png";
             rotation: 0;
@@ -162,7 +162,7 @@ Rectangle {
                 property int canEntityType: Alert.ALERT_FCW
 
                 visible: false;
-                x: 000; y: 00; width: 300; height: 200;
+                x: 0; y: 20; width: 210; height: 140;
                 fillMode: Image.PreserveAspectFit;
                 source:"qrc:/resources/EWAlerts/fcw.png";
                 rotation: 0;
@@ -231,14 +231,17 @@ Rectangle {
 
                     id: ldw_off;
                     objectName: "ALERT_LDWOFF"
-                    property int layer_pri: 0
+                    property int layer_pri: 2
                     property int canEntityType: Alert.ALERT_LDWOFF
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20;// width: 300;
+                    height: 200;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/ldwoff.png";
                     rotation: 0;
+
+
                 }
                 Image {
 
@@ -253,10 +256,13 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_LDWON
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; //width: 300;
+                    height: 200;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/ldwon.png";
                     rotation: 0;
+
+
                 }
                 Image {
 
@@ -267,14 +273,17 @@ Rectangle {
 
                     id: alert_lldw;
                     objectName: "ALERT_LLDW"
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_LLDW
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; //width: 300;
+                    height: 200;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/lldw.png";
                     rotation: 0;
+
+
                 }
                 Image {
 
@@ -285,14 +294,17 @@ Rectangle {
 
                     id: alert_rldw;
                     objectName: "ALERT_RLDW"
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_RLDW
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; //width: 300;
+                    height: 200;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/rldw.png";
                     rotation: 0;
+
+
                 }
 
             }
@@ -327,7 +339,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW0
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa03.png";
                     rotation: 0;
@@ -345,7 +357,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW1
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa03.png";
                     rotation: 0;
@@ -363,7 +375,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW2
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa03.png";
                     rotation: 0;
@@ -381,7 +393,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW3
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa04.png";
                     rotation: 0;
@@ -399,7 +411,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW4
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa05.png";
                     rotation: 0;
@@ -417,7 +429,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW5
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa06.png";
                     rotation: 0;
@@ -435,7 +447,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW6
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa07.png";
                     rotation: 0;
@@ -453,7 +465,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW7
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwa08.png";
                     rotation: 0;
@@ -471,7 +483,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW8
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm09.png";
                     rotation: 0;
@@ -489,7 +501,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW9
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm10.png";
                     rotation: 0;
@@ -507,7 +519,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW10
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm12.png";
                     rotation: 0;
@@ -525,7 +537,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW11
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm14.png";
                     rotation: 0;
@@ -543,7 +555,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW12
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm16.png";
                     rotation: 0;
@@ -561,7 +573,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW13
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm18.png";
                     rotation: 0;
@@ -579,7 +591,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW14
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm21.png";
                     rotation: 0;
@@ -597,7 +609,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW15
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm25.png";
                     rotation: 0;
@@ -615,7 +627,7 @@ Rectangle {
                     property int canEntityType: Alert.ALERT_HMW_GREEN
 
                     visible: false;
-                    x: 000; y: 00; width: 300; height: 200;
+                    x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/hmwm25.png";
                     rotation: 0;
