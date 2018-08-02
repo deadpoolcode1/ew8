@@ -288,12 +288,13 @@ void CanManager::parse_frame(struct can_frame * frame)
 
                    if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
                    {
-                      //TODO activate off LDWOFF alert
+                       mydisplays->deactivate(AlertTypes::ALERT_LDWON);
+                       mydisplays->activate(AlertTypes::ALERT_LDWOFF);
                    }
                    else if (-1 == alertAction)
                    {
-
-
+                       mydisplays->deactivate(AlertTypes::ALERT_LDWOFF);
+                       mydisplays->activate(AlertTypes::ALERT_LDWON);
                    }
 
                    if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))

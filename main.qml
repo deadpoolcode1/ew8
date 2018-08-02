@@ -7,8 +7,12 @@ ApplicationWindow {
 
     property bool cond: true;
     id: page
+    
     width: 320
     height: 240
+
+    //width: 800
+    //height: 640
 
     visible: true
 
@@ -167,6 +171,7 @@ Rectangle {
             }
 
 
+
         }
         Item
         {
@@ -203,7 +208,7 @@ Rectangle {
             Item {
                 id: groupLanes
                 objectName: "LANES_QtQG"
-                property bool mutexGroup: true
+                property bool mutexGroup: false
 
                 function setVisible(TrueFalse)
                 {
@@ -244,7 +249,7 @@ Rectangle {
 
                     id: ldw_on;
                     objectName: "ALERT_LDWON"
-                    property int layer_pri: 0
+                    property int layer_pri: 1
                     property int canEntityType: Alert.ALERT_LDWON
 
                     visible: false;
@@ -262,7 +267,7 @@ Rectangle {
 
                     id: alert_lldw;
                     objectName: "ALERT_LLDW"
-                    property int layer_pri: 0
+                    property int layer_pri: 1
                     property int canEntityType: Alert.ALERT_LLDW
 
                     visible: false;
@@ -280,7 +285,7 @@ Rectangle {
 
                     id: alert_rldw;
                     objectName: "ALERT_RLDW"
-                    property int layer_pri: 0
+                    property int layer_pri: 1
                     property int canEntityType: Alert.ALERT_RLDW
 
                     visible: false;
@@ -295,7 +300,7 @@ Rectangle {
             Item {
                 id: groupCIPV
                 objectName: "CIPV_QtQG"
-                property bool mutexGroup: true
+                property bool mutexGroup: false
 
                 function setVisible(TrueFalse)
                 {
