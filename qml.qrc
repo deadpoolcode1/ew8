@@ -38,5 +38,9 @@
         <file>resources/EWAlerts/pdz.png</file>
         <file>resources/EWAlerts/rldw.png</file>
         <file>resources/EWAlerts/sli.png</file>
+        <file>resources/EWAlerts/lldw_L.png</file>
+        <file>resources/EWAlerts/lldw_R.png</file>
+        <file>resources/EWAlerts/rldw_L.png</file>
+        <file>resources/EWAlerts/rldw_R.png</file>
     </qresource>
 </RCC>

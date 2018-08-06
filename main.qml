@@ -8,11 +8,11 @@ ApplicationWindow {
     property bool cond: true;
     id: page
     
-    //width: 320
-    //height: 240
+    width: 320
+    height: 240
 
-    width: 800
-    height: 640
+    //width: 800
+    //height: 640
 
     visible: true
 
@@ -264,11 +264,14 @@ Rectangle {
 
 
                 }
-                Image {
 
+                Item
+                {
                     function setVisible(TrueFalse)
                     {
-                       visible = TrueFalse
+                        blinkTimer_lldw.setRunning(TrueFalse)
+                        visible = TrueFalse
+                        console.log("interval = "+blinkTimer_lldw.interval);
                     }
 
                     id: alert_lldw;
@@ -276,20 +279,62 @@ Rectangle {
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_LLDW
 
-                    visible: false;
-                    x: 0; y: 20; //width: 300;
-                    height: 200;
-                    fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/lldw.png";
-                    rotation: 0;
+                    Image {
+                        visible: true;
+                        x: 0; y: 20; //width: 300;
+                        height: 200;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/lldw_L.png";
+                        rotation: 0;
 
 
+                        Timer {
+
+                            id: blinkTimer_lldw
+
+                            property int intervalOn: 500
+                            property int intervalOff: 300
+
+                            interval: intervalOn
+                            running: false
+                            repeat: true
+
+                            function setRunning(On)
+                            {
+                                interval = intervalOn
+                                running = On
+                            }
+
+                            onTriggered:
+                            {
+                                parent.visible = !parent.visible
+                                interval = (parent.visible ? intervalOn : intervalOff)
+                            }
+                        }
+
+                    }
+
+                    Image {
+                        visible: true;
+                        x: 0; y: 20; //width: 300;
+                        height: 200;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/lldw_R.png";
+                        rotation: 0;
+
+
+
+                    }
                 }
-                Image {
 
+
+                /////////////////////////////////
+                Item
+                {
                     function setVisible(TrueFalse)
                     {
-                       visible = TrueFalse
+                        blinkTimer_rldw.setRunning(TrueFalse)
+                        visible = TrueFalse
                     }
 
                     id: alert_rldw;
@@ -297,15 +342,55 @@ Rectangle {
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_RLDW
 
-                    visible: false;
-                    x: 0; y: 20; //width: 300;
-                    height: 200;
-                    fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/rldw.png";
-                    rotation: 0;
+                    Image {
+                        visible: true;
+                        x: 0; y: 20; //width: 300;
+                        height: 200;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/rldw_L.png";
+                        rotation: 0;
+                    }
+
+                    Image {
+                        visible: true;
+                        x: 0; y: 20; //width: 300;
+                        height: 200;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/rldw_R.png";
+                        rotation: 0;
 
 
+                        Timer {
+
+                            id: blinkTimer_rldw
+
+                            property int intervalOn: 500
+                            property int intervalOff: 300
+
+                            interval: intervalOn
+                            running: false
+                            repeat: true
+
+                            function setRunning(On)
+                            {
+                                interval = intervalOn
+                                running = On
+                            }
+
+                            onTriggered:
+                            {
+                                parent.visible = !parent.visible
+                                interval = (parent.visible ? intervalOn : intervalOff)
+                            }
+                        }
+
+
+                    }
                 }
+
+
+
+                //////////////////////////////////
 
             }
 
