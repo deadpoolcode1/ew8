@@ -64,7 +64,7 @@ void CanManager::init(void)
       canInitializeLibrary();
 
       //Channel initialization
-      hnd = canOpenChannel(1, 0);
+      hnd = canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
       stat = canSetBusParams(hnd, canBITRATE_500K, 0, 0, 0, 0, 0);
       stat = canBusOn(hnd);
 
