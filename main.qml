@@ -8,8 +8,8 @@ ApplicationWindow {
     property bool cond: true;
     id: page
     
-    width: 320
-    height: 240
+    width: 380
+    height: 250
 
     //width: 800
     //height: 640
@@ -17,6 +17,10 @@ ApplicationWindow {
     visible: true
 
     color: "blue"
+
+    header: null
+
+    footer:  null
 
 Item {
 
