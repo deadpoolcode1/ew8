@@ -4,8 +4,6 @@ import QtQuick.Controls 2.2
 
 ApplicationWindow {
 
-
-    property bool cond: true;
     id: page
     
     width: 380
@@ -16,11 +14,13 @@ ApplicationWindow {
 
     visible: true
 
-    color: "blue"
+    color: "black"
 
-    header: null
+Component.onCompleted: {
+           // page.showMaximized();
+      }
 
-    footer:  null
+
 
 Item {
 
@@ -397,6 +397,44 @@ Rectangle {
                 //////////////////////////////////
 
             }
+
+            Item {
+                id: groupMiscs
+                objectName: "MISCS_QtQG"
+                property bool mutexGroup: false
+
+                function setVisible(TrueFalse)
+                {
+                   visible = TrueFalse
+                }
+
+                property int layer_pri: 1
+                property int canEntityType: Alert.QtQG
+
+                visible: false;
+
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_fla_armed;
+                    objectName: "ALERT_FLA_ARMED"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_FLA_ARMED
+
+                    visible: false;
+                    x: 100; y: 100; width: 60; height: 60;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/fla_armed.png";
+                    rotation: 0;
+                }
+
+
+           }
+
 
             Item {
                 id: groupCIPV

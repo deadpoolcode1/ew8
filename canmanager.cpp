@@ -295,77 +295,91 @@ void CanManager::parse_frame(struct can_frame * frame)
 
 //                    mydisplays->mutex.lock();
 
-                   //byte 2:
 
-                   hmwStateParseAndProcess(preframe,frame);
+                   //byte 1:
 
-                   //byte 4:
-
-                   if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
-                   {
-                       mydisplays->deactivate(AlertTypes::ALERT_LDWON);
-                       mydisplays->activate(AlertTypes::ALERT_LDWOFF);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                       mydisplays->deactivate(AlertTypes::ALERT_LDWOFF);
-                       mydisplays->activate(AlertTypes::ALERT_LDWON);
-                   }
-
-                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
-                   {
-                      mydisplays->activate(AlertTypes::ALERT_LLDW);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                     mydisplays->deactivate(AlertTypes::ALERT_LLDW);
-                   }
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_FLA_BYTE, CAN_MSG_MASTER_FLA_MSK)))
+               {
+                   mydisplays->activate(AlertTypes::ALERT_FLA_ARMED);
+               }
+                else if (-1 == alertAction)
+               {
+                   mydisplays->deactivate(AlertTypes::ALERT_FLA_ARMED);
+               }
 
 
-                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
-                   {
-                      mydisplays->activate(AlertTypes::ALERT_RLDW);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                     mydisplays->deactivate(AlertTypes::ALERT_RLDW);
-                   }
 
-                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
-                   {
-                      mydisplays->activate(AlertTypes::ALERT_FCW);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                     mydisplays->deactivate(AlertTypes::ALERT_FCW);
-                   }
+               //byte 2:
 
-                   //byte 5:
+               hmwStateParseAndProcess(preframe,frame);
+
+               //byte 4:
+
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
+               {
+                   mydisplays->deactivate(AlertTypes::ALERT_LDWON);
+                   mydisplays->activate(AlertTypes::ALERT_LDWOFF);
+               }
+               else if (-1 == alertAction)
+               {
+                   mydisplays->deactivate(AlertTypes::ALERT_LDWOFF);
+                   mydisplays->activate(AlertTypes::ALERT_LDWON);
+               }
+
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_LLDW);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_LLDW);
+               }
 
 
-                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
-                   {
-                      mydisplays->activate(AlertTypes::ALERT_PCW);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                     mydisplays->deactivate(AlertTypes::ALERT_PCW);
-                   }
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_RLDW);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_RLDW);
+               }
 
-                   if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
-                   {
-                      mydisplays->activate(AlertTypes::ALERT_PDZ);
-                   }
-                   else if (-1 == alertAction)
-                   {
-                     mydisplays->deactivate(AlertTypes::ALERT_PDZ);
-                   }
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_FCW);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_FCW);
+               }
 
- //                  mydisplays->mutex.unlock();
-               break;
-        }
+               //byte 5:
 
-        memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
-   }
+
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_PCW);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_PCW);
+               }
+
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_PDZ);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_PDZ);
+               }
+
+//                  mydisplays->mutex.unlock();
+           break;
+    }
+
+    memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
+}
 
 }

@@ -45,6 +45,15 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_right, 0x620},
 };
 
+#define CAN_MSG_MASTER_FLA_BYTE 1
+#define CAN_MSG_MASTER_FLA_MSK  0x80
+
+#define CAN_MSG_MASTER_HMW_BYTE 2
+#define CAN_MSG_MASTER_HMW_MSK  0xFE
+
+#define CAN_MSG_MASTER_HMWEN_BYTE 2
+#define CAN_MSG_MASTER_HMWEN_MSK  0x01
+
 #define CAN_MSG_MASTER_LDW_OFF_BYTE 4
 #define CAN_MSG_MASTER_LDW_OFF_MSK 0x01
 
@@ -63,11 +72,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_PDZ_BYTE 5
 #define CAN_MSG_MASTER_PDZ_MSK 0x02
 
-#define CAN_MSG_MASTER_HMW_BYTE 2
-#define CAN_MSG_MASTER_HMW_MSK  0xFE
 
-#define CAN_MSG_MASTER_HMWEN_BYTE 2
-#define CAN_MSG_MASTER_HMWEN_MSK  0x01
 
 
 #endif // DEFS_H

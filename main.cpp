@@ -21,12 +21,6 @@ int main(int argc, char *argv[])
     //Usage of QML enum in C++:
      AlertTypes::declareQML();
 
-     AlertTypes::EnAlert enAlert = AlertTypes::ALERT_FCW;
-     //////////////////////////////
-
-
-
-
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
