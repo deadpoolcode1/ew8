@@ -43,8 +43,9 @@ public:
         ALERT_HMW14 = 23,
         ALERT_HMW15 = 24,
         ALERT_HMW_GREEN = 25,
-        ALERT_FLA_ARMED = 26,
-        ALERT_END_OF_TYPE = 27
+        ALERT_HI_BEAM = 26,
+        ALERT_LOW_BEAM = 27,
+        ALERT_END_OF_TYPE = 28
     };
     Q_ENUMS(EnAlert)
 

@@ -70,7 +70,8 @@ DISTFILES += \
     resources/EWAlerts/pcw.png \
     resources/EWAlerts/pdz.png \
     resources/EWAlerts/rldw.png \
-    resources/EWAlerts/sli.png
+    resources/EWAlerts/sli.png \
+    resources/EWAlerts/fla_armed_low.png
 
 HEADERS += \
     canmanager.h \

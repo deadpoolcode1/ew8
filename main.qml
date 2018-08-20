@@ -71,6 +71,8 @@ Rectangle {
 Rectangle {
   id: status_panel
 
+  color: "white"
+
   objectName: "status_panel_root"
 
   width: parent.width
@@ -209,6 +211,7 @@ Rectangle {
 
                 visible: false;
             }
+
             Item {
                 id: groupLanes
                 objectName: "LANES_QtQG"
@@ -399,9 +402,9 @@ Rectangle {
             }
 
             Item {
-                id: groupMiscs
-                objectName: "MISCS_QtQG"
-                property bool mutexGroup: false
+                id: groupBeam
+                objectName: "BEAM_QtQG"
+                property bool mutexGroup: true
 
                 function setVisible(TrueFalse)
                 {
@@ -420,10 +423,10 @@ Rectangle {
                        visible = TrueFalse
                     }
 
-                    id: alert_fla_armed;
-                    objectName: "ALERT_FLA_ARMED"
+                    id: alert_hi_beam;
+                    objectName: "ALERT_HI_BEAM"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_FLA_ARMED
+                    property int canEntityType: Alert.ALERT_HI_BEAM
 
                     visible: false;
                     x: 100; y: 100; width: 60; height: 60;
@@ -431,6 +434,26 @@ Rectangle {
                     source:"qrc:/resources/EWAlerts/fla_armed.png";
                     rotation: 0;
                 }
+
+                Image {
+
+                    function setVisible(TrueFalse)
+                    {
+                       visible = TrueFalse
+                    }
+
+                    id: alert_low_beam;
+                    objectName: "ALERT_LOW_BEAM"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_LOW_BEAM
+
+                    visible: false;
+                    x: 100; y: 100; width: 60; height: 60;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/fla_armed_low.png";
+                    rotation: 0;
+                }
+
 
 
            }

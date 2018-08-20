@@ -59,6 +59,7 @@ private:
     //returns 1 to switch Inactive2Active, -1 to Active2Inactive, 0 to preserve the state:
     qint32 alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
     void hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
+    void beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
 
     AlertTypes::EnAlert fromHMWField(quint32 field);
 

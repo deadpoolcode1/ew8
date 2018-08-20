@@ -226,12 +226,6 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
     }
 
 
-    if (recvState >= 16)
-    {
-        recvState = 16;
-    }
-
-
     if ((prevValidState && !recvValidState) || (recvState != prevState))
     {
         mydisplays->deactivate(fromHMWField(prevState));
@@ -247,6 +241,41 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
 
 
 }
+
+
+void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
+{
+    qint32 byte = CAN_MSG_MASTER_BEAM_BYTE;
+    qint32 mask = CAN_MSG_MASTER_BEAM_MSK;
+
+    qint32 en_byte =  CAN_MSG_MASTER_FLA_BYTE;
+    qint32 en_msk = CAN_MSG_MASTER_FLA_MSK;
+
+
+    AlertTypes::EnAlert prevState = ((prev->data[byte]&mask)? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM);
+
+    AlertTypes::EnAlert recvState = ((recv->data[byte]&mask)? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM);
+
+
+    qint32 prevValidState = ((prev->data[en_byte]&en_msk)? 1 : 0);
+
+    qint32 recvValidState = ((recv->data[en_byte]&en_msk)? 1 : 0);
+
+
+    if ((prevValidState && !recvValidState) || (recvState != prevState))
+    {
+        mydisplays->deactivate(prevState);
+    }
+
+
+    if(recvValidState && ((!prevValidState) || (recvState != prevState)))
+    {
+        mydisplays->activate(recvState);
+    }
+
+}
+
+
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
@@ -298,16 +327,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
                    //byte 1:
 
-               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_FLA_BYTE, CAN_MSG_MASTER_FLA_MSK)))
-               {
-                   mydisplays->activate(AlertTypes::ALERT_FLA_ARMED);
-               }
-                else if (-1 == alertAction)
-               {
-                   mydisplays->deactivate(AlertTypes::ALERT_FLA_ARMED);
-               }
-
-
+               beamStateParseAndProcess(preframe,frame);
 
                //byte 2:
 

@@ -48,6 +48,9 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_FLA_BYTE 1
 #define CAN_MSG_MASTER_FLA_MSK  0x80
 
+#define CAN_MSG_MASTER_BEAM_BYTE 1
+#define CAN_MSG_MASTER_BEAM_MSK  0x40
+
 #define CAN_MSG_MASTER_HMW_BYTE 2
 #define CAN_MSG_MASTER_HMW_MSK  0xFE
 
