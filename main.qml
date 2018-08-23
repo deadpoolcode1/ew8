@@ -28,7 +28,7 @@ Item {
 
     x: 0
 
-    y: 20
+    y: 0
 
     width: parent.width
 
@@ -46,8 +46,9 @@ Rectangle {
  color: "red"
 
  width: parent.width/5
- height: parent.height*9/10
+ anchors.top: status_panel.bottom
  anchors.left: parent.left
+ anchors.bottom: parent.bottom
 
  visible: true
 }
@@ -59,11 +60,12 @@ Rectangle {
 
  objectName: "right_panel_root"
 
- color: "green"
+ color: "red"
 
  width: parent.width/5
- height: parent.height*9/10
+ anchors.top: status_panel.bottom
  anchors.right: parent.right
+ anchors.bottom: parent.bottom
 
  visible: true
 }
@@ -76,7 +78,7 @@ Rectangle {
   objectName: "status_panel_root"
 
   width: parent.width
-  height: parent.height/10
+  height: parent.height/7
   anchors.top: parent.top
 
   visible: true
@@ -84,15 +86,20 @@ Rectangle {
 
 Rectangle {
 
-    anchors.top: status_panel.bottom
     anchors.left: left_panel.right
     anchors.right: right_panel.left
+    anchors.top: status_panel.bottom
+    anchors.bottom: parent.bottom
+
+
 
     id: main_panel
 
     objectName: "main_panel_root"
     property int canEntityType: Alert.QtQG
     property bool mutexGroup: false
+
+    color: "black"
 
     visible: true
 
