@@ -51,12 +51,20 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
         // TBD display general error and go
     }
 
+
+    QObject * rootQobjectTsrPannel = MainProcess::componentObject->findChild<QObject*>("left_panel_root");
+    if (!rootQobjectTsrPannel)
+    {
+        // TBD display general error and go
+    }
+
+
     // generate map for alertTypes<->Objects
     EntityType::generateTypes();
 
 // build panels trees
     mainPanelTree = new RootedTree(rootQobjectMainPannel);
-//    tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
+    tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
 //    statusPanelTree = new RootedTree(rootQobjectStatusPannel);
  //   smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
 #if 0
@@ -108,6 +116,13 @@ void MainProcess::updateDisplay(void)
 
     mainPanelTree->updateVisibility();
 
+    if (!tsrPanelTree)
+    {
+        return;
+    }
+
+    tsrPanelTree->updateVisibility();
+
 //    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
     flag_tree_changed = false;
@@ -121,7 +136,7 @@ void MainProcess::handleResults(const QString &)
 
 }
 
-void MainProcess::activate(AlertTypes::EnAlert alert)
+void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
 {
     mutex.tryLock();
 

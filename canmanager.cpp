@@ -207,8 +207,7 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
     qint32 en_byte =  CAN_MSG_MASTER_HMWEN_BYTE;
     qint32 en_msk = CAN_MSG_MASTER_HMWEN_MSK;
 
-
-    qint32 shift = 1;
+    qint32 shift =  CAN_MSG_MASTER_HMW_SHIFT;
 
     qint32 prevState = ((prev->data[byte]&mask) >> shift);
 
@@ -395,8 +394,53 @@ void CanManager::parse_frame(struct can_frame * frame)
                  mydisplays->deactivate(AlertTypes::ALERT_PDZ);
                }
 
+
+#if 0
+               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_BLINKERS_BYTE, CAN_MSG_MASTER_BLINKERS_MSK)))
+               {
+                  mydisplays->activate(AlertTypes::ALERT_BLINKERS);
+               }
+               else if (-1 == alertAction)
+               {
+                 mydisplays->deactivate(AlertTypes::ALERT_BLINKERS);
+               }
+#endif
+
+
 //                  mydisplays->mutex.unlock();
            break;
+
+        case can_id_sli:
+
+            bool regular100arrived =  false;
+            quint8 sign_byte;
+            quint8 supp_byte;
+
+            for (size_t i = 0; i < 4; i++)
+            {
+                sign_byte = frame->data[i*2];
+                supp_byte = frame->data[1+i*2];
+
+                //TODO compare againt four fields of previous frame.
+                if (0x9 == sign_byte)
+                {
+                    regular100arrived = true;
+                }
+
+            }
+
+            if (regular100arrived)
+            {
+
+                mydisplays->activate(AlertTypes::ALERT_REGULAR_100);
+            }
+            else
+            {
+                 mydisplays->deactivate(AlertTypes::ALERT_REGULAR_100);
+            }
+
+
+            break;
     }
 
     memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));

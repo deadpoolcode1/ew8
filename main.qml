@@ -6,8 +6,8 @@ ApplicationWindow {
 
     id: page
     
-    width: 380
-    height: 250
+    width: 320
+    height: 240
 
     //width: 800
     //height: 640
@@ -30,45 +30,14 @@ Item {
 
     y: 0
 
-    width: parent.width
+    width: 320
 
-    height: parent.height
+    height: 240
 
     visible: true
 
 
-Rectangle {
- id: left_panel
 
- objectName: "left_panel_root"
-
-
- color: "red"
-
- width: parent.width/5
- anchors.top: status_panel.bottom
- anchors.left: parent.left
- anchors.bottom: parent.bottom
-
- visible: true
-}
-
-
-
-Rectangle {
- id: right_panel
-
- objectName: "right_panel_root"
-
- color: "red"
-
- width: parent.width/5
- anchors.top: status_panel.bottom
- anchors.right: parent.right
- anchors.bottom: parent.bottom
-
- visible: true
-}
 
 Rectangle {
   id: status_panel
@@ -85,6 +54,80 @@ Rectangle {
 }
 
 Rectangle {
+ id: left_panel
+
+ objectName: "left_panel_root"
+
+
+ color: "gray"
+
+ width: 50
+ anchors.top: status_panel.bottom
+ anchors.left: parent.left
+ anchors.bottom: parent.bottom
+
+ visible: true
+
+ Item {
+     id: groupSliRegular
+     objectName: "SLI_REG_QtQG"
+     property bool mutexGroup: true
+
+     function setVisible(TrueFalse)
+     {
+        visible = TrueFalse
+     }
+
+     property int layer_pri: 0
+     property int canEntityType: Alert.QtQG
+
+     visible: false;
+
+     Image {
+
+         function setVisible(TrueFalse)
+         {
+            visible = TrueFalse
+         }
+
+         id: alert_regular_100;
+         objectName: "ALERT_REGULAR_100"
+         property int layer_pri: 0
+         property int canEntityType: Alert.ALERT_REGULAR_100
+
+         visible: false;
+         x: 0; y: 0; width: left_panel.width*3/4; height: left_panel.width*3/4;
+         fillMode: Image.PreserveAspectFit;
+         source:"qrc:/resources/EWAlerts/sli.png";
+         rotation: 0;
+     }
+}
+
+
+
+
+
+}
+
+
+Rectangle {
+ id: right_panel
+
+ objectName: "right_panel_root"
+
+ color: "gray"
+
+ width: 50
+ anchors.top: status_panel.bottom
+ anchors.right: parent.right
+ anchors.bottom: parent.bottom
+
+ visible: true
+}
+
+
+
+Rectangle {
 
     anchors.left: left_panel.right
     anchors.right: right_panel.left
@@ -99,7 +142,7 @@ Rectangle {
     property int canEntityType: Alert.QtQG
     property bool mutexGroup: false
 
-    color: "black"
+    color: "green"
 
     visible: true
 
@@ -801,6 +844,7 @@ Rectangle {
 
 
 }
+
 
     Component.onCompleted: {
     //TBD

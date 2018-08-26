@@ -22,7 +22,7 @@ public:
     void updateDisplay(void);
 
 //alerts display:
-    virtual void activate(AlertTypes::EnAlert at);
+    virtual void activate(AlertTypes::EnAlert at, quint8 value);
     virtual void deactivate(AlertTypes::EnAlert at);
 
 //signals:

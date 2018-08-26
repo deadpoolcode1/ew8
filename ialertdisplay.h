@@ -10,7 +10,8 @@ class IAlertDisplay
 {
 
   public:
-    virtual void activate(AlertTypes::EnAlert at) = 0;
+
+    virtual void activate(AlertTypes::EnAlert at, quint8 value = 0) = 0;
     virtual void deactivate(AlertTypes::EnAlert at) = 0;
 
     QMutex mutex;
