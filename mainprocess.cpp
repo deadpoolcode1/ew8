@@ -140,39 +140,64 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
 {
     mutex.tryLock();
 
-    RootedTreeNode* nodeCGRT = EntityType::findByEntityType(alert);
-    if (nodeCGRT == NULL)
-    {
-        // add exception
-    }
-    if (nodeCGRT->getActivSem() > 0)
-    {
-        return; // activated - no need for re-activation
-    }
-    nodeCGRT->activate();
+    RootedTreeNode* nodeCGRT = nullptr;
 
-    flag_tree_changed = true;
+    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
+
+
+    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
+    {
+
+        nodeCGRT = it->second;
+
+        if (nodeCGRT == NULL)
+        {
+            //TODO add exception
+        }
+        else if (nodeCGRT->getActivSem() > 0)
+        {
+            //skip:  activated - no need for re-activation
+        }
+        else
+        {
+            nodeCGRT->activate();
+            flag_tree_changed = true;
+        }
+    }
 
     return;
 }
 
 void MainProcess::deactivate(AlertTypes::EnAlert alert)
 {
-    RootedTreeNode* nodeCGRT = EntityType::findByEntityType(alert);
-    if (nodeCGRT == NULL)
+
+    RootedTreeNode* nodeCGRT = nullptr;
+
+    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
+
+
+
+    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
     {
-        // add exception
+
+        nodeCGRT = it->second;
+
+        if (nodeCGRT == nullptr)
+        {
+            //TODO add exception
+        }
+
+        if (!(nodeCGRT->getActivSem()))
+        {
+            //skip: deactivated - no need for deactivation
+        }
+        else
+        {
+            nodeCGRT->deactivate();
+            //TODO only when a semaphore is changed
+            flag_tree_changed = true;
+        }
     }
-
-    if (!(nodeCGRT->getActivSem()))
-    {
-        return; // deactivated - no need for deactivation
-    }
-    nodeCGRT->deactivate();
-
-    //TODO only when a semaphore is changed
-    flag_tree_changed = true;
-
     return;
 
 }

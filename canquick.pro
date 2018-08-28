@@ -89,3 +89,7 @@ win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 
 win32: INCLUDEPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
+
+
+#Specific preprocessor definitions:
+DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED

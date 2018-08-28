@@ -66,15 +66,19 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         bool keyExist = EntityType::keyExist(type);
         if (!keyExist)
         {
+#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
             throw std::exception(/*"Object type does not exist"*/);
             // add exception
+#endif
         }
 
         DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
         if (res == GENERAL_ERROR)
         {
+#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
             throw std::exception(/*"Object link to type failed"*/);
             // add exception
+#endif
         }
         else if(res == OBJECT_ALREADY_EXISTS_IN_MAP)
         {

@@ -10,13 +10,17 @@
 
 class EntityType
 {
-typedef std::map<AlertTypes::EnAlert, RootedTreeNode*> t_TreeNodesTypeMap;
+
 
 public:
-    EntityType();
-//    EntityType(AlertTypes::EnAlert type);
 
-    static std::map<AlertTypes::EnAlert, RootedTreeNode*>* getMap();
+    typedef std::multimap<AlertTypes::EnAlert, RootedTreeNode*> t_TreeNodesTypeMap;
+
+    typedef std::pair<t_TreeNodesTypeMap::iterator,t_TreeNodesTypeMap::iterator> t_TreeNodesInterval;
+
+    EntityType();
+
+    static t_TreeNodesTypeMap * getMap();
     static void generateTypes();
 
     static bool keyExist(AlertTypes::EnAlert type)
@@ -31,36 +35,45 @@ public:
        }
     }
 
-    static RootedTreeNode* findByEntityType(AlertTypes::EnAlert type)
+    static EntityType::t_TreeNodesInterval findByEntityType(AlertTypes::EnAlert type)
     {
+       EntityType::t_TreeNodesInterval  ret;
+
        if (EntityType::_typesMap.find(type) != _typesMap.end())
        {
-        return   EntityType::_typesMap.find(type)->second;
+          ret =  EntityType::_typesMap.equal_range(type);
        }
        else
        {
-        return NULL;
+           throw std::exception(/*"Alert type does not have implementation"*/);
        }
+
+       return ret;
     }
 
 
 //    static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node);
     static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node)
     {
+#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
         if (_typesMap.find(type) == _typesMap.end())
         {
             return GENERAL_ERROR;
         }
 
-        RootedTreeNode* nodeInMap = _typesMap.find(type)->second;
-        if (nodeInMap != NULL)
+        EntityType::t_TreeNodesTypeMap::iterator it = _typesMap.find(type);
+
+        RootedTreeNode * nodeInMap = it->second;
+
+        if (nodeInMap == nullptr)
         {
-            return OBJECT_ALREADY_EXISTS_IN_MAP;  // RootedTreeNode is unique per type
+            //remove nullptr pair:
+            _typesMap.erase(it);
         }
-        else
-        {
-            _typesMap[type] = node;
-        }
+#endif
+
+        _typesMap.insert(std::make_pair(type, node));
+
         return OK;
     }
 

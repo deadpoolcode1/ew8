@@ -71,7 +71,7 @@ ApplicationWindow {
             Item {
                 id: groupSliRegular
                 objectName: "SLI_REG_QtQG"
-                property bool mutexGroup: true
+                property bool mutexGroup: false
 
                 function setVisible(isVisible)
                 {
@@ -82,6 +82,29 @@ ApplicationWindow {
                 property int canEntityType: Alert.QtQG
 
                 visible: false;
+
+                // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                Image {
+
+                    //TODO relocate to main panel
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    id: alert_regular_100_central;
+                    objectName: "ALERT_REGULAR_100_CENTRAL"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_REGULAR_100
+
+                    visible: false;
+                    x: 0; y: left_panel.width; width: left_panel.width*3/4; height: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/sli.png";
+                    rotation: 0;
+                }
+                // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
                 Image {
 
@@ -225,6 +248,30 @@ ApplicationWindow {
 
 
                     }
+
+
+                    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                    Image {
+
+                        //TODO relocate to main panel
+
+                        function setVisible(isVisible)
+                        {
+                            visible = isVisible
+                        }
+
+                        id: alert_regular_100_central_main;
+                        objectName: "ALERT_REGULAR_100_CENTRAL_MAIN"
+                        property int layer_pri: 0
+                        property int canEntityType: Alert.ALERT_REGULAR_100
+
+                        visible: false;
+                        x: 0; y: left_panel.width; width: left_panel.width*3/4; height: left_panel.width*3/4;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/sli.png";
+                        rotation: 0;
+                    }
+                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 
