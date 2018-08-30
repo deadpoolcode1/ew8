@@ -73,9 +73,10 @@ ApplicationWindow {
 
             visible: true
 
-            Item {
-                id: groupSliRegular
-                objectName: "SLI_REG_QtQG"
+            Column {
+                spacing:5
+                id: groupSliSide
+                objectName: "SLI_SIDE_QtQG"
                 property bool mutexGroup: false
 
                 function setVisible(isVisible)
@@ -105,11 +106,34 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_REGULAR_100
 
-                    x: 0; y: 0; width: left_panel.width*3/4; height: left_panel.width*3/4;
+                    x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/sli.png";
                     rotation: 0;
                 }
+
+                //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                Image {
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    visible: false
+
+                    id: alert_fcw_side;
+                    objectName: "ALERT_FCW_SIDE"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_FCW
+
+                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/fcw.png";
+                    rotation: 0;
+                }
+
+                //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             }
 
 
@@ -227,7 +251,7 @@ ApplicationWindow {
                         property int canEntityType: Alert.ALERT_FCW
 
                         visible: false;
-                        x: 0; y: 20; width: 210; height: 140;
+                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
                         source:"qrc:/resources/EWAlerts/fcw.png";
                         rotation: 0;
@@ -236,7 +260,7 @@ ApplicationWindow {
                     }
 
 
-                    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
                     Image { 
 
                         function setVisible(isVisible)
@@ -255,8 +279,7 @@ ApplicationWindow {
                         property int canEntityType: Alert.ALERT_REGULAR_100
 
                         visible: false;
-                        //Layout.alignment:  Qt.AlignCenter
-                        height: main_panel.height*3/4;
+                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
                         source:"qrc:/resources/EWAlerts/sli.png";
                         rotation: 0;
@@ -275,12 +298,7 @@ ApplicationWindow {
                                 page.itemSelfDeactivated(parent.canEntityType, parent.objectName);
                             }
                         }
-
-
                     }
-                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
 
                 }
                 Item
@@ -593,7 +611,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW0
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa03.png";
                             rotation: 0;
@@ -629,7 +647,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW2
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa03.png";
                             rotation: 0;
@@ -647,7 +665,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW3
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa04.png";
                             rotation: 0;
@@ -683,7 +701,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW5
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa06.png";
                             rotation: 0;
@@ -701,7 +719,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW6
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa07.png";
                             rotation: 0;
@@ -719,7 +737,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW7
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwa08.png";
                             rotation: 0;
@@ -737,7 +755,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW8
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm09.png";
                             rotation: 0;
@@ -755,7 +773,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW9
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm10.png";
                             rotation: 0;
@@ -773,7 +791,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW10
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm12.png";
                             rotation: 0;
@@ -791,7 +809,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW11
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm14.png";
                             rotation: 0;
@@ -809,7 +827,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW12
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm16.png";
                             rotation: 0;
@@ -827,7 +845,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW13
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm18.png";
                             rotation: 0;
@@ -845,7 +863,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW14
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm21.png";
                             rotation: 0;
@@ -863,7 +881,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW15
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm25.png";
                             rotation: 0;
@@ -881,7 +899,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_HMW_GREEN
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmwm25.png";
                             rotation: 0;
