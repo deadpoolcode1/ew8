@@ -93,15 +93,18 @@ ApplicationWindow {
 
                     function setVisible(isVisible)
                     {
-                        visible = isVisible
+                        is_ready = isVisible
                     }
+
+                    property bool is_ready: false
+
+                    visible: is_ready && !(alert_regular_100_main.visible);
 
                     id: alert_regular_100;
                     objectName: "ALERT_REGULAR_100"
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_REGULAR_100
 
-                    visible: false;
                     x: 0; y: 0; width: left_panel.width*3/4; height: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/sli.png";
