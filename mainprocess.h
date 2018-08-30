@@ -25,12 +25,10 @@ public:
     virtual void activate(AlertTypes::EnAlert at, quint8 value);
     virtual void deactivate(AlertTypes::EnAlert at);
 
-//signals:
-//    void operate(const QString &);
-
     static MainProcess* getInstance(QQmlApplicationEngine *  engine);
 public slots:
-    void handleResults(const QString &);
+
+    void forceItemDeactivation(int _alertType, QString _objName);
 
 private:
     static MainProcess* instance;

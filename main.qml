@@ -1,11 +1,16 @@
 import MyQMLenums 0.1
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 
 ApplicationWindow {
 
     id: page
-    
+
+    objectName: "AppWindow"
+
+    signal itemSelfDeactivated(int canEntityType, string _objectName)
+
     width: 320
     height: 240
 
@@ -83,28 +88,6 @@ ApplicationWindow {
 
                 visible: false;
 
-                // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                Image {
-
-                    //TODO relocate to main panel
-
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
-
-                    id: alert_regular_100_central;
-                    objectName: "ALERT_REGULAR_100_CENTRAL"
-                    property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_REGULAR_100
-
-                    visible: false;
-                    x: 0; y: left_panel.width; width: left_panel.width*3/4; height: left_panel.width*3/4;
-                    fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/sli.png";
-                    rotation: 0;
-                }
-                // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
                 Image {
 
@@ -251,25 +234,46 @@ ApplicationWindow {
 
 
                     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                    Image {
-
-                        //TODO relocate to main panel
+                    Image { 
 
                         function setVisible(isVisible)
                         {
                             visible = isVisible
+
+                            if(visible === true)
+                            {
+                               sliTimer_regular_100.running = true
+                            }
                         }
 
-                        id: alert_regular_100_central_main;
-                        objectName: "ALERT_REGULAR_100_CENTRAL_MAIN"
-                        property int layer_pri: 0
+                        id: alert_regular_100_main;
+                        objectName: "ALERT_REGULAR_100_MAIN"
+                        property int layer_pri: 1
                         property int canEntityType: Alert.ALERT_REGULAR_100
 
                         visible: false;
-                        x: 0; y: left_panel.width; width: left_panel.width*3/4; height: left_panel.width*3/4;
+                        //Layout.alignment:  Qt.AlignCenter
+                        height: main_panel.height*3/4;
                         fillMode: Image.PreserveAspectFit;
                         source:"qrc:/resources/EWAlerts/sli.png";
                         rotation: 0;
+
+
+                        Timer {
+
+                            id: sliTimer_regular_100
+
+                            interval: 500
+                            running: false
+                            repeat: false
+
+                            onTriggered:
+                            {
+                                page.itemSelfDeactivated(parent.canEntityType, parent.objectName);
+                            }
+                        }
+
+
                     }
                     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

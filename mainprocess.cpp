@@ -98,6 +98,11 @@ void MainProcess::run()
 
 int MainProcess::exec()
 {
+    QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
+
+    QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(int, QString)),
+                      this, SLOT(forceItemDeactivation(int, QString)));
+
     canmgr->start();
 
     this->start();
@@ -123,17 +128,8 @@ void MainProcess::updateDisplay(void)
 
     tsrPanelTree->updateVisibility();
 
-//    QMetaObject::invokeMethod(componentObject,"setAlert",Q_ARG(QVariant, msg), Q_ARG(QVariant, is_active));
 
     flag_tree_changed = false;
-}
-
-
-void MainProcess::handleResults(const QString &)
-{
-
-
-
 }
 
 void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
@@ -199,6 +195,50 @@ void MainProcess::deactivate(AlertTypes::EnAlert alert)
         }
     }
     return;
+
+}
+
+void MainProcess::forceItemDeactivation(int _alertType, QString _objName) {
+
+    std::cout << "Called the C++ slot with message:" << _alertType << ":" <<_objName.toLocal8Bit().constData() << std::endl;
+
+    RootedTreeNode* nodeCGRT = nullptr;
+
+    AlertTypes::EnAlert alertType = (AlertTypes::EnAlert)_alertType;
+
+    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alertType);
+
+
+
+    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
+    {
+
+        nodeCGRT = it->second;
+
+        if (nodeCGRT == nullptr)
+        {
+            //TODO add exception
+        }
+
+        if (!(nodeCGRT->getActivSem()))
+        {
+            //skip: deactivated - no need for deactivation
+        }
+        else
+        {
+            if(nodeCGRT->getQmlItem() != nullptr && nodeCGRT->getQmlItem()->objectName() != nullptr
+                    && nodeCGRT->getQmlItem()->objectName() == _objName)
+            nodeCGRT->deactivate();
+            //TODO only when a semaphore is changed
+            flag_tree_changed = true;
+        }
+    }
+
+    //WARNING: check if a mutex is necessary TBD!
+    updateDisplay();
+
+    return;
+
 
 }
 
