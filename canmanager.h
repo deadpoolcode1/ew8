@@ -60,6 +60,7 @@ private:
     qint32 alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
     void hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
     void beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
+    void sliSingleStateParseAndProcess(struct can_frame * prev, struct can_frame * recv, quint8 signType, AlertTypes::EnAlert alert);
 
     AlertTypes::EnAlert fromHMWField(quint32 field);
 

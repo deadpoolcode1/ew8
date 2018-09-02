@@ -46,8 +46,9 @@ public:
         ALERT_HI_BEAM = 26,
         ALERT_LOW_BEAM = 27,
         ALERT_BLINKERS = 28,
-        ALERT_REGULAR_100 = 29,
-        ALERT_END_OF_TYPE = 30
+        ALERT_REGULAR = 29,
+        ALERT_FORWARD = 30,
+        ALERT_END_OF_TYPE = 31
     };
     Q_ENUMS(EnAlert)
 

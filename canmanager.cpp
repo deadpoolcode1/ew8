@@ -275,6 +275,47 @@ void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_fr
 }
 
 
+void CanManager::sliSingleStateParseAndProcess(struct can_frame * prev, struct can_frame * recv, quint8 signType, AlertTypes::EnAlert alert)
+{
+
+    bool is_sign_in_prev =  false;
+    bool is_sign_in_recv =  false;
+
+    quint8 sign_byte_prev;
+    quint8 sign_byte_recv;
+
+
+    for (size_t i = 0; i < 4; i++)
+    {
+
+        sign_byte_prev = prev->data[i*2];
+        sign_byte_recv = recv->data[i*2];
+
+        //supp_byte = frame->data[1+i*2];
+
+        if (signType == sign_byte_prev)
+        {
+          is_sign_in_prev = true;
+        }
+
+        if (signType == sign_byte_recv)
+        {
+          is_sign_in_recv = true;
+        }
+    }
+
+    if (is_sign_in_recv&&!is_sign_in_prev)
+    {
+        mydisplays->activate(alert);
+    }
+
+    if (is_sign_in_prev&&!is_sign_in_recv)
+    {
+         mydisplays->deactivate(alert);
+    }
+}
+
+
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
@@ -345,7 +386,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                    mydisplays->activate(AlertTypes::ALERT_LDWON);
                }
 
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_LLDW);
                }
@@ -355,7 +396,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                }
 
 
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_RLDW_BYTE, CAN_MSG_MASTER_RLDW_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_RLDW);
                }
@@ -364,7 +405,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                  mydisplays->deactivate(AlertTypes::ALERT_RLDW);
                }
 
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_FCW_BYTE, CAN_MSG_MASTER_FCW_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_FCW);
                }
@@ -376,7 +417,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                //byte 5:
 
 
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_PCW_BYTE, CAN_MSG_MASTER_PCW_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_PCW);
                }
@@ -385,7 +426,7 @@ void CanManager::parse_frame(struct can_frame * frame)
                  mydisplays->deactivate(AlertTypes::ALERT_PCW);
                }
 
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_PDZ_BYTE, CAN_MSG_MASTER_PDZ_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_PDZ);
                }
@@ -396,7 +437,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
 
 #if 0
-               if(1 == (alertAction = alertStateParseAndCmp(prev_frame, frame, CAN_MSG_MASTER_BLINKERS_BYTE, CAN_MSG_MASTER_BLINKERS_MSK)))
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_BLINKERS_BYTE, CAN_MSG_MASTER_BLINKERS_MSK)))
                {
                   mydisplays->activate(AlertTypes::ALERT_BLINKERS);
                }
@@ -412,38 +453,14 @@ void CanManager::parse_frame(struct can_frame * frame)
 
         case can_id_sli:
 
-            bool regular100arrived =  false;
-            quint8 sign_byte;
-            quint8 supp_byte;
+            sliSingleStateParseAndProcess(preframe,frame, 0x9, AlertTypes::ALERT_REGULAR);
 
-            for (size_t i = 0; i < 4; i++)
-            {
-                sign_byte = frame->data[i*2];
-                supp_byte = frame->data[1+i*2];
-
-                //TODO compare againt four fields of previous frame.
-                if (0x9 == sign_byte)
-                {
-                    regular100arrived = true;
-                }
-
-            }
-
-            if (regular100arrived)
-            {
-
-                mydisplays->activate(AlertTypes::ALERT_REGULAR_100);
-            }
-            else
-            {
-                 mydisplays->deactivate(AlertTypes::ALERT_REGULAR_100);
-            }
-
+            sliSingleStateParseAndProcess(preframe,frame, 0xE, AlertTypes::ALERT_FORWARD);
 
             break;
     }
 
-    memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
+    memcpy(preframe, frame, sizeof(struct can_frame));
 }
 
 }

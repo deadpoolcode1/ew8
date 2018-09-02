@@ -64,7 +64,7 @@ ApplicationWindow {
             objectName: "left_panel_root"
 
 
-            color: "gray"
+            color: "#191919"
 
             width: 50
             anchors.top: status_panel.bottom
@@ -99,12 +99,12 @@ ApplicationWindow {
 
                     property bool is_ready: false
 
-                    visible: is_ready && !(alert_regular_100_main.visible);
+                    visible: is_ready && !(alert_regular_main.visible);
 
-                    id: alert_regular_100;
-                    objectName: "ALERT_REGULAR_100"
+                    id: alert_regular;
+                    objectName: "ALERT_REGULAR"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_REGULAR_100
+                    property int canEntityType: Alert.ALERT_REGULAR
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -122,14 +122,14 @@ ApplicationWindow {
 
                     visible: false
 
-                    id: alert_fcw_side;
-                    objectName: "ALERT_FCW_SIDE"
+                    id: alert_forward_side;
+                    objectName: "ALERT_FORWARD_SIDE"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_FCW
+                    property int canEntityType: Alert.ALERT_FORWARD
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/fcw.png";
+                    source:"qrc:/resources/EWAlerts/forward.svg";
                     rotation: 0;
                 }
 
@@ -148,7 +148,7 @@ ApplicationWindow {
 
             objectName: "right_panel_root"
 
-            color: "gray"
+            color: "#191919"
 
             width: 50
             anchors.top: status_panel.bottom
@@ -175,7 +175,7 @@ ApplicationWindow {
             property int canEntityType: Alert.QtQG
             property bool mutexGroup: false
 
-            color: "green"
+            color: "black"
 
             visible: true
 
@@ -269,14 +269,14 @@ ApplicationWindow {
 
                             if(visible === true)
                             {
-                               sliTimer_regular_100.running = true
+                               sliTimer_regular.running = true
                             }
                         }
 
-                        id: alert_regular_100_main;
-                        objectName: "ALERT_REGULAR_100_MAIN"
+                        id: alert_regular_main;
+                        objectName: "ALERT_REGULAR_MAIN"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_REGULAR_100
+                        property int canEntityType: Alert.ALERT_REGULAR
 
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -287,7 +287,7 @@ ApplicationWindow {
 
                         Timer {
 
-                            id: sliTimer_regular_100
+                            id: sliTimer_regular
 
                             interval: 500
                             running: false
