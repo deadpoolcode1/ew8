@@ -15,6 +15,45 @@ class AlertTypes : public QObject
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
 
+    enum EnHMW
+    {
+        HMW_01 = 0x0,
+        HMW_02 = 0x1,
+        HMW_03 = 0x2,
+        HMW_04 = 0x3,
+        HMW_05 = 0x4,
+        HMW_06 = 0x5,
+        HMW_07 = 0x6,
+        HMW_08 = 0x7,
+        HMW_09 = 0x8,
+        HMW_10 = 0x9,
+        HMW_12 = 0xA,
+        HMW_14 = 0xB,
+        HMW_16 = 0xC,
+        HMW_18 = 0xD,
+        HMW_20 = 0xE,
+        HMW_25 = 0xF,
+        HMW_GR = 0x10,
+    };
+    Q_ENUMS(EnHMW)
+
+    enum EnRegular
+    {
+        REG_10 =  0x6,
+        REG_20 =  0x7,
+        REG_30 =  0x8,
+        REG_40 =  0x9,
+        REG_50 =  0xA,
+        REG_60 =  0xB,
+        REG_70 =  0xC,
+        REG_80 =  0xD,
+        REG_90 =  0xE,
+        REG_100 = 0xF,
+    };
+    Q_ENUMS(EnRegular)
+
+
+
     enum EnAlert
     {
         QtQG = 0,  // group
@@ -26,29 +65,14 @@ public:
         ALERT_LDWON = 6,
         ALERT_LLDW = 7,
         ALERT_RLDW = 8,
-        ALERT_HMW0 = 9,
-        ALERT_HMW1 = 10,
-        ALERT_HMW2 = 11,
-        ALERT_HMW3 = 12,
-        ALERT_HMW4 = 13,
-        ALERT_HMW5 = 14,
-        ALERT_HMW6 = 15,
-        ALERT_HMW7 = 16,
-        ALERT_HMW8 = 17,
-        ALERT_HMW9 = 18,
-        ALERT_HMW10 = 19,
-        ALERT_HMW11 = 20,
-        ALERT_HMW12 = 21,
-        ALERT_HMW13 = 22,
-        ALERT_HMW14 = 23,
-        ALERT_HMW15 = 24,
-        ALERT_HMW_GREEN = 25,
-        ALERT_HI_BEAM = 26,
-        ALERT_LOW_BEAM = 27,
-        ALERT_BLINKERS = 28,
-        ALERT_REGULAR = 29,
-        ALERT_FORWARD = 30,
-        ALERT_END_OF_TYPE = 31
+        ALERT_HMW_ALERT = 9,
+        ALERT_HMW_MONITOR = 10,
+        ALERT_HI_BEAM = 11,
+        ALERT_LOW_BEAM = 12,
+        ALERT_BLINKERS = 13,
+        ALERT_REGULAR = 14,
+        ALERT_FORWARD = 15,
+        ALERT_END_OF_TYPE = 16,
     };
     Q_ENUMS(EnAlert)
 

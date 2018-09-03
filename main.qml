@@ -11,6 +11,31 @@ ApplicationWindow {
 
     signal itemSelfDeactivated(int canEntityType, string _objectName)
 
+
+    //WARNING the [indices] are just mnemonics
+    property var hmw_nums_arr: [
+            [Alert.HMW_01] = "0.1",
+            [Alert.HMW_02] = "0.2",
+            [Alert.HMW_03] = "0.3",
+            [Alert.HMW_04] = "0.4",
+            [Alert.HMW_05] = "0.5",
+            [Alert.HMW_06] = "0.6",
+            [Alert.HMW_07] = "0.7",
+            [Alert.HMW_08] = "0.8",
+            [Alert.HMW_09] = "0.9",
+            [Alert.HMW_10] = "1.0",
+            [Alert.HMW_12] = "1.2",
+            [Alert.HMW_14] = "1.4",
+            [Alert.HMW_16] = "1.6",
+            [Alert.HMW_18] = "1.8",
+            [Alert.HMW_20] = "2.0",
+            [Alert.HMW_25] = "2.5",
+            [Alert.HMW_GR] = "  ",
+            ]
+
+
+
+
     width: 320
     height: 240
 
@@ -47,7 +72,7 @@ ApplicationWindow {
         Rectangle {
             id: status_panel
 
-            color: "white"
+            color: "#19191a"
 
             objectName: "status_panel_root"
 
@@ -596,6 +621,13 @@ ApplicationWindow {
 
                         visible: false;
 
+
+
+
+
+
+
+
                         ////////////////////////////////
                         //Atomic items:
                         Image {
@@ -605,16 +637,28 @@ ApplicationWindow {
                                 visible = isVisible
                             }
 
-                            id: alert_hmw0;
-                            objectName: "ALERT_HMW0"
+                            id: alert_hmw_alert;
+                            objectName: "ALERT_HMW_ALERT"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW0
+                            property int canEntityType: Alert.ALERT_HMW_ALERT
+                            property int canEntityArg: Alert.HMW_01
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa03.png";
+                            source: "qrc:/resources/EWAlerts/hmw_red.png";
                             rotation: 0;
+
+
+                            Text {
+                                text: page.hmw_nums_arr[parent.canEntityArg]
+                                font.family: "Helvetica"
+                                font.pointSize: 62
+                                font.bold: true
+                                color: "red"
+                                anchors.baseline: parent.bottom
+                            }
+
                         }
                         Image {
 
@@ -623,287 +667,30 @@ ApplicationWindow {
                                 visible = isVisible
                             }
 
-                            id: alert_hmw1;
-                            objectName: "ALERT_HMW1"
+                            id: alert_hmw_monitor;
+                            objectName: "ALERT_HMW_MONITOR"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW1
+                            property int canEntityType: Alert.ALERT_HMW_MONITOR
+                            property int canEntityArg: Alert.HMW_25
 
                             visible: false;
                             x: 0; y: 20; width: 210; height: 140;
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa03.png";
+                            source:"qrc:/resources/EWAlerts/hmw_green.png";
                             rotation: 0;
-                        }
-                        Image {
 
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
+
+                            Text {
+                                text:  page.hmw_nums_arr[parent.canEntityArg]
+                                font.family: "Helvetica"
+                                font.pointSize: 62
+                                font.bold: true
+                                color: "green"
+                                anchors.baseline: parent.bottom
                             }
 
-                            id: alert_hmw2;
-                            objectName: "ALERT_HMW2"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW2
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa03.png";
-                            rotation: 0;
                         }
-                        Image {
 
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw3;
-                            objectName: "ALERT_HMW3"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW3
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa04.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw4;
-                            objectName: "ALERT_HMW4"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW4
-
-                            visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa05.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw5;
-                            objectName: "ALERT_HMW5"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW5
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa06.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw6;
-                            objectName: "ALERT_HMW6"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW6
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa07.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw7;
-                            objectName: "ALERT_HMW7"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW7
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwa08.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw8;
-                            objectName: "ALERT_HMW8"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW8
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm09.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw9;
-                            objectName: "ALERT_HMW9"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW9
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm10.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw10;
-                            objectName: "ALERT_HMW10"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW10
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm12.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw11;
-                            objectName: "ALERT_HMW11"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW11
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm14.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw12;
-                            objectName: "ALERT_HMW12"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW12
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm16.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw13;
-                            objectName: "ALERT_HMW13"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW13
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm18.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw14;
-                            objectName: "ALERT_HMW14"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW14
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm21.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw15;
-                            objectName: "ALERT_HMW15"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW15
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm25.png";
-                            rotation: 0;
-                        }
-                        Image {
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hmw_green;
-                            objectName: "ALERT_HMW_GREEN"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW_GREEN
-
-                            visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmwm25.png";
-                            rotation: 0;
-                        }
 
                     }
 

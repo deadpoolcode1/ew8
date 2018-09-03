@@ -44,5 +44,7 @@
         <file>resources/EWAlerts/rldw_R.png</file>
         <file>resources/EWAlerts/fla_armed_low.png</file>
         <file>resources/EWAlerts/forward.svg</file>
+        <file>resources/EWAlerts/hmw_green.png</file>
+        <file>resources/EWAlerts/hmw_red.png</file>
     </qresource>
 </RCC>

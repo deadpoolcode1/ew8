@@ -62,7 +62,6 @@ private:
     void beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
     void sliSingleStateParseAndProcess(struct can_frame * prev, struct can_frame * recv, quint8 signType, AlertTypes::EnAlert alert);
 
-    AlertTypes::EnAlert fromHMWField(quint32 field);
 
 #ifndef WIN32
     //inner variables

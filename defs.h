@@ -54,7 +54,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_BEAM_MSK  0x40
 
 #define CAN_MSG_MASTER_HMW_BYTE 2
-#define CAN_MSG_MASTER_HMW_MSK  0xFE
+#define CAN_MSG_MASTER_HMW_MSK  0x1E
 #define CAN_MSG_MASTER_HMW_SHIFT  0x1
 
 #define CAN_MSG_MASTER_HMWEN_BYTE 2
@@ -90,6 +90,19 @@ static const can_id_values_table_row_t can_id_values_table[] =
 
 #define CAN_MSG_MASTER_BLINKERS_BYTE 5
 #define CAN_MSG_MASTER_BLINKERS_MSK 0x08
+
+#define CAN_MSG_MASTER_HW_LEVEL_BYTE 7
+#define CAN_MSG_MASTER_HW_LEVEL_MSK 0x3
+#define CAN_MSG_MASTER_HW_LEVEL_SHIFT 0x0
+
+enum HW_Warn_level_e
+{
+    HW_Clear = 0x0,
+    HW_Green = 0x1,
+    HW_Monitor = 0x2,
+    HW_Alert  = 0x3,
+
+};
 
 
 #endif // DEFS_H

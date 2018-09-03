@@ -187,20 +187,14 @@ qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_fra
     return ret;
 }
 
-AlertTypes::EnAlert CanManager::fromHMWField(quint32 field)
-{
-    AlertTypes::EnAlert ret;
 
 
-    //WARNING: ALERT_HMWXX are suggested to be ordered according to their indices
-    ret = (AlertTypes::EnAlert)((field) + (quint32) AlertTypes::ALERT_HMW0) ;
 
-    return ret;
 
-}
 
 void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {
+    //previous and received data:
     qint32 byte = CAN_MSG_MASTER_HMW_BYTE;
     qint32 mask = CAN_MSG_MASTER_HMW_MSK;
 
@@ -209,6 +203,13 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
 
     qint32 shift =  CAN_MSG_MASTER_HMW_SHIFT;
 
+
+    quint32 level_byte = CAN_MSG_MASTER_HW_LEVEL_BYTE;
+    quint32 level_msk = CAN_MSG_MASTER_HW_LEVEL_MSK;
+    quint32 level_shift = CAN_MSG_MASTER_HW_LEVEL_SHIFT;
+
+
+    //TODO consider what if hmw measurement > 0xF?
     qint32 prevState = ((prev->data[byte]&mask) >> shift);
 
     qint32 recvState = ((recv->data[byte]&mask) >> shift);
@@ -217,26 +218,123 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
 
     qint32 recvValidState = ((recv->data[en_byte]&en_msk)? 1 : 0);
 
+    quint32 prevLevelState = ((prev->data[level_byte]&level_msk)>>level_shift);
+    quint32 recvLevelState = ((recv->data[level_byte]&level_msk)>>level_shift);
 
-    //when state is bigger than 16 a green car is present
-    if (prevState >= 16)
+
+    //previous and received  result:
+    AlertTypes::EnAlert prevAlert;
+    AlertTypes::EnHMW prevHMW;
+    bool prevActive;
+
+
+    AlertTypes::EnAlert recvAlert;
+    AlertTypes::EnHMW recvHMW;
+    bool recvActive;
+
+    //make decision:
+
+    //TODO unite prev... and recv... decision parts of code into single function
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+   //previous:
+
+    prevActive =  true;
+
+    switch(prevLevelState)
     {
-        prevState = 16;
+    case HW_Clear:
+
+        prevActive = false;
+
+        break;
+
+    case HW_Green:
+
+        prevAlert =  AlertTypes::ALERT_HMW_MONITOR;
+        prevHMW = AlertTypes::HMW_GR;
+
+        break;
+
+    case HW_Monitor:
+
+         prevAlert =  AlertTypes::ALERT_HMW_MONITOR;
+         prevHMW = (AlertTypes::EnHMW) prevState;
+
+        break;
+
+    case HW_Alert:
+
+         prevAlert =  AlertTypes::ALERT_HMW_ALERT;
+         prevHMW = (AlertTypes::EnHMW) prevState;
+
+
+        break;
+
+    }
+
+    if(!prevValidState)
+    {
+        prevActive =  false;
     }
 
 
-    if ((prevValidState && !recvValidState) || (recvState != prevState))
+    //received:
+
+    recvActive =  true;
+
+    switch(recvLevelState)
     {
-        mydisplays->deactivate(fromHMWField(prevState));
+    case HW_Clear:
+
+        recvActive = false;
+
+        break;
+
+    case HW_Green:
+
+        recvAlert =  AlertTypes::ALERT_HMW_MONITOR;
+        recvHMW = AlertTypes::HMW_GR;
+
+        break;
+
+    case HW_Monitor:
+
+         recvAlert =  AlertTypes::ALERT_HMW_MONITOR;
+         recvHMW = (AlertTypes::EnHMW) recvState;
+
+        break;
+
+    case HW_Alert:
+
+         recvAlert =  AlertTypes::ALERT_HMW_ALERT;
+         recvHMW = (AlertTypes::EnHMW) recvState;
+
+
+        break;
+
     }
 
-
-    if(recvValidState && ((!prevValidState) || (recvState != prevState)))
+    if(!recvValidState)
     {
-        mydisplays->activate(fromHMWField(recvState));
+        recvActive =  false;
+    }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    //execute decision:
+
+    //deactivation
+    if(prevActive && (!recvActive ||(prevHMW != recvHMW) || (prevAlert != recvAlert)))
+    {
+        mydisplays->deactivate(prevAlert);
     }
 
-
+    //activation
+    if(recvActive && (!prevActive || (prevHMW != recvHMW) || (prevAlert != recvAlert)))
+    {
+        mydisplays->activate(recvAlert,(quint8)recvHMW);
+    }
 
 
 }
