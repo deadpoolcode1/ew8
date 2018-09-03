@@ -37,18 +37,18 @@ public:
     };
     Q_ENUMS(EnHMW)
 
-    enum EnRegular
+    enum EnSliRegular
     {
-        REG_10 =  0x6,
-        REG_20 =  0x7,
-        REG_30 =  0x8,
-        REG_40 =  0x9,
-        REG_50 =  0xA,
-        REG_60 =  0xB,
-        REG_70 =  0xC,
-        REG_80 =  0xD,
-        REG_90 =  0xE,
-        REG_100 = 0xF,
+        SLI_REG_10 =  0x6,
+        SLI_REG_20 =  0x7,
+        SLI_REG_30 =  0x8,
+        SLI_REG_40 =  0x9,
+        SLI_REG_50 =  0xA,
+        SLI_REG_60 =  0xB,
+        SLI_REG_70 =  0xC,
+        SLI_REG_80 =  0xD,
+        SLI_REG_90 =  0xE,
+        SLI_REG_100 = 0xF,
     };
     Q_ENUMS(EnRegular)
 
@@ -70,7 +70,7 @@ public:
         ALERT_HI_BEAM = 11,
         ALERT_LOW_BEAM = 12,
         ALERT_BLINKERS = 13,
-        ALERT_REGULAR = 14,
+        ALERT_SLI_REGULAR = 14,
         ALERT_FORWARD = 15,
         ALERT_END_OF_TYPE = 16,
     };

@@ -34,6 +34,8 @@ public:
     void deactivateItemInMutexGroup();
     void handleMutexGroup();
 
+    void setCanEntityArg(quint8 arg);
+
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
 

@@ -124,12 +124,12 @@ ApplicationWindow {
 
                     property bool is_ready: false
 
-                    visible: is_ready && !(alert_regular_main.visible);
+                    visible: is_ready && !(alert_sli_regular_main.visible);
 
-                    id: alert_regular;
-                    objectName: "ALERT_REGULAR"
+                    id: alert_sli_regular;
+                    objectName: "ALERT_SLI_REGULAR"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_REGULAR
+                    property int canEntityType: Alert.ALERT_SLI_REGULAR
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -298,10 +298,10 @@ ApplicationWindow {
                             }
                         }
 
-                        id: alert_regular_main;
-                        objectName: "ALERT_REGULAR_MAIN"
+                        id: alert_sli_regular_main;
+                        objectName: "ALERT_SLI_REGULAR_MAIN"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_REGULAR
+                        property int canEntityType: Alert.ALERT_SLI_REGULAR
 
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;

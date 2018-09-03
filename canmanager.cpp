@@ -551,7 +551,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
         case can_id_sli:
 
-            sliSingleStateParseAndProcess(preframe,frame, 0x9, AlertTypes::ALERT_REGULAR);
+            sliSingleStateParseAndProcess(preframe,frame, 0x9, AlertTypes::ALERT_SLI_REGULAR);
 
             sliSingleStateParseAndProcess(preframe,frame, 0xE, AlertTypes::ALERT_FORWARD);
 

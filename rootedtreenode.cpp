@@ -137,7 +137,15 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
+ void RootedTreeNode::setCanEntityArg(quint8 arg)
+ {
+     QObject * qmlItem = getQmlItem();
 
+     QVariant property_arg = arg;
+
+     qmlItem->setProperty("canEntityArg",property_arg);
+
+ }
 
 // recursive activation
 void RootedTreeNode::activate()
@@ -181,7 +189,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(FORCE_INVISIBILITY_t layerForc
 
     if (layerForcedInvis)
     {
-        this->qmlItem->property("visible") = false;
+        //this->qmlItem->property("visible") = false;
         res = updateVisibilityByInvoke(false); //make invisible
         if (res!= OK)
         {
@@ -198,7 +206,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(FORCE_INVISIBILITY_t layerForc
     {
         if (activationSemaphore)
         {
-            this->qmlItem->property("visible") = true;
+            //this->qmlItem->property("visible") = true;
             res = updateVisibilityByInvoke(true); //make visible
             if (res!= OK)
             {

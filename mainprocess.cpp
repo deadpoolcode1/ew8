@@ -156,7 +156,8 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
         }
         else
         {
-            nodeCGRT->activate();
+            nodeCGRT->setCanEntityArg(value);
+              nodeCGRT->activate();
             flag_tree_changed = true;
         }
     }
