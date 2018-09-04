@@ -295,6 +295,7 @@ ApplicationWindow {
 
                         function setVisible(isVisible)
                         {
+                            blinkTimer_fcw.setRunning(isVisible)
                             visible = isVisible
                         }
 
@@ -309,6 +310,29 @@ ApplicationWindow {
                         source:"qrc:/resources/EWAlerts/fcw.png";
                         rotation: 0;
 
+                        Timer {
+
+                            id: blinkTimer_fcw
+
+                            property int intervalOn: 500
+                            property int intervalOff: 300
+
+                            interval: intervalOn
+                            running: false
+                            repeat: true
+
+                            function setRunning(On)
+                            {
+                                interval = intervalOn
+                                running = On
+                            }
+
+                            onTriggered:
+                            {
+                                parent.visible = !parent.visible
+                                interval = (parent.visible ? intervalOn : intervalOff)
+                            }
+                        }
 
                     }
 
@@ -465,7 +489,6 @@ ApplicationWindow {
                             {
                                 blinkTimer_lldw.setRunning(isVisible)
                                 visible = isVisible
-                                console.log("interval = "+blinkTimer_lldw.interval);
                             }
 
                             id: alert_lldw;
