@@ -31,12 +31,20 @@ struct can_frame {
 
 #endif
 
+typedef struct hmw_state_s
+{
+    AlertTypes::EnAlert alert;
+    AlertTypes::EnHMW value;
+    bool is_active;
+}
+hmw_state_t;
 
 class CanManager :  public QThread
 {
     Q_OBJECT
 
 public:
+
     CanManager(IAlertDisplay * alertdisp);
     void read_frame(void);
     void write_frame(void);
@@ -61,6 +69,9 @@ private:
     void hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
     void beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
     void sliSingleStateParseAndProcess(struct can_frame * prev, struct can_frame * recv, quint8 signType, AlertTypes::EnAlert alert);
+
+    void hmwStateParse(struct can_frame * frame, hmw_state_t * result);
+
 
 
 #ifndef WIN32

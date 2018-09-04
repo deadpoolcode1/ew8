@@ -188,21 +188,15 @@ qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_fra
 }
 
 
-
-
-
-
-void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
+void CanManager::hmwStateParse(struct can_frame * frame, hmw_state_t * result)
 {
     //previous and received data:
     qint32 byte = CAN_MSG_MASTER_HMW_BYTE;
     qint32 mask = CAN_MSG_MASTER_HMW_MSK;
+    qint32 shift =  CAN_MSG_MASTER_HMW_SHIFT;
 
     qint32 en_byte =  CAN_MSG_MASTER_HMWEN_BYTE;
     qint32 en_msk = CAN_MSG_MASTER_HMWEN_MSK;
-
-    qint32 shift =  CAN_MSG_MASTER_HMW_SHIFT;
-
 
     quint32 level_byte = CAN_MSG_MASTER_HW_LEVEL_BYTE;
     quint32 level_msk = CAN_MSG_MASTER_HW_LEVEL_MSK;
@@ -210,135 +204,82 @@ void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_fra
 
 
     //TODO consider what if hmw measurement > 0xF?
-    qint32 prevState = ((prev->data[byte]&mask) >> shift);
+    qint32 frameState = ((frame->data[byte]&mask) >> shift);
 
-    qint32 recvState = ((recv->data[byte]&mask) >> shift);
+    qint32 frameValidState = ((frame->data[en_byte]&en_msk)? 1 : 0);
 
-    qint32 prevValidState = ((prev->data[en_byte]&en_msk)? 1 : 0);
-
-    qint32 recvValidState = ((recv->data[en_byte]&en_msk)? 1 : 0);
-
-    quint32 prevLevelState = ((prev->data[level_byte]&level_msk)>>level_shift);
-    quint32 recvLevelState = ((recv->data[level_byte]&level_msk)>>level_shift);
-
-
-    //previous and received  result:
-    AlertTypes::EnAlert prevAlert;
-    AlertTypes::EnHMW prevHMW;
-    bool prevActive;
-
-
-    AlertTypes::EnAlert recvAlert;
-    AlertTypes::EnHMW recvHMW;
-    bool recvActive;
+    quint32 frameLevelState = ((frame->data[level_byte]&level_msk)>>level_shift);
 
     //make decision:
 
-    //TODO unite prev... and recv... decision parts of code into single function
+    result->is_active =  true;
 
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-   //previous:
-
-    prevActive =  true;
-
-    switch(prevLevelState)
+    switch(frameLevelState)
     {
     case HW_Clear:
 
-        prevActive = false;
+        result->is_active = false;
 
         break;
 
     case HW_Green:
 
-        prevAlert =  AlertTypes::ALERT_HMW_MONITOR;
-        prevHMW = AlertTypes::HMW_GR;
+        result->alert =  AlertTypes::ALERT_HMW_MONITOR;
+        result->value = AlertTypes::HMW_GR;
 
         break;
 
     case HW_Monitor:
 
-         prevAlert =  AlertTypes::ALERT_HMW_MONITOR;
-         prevHMW = (AlertTypes::EnHMW) prevState;
+         result->alert =  AlertTypes::ALERT_HMW_MONITOR;
+         result->value = (AlertTypes::EnHMW) frameState;
 
         break;
 
     case HW_Alert:
 
-         prevAlert =  AlertTypes::ALERT_HMW_ALERT;
-         prevHMW = (AlertTypes::EnHMW) prevState;
+         result->alert =  AlertTypes::ALERT_HMW_ALERT;
+         result->value = (AlertTypes::EnHMW) frameState;
 
 
         break;
 
     }
 
-    if(!prevValidState)
+    if(!frameValidState)
     {
-        prevActive =  false;
+        result->is_active =  false;
     }
+}
 
+void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
+{
 
-    //received:
+    //extract data and make decision:
 
-    recvActive =  true;
+    hmw_state_t prevres;
+    hmw_state_t recvres;
 
-    switch(recvLevelState)
-    {
-    case HW_Clear:
+    hmwStateParse(prev,&prevres);
+    hmwStateParse(recv,&recvres);
 
-        recvActive = false;
-
-        break;
-
-    case HW_Green:
-
-        recvAlert =  AlertTypes::ALERT_HMW_MONITOR;
-        recvHMW = AlertTypes::HMW_GR;
-
-        break;
-
-    case HW_Monitor:
-
-         recvAlert =  AlertTypes::ALERT_HMW_MONITOR;
-         recvHMW = (AlertTypes::EnHMW) recvState;
-
-        break;
-
-    case HW_Alert:
-
-         recvAlert =  AlertTypes::ALERT_HMW_ALERT;
-         recvHMW = (AlertTypes::EnHMW) recvState;
-
-
-        break;
-
-    }
-
-    if(!recvValidState)
-    {
-        recvActive =  false;
-    }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     //execute decision:
 
     //deactivation
-    if(prevActive && (!recvActive ||(prevHMW != recvHMW) || (prevAlert != recvAlert)))
+    if(prevres.is_active && (!recvres.is_active ||(prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
     {
-        mydisplays->deactivate(prevAlert);
+        mydisplays->deactivate(prevres.alert);
     }
 
     //activation
-    if(recvActive && (!prevActive || (prevHMW != recvHMW) || (prevAlert != recvAlert)))
+    if(recvres.is_active && (!prevres.is_active || (prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
     {
-        mydisplays->activate(recvAlert,(quint8)recvHMW);
+        mydisplays->activate(recvres.alert,(quint8)recvres.value);
     }
 
 
 }
-
 
 void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {

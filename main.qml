@@ -652,11 +652,13 @@ ApplicationWindow {
 
                             Text {
                                 text: page.hmw_nums_arr[parent.canEntityArg]
-                                font.family: "Helvetica"
+                                font.family: "Arial"
                                 font.pointSize: 62
                                 font.bold: true
                                 color: "red"
-                                anchors.baseline: parent.bottom
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.bottom : parent.bottom
                             }
 
                         }
@@ -674,7 +676,7 @@ ApplicationWindow {
                             property int canEntityArg: Alert.HMW_25
 
                             visible: false;
-                            x: 0; y: 20; width: 210; height: 140;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/hmw_green.png";
                             rotation: 0;
@@ -682,11 +684,13 @@ ApplicationWindow {
 
                             Text {
                                 text:  page.hmw_nums_arr[parent.canEntityArg]
-                                font.family: "Helvetica"
+                                font.family: "Arial"
                                 font.pointSize: 62
                                 font.bold: true
-                                color: "green"
-                                anchors.baseline: parent.bottom
+                                color: "#00ff00"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.bottom: parent.bottom
                             }
 
                         }
