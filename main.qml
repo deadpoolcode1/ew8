@@ -33,6 +33,22 @@ ApplicationWindow {
             [Alert.HMW_GR] = "  ",
             ]
 
+    property var sli_reg_arr: [      
+        [Alert.SLI_REG_10]  =  "10",
+        [Alert.SLI_REG_20]  =  "20",
+        [Alert.SLI_REG_30]  =  "30",
+        [Alert.SLI_REG_40]  =  "40",
+        [Alert.SLI_REG_50]  =  "50",
+        [Alert.SLI_REG_60]  =  "60",
+        [Alert.SLI_REG_70]  =  "70",
+        [Alert.SLI_REG_80]  =  "80",
+        [Alert.SLI_REG_90]  =  "90",
+        [Alert.SLI_REG_100] = "100",
+        [Alert.SLI_REG_110] = "110",
+        [Alert.SLI_REG_120] = "120",
+        [Alert.SLI_REG_130] = "130",
+        [Alert.SLI_REG_140] = "140",
+    ]
 
 
 
@@ -130,11 +146,23 @@ ApplicationWindow {
                     objectName: "ALERT_SLI_REGULAR"
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_SLI_REGULAR
+                    property int canEntityArg: Alert.SLI_REG_100
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"qrc:/resources/EWAlerts/sli.png";
                     rotation: 0;
+
+                    Text {
+                        text: page.sli_reg_arr[parent.canEntityArg]
+                        font.family: "Arial"
+                        font.pointSize: 10
+                        font.bold: true
+                        color: "black"
+                        opacity: 1
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter : parent.verticalCenter
+                    }
                 }
 
                 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -302,12 +330,24 @@ ApplicationWindow {
                         objectName: "ALERT_SLI_REGULAR_MAIN"
                         property int layer_pri: 1
                         property int canEntityType: Alert.ALERT_SLI_REGULAR
+                        property int canEntityArg: Alert.SLI_REG_100
 
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
                         source:"qrc:/resources/EWAlerts/sli.png";
                         rotation: 0;
+
+                        Text {
+                            text: page.sli_reg_arr[parent.canEntityArg]
+                            font.family: "Arial"
+                            font.pointSize: 40
+                            font.bold: true
+                            color: "black"
+                            opacity: 1
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter : parent.verticalCenter
+                        }
 
 
                         Timer {

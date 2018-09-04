@@ -27,7 +27,7 @@ public:
     int getActivSem() {return activationSemaphore;}
     LayersPriorityQ* getChildren() {return children;}
 
-    const bool getMutexGroup() {return mutexGroup;}
+    bool getMutexGroup() {return mutexGroup;}
 
     void activate();
     void deactivate();

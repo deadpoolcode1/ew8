@@ -39,18 +39,22 @@ public:
 
     enum EnSliRegular
     {
-        SLI_REG_10 =  0x6,
-        SLI_REG_20 =  0x7,
-        SLI_REG_30 =  0x8,
-        SLI_REG_40 =  0x9,
-        SLI_REG_50 =  0xA,
-        SLI_REG_60 =  0xB,
-        SLI_REG_70 =  0xC,
-        SLI_REG_80 =  0xD,
-        SLI_REG_90 =  0xE,
-        SLI_REG_100 = 0xF,
+        SLI_REG_10 =  0x0,
+        SLI_REG_20 =  0x1,
+        SLI_REG_30 =  0x2,
+        SLI_REG_40 =  0x3,
+        SLI_REG_50 =  0x4,
+        SLI_REG_60 =  0x5,
+        SLI_REG_70 =  0x6,
+        SLI_REG_80 =  0x7,
+        SLI_REG_90 =  0x8,
+        SLI_REG_100 = 0x9,
+        SLI_REG_110 = 0xA,
+        SLI_REG_120 = 0xB,
+        SLI_REG_130 = 0xC,
+        SLI_REG_140 = 0xD,
     };
-    Q_ENUMS(EnRegular)
+    Q_ENUMS(EnSliRegular)
 
 
 

@@ -313,48 +313,96 @@ void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_fr
 
 }
 
-
-void CanManager::sliSingleStateParseAndProcess(struct can_frame * prev, struct can_frame * recv, quint8 signType, AlertTypes::EnAlert alert)
+void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {
-
+    //deactivation:
     bool is_sign_in_prev =  false;
     bool is_sign_in_recv =  false;
 
-    quint8 sign_byte_prev;
-    quint8 sign_byte_recv;
+    quint8 sign_prev;
+    quint8 sign_recv;
 
+    quint8 supp_prev;
+    quint8 supp_recv;
 
-    for (size_t i = 0; i < 4; i++)
+    size_t i;
+    size_t j;
+
+    //deactivation
+    for (i = 0; i < 4; i++)
     {
 
-        sign_byte_prev = prev->data[i*2];
-        sign_byte_recv = recv->data[i*2];
+        is_sign_in_recv = false;
 
-        //supp_byte = frame->data[1+i*2];
-
-        if (signType == sign_byte_prev)
+        for (j = 0; j < 4; j++)
         {
-          is_sign_in_prev = true;
+
+            sign_prev = prev->data[i*2];
+            sign_recv = recv->data[j*2];
+
+            supp_prev = prev->data[1+i*2];
+            supp_recv = recv->data[1+j*2];
+
+            if (sign_prev == sign_recv && supp_prev == supp_recv)
+            {
+                is_sign_in_recv = true;
+            }
+
         }
 
-        if (signType == sign_byte_recv)
+        if(!is_sign_in_recv)
         {
-          is_sign_in_recv = true;
+            //deactivate:
+            for (i = 0;i < sli_alerts_table_size; i++)
+            {
+                if(sign_prev == sli_alerts_table[i].hexcode)
+                {
+                   mydisplays->deactivate(sli_alerts_table[i].alert);
+                   i = sli_alerts_table_size;
+                }
+            }
+
         }
     }
 
-    if (is_sign_in_recv&&!is_sign_in_prev)
-    {
-        mydisplays->activate(alert);
-    }
 
-    if (is_sign_in_prev&&!is_sign_in_recv)
+
+    //activation:
+    for (j = 0; j < 4; j++)
     {
-         mydisplays->deactivate(alert);
+
+        is_sign_in_prev = false;
+
+        for (i = 0; i < 4; i++)
+        {
+
+            sign_prev = prev->data[i*2];
+            sign_recv = recv->data[j*2];
+
+            supp_prev = prev->data[1+i*2];
+            supp_recv = recv->data[1+j*2];
+
+            if (sign_prev == sign_recv && supp_prev == supp_recv)
+            {
+                is_sign_in_prev = true;
+            }
+
+        }
+
+        if(!is_sign_in_prev)
+        {
+            //activate:
+            for (i = 0;i < sli_alerts_table_size; i++)
+            {
+                if(sign_recv == sli_alerts_table[i].hexcode)
+                {
+                   mydisplays->activate(sli_alerts_table[i].alert, sli_alerts_table[i].value);
+                   i = sli_alerts_table_size;
+                }
+            }
+        }
     }
 }
-
-
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
@@ -492,9 +540,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
         case can_id_sli:
 
-            sliSingleStateParseAndProcess(preframe,frame, 0x9, AlertTypes::ALERT_SLI_REGULAR);
-
-            sliSingleStateParseAndProcess(preframe,frame, 0xE, AlertTypes::ALERT_FORWARD);
+            sliStateParseAndProcess(preframe,frame);
 
             break;
     }

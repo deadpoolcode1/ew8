@@ -1,7 +1,7 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#include <stdint.h>
+#include <alerttypes.h>
 
 #define CAN_MESSAGES_TYPES_NUM 2
 
@@ -33,7 +33,7 @@ can_id_right =  3,
 typedef struct can_id_values_table_row_s
 {
   can_id_t mnemonic;
-  uint32_t value;
+  quint32 value;
 } can_id_values_table_row_t;
 
 
@@ -103,6 +103,37 @@ enum HW_Warn_level_e
     HW_Alert  = 0x3,
 
 };
+
+typedef struct sli_alerts_table_row_s
+{
+   quint8 hexcode;
+   AlertTypes::EnAlert alert;
+   quint8 value;
+}
+sli_alerts_table_row_t;
+
+static const sli_alerts_table_row_t sli_alerts_table[] =
+{
+    {0x0, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_10},
+    {0x1, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_20},
+    {0x2, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_30},
+    {0x3, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_40},
+    {0x4, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_50},
+    {0x5, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_60},
+    {0x6, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_70},
+    {0x7, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_80},
+    {0x8, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_90},
+    {0x9, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_100},
+    {0xA, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_110},
+    {0xB, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_120},
+    {0xC, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_130},
+    {0xD, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_140},
+
+    {0xE, AlertTypes::ALERT_FORWARD    , (quint8)                   0x00},
+};
+
+static const size_t sli_alerts_table_size = sizeof(sli_alerts_table)/sizeof(sli_alerts_table_row_t);
+
 
 
 #endif // DEFS_H
