@@ -15,6 +15,8 @@ class AlertTypes : public QObject
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
 
+#if 0
+    //WARNING used in ticks protocol 
     enum EnHMW
     {
         HMW_01 = 0x0,
@@ -36,6 +38,7 @@ public:
         HMW_GR = 0x10,
     };
     Q_ENUMS(EnHMW)
+#endif
 
     enum EnSliRegular
     {

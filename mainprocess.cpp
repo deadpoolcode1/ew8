@@ -134,7 +134,6 @@ void MainProcess::updateDisplay(void)
 
 void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
 {
-    mutex.tryLock();
 
     RootedTreeNode* nodeCGRT = nullptr;
 

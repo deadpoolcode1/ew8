@@ -11,8 +11,9 @@ ApplicationWindow {
 
     signal itemSelfDeactivated(int canEntityType, string _objectName)
 
-
-    //WARNING the [indices] are just mnemonics
+     /*
+    //WARNING: used in ticks protocol
+    //WARNING: the [indices] are just mnemonics
     property var hmw_nums_arr: [
             [Alert.HMW_01] = "0.1",
             [Alert.HMW_02] = "0.2",
@@ -32,7 +33,9 @@ ApplicationWindow {
             [Alert.HMW_25] = "2.5",
             [Alert.HMW_GR] = "  ",
             ]
-
+     */
+    
+    //WARNING: the [indices] are just mnemonics
     property var sli_reg_arr: [      
         [Alert.SLI_REG_10]  =  "10",
         [Alert.SLI_REG_20]  =  "20",
@@ -295,7 +298,7 @@ ApplicationWindow {
 
                         function setVisible(isVisible)
                         {
-                            blinkTimer_fcw.setRunning(isVisible)
+                            //blinkTimer_fcw.setRunning(isVisible)
                             visible = isVisible
                         }
 
@@ -303,6 +306,7 @@ ApplicationWindow {
                         objectName: "FCW_ALERT"
                         property int layer_pri: 0
                         property int canEntityType: Alert.ALERT_FCW
+                        opacity: 1.0
 
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -310,6 +314,26 @@ ApplicationWindow {
                         source:"qrc:/resources/EWAlerts/fcw.png";
                         rotation: 0;
 
+                        SequentialAnimation {
+
+                                running: alert_fcw.visible
+                                loops: Animation.Infinite
+
+
+                                /*
+                                PropertyAction {target: alert_fcw; property: "opacity"; value: 1.0}
+                                PauseAnimation {duration: 500}
+                                PropertyAction {target: alert_fcw; property: "opacity"; value: 0.0}
+                                PauseAnimation {duration: 300}
+                                */
+
+
+                                NumberAnimation { target: alert_fcw; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
+                                NumberAnimation { target: alert_fcw; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
+
+                        }
+
+                        /*
                         Timer {
 
                             id: blinkTimer_fcw
@@ -327,12 +351,15 @@ ApplicationWindow {
                                 running = On
                             }
 
+
                             onTriggered:
                             {
                                 parent.visible = !parent.visible
                                 interval = (parent.visible ? intervalOn : intervalOff)
                             }
+
                         }
+                        */
 
                     }
 
@@ -487,7 +514,7 @@ ApplicationWindow {
                         {
                             function setVisible(isVisible)
                             {
-                                blinkTimer_lldw.setRunning(isVisible)
+                                //blinkTimer_lldw.setRunning(isVisible)
                                 visible = isVisible
                             }
 
@@ -497,6 +524,7 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_LLDW
 
                             Image {
+                                id: alert_lldw_left
                                 visible: true;
                                 x: 0; y: 20; //width: 300;
                                 height: 200;
@@ -505,6 +533,25 @@ ApplicationWindow {
                                 rotation: 0;
 
 
+                                SequentialAnimation {
+
+                                    running: alert_lldw.visible
+                                    loops: Animation.Infinite
+
+                                    PropertyAction {target: alert_lldw_left; property: "opacity"; value: 1.0}
+                                    PauseAnimation {duration: 500}
+                                    PropertyAction {target: alert_lldw_left; property: "opacity"; value: 0.0}
+                                    PauseAnimation {duration: 300}
+
+                                    /*
+                                        NumberAnimation { target: alert_lldw_left; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
+                                        NumberAnimation { target: alert_lldw_left; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
+                                        */
+                                }
+
+
+
+                                /*
                                 Timer {
 
                                     id: blinkTimer_lldw
@@ -528,7 +575,7 @@ ApplicationWindow {
                                         interval = (parent.visible ? intervalOn : intervalOff)
                                     }
                                 }
-
+                                */
                             }
 
                             Image {
@@ -550,7 +597,7 @@ ApplicationWindow {
                         {
                             function setVisible(isVisible)
                             {
-                                blinkTimer_rldw.setRunning(isVisible)
+                                //blinkTimer_rldw.setRunning(isVisible)
                                 visible = isVisible
                             }
 
@@ -569,6 +616,7 @@ ApplicationWindow {
                             }
 
                             Image {
+                                id:alert_rldw_right
                                 visible: true;
                                 x: 0; y: 20; //width: 300;
                                 height: 200;
@@ -577,6 +625,25 @@ ApplicationWindow {
                                 rotation: 0;
 
 
+                                SequentialAnimation {
+
+                                    running: alert_rldw.visible
+                                    loops: Animation.Infinite
+
+                                    PropertyAction {target: alert_rldw_right; property: "opacity"; value: 1.0}
+                                    PauseAnimation {duration: 500}
+                                    PropertyAction {target: alert_rldw_right; property: "opacity"; value: 0.0}
+                                    PauseAnimation {duration: 300}
+
+                                    /*
+                                        NumberAnimation { target: alert_rldw_right; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
+                                        NumberAnimation { target: alert_rldw_right; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
+                                        */
+
+                                }
+
+
+                                /*
                                 Timer {
 
                                     id: blinkTimer_rldw
@@ -600,8 +667,7 @@ ApplicationWindow {
                                         interval = (parent.visible ? intervalOn : intervalOff)
                                     }
                                 }
-
-
+                                */
                             }
                         }
 
@@ -704,7 +770,7 @@ ApplicationWindow {
                             objectName: "ALERT_HMW_ALERT"
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_ALERT
-                            property int canEntityArg: Alert.HMW_01
+                            property int canEntityArg: 0x00
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -714,7 +780,7 @@ ApplicationWindow {
 
 
                             Text {
-                                text: page.hmw_nums_arr[parent.canEntityArg]
+                                text: (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
                                 font.family: "Arial"
                                 font.pointSize: 62
                                 font.bold: true
@@ -736,7 +802,7 @@ ApplicationWindow {
                             objectName: "ALERT_HMW_MONITOR"
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_MONITOR
-                            property int canEntityArg: Alert.HMW_25
+                            property int canEntityArg: 0x00
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -746,7 +812,7 @@ ApplicationWindow {
 
 
                             Text {
-                                text:  page.hmw_nums_arr[parent.canEntityArg]
+                                text:  (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
                                 font.family: "Arial"
                                 font.pointSize: 62
                                 font.bold: true

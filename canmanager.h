@@ -34,7 +34,8 @@ struct can_frame {
 typedef struct hmw_state_s
 {
     AlertTypes::EnAlert alert;
-    AlertTypes::EnHMW value;
+    //AlertTypes::EnHMW value;
+    quint8   value;
     bool is_active;
 }
 hmw_state_t;

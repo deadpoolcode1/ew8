@@ -159,6 +159,12 @@ void CanManager::run()
 
     while(1)
     {
+
+
+#if 1
+        this->read_frame();
+#else
+
         mydisplays->mutex.lock();
         this->read_frame();
         mydisplays->mutex.unlock();
@@ -168,9 +174,9 @@ void CanManager::run()
 #else
         msleep(2);
 #endif
-    }
 
-    emit resultReady(result);
+#endif
+    }
 }
 
 
@@ -203,7 +209,6 @@ void CanManager::hmwStateParse(struct can_frame * frame, hmw_state_t * result)
     quint32 level_shift = CAN_MSG_MASTER_HW_LEVEL_SHIFT;
 
 
-    //TODO consider what if hmw measurement > 0xF?
     qint32 frameState = ((frame->data[byte]&mask) >> shift);
 
     qint32 frameValidState = ((frame->data[en_byte]&en_msk)? 1 : 0);
@@ -222,27 +227,25 @@ void CanManager::hmwStateParse(struct can_frame * frame, hmw_state_t * result)
 
         break;
 
-    case HW_Green:
-
-        result->alert =  AlertTypes::ALERT_HMW_MONITOR;
-        result->value = AlertTypes::HMW_GR;
-
-        break;
-
     case HW_Monitor:
 
          result->alert =  AlertTypes::ALERT_HMW_MONITOR;
-         result->value = (AlertTypes::EnHMW) frameState;
+         result->value = frameState;
 
         break;
 
     case HW_Alert:
 
          result->alert =  AlertTypes::ALERT_HMW_ALERT;
-         result->value = (AlertTypes::EnHMW) frameState;
+         result->value = frameState;
 
 
         break;
+
+    default:
+
+        result->is_active = false;
+        //TODO present error: "undefined hmw warning level value"
 
     }
 
@@ -444,13 +447,11 @@ void CanManager::parse_frame(struct can_frame * frame)
 
        qint32 alertAction;
 
+        mydisplays->mutex.lock();
 
         switch(received_id)
         {
                case can_id_master:
-
-//                    mydisplays->mutex.lock();
-
 
                    //byte 1:
 
@@ -534,8 +535,6 @@ void CanManager::parse_frame(struct can_frame * frame)
                }
 #endif
 
-
-//                  mydisplays->mutex.unlock();
            break;
 
         case can_id_sli:
@@ -544,6 +543,7 @@ void CanManager::parse_frame(struct can_frame * frame)
 
             break;
     }
+    mydisplays->mutex.unlock();
 
     memcpy(preframe, frame, sizeof(struct can_frame));
 }
