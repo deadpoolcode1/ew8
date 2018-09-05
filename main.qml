@@ -241,6 +241,8 @@ ApplicationWindow {
                 objectName: "PCW_QtQG"
                 property bool mutexGroup: false
 
+                anchors.fill: parent
+
                 property int layer_pri: 0
 
                 property int canEntityType: Alert.QtQG
@@ -423,6 +425,8 @@ ApplicationWindow {
                     objectName: "GAG_QtQG"
                     property bool mutexGroup: false
 
+                   anchors.fill: parent
+
                     property int canEntityType: Alert.QtQG
 
                     property int layer_pri: 2
@@ -455,6 +459,8 @@ ApplicationWindow {
                         objectName: "LANES_QtQG"
                         property bool mutexGroup: false
 
+                        anchors.fill: parent
+
                         function setVisible(isVisible)
                         {
                             visible = isVisible
@@ -480,8 +486,11 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_LDWOFF
 
                             visible: false;
-                            x: 0; y: 20;// width: 300;
-                            height: 200;
+                            height: parent.height;
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter : parent.horizontalCenter
+
+
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/ldwoff.png";
                             rotation: 0;
@@ -501,8 +510,10 @@ ApplicationWindow {
                             property int canEntityType: Alert.ALERT_LDWON
 
                             visible: false;
-                            x: 0; y: 20; //width: 300;
-                            height: 200;
+                            height: parent.height;
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter : parent.horizontalCenter
+
                             fillMode: Image.PreserveAspectFit;
                             source:"qrc:/resources/EWAlerts/ldwon.png";
                             rotation: 0;
@@ -523,11 +534,15 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_LLDW
 
+                            anchors.fill: parent
+
                             Image {
                                 id: alert_lldw_left
                                 visible: true;
-                                x: 0; y: 20; //width: 300;
-                                height: 200;
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.horizontalCenter : parent.horizontalCenter
+
                                 fillMode: Image.PreserveAspectFit;
                                 source:"qrc:/resources/EWAlerts/lldw_L.png";
                                 rotation: 0;
@@ -580,8 +595,10 @@ ApplicationWindow {
 
                             Image {
                                 visible: true;
-                                x: 0; y: 20; //width: 300;
-                                height: 200;
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.horizontalCenter : parent.horizontalCenter
+
                                 fillMode: Image.PreserveAspectFit;
                                 source:"qrc:/resources/EWAlerts/lldw_R.png";
                                 rotation: 0;
@@ -606,10 +623,14 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_RLDW
 
+                            anchors.fill: parent
+
                             Image {
                                 visible: true;
-                                x: 0; y: 20; //width: 300;
-                                height: 200;
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.horizontalCenter : parent.horizontalCenter
+
                                 fillMode: Image.PreserveAspectFit;
                                 source:"qrc:/resources/EWAlerts/rldw_L.png";
                                 rotation: 0;
@@ -618,8 +639,11 @@ ApplicationWindow {
                             Image {
                                 id:alert_rldw_right
                                 visible: true;
-                                x: 0; y: 20; //width: 300;
-                                height: 200;
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.horizontalCenter : parent.horizontalCenter
+
+
                                 fillMode: Image.PreserveAspectFit;
                                 source:"qrc:/resources/EWAlerts/rldw_R.png";
                                 rotation: 0;
