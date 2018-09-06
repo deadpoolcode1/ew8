@@ -150,6 +150,7 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_SLI_REGULAR
                     property int canEntityArg: Alert.SLI_REG_100
+                    function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -384,6 +385,7 @@ ApplicationWindow {
                         property int layer_pri: 1
                         property int canEntityType: Alert.ALERT_SLI_REGULAR
                         property int canEntityArg: Alert.SLI_REG_100
+                        function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -795,6 +797,7 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_ALERT
                             property int canEntityArg: 0x00
+                            function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -827,6 +830,7 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_MONITOR
                             property int canEntityArg: 0x00
+                            function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;

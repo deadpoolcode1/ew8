@@ -143,7 +143,11 @@ void RootedTreeNode::handleMutexGroup()
 
      QVariant property_arg = arg;
 
+#ifndef WIN32
      qmlItem->setProperty("canEntityArg",property_arg);
+#else
+     QMetaObject::invokeMethod(this->qmlItem,"setCanEntityArg",Q_ARG(QVariant, arg));
+#endif
 
  }
 
