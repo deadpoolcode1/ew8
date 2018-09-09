@@ -41,10 +41,11 @@ typedef struct can_id_values_table_row_s
 static const can_id_values_table_row_t can_id_values_table[] =
 {
   {can_id_master, 0x700},
-  {can_id_sli,   0x727},
+  {can_id_sli,    0x727},
+#if 0
   {can_id_left, 0x610},
   {can_id_right, 0x620},
-
+#endif
 };
 
 #define CAN_MSG_MASTER_FLA_BYTE 1
@@ -103,15 +104,15 @@ enum HW_Warn_level_e
 
 };
 
-typedef struct sli_alerts_table_row_s
+typedef struct tsr_alerts_table_row_s
 {
    quint8 hexcode;
    AlertTypes::EnAlert alert;
    quint8 value;
 }
-sli_alerts_table_row_t;
+tsr_alerts_table_row_t;
 
-static const sli_alerts_table_row_t sli_alerts_table[] =
+static const tsr_alerts_table_row_t tsr_alerts_table[] =
 {
     {0x0, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_10},
     {0x1, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_20},
@@ -131,7 +132,7 @@ static const sli_alerts_table_row_t sli_alerts_table[] =
     {0xE, AlertTypes::ALERT_FORWARD    , (quint8)                   0x00},
 };
 
-static const size_t sli_alerts_table_size = sizeof(sli_alerts_table)/sizeof(sli_alerts_table_row_t);
+static const size_t tsr_alerts_table_size = sizeof(tsr_alerts_table)/sizeof(tsr_alerts_table_row_t);
 
 
 

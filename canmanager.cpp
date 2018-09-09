@@ -356,12 +356,12 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
         if(!is_sign_in_recv)
         {
             //deactivate:
-            for (i = 0;i < sli_alerts_table_size; i++)
+            for (i = 0;i < tsr_alerts_table_size; i++)
             {
-                if(sign_prev == sli_alerts_table[i].hexcode)
+                if(sign_prev == tsr_alerts_table[i].hexcode)
                 {
-                   mydisplays->deactivate(sli_alerts_table[i].alert);
-                   i = sli_alerts_table_size;
+                   mydisplays->deactivate(tsr_alerts_table[i].alert);
+                   i = tsr_alerts_table_size;
                 }
             }
 
@@ -395,12 +395,12 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
         if(!is_sign_in_prev)
         {
             //activate:
-            for (i = 0;i < sli_alerts_table_size; i++)
+            for (i = 0;i < tsr_alerts_table_size; i++)
             {
-                if(sign_recv == sli_alerts_table[i].hexcode)
+                if(sign_recv == tsr_alerts_table[i].hexcode)
                 {
-                   mydisplays->activate(sli_alerts_table[i].alert, sli_alerts_table[i].value);
-                   i = sli_alerts_table_size;
+                   mydisplays->activate(tsr_alerts_table[i].alert, tsr_alerts_table[i].value);
+                   i = tsr_alerts_table_size;
                 }
             }
         }
