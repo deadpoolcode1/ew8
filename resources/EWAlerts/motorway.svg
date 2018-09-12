@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="115"
+   height="193"
+   id="svg2312"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docname="Motorway_IL.svg"
+   sodipodi:docbase="/tmp"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs2314">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 96.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="115 : 96.5 : 1"
+       inkscape:persp3d-origin="57.5 : 64.333333 : 1"
+       id="perspective22" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.0880829"
+     inkscape:cx="19.340304"
+     inkscape:cy="96.5"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="true"
+     showguides="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="974"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8" />
+  <metadata
+     id="metadata2317">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Motorway Mark</dc:title>
+        <dc:date>30 August 2006</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>en:User:nandhp</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:description>SVG version of http://commons.wikimedia.org/wiki/Image:Motorway_IL.JPG by user E70</dc:description>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Blue Box"
+     style="display:inline">
+    <rect
+       style="opacity:1;fill:#0090b4;fill-opacity:1;stroke:none;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2438"
+       width="106.5211"
+       height="181.43672"
+       x="4.4789081"
+       y="5"
+       ry="6.7047148"
+       rx="6.7047148" />
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <a
+       id="a2497">
+      <g
+         id="g2459">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+           id="rect2444"
+           width="24.595533"
+           height="97.482704"
+           x="30"
+           y="81.520042"
+           rx="0"
+           ry="0" />
+        <path
+           sodipodi:type="star"
+           style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.94117647"
+           id="path2436"
+           sodipodi:sides="3"
+           sodipodi:cx="14.367246"
+           sodipodi:cy="177.67494"
+           sodipodi:r1="36.953594"
+           sodipodi:r2="18.476797"
+           sodipodi:arg1="-1.5707963"
+           sodipodi:arg2="-0.52359878"
+           inkscape:flatsided="true"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="M 14.367247,140.72135 L 46.369997,196.15174 L -17.635506,196.15174 L 14.367247,140.72135 z "
+           transform="matrix(0.531204,0,0,1.758651,22.36806,-165.9595)" />
+      </g>
+    </a>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.94117647"
+       id="rect2487"
+       width="89"
+       height="8"
+       x="13"
+       y="68"
+       rx="0"
+       ry="0" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#a2497"
+       id="use2502"
+       transform="matrix(-1,0,0,1,116,0)"
+       width="115"
+       height="193" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#a2497"
+       id="use2520"
+       transform="matrix(0.507455,0,0,0.51291,26.89076,-28.8024)"
+       width="115"
+       height="193" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use2502"
+       id="use2522"
+       transform="matrix(0.507458,0,0,0.51291,30.24425,-28.80947)"
+       width="115"
+       height="193" />
+    <g
+       id="g2192">
+      <rect
+         ry="0"
+         rx="2"
+         y="75"
+         x="17.507959"
+         height="10.999994"
+         width="4.492043"
+         id="rect2493"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.94117647" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path2495"
+         d="M 26.692929,73.845221 C 22.680985,74.614878 19.904516,78.257306 19.694839,83.706833"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:4.46772957;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path2524"
+         d="M 15.513715,74.470147 C 19.201002,75.764519 19.105612,77.650318 19.399975,81.14822"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.32011986;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g2192"
+       id="use2197"
+       transform="matrix(-1,0,0,1,115.0943,0)"
+       width="115"
+       height="193" />
+  </g>
+</svg>

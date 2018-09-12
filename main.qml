@@ -36,21 +36,21 @@ ApplicationWindow {
      */
     
     //WARNING: the [indices] are just mnemonics
-    property var sli_reg_arr: [      
-        [Alert.SLI_REG_10]  =  "10",
-        [Alert.SLI_REG_20]  =  "20",
-        [Alert.SLI_REG_30]  =  "30",
-        [Alert.SLI_REG_40]  =  "40",
-        [Alert.SLI_REG_50]  =  "50",
-        [Alert.SLI_REG_60]  =  "60",
-        [Alert.SLI_REG_70]  =  "70",
-        [Alert.SLI_REG_80]  =  "80",
-        [Alert.SLI_REG_90]  =  "90",
-        [Alert.SLI_REG_100] = "100",
-        [Alert.SLI_REG_110] = "110",
-        [Alert.SLI_REG_120] = "120",
-        [Alert.SLI_REG_130] = "130",
-        [Alert.SLI_REG_140] = "140",
+    property var sli_arr: [
+        [Alert.SLI_10]  =  "10",
+        [Alert.SLI_20]  =  "20",
+        [Alert.SLI_30]  =  "30",
+        [Alert.SLI_40]  =  "40",
+        [Alert.SLI_50]  =  "50",
+        [Alert.SLI_60]  =  "60",
+        [Alert.SLI_70]  =  "70",
+        [Alert.SLI_80]  =  "80",
+        [Alert.SLI_90]  =  "90",
+        [Alert.SLI_100] = "100",
+        [Alert.SLI_110] = "110",
+        [Alert.SLI_120] = "120",
+        [Alert.SLI_130] = "130",
+        [Alert.SLI_140] = "140",
     ]
 
 
@@ -143,13 +143,13 @@ ApplicationWindow {
 
                     property bool is_ready: false
 
-                    visible: is_ready && !(alert_sli_regular_main.visible);
+                    visible: is_ready && !(alert_sli_main.visible);
 
-                    id: alert_sli_regular;
-                    objectName: "ALERT_SLI_REGULAR"
+                    id: alert_sli;
+                    objectName: "ALERT_SLI"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_SLI_REGULAR
-                    property int canEntityArg: Alert.SLI_REG_100
+                    property int canEntityType: Alert.ALERT_SLI
+                    property int canEntityArg: Alert.SLI_100
                     function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
@@ -158,7 +158,7 @@ ApplicationWindow {
                     rotation: 0;
 
                     Text {
-                        text: page.sli_reg_arr[parent.canEntityArg]
+                        text: page.sli_arr[parent.canEntityArg]
                         font.family: "Arial"
                         font.pointSize: 10
                         font.bold: true
@@ -190,6 +190,94 @@ ApplicationWindow {
                     rotation: 0;
                 }
 
+                /*
+
+
+                {0xAF,AlertTypes::ALERT_PLAYGROUND , (quint8)       0x00},
+                {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
+                {0xC8,AlertTypes::ALERT_NO_PASS, (quint8)           0x00},
+                */
+
+
+                Image {
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    visible: false
+
+                    id: alert_motorway_side;
+                    objectName: "ALERT_MOTORWAY_SIDE"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_MOTORWAY
+
+                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/motorway.svg";
+                    rotation: 0;
+                }
+
+                Image {
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    visible: false
+
+                    id: alert_playground_side;
+                    objectName: "ALERT_PLAYGROUND_SIDE"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_PLAYGROUND
+
+                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/playground.svg";
+                    rotation: 0;
+                }
+
+                Image {
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    visible: false
+
+                    id: alert_no_pass_side;
+                    objectName: "ALERT_NO_PASS_SIDE"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_NO_PASS
+
+                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/no_pass.svg";
+                    rotation: 0;
+                }
+
+                Image {
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    visible: false
+
+                    id: alert_end_all_restr_side;
+                    objectName: "ALERT_END_ALL_RESTR_SIDE"
+                    property int layer_pri: 0
+                    property int canEntityType: Alert.ALERT_END_ALL_RESTR
+
+                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    fillMode: Image.PreserveAspectFit;
+                    source:"qrc:/resources/EWAlerts/end_all_restr.svg";
+                    rotation: 0;
+                }
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             }
 
@@ -376,15 +464,15 @@ ApplicationWindow {
 
                             if(visible === true)
                             {
-                               sliTimer_regular.running = true
+                               sliTimer.running = true
                             }
                         }
 
-                        id: alert_sli_regular_main;
-                        objectName: "ALERT_SLI_REGULAR_MAIN"
+                        id: alert_sli_main;
+                        objectName: "ALERT_SLI_MAIN"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_SLI_REGULAR
-                        property int canEntityArg: Alert.SLI_REG_100
+                        property int canEntityType: Alert.ALERT_SLI
+                        property int canEntityArg: Alert.SLI_100
                         function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                         visible: false;
@@ -394,7 +482,7 @@ ApplicationWindow {
                         rotation: 0;
 
                         Text {
-                            text: page.sli_reg_arr[parent.canEntityArg]
+                            text: page.sli_arr[parent.canEntityArg]
                             font.family: "Arial"
                             font.pointSize: 40
                             font.bold: true
@@ -407,7 +495,7 @@ ApplicationWindow {
 
                         Timer {
 
-                            id: sliTimer_regular
+                            id: sliTimer
 
                             interval: 500
                             running: false

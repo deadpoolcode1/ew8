@@ -114,22 +114,30 @@ tsr_alerts_table_row_t;
 
 static const tsr_alerts_table_row_t tsr_alerts_table[] =
 {
-    {0x0, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_10},
-    {0x1, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_20},
-    {0x2, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_30},
-    {0x3, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_40},
-    {0x4, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_50},
-    {0x5, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_60},
-    {0x6, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_70},
-    {0x7, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_80},
-    {0x8, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_90},
-    {0x9, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_100},
-    {0xA, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_110},
-    {0xB, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_120},
-    {0xC, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_130},
-    {0xD, AlertTypes::ALERT_SLI_REGULAR, (quint8)AlertTypes::SLI_REG_140},
+    {0x0, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_10},
+    {0x1, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_20},
+    {0x2, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_30},
+    {0x3, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_40},
+    {0x4, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_50},
+    {0x5, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_60},
+    {0x6, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_70},
+    {0x7, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_80},
+    {0x8, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_90},
+    {0x9, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_100},
+    {0xA, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_110},
+    {0xB, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_120},
+    {0xC, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_130},
+    {0xD, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_140},
 
-    {0xE, AlertTypes::ALERT_FORWARD    , (quint8)                   0x00},
+    {0xE, AlertTypes::ALERT_FORWARD    , (quint8)       0x00},
+    {0xAB,AlertTypes::ALERT_MOTORWAY   , (quint8)       0x00},
+
+    {0xAF,AlertTypes::ALERT_PLAYGROUND , (quint8)       0x00},
+    {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
+    {0xC8,AlertTypes::ALERT_NO_PASS, (quint8)           0x00},
+
+
+
 };
 
 static const size_t tsr_alerts_table_size = sizeof(tsr_alerts_table)/sizeof(tsr_alerts_table_row_t);

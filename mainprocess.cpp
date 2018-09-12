@@ -58,6 +58,19 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
         // TBD display general error and go
     }
 
+    QObject * rootQobjectStatusPannel = MainProcess::componentObject->findChild<QObject*>("status_panel_root");
+    if (!rootQobjectStatusPannel)
+    {
+        // TBD display general error and go
+    }
+
+    QObject * rootQobjectSADASPannel = MainProcess::componentObject->findChild<QObject*>("right_panel_root");
+    if (!rootQobjectSADASPannel)
+    {
+        // TBD display general error and go
+    }
+
+
 
     // generate map for alertTypes<->Objects
     EntityType::generateTypes();
@@ -65,8 +78,8 @@ MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : Q
 // build panels trees
     mainPanelTree = new RootedTree(rootQobjectMainPannel);
     tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
-//    statusPanelTree = new RootedTree(rootQobjectStatusPannel);
- //   smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
+    statusPanelTree = new RootedTree(rootQobjectStatusPannel);
+    smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
 #if 0
     QmlTreeParser* qmlTreeParser = new QmlTreeParser();
 
@@ -127,6 +140,18 @@ void MainProcess::updateDisplay(void)
     }
 
     tsrPanelTree->updateVisibility();
+
+    if (!statusPanelTree)
+    {
+        return;
+    }
+    statusPanelTree->updateVisibility();
+
+    if (!smartADASPanelTree)
+    {
+        return;
+    }
+    smartADASPanelTree->updateVisibility();
 
 
     flag_tree_changed = false;

@@ -42,20 +42,20 @@ public:
 
     enum EnSliRegular
     {
-        SLI_REG_10 =  0x0,
-        SLI_REG_20 =  0x1,
-        SLI_REG_30 =  0x2,
-        SLI_REG_40 =  0x3,
-        SLI_REG_50 =  0x4,
-        SLI_REG_60 =  0x5,
-        SLI_REG_70 =  0x6,
-        SLI_REG_80 =  0x7,
-        SLI_REG_90 =  0x8,
-        SLI_REG_100 = 0x9,
-        SLI_REG_110 = 0xA,
-        SLI_REG_120 = 0xB,
-        SLI_REG_130 = 0xC,
-        SLI_REG_140 = 0xD,
+        SLI_10 =  0x0,
+        SLI_20 =  0x1,
+        SLI_30 =  0x2,
+        SLI_40 =  0x3,
+        SLI_50 =  0x4,
+        SLI_60 =  0x5,
+        SLI_70 =  0x6,
+        SLI_80 =  0x7,
+        SLI_90 =  0x8,
+        SLI_100 = 0x9,
+        SLI_110 = 0xA,
+        SLI_120 = 0xB,
+        SLI_130 = 0xC,
+        SLI_140 = 0xD,
     };
     Q_ENUMS(EnSliRegular)
 
@@ -77,9 +77,13 @@ public:
         ALERT_HI_BEAM = 11,
         ALERT_LOW_BEAM = 12,
         ALERT_BLINKERS = 13,
-        ALERT_SLI_REGULAR = 14,
+        ALERT_SLI = 14,
         ALERT_FORWARD = 15,
-        ALERT_END_OF_TYPE = 16,
+        ALERT_MOTORWAY = 16,
+        ALERT_PLAYGROUND = 17,
+        ALERT_END_ALL_RESTR = 18,
+        ALERT_NO_PASS = 19,
+        ALERT_END_OF_TYPE = 20,
     };
     Q_ENUMS(EnAlert)
 
