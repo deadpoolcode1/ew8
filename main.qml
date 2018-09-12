@@ -190,15 +190,6 @@ ApplicationWindow {
                     rotation: 0;
                 }
 
-                /*
-
-
-                {0xAF,AlertTypes::ALERT_PLAYGROUND , (quint8)       0x00},
-                {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
-                {0xC8,AlertTypes::ALERT_NO_PASS, (quint8)           0x00},
-                */
-
-
                 Image {
 
                     function setVisible(isVisible)

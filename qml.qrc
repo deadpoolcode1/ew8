@@ -46,5 +46,9 @@
         <file>resources/EWAlerts/forward.svg</file>
         <file>resources/EWAlerts/hmw_green.png</file>
         <file>resources/EWAlerts/hmw_red.png</file>
+        <file>resources/EWAlerts/end_all_restr.svg</file>
+        <file>resources/EWAlerts/motorway.svg</file>
+        <file>resources/EWAlerts/no_pass.svg</file>
+        <file>resources/EWAlerts/playground.svg</file>
     </qresource>
 </RCC>

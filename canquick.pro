@@ -74,7 +74,11 @@ DISTFILES += \
     resources/EWAlerts/fla_armed_low.png \
     resources/EWAlerts/forward.svg \
     resources/EWAlerts/hmw_green.png \
-    resources/EWAlerts/hmw_red.png
+    resources/EWAlerts/hmw_red.png \
+    resources/EWAlerts/end_all_restr.svg \
+    resources/EWAlerts/motorway.svg \
+    resources/EWAlerts/no_pass.svg \
+    resources/EWAlerts/playground.svg
 
 HEADERS += \
     canmanager.h \
