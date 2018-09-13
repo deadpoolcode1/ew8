@@ -3,8 +3,6 @@
 
 #include <alerttypes.h>
 
-#define CAN_MESSAGES_TYPES_NUM 2
-
 typedef enum DISPLAY_ERRORS
 {
     OK= 0,
@@ -47,6 +45,8 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_right, 0x620},
 #endif
 };
+
+#define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
 
 #define CAN_MSG_MASTER_FLA_BYTE 1
 #define CAN_MSG_MASTER_FLA_MSK  0x80

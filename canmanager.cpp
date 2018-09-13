@@ -44,13 +44,81 @@ CanManager::CanManager(IAlertDisplay * alertdisp)
 void CanManager::init(void)
 {
 
- for(size_t i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
- {
-    init_frame(&(prev_frame[i]));
- }
+    size_t i = 0;
+
+    for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
+    {
+        init_frame(&(prev_frame[i]));
+    }
 
 #ifndef WIN32
+
+    //CAN interface configuration:
+
+    int can_err_status;
+
+
+    can_err_status = can_do_stop("can0");
+
+    if(can_err_status)
+    {
+        printf("failed can0 stop\n");
+    }
+    else
+    {
+        //set parameters:
+#if 1
+        can_err_status = can_set_bitrate_samplepoint("can0", 500000, 0.875);
+#else
+        can_err_status = can_set_bitrate("can0", 500000);
+        can_err_status |= can_set_bittiming(const char *name, struct can_bittiming *bt);
+#endif
+
+        struct can_ctrlmode cm =
+        {
+            .mask = 0x00,
+            .flags = 0x80, // CAN_CTRLMODE_FD_NON_ISO,
+        };
+
+#if 0
+        can_get_ctrlmode("can0",&cm);
+        printf("cm.mask:%X,cm.flag:%X\n",cm.mask,cm.flags);
+#endif
+
+        can_err_status |= can_set_ctrlmode("can0", &cm);
+
+
+        if(can_err_status)
+        {
+            printf("can parameters configuration failed\n");
+        }
+        else
+        {
+            can_err_status = can_do_start("can0");
+
+            if(can_err_status)
+            {
+                printf("failed can0 start\n");
+            }
+        }
+    }
+
+    if(!can_err_status)
+    {
+      printf("Can interface configuration succeed\n");
+    }
+
+
+
+    //CAN Socket configuration:
+    for (i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+    {
+        rfilter[i].can_id = can_id_values_table[i].value;
+        rfilter[i].can_mask = CAN_SFF_MASK;
+    }
+
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
 
     strcpy(ifr.ifr_name, "can0" );
     ioctl(socknum, SIOCGIFINDEX, &ifr);
@@ -65,8 +133,14 @@ void CanManager::init(void)
 
       //Channel initialization
       hnd = canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
+
+      //canSetBusOutputControl(hnd, canDRIVER_NORMAL);
+
+
       stat = canSetBusParams(hnd, canBITRATE_500K, 0, 0, 0, 0, 0);
       stat = canBusOn(hnd);
+
+      //TODO add filter,sampling point and normal mode
 
 #endif
 }
