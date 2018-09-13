@@ -49,6 +49,7 @@ void CanManager::init(void)
     for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
     {
         init_frame(&(prev_frame[i]));
+        is_a_first_frame[i] =  true;
     }
 
 #ifndef WIN32
@@ -258,11 +259,17 @@ qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_fra
 {
     quint32 ret = 0;
 
-    quint32 prevState = (prev->data[byte]&mask)? 1 : 0;
+     quint32 recvState = (recv->data[byte]&mask)? 1 : 0;
 
-    quint32 recvState = (recv->data[byte]&mask)? 1 : 0;
-
-    ret = recvState - prevState;
+    if(prev)
+    {
+       quint32 prevState = (prev->data[byte]&mask)? 1 : 0;
+       ret = recvState - prevState;
+    }
+    else
+    {
+        ret = recvState? 1 : (-1);
+    }
 
     return ret;
 }
@@ -331,31 +338,29 @@ void CanManager::hmwStateParse(struct can_frame * frame, hmw_state_t * result)
 
 void CanManager::hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {
-
-    //extract data and make decision:
-
-    hmw_state_t prevres;
     hmw_state_t recvres;
-
-    hmwStateParse(prev,&prevres);
     hmwStateParse(recv,&recvres);
 
-
-    //execute decision:
-
-    //deactivation
-    if(prevres.is_active && (!recvres.is_active ||(prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
+    if(prev)
     {
-        mydisplays->deactivate(prevres.alert);
-    }
 
-    //activation
-    if(recvres.is_active && (!prevres.is_active || (prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
+        hmw_state_t prevres;
+        hmwStateParse(prev,&prevres);
+
+        if(prevres.is_active && (!recvres.is_active ||(prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
+        {
+            mydisplays->deactivate(prevres.alert);
+        }
+
+        if(recvres.is_active && (!prevres.is_active || (prevres.value != recvres.value) || (prevres.alert != recvres.alert)))
+        {
+            mydisplays->activate(recvres.alert,(quint8)recvres.value);
+        }
+    }
+    else if(recvres.is_active)
     {
         mydisplays->activate(recvres.alert,(quint8)recvres.value);
     }
-
-
 }
 
 void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
@@ -366,24 +371,25 @@ void CanManager::beamStateParseAndProcess(struct can_frame * prev, struct can_fr
     qint32 en_byte =  CAN_MSG_MASTER_FLA_BYTE;
     qint32 en_msk = CAN_MSG_MASTER_FLA_MSK;
 
-
-    AlertTypes::EnAlert prevState = ((prev->data[byte]&mask)? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM);
-
     AlertTypes::EnAlert recvState = ((recv->data[byte]&mask)? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM);
-
-
-    qint32 prevValidState = ((prev->data[en_byte]&en_msk)? 1 : 0);
-
     qint32 recvValidState = ((recv->data[en_byte]&en_msk)? 1 : 0);
 
-
-    if ((prevValidState && !recvValidState) || (recvState != prevState))
+    if (prev)
     {
-        mydisplays->deactivate(prevState);
+        AlertTypes::EnAlert prevState = ((prev->data[byte]&mask)? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM);
+        qint32 prevValidState = ((prev->data[en_byte]&en_msk)? 1 : 0);
+
+        if ((prevValidState && !recvValidState) || (recvState != prevState))
+        {
+            mydisplays->deactivate(prevState);
+        }
+
+        if(recvValidState && ((!prevValidState) || (recvState != prevState)))
+        {
+            mydisplays->activate(recvState);
+        }
     }
-
-
-    if(recvValidState && ((!prevValidState) || (recvState != prevState)))
+    else if (recvValidState)
     {
         mydisplays->activate(recvState);
     }
@@ -406,42 +412,46 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
     size_t j;
 
     //deactivation
-    for (i = 0; i < 4; i++)
+
+    if(prev)
     {
-
-        is_sign_in_recv = false;
-
-        for (j = 0; j < 4; j++)
+        for (i = 0; i < 4; i++)
         {
 
-            sign_prev = prev->data[i*2];
-            sign_recv = recv->data[j*2];
+            is_sign_in_recv = false;
 
-            supp_prev = prev->data[1+i*2];
-            supp_recv = recv->data[1+j*2];
-
-            if (sign_prev == sign_recv && supp_prev == supp_recv)
+            //filter:
+            for (j = 0; j < 4; j++)
             {
-                is_sign_in_recv = true;
-            }
 
-        }
+                sign_prev = prev->data[i*2];
+                sign_recv = recv->data[j*2];
 
-        if(!is_sign_in_recv)
-        {
-            //deactivate:
-            for (i = 0;i < tsr_alerts_table_size; i++)
-            {
-                if(sign_prev == tsr_alerts_table[i].hexcode)
+                supp_prev = prev->data[1+i*2];
+                supp_recv = recv->data[1+j*2];
+
+                if (sign_prev == sign_recv && supp_prev == supp_recv)
                 {
-                   mydisplays->deactivate(tsr_alerts_table[i].alert);
-                   i = tsr_alerts_table_size;
+                    is_sign_in_recv = true;
                 }
+
             }
 
+            if(!is_sign_in_recv)
+            {
+                //deactivate:
+                for (i = 0;i < tsr_alerts_table_size; i++)
+                {
+                    if(sign_prev == tsr_alerts_table[i].hexcode)
+                    {
+                        mydisplays->deactivate(tsr_alerts_table[i].alert);
+                        i = tsr_alerts_table_size;
+                    }
+                }
+
+            }
         }
     }
-
 
 
     //activation:
@@ -450,21 +460,26 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
 
         is_sign_in_prev = false;
 
-        for (i = 0; i < 4; i++)
+        if(prev)
         {
-
-            sign_prev = prev->data[i*2];
-            sign_recv = recv->data[j*2];
-
-            supp_prev = prev->data[1+i*2];
-            supp_recv = recv->data[1+j*2];
-
-            if (sign_prev == sign_recv && supp_prev == supp_recv)
+            //filter:
+            for (i = 0; i < 4; i++)
             {
-                is_sign_in_prev = true;
-            }
+                sign_prev = prev->data[i*2];
+                sign_recv = recv->data[j*2];
 
+                supp_prev = prev->data[1+i*2];
+                supp_recv = recv->data[1+j*2];
+
+                if (sign_prev == sign_recv && supp_prev == supp_recv)
+                {
+                    is_sign_in_prev = true;
+                }
+
+            }
         }
+
+
 
         if(!is_sign_in_prev)
         {
@@ -473,12 +488,14 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
             {
                 if(sign_recv == tsr_alerts_table[i].hexcode)
                 {
-                   mydisplays->activate(tsr_alerts_table[i].alert, tsr_alerts_table[i].value);
-                   i = tsr_alerts_table_size;
+                    mydisplays->activate(tsr_alerts_table[i].alert, tsr_alerts_table[i].value);
+                    i = tsr_alerts_table_size;
                 }
             }
         }
+
     }
+
 }
 
 void CanManager::parse_frame(struct can_frame * frame)
@@ -496,15 +513,23 @@ void CanManager::parse_frame(struct can_frame * frame)
          }
     }
 
-    //TODO compare with received:
+    //WARNING the first received frame is "preceeded" by a NULL frame
+    struct can_frame * preframe = NULL;
 
-   if(0 != memcmp(&prev_frame[received_id], frame, sizeof(struct can_frame)))
+    if (is_a_first_frame[received_id])
+    {
+        is_a_first_frame[received_id] = false;
+    }
+    else
+    {
+        preframe = &prev_frame[received_id];
+    }
+
+    //TODO compare with received:
+   if (preframe && (0 != memcmp(preframe, frame, sizeof(struct can_frame))))
    {
      is_frame_updated = true;
    }
-
-
-
 
     //display information:
 
@@ -514,10 +539,7 @@ void CanManager::parse_frame(struct can_frame * frame)
        //skip
    }
    else
-   {
-
-
-       struct can_frame * preframe = &prev_frame[received_id];
+   {    
 
        qint32 alertAction;
 
@@ -531,9 +553,13 @@ void CanManager::parse_frame(struct can_frame * frame)
 
                beamStateParseAndProcess(preframe,frame);
 
+
+
                //byte 2:
 
                hmwStateParseAndProcess(preframe,frame);
+
+
 
                //byte 4:
 
@@ -547,6 +573,8 @@ void CanManager::parse_frame(struct can_frame * frame)
                    mydisplays->deactivate(AlertTypes::ALERT_LDWOFF);
                    mydisplays->activate(AlertTypes::ALERT_LDWON);
                }
+
+
 
                if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LLDW_BYTE, CAN_MSG_MASTER_LLDW_MSK)))
                {
