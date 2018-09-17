@@ -160,6 +160,15 @@ void MainProcess::updateDisplay(void)
 void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
 {
 
+    if (AlertTypes::ALERT_NONE == alert)
+    {
+        //TODO single return point
+        return;
+    }
+#if 1
+    printf("function:%s alert: %d\n", __func__, alert);
+#endif
+
     RootedTreeNode* nodeCGRT = nullptr;
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
@@ -191,6 +200,15 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
 
 void MainProcess::deactivate(AlertTypes::EnAlert alert)
 {
+    if (AlertTypes::ALERT_NONE == alert)
+    {
+        //TODO single return point
+        return;
+    }
+
+#if 1
+    printf("function:%s alert: %d\n", __func__, alert);
+#endif
 
     RootedTreeNode* nodeCGRT = nullptr;
 

@@ -74,6 +74,7 @@ private:
 
     void hmwStateParse(struct can_frame * frame, hmw_state_t * result);
 
+    bool is_tsr_enabled;
 
 
 #ifndef WIN32

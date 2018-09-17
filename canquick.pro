@@ -39,31 +39,6 @@ DISTFILES += \
     resources/EWAlerts/blinkers.png \
     resources/EWAlerts/fcw.png \
     resources/EWAlerts/fla_armed.png \
-    resources/EWAlerts/hmwa03.png \
-    resources/EWAlerts/hmwa04.png \
-    resources/EWAlerts/hmwa05.png \
-    resources/EWAlerts/hmwa06.png \
-    resources/EWAlerts/hmwa07.png \
-    resources/EWAlerts/hmwa08.png \
-    resources/EWAlerts/hmwm06.png \
-    resources/EWAlerts/hmwm07.png \
-    resources/EWAlerts/hmwm08.png \
-    resources/EWAlerts/hmwm09.png \
-    resources/EWAlerts/hmwm10.png \
-    resources/EWAlerts/hmwm11.png \
-    resources/EWAlerts/hmwm12.png \
-    resources/EWAlerts/hmwm13.png \
-    resources/EWAlerts/hmwm14.png \
-    resources/EWAlerts/hmwm15.png \
-    resources/EWAlerts/hmwm16.png \
-    resources/EWAlerts/hmwm17.png \
-    resources/EWAlerts/hmwm18.png \
-    resources/EWAlerts/hmwm19.png \
-    resources/EWAlerts/hmwm21.png \
-    resources/EWAlerts/hmwm22.png \
-    resources/EWAlerts/hmwm23.png \
-    resources/EWAlerts/hmwm24.png \
-    resources/EWAlerts/hmwm25.png \
     resources/EWAlerts/ldwoff.png \
     resources/EWAlerts/ldwon.png \
     resources/EWAlerts/lldw.png \

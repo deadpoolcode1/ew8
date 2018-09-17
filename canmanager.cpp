@@ -46,6 +46,8 @@ void CanManager::init(void)
 
     size_t i = 0;
 
+    is_tsr_enabled = false;
+
     for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
     {
         init_frame(&(prev_frame[i]));
@@ -405,47 +407,51 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
     quint8 sign_prev;
     quint8 sign_recv;
 
-    quint8 supp_prev;
-    quint8 supp_recv;
+    //quint8 supp_prev;
+    //quint8 supp_recv;
 
-    size_t i;
-    size_t j;
+    size_t i; //pick sign
+    size_t j; //filter sign
+    size_t k; //find action
 
-    //deactivation
-
+    //deactivation:
     if(prev)
     {
         for (i = 0; i < 4; i++)
         {
 
             is_sign_in_recv = false;
+            sign_prev = prev->data[i*2];
+            //supp_prev = prev->data[1+i*2];
 
             //filter:
-            for (j = 0; j < 4; j++)
+            if(recv)
             {
 
-                sign_prev = prev->data[i*2];
-                sign_recv = recv->data[j*2];
-
-                supp_prev = prev->data[1+i*2];
-                supp_recv = recv->data[1+j*2];
-
-                if (sign_prev == sign_recv && supp_prev == supp_recv)
+                for (j = 0; j < 4; j++)
                 {
-                    is_sign_in_recv = true;
-                }
 
+
+                    sign_recv = recv->data[j*2];
+                    //supp_recv = recv->data[1+j*2];
+
+                    if (sign_prev == sign_recv /*&& supp_prev == supp_recv*/)
+                    {
+                        is_sign_in_recv = true;
+                    }
+
+                }
             }
 
             if(!is_sign_in_recv)
             {
                 //deactivate:
-                for (i = 0;i < tsr_alerts_table_size; i++)
+                for (k = 0;k < tsr_alerts_table_size; k++)
                 {
-                    if(sign_prev == tsr_alerts_table[i].hexcode)
+                    if(sign_prev == tsr_alerts_table[k].hexcode)
                     {
-                        mydisplays->deactivate(tsr_alerts_table[i].alert);
-                        i = tsr_alerts_table_size;
+                        mydisplays->deactivate(tsr_alerts_table[k].alert);
+                        k = tsr_alerts_table_size;
                     }
                 }
 
@@ -454,48 +460,50 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
     }
 
 
+
     //activation:
-    for (j = 0; j < 4; j++)
+    if(recv)
     {
-
-        is_sign_in_prev = false;
-
-        if(prev)
+        for (i = 0; i < 4; i++)
         {
+
+            is_sign_in_prev = false;
+            sign_recv = recv->data[i*2];
+            //supp_recv = recv->data[1+i*2];
+
             //filter:
-            for (i = 0; i < 4; i++)
+            if(prev)
             {
-                sign_prev = prev->data[i*2];
-                sign_recv = recv->data[j*2];
-
-                supp_prev = prev->data[1+i*2];
-                supp_recv = recv->data[1+j*2];
-
-                if (sign_prev == sign_recv && supp_prev == supp_recv)
+                for (j = 0; j < 4; j++)
                 {
-                    is_sign_in_prev = true;
-                }
-
-            }
-        }
+                    sign_prev = prev->data[j*2];
+                    //supp_prev = prev->data[1+j*2];
 
 
-
-        if(!is_sign_in_prev)
-        {
-            //activate:
-            for (i = 0;i < tsr_alerts_table_size; i++)
-            {
-                if(sign_recv == tsr_alerts_table[i].hexcode)
-                {
-                    mydisplays->activate(tsr_alerts_table[i].alert, tsr_alerts_table[i].value);
-                    i = tsr_alerts_table_size;
+                    if (sign_prev == sign_recv /*&& supp_prev == supp_recv*/)
+                    {
+                        is_sign_in_prev = true;
+                    }
                 }
             }
-        }
 
+
+
+            if(!is_sign_in_prev)
+            {
+                //activate:
+                for (k = 0;k < tsr_alerts_table_size; k++)
+                {
+                    if(sign_recv == tsr_alerts_table[k].hexcode)
+                    {
+                        mydisplays->activate(tsr_alerts_table[k].alert, tsr_alerts_table[k].value);
+                        k = tsr_alerts_table_size;
+                    }
+                }
+            }
+
+        }
     }
-
 }
 
 void CanManager::parse_frame(struct can_frame * frame)
@@ -513,8 +521,19 @@ void CanManager::parse_frame(struct can_frame * frame)
          }
     }
 
+    //filter enabled/disabled messages (only can_id_tsr currently):
+    if(can_id_tsr == received_id && !is_tsr_enabled)
+    {
+        //TODO add array of enabled/disabled messages
+        //TODO make return point of the function single.
+        return;
+    }
+
+
+
+
     //WARNING the first received frame is "preceeded" by a NULL frame
-    struct can_frame * preframe = NULL;
+    struct can_frame * preframe = nullptr;
 
     if (is_a_first_frame[received_id])
     {
@@ -525,11 +544,17 @@ void CanManager::parse_frame(struct can_frame * frame)
         preframe = &prev_frame[received_id];
     }
 
-    //TODO compare with received:
-   if (preframe && (0 != memcmp(preframe, frame, sizeof(struct can_frame))))
-   {
-     is_frame_updated = true;
-   }
+    if (preframe)
+    {
+        if (0 != memcmp(preframe, frame, sizeof(struct can_frame)))
+        {
+            is_frame_updated = true;
+        }
+    }
+    else
+    {
+        is_frame_updated = true;
+    }
 
     //display information:
 
@@ -565,14 +590,23 @@ void CanManager::parse_frame(struct can_frame * frame)
 
                if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
                {
-                   mydisplays->deactivate(AlertTypes::ALERT_LDWON);
                    mydisplays->activate(AlertTypes::ALERT_LDWOFF);
                }
                else if (-1 == alertAction)
                {
                    mydisplays->deactivate(AlertTypes::ALERT_LDWOFF);
+               }
+
+               //Inverted from previous
+               if(-(1) == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_LDW_OFF_BYTE, CAN_MSG_MASTER_LDW_OFF_MSK)))
+               {
                    mydisplays->activate(AlertTypes::ALERT_LDWON);
                }
+               else if (-(-1) == alertAction)
+               {
+                   mydisplays->deactivate(AlertTypes::ALERT_LDWON);
+               }
+
 
 
 
@@ -625,6 +659,25 @@ void CanManager::parse_frame(struct can_frame * frame)
                  mydisplays->deactivate(AlertTypes::ALERT_PDZ);
                }
 
+               //CAN_MSG_MASTER_TSREN_BYTE
+
+               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_TSREN_BYTE, CAN_MSG_MASTER_TSREN_MSK)))
+               {
+                   is_tsr_enabled = true;
+
+               }
+               else if (-1 == alertAction)
+               {
+                   is_tsr_enabled = false;
+
+                   //reset active tsr alerts:
+                   if(false == is_a_first_frame[can_id_tsr])
+                   {
+                       sliStateParseAndProcess(&prev_frame[can_id_tsr], nullptr);
+                       is_a_first_frame[can_id_tsr] = true;
+                   }
+               }
+
 
 #if 0
                if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_BLINKERS_BYTE, CAN_MSG_MASTER_BLINKERS_MSK)))
@@ -639,15 +692,19 @@ void CanManager::parse_frame(struct can_frame * frame)
 
            break;
 
-        case can_id_sli:
+        case can_id_tsr:
 
-            sliStateParseAndProcess(preframe,frame);
+                sliStateParseAndProcess(preframe,frame);
 
             break;
-    }
-    mydisplays->mutex.unlock();
 
-    memcpy(preframe, frame, sizeof(struct can_frame));
-}
+        case can_id_undefined:
+            //never used
+            break;
+        }
+        mydisplays->mutex.unlock();
+
+        memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
+   }
 
 }

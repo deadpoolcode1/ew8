@@ -373,6 +373,62 @@ ApplicationWindow {
                     }
                     visible: false
 
+                    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                    //Groups:
+                    Item
+                    {
+                        id: group4
+                        objectName: "PDZ_QtQG"
+                        property bool mutexGroup: false
+
+                        property int canEntityType: Alert.QtQG
+
+                        property int layer_pri: 1
+
+                        function setVisible(isVisible)
+                        {
+                            visible = isVisible
+                        }
+                        visible: false
+
+                    }
+
+
+
+                    //Atomic items:
+                    Image {
+
+                        function setVisible(isVisible)
+                        {
+                            //blinkTimer_fcw.setRunning(isVisible)
+                            visible = isVisible
+                        }
+
+                        id: alert_pdz;
+                        objectName: "PDZ_ALERT"
+                        property int layer_pri: 1
+                        property int canEntityType: Alert.ALERT_PDZ
+                        opacity: 1.0
+
+                        visible: false;
+                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"qrc:/resources/EWAlerts/pdz.png";
+                        rotation: 0;
+
+                        SequentialAnimation {
+
+                                running: alert_pdz.visible
+                                loops: Animation.Infinite
+
+                                NumberAnimation { target: alert_pdz; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
+                                NumberAnimation { target: alert_pdz; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
+
+                        }
+
+                    }
+
+
 
                     ////////////////////////////////
                     //Atomic items:

@@ -19,12 +19,13 @@ typedef enum FORCE_INVISIBILITY
 } FORCE_INVISIBILITY_t;
 
 typedef enum can_id_e {
-
 can_id_undefined = -1,
 can_id_master = 0,
-can_id_sli   =  1,
+can_id_tsr   =  1,
+#if 0
 can_id_left =   2,
 can_id_right =  3,
+#endif
 } can_id_t;
 
 
@@ -39,7 +40,7 @@ typedef struct can_id_values_table_row_s
 static const can_id_values_table_row_t can_id_values_table[] =
 {
   {can_id_master, 0x700},
-  {can_id_sli,    0x727},
+  {can_id_tsr,    0x727},
 #if 0
   {can_id_left, 0x610},
   {can_id_right, 0x620},
@@ -92,6 +93,9 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_BLINKERS_BYTE 5
 #define CAN_MSG_MASTER_BLINKERS_MSK 0x08
 
+#define CAN_MSG_MASTER_TSREN_BYTE 5
+#define CAN_MSG_MASTER_TSREN_MSK 0x80
+
 #define CAN_MSG_MASTER_HW_LEVEL_BYTE 7
 #define CAN_MSG_MASTER_HW_LEVEL_MSK 0x3
 #define CAN_MSG_MASTER_HW_LEVEL_SHIFT 0x0
@@ -135,6 +139,7 @@ static const tsr_alerts_table_row_t tsr_alerts_table[] =
     {0xAF,AlertTypes::ALERT_PLAYGROUND , (quint8)       0x00},
     {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
     {0xC8,AlertTypes::ALERT_NO_PASS, (quint8)           0x00},
+    {0xFF,AlertTypes::ALERT_NONE,    (quint8)           0x00},
 
 
 
