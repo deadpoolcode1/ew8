@@ -134,33 +134,24 @@ ApplicationWindow {
                 visible: false;
 
 
-                Image {
-
-                    function setVisible(isVisible)
-                    {
-                        is_ready = isVisible
-                    }
-
-                    property bool is_ready: false
-
-                    visible: is_ready && !(alert_sli_main.visible);
-
-                    id: alert_sli;
-                    objectName: "ALERT_SLI"
+                TSR {
+                    //general features
+                    id: alert_sli_side;
+                    objectName: "ALERT_SLI_SIDE"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_SLI
-                    property int canEntityArg: Alert.SLI_100
-                    function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
+                    canEntityType: Alert.ALERT_SLI
+                    canEntityArg: Alert.SLI_100
 
-                    x: left_panel.width/8; width: left_panel.width*3/4;
-                    fillMode: Image.PreserveAspectFit;
+                    //special features
+                    is_main: false
+                    its_pair_alert: alert_sli_main
                     source:"qrc:/resources/EWAlerts/sli.png";
-                    rotation: 0;
 
+                    //TODO move text to TSR_SLI
                     Text {
                         text: page.sli_arr[parent.canEntityArg]
                         font.family: "Arial"
-                        font.pointSize: 10
+                        font.pointSize: parent.is_main ? 40 : 10
                         font.bold: true
                         color: "black"
                         opacity: 1
@@ -169,7 +160,23 @@ ApplicationWindow {
                     }
                 }
 
-                //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+                TSR {
+
+                    //general features
+                    id: alert_forward_side;
+                    objectName: "ALERT_SLI_SIDE"
+                    property int layer_pri: 0
+                    canEntityType: Alert.ALERT_FORWARD
+
+                    //special features
+                    is_main: false
+                    its_pair_alert: alert_forward_main
+                    source:"qrc:/resources/EWAlerts/forward.svg";
+
+                }
+
+/*
                 Image {
 
                     function setVisible(isVisible)
@@ -189,6 +196,7 @@ ApplicationWindow {
                     source:"qrc:/resources/EWAlerts/forward.svg";
                     rotation: 0;
                 }
+                */
 
                 Image {
 
@@ -230,6 +238,21 @@ ApplicationWindow {
                     rotation: 0;
                 }
 
+                TSR {
+
+                    //general features
+                    id: alert_no_pass_side;
+                    objectName: "ALERT_NO_PASS_SIDE"
+                    property int layer_pri: 0
+                    canEntityType: Alert.ALERT_NO_PASS
+
+                    //special features
+                    is_main: false
+                    its_pair_alert: alert_no_pass_main
+                    source:"qrc:/resources/EWAlerts/no_pass.svg";
+
+                }
+/*
                 Image {
 
                     function setVisible(isVisible)
@@ -249,6 +272,7 @@ ApplicationWindow {
                     source:"qrc:/resources/EWAlerts/no_pass.svg";
                     rotation: 0;
                 }
+                */
 
                 Image {
 
@@ -501,58 +525,60 @@ ApplicationWindow {
 
                     }
 
-
-
-                    Image { 
-
-                        function setVisible(isVisible)
-                        {
-                            visible = isVisible
-
-                            if(visible === true)
-                            {
-                               sliTimer.running = true
-                            }
-                        }
-
+                    TSR {
+                        //general features
                         id: alert_sli_main;
                         objectName: "ALERT_SLI_MAIN"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_SLI
-                        property int canEntityArg: Alert.SLI_100
-                        function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
+                        canEntityType: Alert.ALERT_SLI
+                        canEntityArg: Alert.SLI_100
 
-                        visible: false;
-                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                        fillMode: Image.PreserveAspectFit;
+                        //special features
+                        is_main: true
+                        its_pair_alert: alert_sli_side
                         source:"qrc:/resources/EWAlerts/sli.png";
-                        rotation: 0;
 
+                        //TODO move text to TSR_SLI
                         Text {
                             text: page.sli_arr[parent.canEntityArg]
                             font.family: "Arial"
-                            font.pointSize: 40
+                            font.pointSize: parent.is_main ? 40 : 10
                             font.bold: true
                             color: "black"
                             opacity: 1
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter : parent.verticalCenter
                         }
+                    }
 
+                    TSR {
 
-                        Timer {
+                        //general features
+                        id: alert_forward_main;
+                        objectName: "ALERT_SLI_MAIN"
+                        property int layer_pri: 1
+                        canEntityType: Alert.ALERT_FORWARD
 
-                            id: sliTimer
+                        //special features
+                        is_main: true
+                        its_pair_alert: alert_forward_side
+                        source:"qrc:/resources/EWAlerts/forward.svg";
 
-                            interval: 500
-                            running: false
-                            repeat: false
+                    }
 
-                            onTriggered:
-                            {
-                                page.itemSelfDeactivated(parent.canEntityType, parent.objectName);
-                            }
-                        }
+                    TSR {
+
+                        //general features
+                        id: alert_no_pass_main;
+                        objectName: "ALERT_NO_PASS_MAIN"
+                        property int layer_pri: 1
+                        canEntityType: Alert.ALERT_NO_PASS
+
+                        //special features
+                        is_main: true
+                        its_pair_alert: alert_no_pass_side
+                        source:"qrc:/resources/EWAlerts/no_pass.svg";
+
                     }
 
                 }

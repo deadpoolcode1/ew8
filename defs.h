@@ -118,6 +118,7 @@ tsr_alerts_table_row_t;
 
 static const tsr_alerts_table_row_t tsr_alerts_table[] =
 {
+    //Speed Limits Regular Signs:
     {0x0, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_10},
     {0x1, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_20},
     {0x2, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_30},
@@ -134,10 +135,36 @@ static const tsr_alerts_table_row_t tsr_alerts_table[] =
     {0xD, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_140},
 
     {0xE, AlertTypes::ALERT_FORWARD    , (quint8)       0x00},
+
+
+    //Speed Limits Electronic Signs:
+    {0x1C, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_10},
+    {0x1D, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_20},
+    {0x1E, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_30},
+    {0x1F, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_40},
+    {0x20, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_50},
+    {0x21, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_60},
+    {0x22, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_70},
+    {0x23, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_80},
+    {0x24, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_90},
+    {0x25, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_100},
+    {0x26, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_110},
+    {0x27, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_120},
+    {0x28, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_130},
+    {0x29, AlertTypes::ALERT_SLI, (quint8)AlertTypes::SLI_140},
+
+    //Electonic End of All restrictions:
+    {0x32,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
+
+    //Regular End of All restrictions:
+    {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
+
+
     {0xAB,AlertTypes::ALERT_MOTORWAY   , (quint8)       0x00},
 
+
     {0xAF,AlertTypes::ALERT_PLAYGROUND , (quint8)       0x00},
-    {0x40,AlertTypes::ALERT_END_ALL_RESTR,(quint8)      0x00},
+
     {0xC8,AlertTypes::ALERT_NO_PASS, (quint8)           0x00},
     {0xFF,AlertTypes::ALERT_NONE,    (quint8)           0x00},
 

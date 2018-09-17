@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>TSR.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>myfunctions.js</file>
         <file>resources/EWAlerts/blinkers.png</file>

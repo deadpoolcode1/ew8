@@ -53,7 +53,8 @@ DISTFILES += \
     resources/EWAlerts/end_all_restr.svg \
     resources/EWAlerts/motorway.svg \
     resources/EWAlerts/no_pass.svg \
-    resources/EWAlerts/playground.svg
+    resources/EWAlerts/playground.svg \
+    TSR.qml
 
 HEADERS += \
     canmanager.h \
