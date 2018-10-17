@@ -21,6 +21,12 @@ SOURCES += \
     rootedtree.cpp \
     layerspriorityq.cpp \
     entitytype.cpp \
+    canrxmsg.cpp \
+    simplecanrxmsg.cpp \
+    smartcanrxmsg.cpp \
+    awscanrxmsg.cpp \
+    tsrcanrxmsg.cpp \
+    canrxmsgfactory.cpp
 
 RESOURCES += qml.qrc
 
@@ -59,6 +65,7 @@ DISTFILES += \
 HEADERS += \
     canmanager.h \
     ialertdisplay.h \
+    icanrxmsgfactory.h \
     mainprocess.h \
     qmltreeparser.h \
     rootedtreenode.h \
@@ -67,6 +74,12 @@ HEADERS += \
     layerspriorityq.h \
     entitytype.h \
     alerttypes.h \
+    canrxmsg.h \
+    simplecanrxmsg.h \
+    smartcanrxmsg.h \
+    awscanrxmsg.h \
+    tsrcanrxmsg.h \
+    canrxmsgfactory.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

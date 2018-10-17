@@ -22,25 +22,34 @@ typedef enum can_id_e {
 can_id_undefined = -1,
 can_id_master = 0,
 can_id_tsr   =  1,
+can_id_s_adas = 2,
 #if 0
-can_id_left =   2,
-can_id_right =  3,
+can_id_left =   3,
+can_id_right =  4,
 #endif
 } can_id_t;
 
+typedef enum canrxmsg_type_e
+{
+    msg_simple = 0,
+    msg_smart = 1,
+}
+canrxmsg_type_t;
 
 typedef struct can_id_values_table_row_s
 {
   can_id_t mnemonic;
   quint32 value;
+  canrxmsg_type_t type;
 } can_id_values_table_row_t;
 
 
 
 static const can_id_values_table_row_t can_id_values_table[] =
 {
-  {can_id_master, 0x700},
-  {can_id_tsr,    0x727},
+  {can_id_master, 0x700, msg_simple},
+  {can_id_tsr,    0x727, msg_simple},
+  {can_id_s_adas, 0x75a, msg_smart},
 #if 0
   {can_id_left, 0x610},
   {can_id_right, 0x620},
@@ -100,6 +109,52 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_HW_LEVEL_MSK 0x3
 #define CAN_MSG_MASTER_HW_LEVEL_SHIFT 0x0
 
+
+//Smart Adas defines:
+#define CAN_MSG_S_ADAS_M_ID_BYTE 0
+#define CAN_MSG_S_ADAS_VIS_ITEM_BYTE 1
+
+#define CAN_MSG_S_ADAS_ACTIV_BYTE 3
+#define CAN_MSG_S_ADAS_ACTIV_MSK 0x1
+
+#define CAN_MSG_S_ADAS_MAXDUR_UNIT_BYTE 3
+#define CAN_MSG_S_ADAS_MAXDUR_UNIT_MSK 0x06
+#define CAN_MSG_S_ADAS_MAXDUR_UNIT_SHIFT 1
+
+#define CAN_MSG_S_ADAS_MINDUR_UNIT_BYTE 3
+#define CAN_MSG_S_ADAS_MINDUR_UNIT_MSK 0x18
+#define CAN_MSG_S_ADAS_MINDUR_UNIT_SHIFT 3
+
+#define CAN_MSG_S_ADAS_PARAM_UNIT_BYTE 3
+#define CAN_MSG_S_ADAS_PARAM_UNIT_MSK 0xE0
+#define CAN_MSG_S_ADAS_PARAM_UNIT_SHIFT 5
+
+#define CAN_MSG_S_ADAS_PARAM_INT_BYTE 4
+#define CAN_MSG_S_ADAS_PARAM_FRAC_BYTE 5
+
+#define CAN_MSG_S_ADAS_MINDUR_BYTE 6
+#define CAN_MSG_S_ADAS_MAXDUR_BYTE 7
+
+typedef enum visual_item_unit_e
+{
+    viu_KMH = 0,
+    viu_MPH = 1,
+    viu_Meter = 2,
+    viu_Feet = 3,
+    viu_Second = 4,
+    viu_Minute = 5,
+}
+visual_item_unit_t;
+
+typedef enum duration_unit_e
+{
+    du_second = 0,
+    du_10_seconds = 1,
+    du_minute = 2,
+    du_hour = 3,
+}
+duration_unit_t;
+
 enum HW_Warn_level_e
 {
     HW_Clear = 0x0,
@@ -107,6 +162,25 @@ enum HW_Warn_level_e
     HW_Alert  = 0x2,
 
 };
+
+//TODO construct according to dbc layout(currently for 0x700 message):
+typedef struct aws_alerts_table_row_s
+{
+   quint8 start_bit;
+   quint8 length_bits;
+   qint32 minimum;
+   qint32 maximum;
+   AlertTypes::EnAlert alert;
+   quint8 value;
+}
+aws_alerts_table_row_t;
+
+static const aws_alerts_table_row_t aws_alerts_table[] =
+{
+    {0,0,0,0,AlertTypes::ALERT_NONE,(quint8)0},
+};
+
+static const size_t aws_alerts_table_size = sizeof(aws_alerts_table)/sizeof(aws_alerts_table_row_t);
 
 typedef struct tsr_alerts_table_row_s
 {

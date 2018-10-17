@@ -16,6 +16,7 @@
 #include <QThread>
 
 #include "ialertdisplay.h"
+#include "icanrxmsgfactory.h"
 
 
 #ifdef WIN32
@@ -89,6 +90,7 @@ private:
 #endif
 
     IAlertDisplay * mydisplays;
+    ICanRxMsgFactory * iCanRxMsgFactory;
 };
 
 #endif // CANMANAGER_H

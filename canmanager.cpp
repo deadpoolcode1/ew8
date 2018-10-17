@@ -33,6 +33,9 @@
 
 
 #include "ialertdisplay.h"
+#include "icanrxmsgfactory.h"
+#include "canrxmsgfactory.h"
+#include "canrxmsg.h"
 
 CanManager::CanManager(IAlertDisplay * alertdisp)
 {
@@ -43,8 +46,11 @@ CanManager::CanManager(IAlertDisplay * alertdisp)
 
 void CanManager::init(void)
 {
-
     size_t i = 0;
+
+    iCanRxMsgFactory = new CanRxMsgFactory();
+
+    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory);
 
     is_tsr_enabled = false;
 
@@ -695,6 +701,10 @@ void CanManager::parse_frame(struct can_frame * frame)
         case can_id_tsr:
 
                 sliStateParseAndProcess(preframe,frame);
+
+            break;
+
+        case can_id_s_adas:
 
             break;
 

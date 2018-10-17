@@ -5,9 +5,6 @@
 #include "mainprocess.h"
 #include "alerttypes.h"
 
-//#include <queue>
-
-
 int main(int argc, char *argv[])
 {
 
