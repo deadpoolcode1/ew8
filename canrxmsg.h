@@ -15,12 +15,12 @@ public:
     static CanRxMsg * getMsgByCanId(can_id_t cid);
     can_id_t getCanId(void);
 
-    virtual void process(void) = 0;
+    virtual void process(struct can_frame * frame) = 0;
     virtual void ack(void) = 0;
 
 private:
   static CanRxMsg * CanRxMsgsPool[CAN_MESSAGES_TYPES_NUM];
-  static size_t CanRxMsgNumOfObjects;
+  static size_t canRxMsgNumOfObjects;
   static CanRxMsg * createInstance(can_id_t cid);
   static ICanRxMsgFactory * iCanRxMsgFactory;
 

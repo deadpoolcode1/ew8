@@ -6,7 +6,7 @@ class SmartCanRxMsg : public CanRxMsg
 public:
     SmartCanRxMsg();
 
-    void process(void);
+    void process(struct can_frame * frame);
     void ack(void);
 };
 

@@ -515,6 +515,32 @@ void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_fra
 void CanManager::parse_frame(struct can_frame * frame)
 {
     can_id_t received_id = can_id_undefined;
+
+        for (size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+        {
+             if(can_id_values_table[i].value == frame->can_id)
+             {
+                 received_id = can_id_values_table[i].mnemonic;
+
+                 i = CAN_MESSAGES_TYPES_NUM;
+             }
+        }
+
+
+        CanRxMsg * curr = CanRxMsg::getMsgByCanId(received_id);
+
+        if(nullptr != curr)
+        {
+            curr->process(frame);
+        }
+
+        parse_frame1(frame);
+
+}
+
+void CanManager::parse_frame1(struct can_frame * frame)
+{
+    can_id_t received_id = can_id_undefined;
     bool is_frame_updated = false;
 
     for (size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)

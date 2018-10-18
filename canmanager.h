@@ -60,6 +60,7 @@ private:
     //inner functions:
     void init(void);
     void parse_frame(struct can_frame * frame);
+     void parse_frame1(struct can_frame * frame);
 
 
     struct can_frame prev_frame[CAN_MESSAGES_TYPES_NUM];

@@ -8,8 +8,9 @@ AwsCanRxMsg::AwsCanRxMsg()
     cid = can_id_master;
 }
 
-void AwsCanRxMsg::process()
+void AwsCanRxMsg::process(struct can_frame * frame)
 {
 
+    printf("parse aws\n");
 
 }

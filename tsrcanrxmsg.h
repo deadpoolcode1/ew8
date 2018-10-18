@@ -6,7 +6,7 @@ class TsrCanRxMsg : public SimpleCanRxMsg
 {
 public:
     TsrCanRxMsg();
-    void process();
+    void process(struct can_frame * frame);
 };
 
 #endif // TSRCANRXMSG_H

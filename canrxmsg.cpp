@@ -4,15 +4,18 @@
 #include "canrxmsg.h"
 
 CanRxMsg * CanRxMsg::CanRxMsgsPool[];
-size_t CanRxMsg::CanRxMsgNumOfObjects = 0;
+size_t CanRxMsg::canRxMsgNumOfObjects = 0;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 
 CanRxMsg * CanRxMsg::createInstance(can_id_t cid)
 {
     CanRxMsg * ret = getMsgByCanId(cid);
+    //TODO review the check location
     if(nullptr == ret) //create new unstance
     {
       //TODO use factory and init with id
+        ret = iCanRxMsgFactory->createCanRxMsgInstance(cid);
+
 
     }
     return ret;
@@ -21,6 +24,19 @@ CanRxMsg * CanRxMsg::createInstance(can_id_t cid)
 void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory)
 {
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
+
+    for(size_t i=0;i<CAN_MESSAGES_TYPES_NUM;i++)
+    {
+        if(canRxMsgNumOfObjects < CAN_MESSAGES_TYPES_NUM)
+        {
+            CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic);
+            if(nullptr != CanRxMsgsPool[canRxMsgNumOfObjects])
+            {
+                canRxMsgNumOfObjects++;
+            }
+        }
+    }
+
 }
 
 CanRxMsg::CanRxMsg()
@@ -36,12 +52,12 @@ can_id_t CanRxMsg::getCanId(void)
 CanRxMsg * CanRxMsg::getMsgByCanId(can_id_t cid)
 {
     CanRxMsg * ret = nullptr;
-    for (size_t i=0; i < CanRxMsgNumOfObjects; i++)
+    for (size_t i=0; i < canRxMsgNumOfObjects; i++)
     {
         if (cid == CanRxMsgsPool[i]->cid)
         {
             ret = CanRxMsgsPool[i];
-            i = CanRxMsgNumOfObjects;
+            i = canRxMsgNumOfObjects;
         }
     }
     return ret;

@@ -8,8 +8,8 @@ TsrCanRxMsg::TsrCanRxMsg()
     cid = can_id_tsr;
 }
 
-void TsrCanRxMsg::process()
+void TsrCanRxMsg::process(struct can_frame * frame)
 {
-
+  printf("parse tsr\n");
 }
 

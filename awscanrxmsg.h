@@ -9,7 +9,7 @@ class AwsCanRxMsg : public SimpleCanRxMsg
 {
 public:
     AwsCanRxMsg();
-    void process();
+    void process(struct can_frame * frame);
 };
 
 #endif // AWSCANRXMSG_H
