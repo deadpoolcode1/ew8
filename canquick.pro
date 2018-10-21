@@ -1,3 +1,6 @@
+qmlscripts.files = *.qml
+qmlimages.files = resources/*
+
 QT += quick
 CONFIG += c++11
 
@@ -35,6 +38,17 @@ QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
+
+# Additional files to deploy:
+win32: qmlscripts.path = $${OUT_PWD}/qml
+qnx: qmlscripts.path = /tmp/$${TARGET}/qml
+else: unix:!android: qmlscripts.path = /opt/$${TARGET}/qml
+!isEmpty(qmlscripts.path): INSTALLS += qmlscripts
+
+win32: qmlimages.path = $${OUT_PWD}/images
+qnx: qmlimages.path = /tmp/$${TARGET}/images
+else: unix:!android: qmlimages.path = /opt/$${TARGET}/images
+!isEmpty(qmlimages.path): INSTALLS += qmlimages
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -92,3 +106,5 @@ linux: INCLUDEPATH += -I'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-lin
 
 #Specific preprocessor definitions:
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED
+
+win32: QMAKE_POST_LINK += $(MAKE) install

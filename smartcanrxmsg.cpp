@@ -8,7 +8,7 @@ SmartCanRxMsg::SmartCanRxMsg()
 
 void SmartCanRxMsg::process(struct can_frame * frame)
 {
-   printf("parse smart adas\n");
+
 }
 
 void SmartCanRxMsg::ack()

@@ -10,7 +10,7 @@ AwsCanRxMsg::AwsCanRxMsg()
 
 void AwsCanRxMsg::process(struct can_frame * frame)
 {
-
+#if 0
     printf("parse aws\n");
-
+#endif
 }

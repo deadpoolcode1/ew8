@@ -10,6 +10,8 @@ TsrCanRxMsg::TsrCanRxMsg()
 
 void TsrCanRxMsg::process(struct can_frame * frame)
 {
+#if 0
   printf("parse tsr\n");
+#endif
 }
 
