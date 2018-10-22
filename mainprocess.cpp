@@ -32,8 +32,7 @@ MainProcess* MainProcess::getInstance(QQmlApplicationEngine *  engine)
 
 MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
 {
-  //  mw = new MainWindow();
-    QQmlComponent component(engine, "qrc:/main.qml");
+    QQmlComponent component(engine, QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
     componentObject = component.create();
 
     flag_tree_changed = false;

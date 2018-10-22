@@ -34,7 +34,7 @@ ApplicationWindow {
             [Alert.HMW_GR] = "  ",
             ]
      */
-    
+
     //WARNING: the [indices] are just mnemonics
     property var sli_arr: [
         [Alert.SLI_10]  =  "10",
@@ -145,7 +145,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: alert_sli_main
-                    source:"qrc:/resources/EWAlerts/sli.png";
+                    source:"../images/EWAlerts/sli.png";
 
                     //TODO move text to TSR_SLI
                     Text {
@@ -172,7 +172,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: alert_forward_main
-                    source:"qrc:/resources/EWAlerts/forward.svg";
+                    source:"../images/EWAlerts/forward.svg";
 
                 }
 
@@ -193,7 +193,7 @@ ApplicationWindow {
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/forward.svg";
+                    source:"../images/EWAlerts/forward.svg";
                     rotation: 0;
                 }
                 */
@@ -214,10 +214,9 @@ ApplicationWindow {
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/motorway.svg";
+                    source:"../images/EWAlerts/motorway.svg";
                     rotation: 0;
                 }
-
                 Image {
 
                     function setVisible(isVisible)
@@ -234,7 +233,7 @@ ApplicationWindow {
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/playground.svg";
+                    source:"../images/EWAlerts/playground.svg";
                     rotation: 0;
                 }
 
@@ -249,7 +248,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: alert_no_pass_main
-                    source:"qrc:/resources/EWAlerts/no_pass.svg";
+                    source:"../images/EWAlerts/no_pass.svg";
 
                 }
 /*
@@ -269,7 +268,7 @@ ApplicationWindow {
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/no_pass.svg";
+                    source:"../images/EWAlerts/no_pass.svg";
                     rotation: 0;
                 }
                 */
@@ -290,7 +289,7 @@ ApplicationWindow {
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/end_all_restr.svg";
+                    source:"../images/EWAlerts/end_all_restr.svg";
                     rotation: 0;
                 }
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -374,7 +373,7 @@ ApplicationWindow {
                     visible: false;
                     x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
-                    source:"qrc:/resources/EWAlerts/pcw.png";
+                    source:"../images/EWAlerts/pcw.png";
                     rotation: 0;
 
                 }
@@ -437,7 +436,7 @@ ApplicationWindow {
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"qrc:/resources/EWAlerts/pdz.png";
+                        source:"../images/EWAlerts/pdz.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -473,7 +472,7 @@ ApplicationWindow {
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"qrc:/resources/EWAlerts/fcw.png";
+                        source:"../images/EWAlerts/fcw.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -536,7 +535,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: alert_sli_side
-                        source:"qrc:/resources/EWAlerts/sli.png";
+                        source:"../images/EWAlerts/sli.png";
 
                         //TODO move text to TSR_SLI
                         Text {
@@ -562,7 +561,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: alert_forward_side
-                        source:"qrc:/resources/EWAlerts/forward.svg";
+                        source:"../images/EWAlerts/forward.svg";
 
                     }
 
@@ -577,7 +576,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: alert_no_pass_side
-                        source:"qrc:/resources/EWAlerts/no_pass.svg";
+                        source:"../images/EWAlerts/no_pass.svg";
 
                     }
 
@@ -655,7 +654,7 @@ ApplicationWindow {
 
 
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/ldwoff.png";
+                            source:"../images/EWAlerts/ldwoff.png";
                             rotation: 0;
 
 
@@ -678,7 +677,7 @@ ApplicationWindow {
                             anchors.horizontalCenter : parent.horizontalCenter
 
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/ldwon.png";
+                            source:"../images/EWAlerts/ldwon.png";
                             rotation: 0;
 
 
@@ -707,7 +706,7 @@ ApplicationWindow {
                                 anchors.horizontalCenter : parent.horizontalCenter
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"qrc:/resources/EWAlerts/lldw_L.png";
+                                source:"../images/EWAlerts/lldw_L.png";
                                 rotation: 0;
 
 
@@ -763,7 +762,7 @@ ApplicationWindow {
                                 anchors.horizontalCenter : parent.horizontalCenter
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"qrc:/resources/EWAlerts/lldw_R.png";
+                                source:"../images/EWAlerts/lldw_R.png";
                                 rotation: 0;
 
 
@@ -795,7 +794,7 @@ ApplicationWindow {
                                 anchors.horizontalCenter : parent.horizontalCenter
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"qrc:/resources/EWAlerts/rldw_L.png";
+                                source:"../images/EWAlerts/rldw_L.png";
                                 rotation: 0;
                             }
 
@@ -808,7 +807,7 @@ ApplicationWindow {
 
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"qrc:/resources/EWAlerts/rldw_R.png";
+                                source:"../images/EWAlerts/rldw_R.png";
                                 rotation: 0;
 
 
@@ -894,7 +893,7 @@ ApplicationWindow {
                             visible: false;
                             x: 100; y: 100; width: 60; height: 60;
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/fla_armed.png";
+                            source:"../images/EWAlerts/fla_armed.png";
                             rotation: 0;
                         }
 
@@ -913,7 +912,7 @@ ApplicationWindow {
                             visible: false;
                             x: 100; y: 100; width: 60; height: 60;
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/fla_armed_low.png";
+                            source:"../images/EWAlerts/fla_armed_low.png";
                             rotation: 0;
                         }
 
@@ -963,7 +962,7 @@ ApplicationWindow {
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
-                            source: "qrc:/resources/EWAlerts/hmw_red.png";
+                            source: "../images/EWAlerts/hmw_red.png";
                             rotation: 0;
 
 
@@ -996,7 +995,7 @@ ApplicationWindow {
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
-                            source:"qrc:/resources/EWAlerts/hmw_green.png";
+                            source:"../images/EWAlerts/hmw_green.png";
                             rotation: 0;
 
 

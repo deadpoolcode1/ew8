@@ -107,4 +107,7 @@ linux: INCLUDEPATH += -I'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-lin
 #Specific preprocessor definitions:
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED
 
+!isEmpty(target.path): DEFINES += "BASE_TARGET_DIR=\'\"$${target.path}/../\"\'"
+else: DEFINES += "BASE_TARGET_DIR=\'\"\"\'"
+
 win32: QMAKE_POST_LINK += $(MAKE) install

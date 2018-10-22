@@ -1,30 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>TSR.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>myfunctions.js</file>
-        <file>resources/EWAlerts/blinkers.png</file>
-        <file>resources/EWAlerts/fcw.png</file>
-        <file>resources/EWAlerts/fla_armed.png</file>
-        <file>resources/EWAlerts/ldwoff.png</file>
-        <file>resources/EWAlerts/ldwon.png</file>
-        <file>resources/EWAlerts/lldw.png</file>
-        <file>resources/EWAlerts/pcw.png</file>
-        <file>resources/EWAlerts/pdz.png</file>
-        <file>resources/EWAlerts/rldw.png</file>
-        <file>resources/EWAlerts/sli.png</file>
-        <file>resources/EWAlerts/lldw_L.png</file>
-        <file>resources/EWAlerts/lldw_R.png</file>
-        <file>resources/EWAlerts/rldw_L.png</file>
-        <file>resources/EWAlerts/rldw_R.png</file>
-        <file>resources/EWAlerts/fla_armed_low.png</file>
-        <file>resources/EWAlerts/forward.svg</file>
-        <file>resources/EWAlerts/hmw_green.png</file>
-        <file>resources/EWAlerts/hmw_red.png</file>
-        <file>resources/EWAlerts/end_all_restr.svg</file>
-        <file>resources/EWAlerts/motorway.svg</file>
-        <file>resources/EWAlerts/no_pass.svg</file>
-        <file>resources/EWAlerts/playground.svg</file>
     </qresource>
 </RCC>

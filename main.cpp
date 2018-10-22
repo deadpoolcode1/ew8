@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
      AlertTypes::declareQML();
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    engine.load(QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
 
     if (engine.rootObjects().isEmpty())
     {
