@@ -13,7 +13,7 @@ class MainProcess : public QThread, IAlertDisplay
     Q_OBJECT
 public:
 
-    explicit MainProcess(QQmlApplicationEngine *  engine);//(QObject *parent = nullptr);
+    explicit MainProcess(QObject *aComponentObject);
 
     void run() override;
 
@@ -21,11 +21,12 @@ public:
 
     void updateDisplay(void);
 
-//alerts display:
+    //alerts display:
     virtual void activate(AlertTypes::EnAlert at, quint8 value);
     virtual void deactivate(AlertTypes::EnAlert at);
 
-    static MainProcess* getInstance(QQmlApplicationEngine *  engine);
+    static MainProcess* getInstance(QObject * aComponentObject);
+
 public slots:
 
     void forceItemDeactivation(int _alertType, QString _objName);

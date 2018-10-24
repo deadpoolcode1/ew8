@@ -19,21 +19,21 @@
 MainProcess* MainProcess::instance = nullptr;
 
 
-MainProcess* MainProcess::getInstance(QQmlApplicationEngine *  engine)
+MainProcess* MainProcess::getInstance(QObject * aComponentObject)
 {
-    if (instance == 0)
+    if (instance == nullptr)
       {
-          instance = new MainProcess(engine);
+          instance = new MainProcess(aComponentObject);
       }
 
       return instance;
 }
 
 
-MainProcess::MainProcess(QQmlApplicationEngine *  engine)//(QObject *parent) : QObject(parent)
+MainProcess::MainProcess(QObject *aComponentObject)
 {
-    QQmlComponent component(engine, QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
-    componentObject = component.create();
+
+    componentObject = aComponentObject;
 
     flag_tree_changed = false;
 

@@ -1,5 +1,6 @@
 qmlscripts.files = *.qml
 qmlimages.files = resources/*
+win32: batches.files = *.bat
 
 QT += quick
 CONFIG += c++11
@@ -49,6 +50,9 @@ win32: qmlimages.path = $${OUT_PWD}/images
 qnx: qmlimages.path = /tmp/$${TARGET}/images
 else: unix:!android: qmlimages.path = /opt/$${TARGET}/images
 !isEmpty(qmlimages.path): INSTALLS += qmlimages
+
+win32: batches.path = $${OUT_PWD}
+!isEmpty(batches.path): INSTALLS += batches
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

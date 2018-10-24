@@ -19,14 +19,11 @@ int main(int argc, char *argv[])
      AlertTypes::declareQML();
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
 
-    if (engine.rootObjects().isEmpty())
-    {
-        return -1;
-    }
+    QQmlComponent component(&engine, QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
+    QObject * componentObject = component.create();
 
-    MainProcess* mp = MainProcess::getInstance(&engine);
+    MainProcess* mp = MainProcess::getInstance(componentObject);
 
     mp->exec();
 
