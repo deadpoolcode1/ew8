@@ -30,7 +30,8 @@ SOURCES += \
     smartcanrxmsg.cpp \
     awscanrxmsg.cpp \
     tsrcanrxmsg.cpp \
-    canrxmsgfactory.cpp
+    canrxmsgfactory.cpp \
+    smartitem.cpp
 
 RESOURCES += qml.qrc
 
@@ -97,7 +98,8 @@ HEADERS += \
     smartcanrxmsg.h \
     awscanrxmsg.h \
     tsrcanrxmsg.h \
-    canrxmsgfactory.h
+    canrxmsgfactory.h \
+    smartitem.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

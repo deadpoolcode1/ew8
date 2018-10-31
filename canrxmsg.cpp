@@ -21,7 +21,12 @@ CanRxMsg * CanRxMsg::createInstance(can_id_t cid)
     return ret;
 }
 
-void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory)
+void CanRxMsg::setDisplay(IAlertDisplay *anAlertDisplay)
+{
+    alertsDisplay = anAlertDisplay;
+}
+
+void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDisplay *anAlertDisplay)
 {
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
 
@@ -32,6 +37,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory)
             CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic);
             if(nullptr != CanRxMsgsPool[canRxMsgNumOfObjects])
             {
+                CanRxMsgsPool[canRxMsgNumOfObjects]->setDisplay(anAlertDisplay);
                 canRxMsgNumOfObjects++;
             }
         }
@@ -42,6 +48,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory)
 CanRxMsg::CanRxMsg()
 {
     cid = can_id_undefined;
+    is_a_first_frame = true;
 }
 
 can_id_t CanRxMsg::getCanId(void)

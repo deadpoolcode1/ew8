@@ -3,7 +3,8 @@
 
 #include "icanrxmsgfactory.h"
 #include "defs.h"
-#include "canrxmsg.h"
+
+#include "canmanager.h"
 
 class ICanRxMsgFactory;
 
@@ -11,8 +12,9 @@ class CanRxMsg
 {
 public:
 
-    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory);
+    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay);
     static CanRxMsg * getMsgByCanId(can_id_t cid);
+    void setDisplay(IAlertDisplay *anAlertDisplay);
     can_id_t getCanId(void);
 
     virtual void process(struct can_frame * frame) = 0;
@@ -27,6 +29,10 @@ private:
 protected:
   CanRxMsg();
   can_id_t cid;
+  IAlertDisplay * alertsDisplay;
+
+  struct can_frame prev_frame; //NOTE: is not initialized till first frame is received.
+  bool is_a_first_frame;
 
 };
 

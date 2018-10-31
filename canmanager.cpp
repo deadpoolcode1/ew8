@@ -50,7 +50,7 @@ void CanManager::init(void)
 
     iCanRxMsgFactory = new CanRxMsgFactory();
 
-    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory);
+    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, mydisplays);
 
     is_tsr_enabled = false;
 

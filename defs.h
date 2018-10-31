@@ -57,6 +57,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 };
 
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
+#define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
 
 #define CAN_MSG_MASTER_FLA_BYTE 1
 #define CAN_MSG_MASTER_FLA_MSK  0x80
@@ -146,6 +147,8 @@ typedef enum visual_item_unit_e
 }
 visual_item_unit_t;
 
+
+
 typedef enum duration_unit_e
 {
     du_second = 0,
@@ -154,6 +157,24 @@ typedef enum duration_unit_e
     du_hour = 3,
 }
 duration_unit_t;
+
+
+typedef struct du_units_table_row_s
+{
+   duration_unit_t unit;
+   quint32 msec;
+}
+du_units_table_row_t;
+
+static const du_units_table_row_t du_units_table[] =
+{
+    {du_second,      1000},
+    {du_10_seconds, 10000},
+    {du_minute,     60000},
+    {du_hour,     3600000},
+};
+
+static const size_t du_units_table_size = (sizeof(du_units_table)/sizeof(du_units_table_row_t));
 
 enum HW_Warn_level_e
 {

@@ -41,6 +41,9 @@ typedef struct hmw_state_s
 }
 hmw_state_t;
 
+class IAlertDisplay;
+class ICanRxMsgFactory;
+
 class CanManager :  public QThread
 {
     Q_OBJECT
