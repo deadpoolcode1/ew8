@@ -4,7 +4,9 @@
 #include <QObject>
 //#include <QList>
 #include "defs.h"
+#include "displaysignalizer.h"
 
+class DisplaySignalizer;
 
 
 class LayersPriorityQ;  // forward declaration
@@ -16,6 +18,7 @@ public:
     RootedTreeNode();
 
     RootedTreeNode(QObject * qobject);
+
 
     void setParent(RootedTreeNode * rtn);
     void appendChild(RootedTreeNode * rtn);
@@ -34,10 +37,12 @@ public:
     void deactivateItemInMutexGroup();
     void handleMutexGroup();
 
-    void setCanEntityArg(quint8 arg);
+    void setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
 
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
+
+    DisplaySignalizer * qmlSignalizer;
 
 private:
 
@@ -62,6 +67,10 @@ private:
 
     //TODO add alert type
 
+    //Invoke arguments:
+    quint8 valueInt;
+    quint8 valueFrac;
+    visual_item_unit_t unit;
 };
 
 

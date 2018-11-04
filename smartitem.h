@@ -5,10 +5,14 @@
 #include <QTimerEvent>
 #include "defs.h"
 #include "smartcanrxmsg.h"
+#include <QObject>
 
-class SmartItem: public QObject
+class SmartItem : public QObject
 {
+    Q_OBJECT
+
 public:
+
     static SmartItem * getInstance(quint8 aVisId);
 
     typedef struct smart_params_s{
@@ -28,7 +32,7 @@ public:
 
 
 protected:
-    SmartItem(quint8 aVisId);
+     explicit SmartItem(quint8 aVisId);
     static SmartItem * smartItemsPool[MAX_SMART_ITEMS_NUM];
     static size_t  smartItemsPoolNumOfObjects;
 

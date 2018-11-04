@@ -22,7 +22,7 @@ public:
     void updateDisplay(void);
 
     //alerts display:
-    virtual void activate(AlertTypes::EnAlert at, quint8 value);
+    virtual void activate(AlertTypes::EnAlert at, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
     virtual void deactivate(AlertTypes::EnAlert at);
 
     static MainProcess* getInstance(QObject * aComponentObject);

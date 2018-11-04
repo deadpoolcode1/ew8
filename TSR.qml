@@ -2,6 +2,11 @@ import QtQuick 2.0
 
 Image {
 
+
+    function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
+    function setInvisibleSlot() {setVisible(false)}
+
+
     function setVisible(isVisible)
     {
         if(is_main)

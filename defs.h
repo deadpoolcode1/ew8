@@ -138,6 +138,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 
 typedef enum visual_item_unit_e
 {
+    viu_None = -1,
     viu_KMH = 0,
     viu_MPH = 1,
     viu_Meter = 2,

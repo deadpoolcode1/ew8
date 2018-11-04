@@ -11,9 +11,13 @@ RootedTreeNode::RootedTreeNode(QObject * qobject)
 {
     activationSemaphore = 0;
     visibility = false;
+
+    valueInt = 0;
+    valueFrac = 0;
+    unit = viu_None;
+
     convertfromQObject(qobject);
 }
-
 
 void RootedTreeNode::setParent(RootedTreeNode * rtn)
 {
@@ -41,19 +45,50 @@ void RootedTreeNode::appendChild(RootedTreeNode * rtn)
     }
 }
 
-#if 0
-void findEntityType1(void)
-{
-    return;
-}
-#endif
-
 void RootedTreeNode::convertfromQObject(QObject * qobject)
 {
 // esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
-//    qname = qobject->objectName();
+
+    this->qmlSignalizer = new DisplaySignalizer();
+
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(void)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
+                         this->qmlItem, SLOT(setVisibleSlot(void)));
+         qDebug("setVisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
+                         this->qmlItem, SLOT(setVisibleSlot(QVariant)));
+         qDebug("setVisibleSlot(quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant, QVariant)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
+                         this->qmlItem, SLOT(setVisibleSlot(QVariant, QVariant)));
+         qDebug("setVisibleSlot(quint8, quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant,QVariant, QVariant)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
+                         this->qmlItem, SLOT(setVisibleSlot(QVariant,QVariant, QVariant)));
+         qDebug("setVisibleSlot(all arguments) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setInvisibleSlot(void)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setInvisibleSignal(void)),
+                         this->qmlItem, SLOT(setInvisibleSlot(void)));
+        qDebug("setInvisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
 
     QVariant vlayer = qobject->property("layer_pri");
     layer = vlayer.toInt(); // priority
@@ -137,18 +172,11 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
- void RootedTreeNode::setCanEntityArg(quint8 arg)
+ void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
  {
-     QObject * qmlItem = getQmlItem();
-
-     QVariant property_arg = arg;
-
-#ifndef WIN32
-     qmlItem->setProperty("canEntityArg",property_arg);
-#else
-     QMetaObject::invokeMethod(this->qmlItem,"setCanEntityArg",Q_ARG(QVariant, arg));
-#endif
-
+     this->valueInt = valueInt;
+     this->valueFrac = valueFrac;
+     this->unit = unit;
  }
 
 // recursive activation
@@ -261,6 +289,23 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
     {
         return GENERAL_ERROR;  // TBD add exception handling
     }
-    QMetaObject::invokeMethod(this->qmlItem,"setVisible",Q_ARG(QVariant, visible));
+
+    if(visible)
+    {
+#if 1
+        emit this->qmlSignalizer->setVisibleSignal((QVariant)valueInt,(QVariant)valueFrac,(QVariant)unit);
+    }
+    else
+    {
+        emit this->qmlSignalizer->setInvisibleSignal();
+#else
+        QMetaObject::invokeMethod(this->qmlItem,"setVisibleSlot");
+         QMetaObject::invokeMethod(this->qmlItem,"setVisibleSlot",Q_ARG(QVariant, valueInt));
+    }
+    else
+    {
+        QMetaObject::invokeMethod(this->qmlItem,"setInvisibleSlot");
+#endif
+    }
     return OK;
 }

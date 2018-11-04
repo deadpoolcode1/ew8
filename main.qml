@@ -123,6 +123,9 @@ ApplicationWindow {
                 objectName: "SLI_SIDE_QtQG"
                 property bool mutexGroup: false
 
+                function setVisibleSlot() {setVisible(true)}
+                function setInvisibleSlot() {setVisible(false)}
+
                 function setVisible(isVisible)
                 {
                     visible = isVisible
@@ -176,29 +179,12 @@ ApplicationWindow {
 
                 }
 
-/*
-                Image {
 
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
-
-                    visible: false
-
-                    id: alert_forward_side;
-                    objectName: "ALERT_FORWARD_SIDE"
-                    property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_FORWARD
-
-                    x: left_panel.width/8; width: left_panel.width*3/4;
-                    fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/forward.svg";
-                    rotation: 0;
-                }
-                */
 
                 Image {
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
 
                     function setVisible(isVisible)
                     {
@@ -218,6 +204,9 @@ ApplicationWindow {
                     rotation: 0;
                 }
                 Image {
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
 
                     function setVisible(isVisible)
                     {
@@ -251,29 +240,11 @@ ApplicationWindow {
                     source:"../images/EWAlerts/no_pass.svg";
 
                 }
-/*
-                Image {
-
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
-
-                    visible: false
-
-                    id: alert_no_pass_side;
-                    objectName: "ALERT_NO_PASS_SIDE"
-                    property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_NO_PASS
-
-                    x: left_panel.width/8; width: left_panel.width*3/4;
-                    fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/no_pass.svg";
-                    rotation: 0;
-                }
-                */
 
                 Image {
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
 
                     function setVisible(isVisible)
                     {
@@ -350,10 +321,14 @@ ApplicationWindow {
 
                 property int canEntityType: Alert.QtQG
 
+                function setVisibleSlot() {setVisible(true)}
+                function setInvisibleSlot() {setVisible(false)}
+
                 function setVisible(isVisible)
                 {
                     visible = isVisible
                 }
+
                 visible: false
 
                 ////////////////////////////////
@@ -364,6 +339,9 @@ ApplicationWindow {
                     objectName: "PCW_ALERT"
                     property int layer_pri: 0
                     property int canEntityType: Alert.ALERT_PCW
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
 
                     function setVisible(isVisible)
                     {
@@ -390,6 +368,10 @@ ApplicationWindow {
 
                     property int layer_pri: 1
 
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
+
                     function setVisible(isVisible)
                     {
                         visible = isVisible
@@ -408,6 +390,9 @@ ApplicationWindow {
 
                         property int layer_pri: 1
 
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
+
                         function setVisible(isVisible)
                         {
                             visible = isVisible
@@ -420,6 +405,9 @@ ApplicationWindow {
 
                     //Atomic items:
                     Image {
+
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
 
                         function setVisible(isVisible)
                         {
@@ -456,6 +444,9 @@ ApplicationWindow {
                     ////////////////////////////////
                     //Atomic items:
                     Image {
+
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
 
                         function setVisible(isVisible)
                         {
@@ -581,6 +572,7 @@ ApplicationWindow {
                     }
 
                 }
+
                 Item
                 {
                     id: groupGAG
@@ -592,6 +584,9 @@ ApplicationWindow {
                     property int canEntityType: Alert.QtQG
 
                     property int layer_pri: 2
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
 
                     function setVisible(isVisible)
                     {
@@ -623,6 +618,9 @@ ApplicationWindow {
 
                         anchors.fill: parent
 
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
+
                         function setVisible(isVisible)
                         {
                             visible = isVisible
@@ -636,6 +634,9 @@ ApplicationWindow {
                         ////////////////////////////////
                         //Atomic items:
                         Image {
+
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
 
                             function setVisible(isVisible)
                             {
@@ -661,6 +662,9 @@ ApplicationWindow {
                         }
                         Image {
 
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 visible = isVisible
@@ -685,6 +689,10 @@ ApplicationWindow {
 
                         Item
                         {
+
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 //blinkTimer_lldw.setRunning(isVisible)
@@ -774,6 +782,9 @@ ApplicationWindow {
                         /////////////////////////////////
                         Item
                         {
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 //blinkTimer_rldw.setRunning(isVisible)
@@ -868,6 +879,9 @@ ApplicationWindow {
                         objectName: "BEAM_QtQG"
                         property bool mutexGroup: true
 
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
+
                         function setVisible(isVisible)
                         {
                             visible = isVisible
@@ -899,6 +913,9 @@ ApplicationWindow {
 
                         Image {
 
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 visible = isVisible
@@ -926,6 +943,9 @@ ApplicationWindow {
                         objectName: "CIPV_QtQG"
                         property bool mutexGroup: false
 
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
+
                         function setVisible(isVisible)
                         {
                             visible = isVisible
@@ -947,6 +967,9 @@ ApplicationWindow {
                         //Atomic items:
                         Image {
 
+                            function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 visible = isVisible
@@ -957,7 +980,6 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_ALERT
                             property int canEntityArg: 0x00
-                            function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
@@ -980,6 +1002,9 @@ ApplicationWindow {
                         }
                         Image {
 
+                            function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 visible = isVisible
@@ -990,7 +1015,6 @@ ApplicationWindow {
                             property int layer_pri: 0
                             property int canEntityType: Alert.ALERT_HMW_MONITOR
                             property int canEntityArg: 0x00
-                            function setCanEntityArg(arg){canEntityArg = arg}//WARNING: win32 workaround
 
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;

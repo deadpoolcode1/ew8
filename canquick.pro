@@ -31,7 +31,8 @@ SOURCES += \
     awscanrxmsg.cpp \
     tsrcanrxmsg.cpp \
     canrxmsgfactory.cpp \
-    smartitem.cpp
+    smartitem.cpp \
+    displaysignalizer.cpp
 
 RESOURCES += qml.qrc
 
@@ -99,7 +100,8 @@ HEADERS += \
     awscanrxmsg.h \
     tsrcanrxmsg.h \
     canrxmsgfactory.h \
-    smartitem.h
+    smartitem.h \
+    displaysignalizer.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

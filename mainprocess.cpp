@@ -156,7 +156,7 @@ void MainProcess::updateDisplay(void)
     flag_tree_changed = false;
 }
 
-void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
+void MainProcess::activate(AlertTypes::EnAlert alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)
@@ -188,7 +188,7 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 value)
         }
         else
         {
-            nodeCGRT->setCanEntityArg(value);
+            nodeCGRT->setCanEntityArgs(valueInt, valueFrac, unit);
             nodeCGRT->activate();
             flag_tree_changed = true;
         }

@@ -1,7 +1,9 @@
 #include "smartitem.h"
 #include "defs.h"
 
-#include <QDateTime>
+#include <QTimer>
+#include <QObject>
+
 
 
 SmartItem * SmartItem::smartItemsPool[];
@@ -13,6 +15,7 @@ SmartItem::SmartItem(quint8 aVisId)
    isActive = false;
    isNextActive = false;
 
+
    minDurationQtimer = new QTimer(this);
    minDurationQtimer->setSingleShot(true);
    connect(minDurationQtimer, SIGNAL(timeout()), this, SLOT(fireItsMinActiveTime()));
@@ -21,7 +24,6 @@ SmartItem::SmartItem(quint8 aVisId)
    maxDurationQtimer = new QTimer(this);
    maxDurationQtimer->setSingleShot(true);
    connect(maxDurationQtimer, SIGNAL(timeout()), this, SLOT(fireItsMaxActiveTime()));
-
 
    //TODO use to update current time
    //qdt = QDateTime::currentSecsSinceEpoch();
