@@ -3,7 +3,7 @@ import QtQuick 2.0
 Image {
 
 
-    function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
+    function setVisibleSlot(argInt,argFrac,argUnit) {setVisible(true)}
     function setInvisibleSlot() {setVisible(false)}
 
 
@@ -36,8 +36,11 @@ Image {
     property bool is_ready: false
     property var its_pair_alert
 
+
     property int canEntityType
-    property int canEntityArg
+    property int argInt
+    property int argFrac
+    property int argUnit
 
     visible: is_main? false : (is_ready && !its_pair_alert.visible)
 

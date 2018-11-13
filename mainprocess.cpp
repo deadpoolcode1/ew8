@@ -1,13 +1,10 @@
 #include <QThread>
 #include <QMutex>
+#include <QTimer>
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QFile>
-#include <iostream>
-#include <chrono>
-#include <thread>
-
 
 #include "mainprocess.h"
 #include "canmanager.h"
@@ -79,36 +76,24 @@ MainProcess::MainProcess(QObject *aComponentObject)
     tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
     statusPanelTree = new RootedTree(rootQobjectStatusPannel);
     smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
-#if 0
-    QmlTreeParser* qmlTreeParser = new QmlTreeParser();
 
-    qmlTreeParser->constructTree(rootQobjectMainPannel, mainPanelTree);
-#endif
+    connect(this,SIGNAL(started()),SLOT(process()));
 
-    //connect(canmgr, &CanManager::resultReady, this, &MainProcess::handleResults);
-    //connect(canmgr, &CanManager::finished, canmgr, &QObject::deleteLater);
 }
 
-
-void MainProcess::run()
+void MainProcess::process()
 {
-    while(1)
+    if (flag_tree_changed)
     {
-        if (flag_tree_changed)
-        {
-            mutex.lock();
-            updateDisplay();
-            flag_tree_changed = false;
-            mutex.unlock();
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        mutex.lock();
+        updateDisplay();
+        flag_tree_changed = false;
+        mutex.unlock();
     }
+    QTimer::singleShot(10,this,SLOT(process()));
 }
 
-
-
-
-int MainProcess::exec()
+int MainProcess::launchEverything()
 {
     QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
 
@@ -242,7 +227,7 @@ void MainProcess::deactivate(AlertTypes::EnAlert alert)
 
 void MainProcess::forceItemDeactivation(int _alertType, QString _objName) {
 
-    std::cout << "Called the C++ slot with message:" << _alertType << ":" <<_objName.toLocal8Bit().constData() << std::endl;
+    qDebug("Called the C++ slot with message: %d:%s" , _alertType  , _objName.toLocal8Bit().constData());
 
     RootedTreeNode* nodeCGRT = nullptr;
 

@@ -5,8 +5,8 @@
 //#include "mainwindow.h"
 #include "canmanager.h"
 #include "ialertdisplay.h"
-#include "qmltreeparser.h"
 #include <QQmlApplicationEngine>
+#include "rootedtree.h"
 
 class MainProcess : public QThread, IAlertDisplay
 {
@@ -15,9 +15,7 @@ public:
 
     explicit MainProcess(QObject *aComponentObject);
 
-    void run() override;
-
-    int exec(void);
+    int launchEverything(void);
 
     void updateDisplay(void);
 
@@ -30,6 +28,8 @@ public:
 public slots:
 
     void forceItemDeactivation(int _alertType, QString _objName);
+
+    void process();
 
 private:
     static MainProcess* instance;

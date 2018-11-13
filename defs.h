@@ -3,6 +3,21 @@
 
 #include <alerttypes.h>
 
+
+#ifdef WIN32
+
+struct can_frame{
+      long can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+      uint    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+      uchar    __pad;   /* padding */
+      uchar    __res0;  /* reserved / padding */
+      uchar    __res1;  /* reserved / padding */
+      uchar    data[8];
+};
+
+#endif
+
+
 typedef enum DISPLAY_ERRORS
 {
     OK= 0,
@@ -49,7 +64,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 {
   {can_id_master, 0x700, msg_simple},
   {can_id_tsr,    0x727, msg_simple},
-  {can_id_s_adas, 0x75a, msg_smart},
+  {can_id_s_adas, 0x7ac, msg_smart},
 #if 0
   {can_id_left, 0x610},
   {can_id_right, 0x620},
@@ -169,10 +184,10 @@ du_units_table_row_t;
 
 static const du_units_table_row_t du_units_table[] =
 {
-    {du_second,      1000},
-    {du_10_seconds, 10000},
-    {du_minute,     60000},
-    {du_hour,     3600000},
+    {du_second,      1000u},
+    {du_10_seconds, 10000u},
+    {du_minute,     60000u},
+    {du_hour,     3600000u},
 };
 
 static const size_t du_units_table_size = (sizeof(du_units_table)/sizeof(du_units_table_row_t));

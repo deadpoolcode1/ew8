@@ -2,10 +2,12 @@
 #define CANRXMSG_H
 
 #include "icanrxmsgfactory.h"
+#include "ialertdisplay.h"
 #include "defs.h"
 
 #include "canmanager.h"
 
+class IAlertDisplay;
 class ICanRxMsgFactory;
 
 class CanRxMsg

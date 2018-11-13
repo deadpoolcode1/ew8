@@ -28,9 +28,7 @@
 
 #include <QThread>
 #include <QMutex>
-
-#include <iostream>
-
+#include <QTimer>
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -41,6 +39,7 @@ CanManager::CanManager(IAlertDisplay * alertdisp)
 {
     mydisplays = alertdisp;
     init();
+    connect(this, SIGNAL(started()),SLOT(process()));
 }
 
 
@@ -136,7 +135,7 @@ void CanManager::init(void)
     addr.can_ifindex = ifr.ifr_ifindex;
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
-    std::cout << "can0 initiated"<<std::endl;
+    qDebug("can0 initiated");
 #else
       canInitializeLibrary();
 
@@ -236,32 +235,12 @@ void CanManager::write_frame(void)
 
 }
 
-void CanManager::run()
+void CanManager::process()
 {
-    QString result;
 
-    while(1)
-    {
-
-
-#if 1
         this->read_frame();
-#else
-
-        mydisplays->mutex.lock();
-        this->read_frame();
-        mydisplays->mutex.unlock();
-
-#ifdef WIN32
-        std::this_thread::sleep_for(std::chrono::milliseconds(2));
-#else
-        msleep(2);
-#endif
-
-#endif
-    }
+        QTimer::singleShot(0,this,SLOT(process()));
 }
-
 
 qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask)
 {
@@ -534,6 +513,7 @@ void CanManager::parse_frame(struct can_frame * frame)
             curr->process(frame);
         }
 
+        //TODO move also to the OOP pattern
         parse_frame1(frame);
 
 }

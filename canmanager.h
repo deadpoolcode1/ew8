@@ -19,19 +19,6 @@
 #include "icanrxmsgfactory.h"
 
 
-#ifdef WIN32
-
-struct can_frame {
-      long can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-      uint    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
-      uchar    __pad;   /* padding */
-      uchar    __res0;  /* reserved / padding */
-      uchar    __res1;  /* reserved / padding */
-      uchar    data[8];
-};
-
-#endif
-
 typedef struct hmw_state_s
 {
     AlertTypes::EnAlert alert;
@@ -54,10 +41,9 @@ public:
     void read_frame(void);
     void write_frame(void);
 
-    void run() override;
 
-signals:
-    void resultReady(const QString &s);
+public slots:
+    void process();
 
 private:
     //inner functions:

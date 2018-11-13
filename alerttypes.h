@@ -64,6 +64,9 @@ public:
     enum EnAlert
     {
         QtQG = 0,  // group
+
+
+        //Alert Items:
         ALERT_NONE = 1,
         ALERT_FCW = 2,
         ALERT_PDZ = 3,
@@ -83,9 +86,16 @@ public:
         ALERT_PLAYGROUND = 17,
         ALERT_END_ALL_RESTR = 18,
         ALERT_NO_PASS = 19,
-        ALERT_END_OF_TYPE = 20,
+
+        //Smart Items:
+        SMART_BASE   = 20,
+        SMART_ANIMAL = SMART_BASE + 1,
+
+        //Special Item:
+         ALERT_END_OF_TYPE,
     };
     Q_ENUMS(EnAlert)
+
 
     // Do not forget to declare your class to the QML system.
 

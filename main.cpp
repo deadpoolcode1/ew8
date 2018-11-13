@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
-    mp->exec();
+    mp->launchEverything();
 
 
     return app.exec();

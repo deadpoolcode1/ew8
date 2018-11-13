@@ -7,6 +7,8 @@
 #include "smartcanrxmsg.h"
 #include <QObject>
 
+class IAlertDisplay;
+
 class SmartItem : public QObject
 {
     Q_OBJECT
@@ -24,33 +26,39 @@ public:
     } smart_params_t;
 
 
+    void setDisplay(IAlertDisplay *anAlertDisplay);
+
+    void visualDeactivate(void);
 
 
-    void setActive(smart_params_t _params);
+    void setActive(volatile smart_params_t & _params);
     void setInactive(void);
-
-
 
 protected:
      explicit SmartItem(quint8 aVisId);
     static SmartItem * smartItemsPool[MAX_SMART_ITEMS_NUM];
     static size_t  smartItemsPoolNumOfObjects;
 
+    IAlertDisplay * alertsDisplay;
+
     //TODO addTimers:
     //QDateTime qdt;
-    bool isActive;
+    bool isActived;
     bool isNextActive;
     quint8 visId;
 
+    AlertTypes::EnAlert itsAlert;
+
+
     //functions:
 
-    protected slots:
+public slots:
 
-    void fireItsMinActiveTime(void);
-    void fireItsMaxActiveTime(void);
+    void fireItsMinActiveTime();
+    void fireItsMaxActiveTime();
 
 private:
-    quint32 minDurationTime;  // -1 - never was issued
+    quint32 minDurationTime;
     quint32 maxDurationTime;
 
     QTimer * minDurationQtimer;

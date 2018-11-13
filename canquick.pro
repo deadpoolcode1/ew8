@@ -20,7 +20,6 @@ SOURCES += \
         main.cpp \
     canmanager.cpp \
     mainprocess.cpp \
-    qmltreeparser.cpp \
     rootedtreenode.cpp \
     rootedtree.cpp \
     layerspriorityq.cpp \
@@ -80,14 +79,14 @@ DISTFILES += \
     resources/EWAlerts/motorway.svg \
     resources/EWAlerts/no_pass.svg \
     resources/EWAlerts/playground.svg \
-    TSR.qml
+    TSR.qml \
+    SmartItem.qml
 
 HEADERS += \
     canmanager.h \
     ialertdisplay.h \
     icanrxmsgfactory.h \
     mainprocess.h \
-    qmltreeparser.h \
     rootedtreenode.h \
     rootedtree.h \
     defs.h \

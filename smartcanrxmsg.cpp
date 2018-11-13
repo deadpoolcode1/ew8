@@ -35,6 +35,9 @@ SmartCanRxMsg::can_msg_content_t SmartCanRxMsg::parse(struct can_frame *frame)
 
 void SmartCanRxMsg::process(struct can_frame * frame)
 {
+
+
+#if 0
     //Overall frame compare
     bool is_frame_updated = false;
 
@@ -71,26 +74,18 @@ void SmartCanRxMsg::process(struct can_frame * frame)
    }
    else
    {
-
-       qint32 alertAction;
-
-       //Extract Fields Block
-#if 0
-       //NOTE: instead of previous frame of the message, previous frame of visual item is to be used.
-       //NOTE: consider if active visual item should be changed?
-       if(preframe)
-       {
-            can_msg_content_t prev_fields = parse(preframe);
-       }
 #endif
 
 
-       can_msg_content_t recv_fields = parse(frame);
+       //Extract Fields Block
+       //NOTE: instead of previous frame of the message, previous frame of visual item is to be used.
+
+       volatile can_msg_content_t recv_fields = parse(frame);
        //End of extract fields block
 
        //TODO: visual item status structure must be generated and its state must be saved
 
-
+        qDebug("Smart Can Rx Msg with VisId %d processed @%s:%d", recv_fields.visId, __func__, __LINE__);
 
 
 
@@ -99,17 +94,28 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        //Activation/Deactivation Block
        SmartItem * smarti = SmartItem::getInstance(recv_fields.visId);
 
+       smarti->setDisplay(alertsDisplay);
+
+#if 0
+       if(!smarti->isRunning())
+       {
+          smarti->start();
+       }
+#endif
+
        //construct smart item settings struct:
-       SmartItem::smart_params_t smart_params;
+       volatile SmartItem::smart_params_t smart_params;
 
        smart_params.visUnits = recv_fields.visUnits;
        smart_params.paramInt = recv_fields.paramInt;
        smart_params.paramFrac = recv_fields.paramFrac;
 
-       smart_params.minDurationMs = recv_fields.minDuration * convert2msec(recv_fields.minDurUnits);
-       smart_params.minDurationMs = recv_fields.maxDuration * convert2msec(recv_fields.maxDurUnits);;
+       smart_params.minDurationMs = recv_fields.minDuration * (convert2msec(recv_fields.minDurUnits));
+       smart_params.maxDurationMs = recv_fields.maxDuration * (convert2msec(recv_fields.maxDurUnits));
 
+ #if 0
        alertsDisplay->mutex.lock();
+#endif
 
 
        if (recv_fields.activation)
@@ -122,13 +128,16 @@ void SmartCanRxMsg::process(struct can_frame * frame)
            smarti->setInactive();
        }
 
+#if 0
        alertsDisplay->mutex.unlock();
+#endif
 
        //End of Activation/Deactivation Block
 
-
+#if 0
        memcpy(&prev_frame, frame, sizeof(struct can_frame));
    }
+#endif
 
 }
 
@@ -141,7 +150,7 @@ void SmartCanRxMsg::ack()
 
 quint32 SmartCanRxMsg::convert2msec (duration_unit_t unit)
 {
-    quint32 ret =0;
+    volatile quint32 ret = 0;
 
     for (size_t i=0; i < du_units_table_size; i++)
     {

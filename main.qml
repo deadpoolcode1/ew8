@@ -286,6 +286,27 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
 
             visible: true
+
+
+
+            SmartItem {
+
+                //general features
+                id: smart_animal_side;
+                objectName: "SMART_ANIMAL_SIDE"
+                property int layer_pri: 0
+                canEntityType: Alert.SMART_ANIMAL
+
+                //special features
+                is_main: false
+                its_pair_alert: smart_animal_main
+                source:"../images/SmartAlerts/animal.svg";
+
+            }
+
+
+
+
         }
 
 
@@ -568,6 +589,21 @@ ApplicationWindow {
                         is_main: true
                         its_pair_alert: alert_no_pass_side
                         source:"../images/EWAlerts/no_pass.svg";
+
+                    }
+
+                    SmartItem {
+
+                        //general features
+                        id: smart_animal_main;
+                        objectName: "SMART_ANIMAL_MAIN"
+                        property int layer_pri: 0
+                        canEntityType: Alert.SMART_ANIMAL
+
+                        //special features
+                        is_main: true
+                        its_pair_alert: smart_animal_side
+                        source:"../images/SmartAlerts/animal.svg";
 
                     }
 
