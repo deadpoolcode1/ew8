@@ -31,7 +31,7 @@ public:
     void visualDeactivate(void);
 
 
-    void setActive(volatile smart_params_t & _params);
+    void setActive(smart_params_t & _params);
     void setInactive(void);
 
 protected:

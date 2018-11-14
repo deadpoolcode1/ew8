@@ -81,7 +81,7 @@ void SmartItem::setDisplay(IAlertDisplay *anAlertDisplay)
     }
 }
 
-void SmartItem::setActive(volatile smart_params_t & _params)
+void SmartItem::setActive(smart_params_t & _params)
 {
    qDebug("SmartItem with VisId %d activation fired @%s:%d", visId, __func__, __LINE__);
 
@@ -108,7 +108,7 @@ void SmartItem::setActive(volatile smart_params_t & _params)
           qDebug("SmartItem with VisId %d minimal duration remained %d and active: %d @%s:%d", visId, minDurationQtimer->remainingTime(), minDurationQtimer->isActive(), __func__, __LINE__);
           qDebug("SmartItem with VisId %d maximal duration remained %d and active: %d @%s:%d", visId, maxDurationQtimer->remainingTime(), maxDurationQtimer->isActive(),__func__, __LINE__);
 
-          maxDurationQtimer->stop();
+          minDurationQtimer->stop();
           minDurationQtimer->setInterval(minDurationTime);
           minDurationQtimer->start();
       }

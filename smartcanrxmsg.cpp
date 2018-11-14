@@ -19,8 +19,8 @@ SmartCanRxMsg::can_msg_content_t SmartCanRxMsg::parse(struct can_frame *frame)
    content.msgId = frame->data[CAN_MSG_S_ADAS_M_ID_BYTE];
    content.visId = frame->data[CAN_MSG_S_ADAS_VIS_ITEM_BYTE];
    content.visUnits = (visual_item_unit_t)((frame->data[CAN_MSG_S_ADAS_PARAM_UNIT_BYTE]&CAN_MSG_S_ADAS_PARAM_UNIT_MSK)>>CAN_MSG_S_ADAS_PARAM_UNIT_SHIFT);
-   content.minDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MINDUR_BYTE]&CAN_MSG_S_ADAS_MINDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MINDUR_UNIT_SHIFT);
-   content.maxDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MAXDUR_BYTE]&CAN_MSG_S_ADAS_MAXDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MAXDUR_UNIT_SHIFT);
+   content.minDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MINDUR_UNIT_BYTE]&CAN_MSG_S_ADAS_MINDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MINDUR_UNIT_SHIFT);
+   content.maxDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MAXDUR_UNIT_BYTE]&CAN_MSG_S_ADAS_MAXDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MAXDUR_UNIT_SHIFT);
    content.activation = (bool)(frame->data[CAN_MSG_S_ADAS_ACTIV_BYTE]&CAN_MSG_S_ADAS_ACTIV_MSK);
    content.paramInt =  frame->data[CAN_MSG_S_ADAS_PARAM_INT_BYTE];
    content.paramFrac =  frame->data[CAN_MSG_S_ADAS_PARAM_FRAC_BYTE];
@@ -80,7 +80,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        //Extract Fields Block
        //NOTE: instead of previous frame of the message, previous frame of visual item is to be used.
 
-       volatile can_msg_content_t recv_fields = parse(frame);
+       can_msg_content_t recv_fields = parse(frame);
        //End of extract fields block
 
        //TODO: visual item status structure must be generated and its state must be saved
@@ -104,7 +104,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
 #endif
 
        //construct smart item settings struct:
-       volatile SmartItem::smart_params_t smart_params;
+       SmartItem::smart_params_t smart_params;
 
        smart_params.visUnits = recv_fields.visUnits;
        smart_params.paramInt = recv_fields.paramInt;
@@ -150,7 +150,7 @@ void SmartCanRxMsg::ack()
 
 quint32 SmartCanRxMsg::convert2msec (duration_unit_t unit)
 {
-    volatile quint32 ret = 0;
+    quint32 ret = 0;
 
     for (size_t i=0; i < du_units_table_size; i++)
     {
