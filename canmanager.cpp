@@ -163,19 +163,16 @@ void CanManager::read_frame(void)
     nbytes = read(socknum, &frame, sizeof(struct can_frame));
 
     if (nbytes < 0) {
-        perror("can raw socket read");
-   //     return 1;
+        fprintf(stderr,"CAN raw socket read");
     }
-
-    /* paranoid check ... */
-    if (nbytes < (ssize_t)sizeof(struct can_frame)) {
+    else if (nbytes < (ssize_t)sizeof(struct can_frame))
+    {
         fprintf(stderr, "read: incomplete CAN frame\n");
-  //      return 1;
     }
-
-        /* do something with the received CAN frame */
-
-   parse_frame(&frame);
+    else
+    {
+        parse_frame(&frame);
+    }
 
 #else
       stat = canOK;

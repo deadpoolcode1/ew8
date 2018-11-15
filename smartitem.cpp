@@ -115,7 +115,7 @@ void SmartItem::setActive(smart_params_t & _params)
 
       alertsDisplay->mutex.lock();
 
-      alertsDisplay->activate(AlertTypes::SMART_ANIMAL,_params.paramInt, _params.paramFrac,
+      alertsDisplay->activate(itsAlert,_params.paramInt, _params.paramFrac,
                               _params.visUnits);
 
 

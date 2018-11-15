@@ -90,6 +90,7 @@ public:
         //Smart Items:
         SMART_BASE   = 20,
         SMART_ANIMAL = SMART_BASE + 1,
+        SMART_SEV_WEATHER = SMART_BASE + 2,
 
         //Special Item:
          ALERT_END_OF_TYPE,

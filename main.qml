@@ -288,24 +288,40 @@ ApplicationWindow {
             visible: true
 
 
+            Column
+            {
 
-            SmartItem {
+                SmartItem {
 
-                //general features
-                id: smart_animal_side;
-                objectName: "SMART_ANIMAL_SIDE"
-                property int layer_pri: 0
-                canEntityType: Alert.SMART_ANIMAL
+                    //general features
+                    id: smart_animal_side;
+                    objectName: "SMART_ANIMAL_SIDE"
+                    property int layer_pri: 0
+                    canEntityType: Alert.SMART_ANIMAL
 
-                //special features
-                is_main: false
-                its_pair_alert: smart_animal_main
-                source:"../images/SmartAlerts/animal.svg";
+                    //special features
+                    is_main: false
+                    its_pair_alert: smart_animal_main
+                    source:"../images/SmartAlerts/animal.svg";
+
+                }
+
+                SmartItem {
+
+                    //general features
+                    id: smart_sev_weather_side;
+                    objectName: "SMART_SEV_WEATHER_SIDE"
+                    property int layer_pri: 0
+                    canEntityType: Alert.SMART_SEV_WEATHER
+
+                    //special features
+                    is_main: false
+                    its_pair_alert: smart_sev_weather_main
+                    source:"../images/SmartAlerts/severWeather.svg";
+
+                }
 
             }
-
-
-
 
         }
 
@@ -604,6 +620,21 @@ ApplicationWindow {
                         is_main: true
                         its_pair_alert: smart_animal_side
                         source:"../images/SmartAlerts/animal.svg";
+
+                    }
+
+                    SmartItem {
+
+                        //general features
+                        id: smart_sev_weather_main;
+                        objectName: "SMART_SEV_WEATHER_MAIN"
+                        property int layer_pri: 0
+                        canEntityType: Alert.SMART_SEV_WEATHER
+
+                        //special features
+                        is_main: true
+                        its_pair_alert: smart_sev_weather_side
+                        source:"../images/SmartAlerts/severWeather.svg";
 
                     }
 
