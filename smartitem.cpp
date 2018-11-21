@@ -17,7 +17,6 @@ SmartItem::SmartItem(quint8 aVisId)
    //TODO ensure  SMART_BASE < range < ALERT_END_OF_TYPE
    itsAlert = (AlertTypes::EnAlert)(AlertTypes::SMART_BASE + aVisId);
    isActived = false;
-   isNextActive = false;
 
    alertsDisplay = nullptr;
 
@@ -85,11 +84,6 @@ void SmartItem::setActive(smart_params_t & _params)
 {
    qDebug("SmartItem with VisId %d activation fired @%s:%d", visId, __func__, __LINE__);
 
-#if 0
-   qDebug("SmartItem with VisId %d minimal duration remained %d and active: %d @%s:%d", visId, minDurationQtimer->remainingTime(), minDurationQtimer->isActive(), __func__, __LINE__);
-   qDebug("SmartItem with VisId %d maximal duration remained %d and active: %d @%s:%d", visId, maxDurationQtimer->remainingTime(), maxDurationQtimer->isActive(),__func__, __LINE__);
-#endif
-
    //WARNING: goes after the last received smart message
    maxDurationTime = _params.maxDurationMs;
 
@@ -109,8 +103,12 @@ void SmartItem::setActive(smart_params_t & _params)
           qDebug("SmartItem with VisId %d maximal duration remained %d and active: %d @%s:%d", visId, maxDurationQtimer->remainingTime(), maxDurationQtimer->isActive(),__func__, __LINE__);
 
           minDurationQtimer->stop();
-          minDurationQtimer->setInterval(minDurationTime);
-          minDurationQtimer->start();
+
+          if(0 != minDurationTime)//TODO for max duration timer
+          {
+              minDurationQtimer->setInterval(minDurationTime);
+              minDurationQtimer->start();
+          }
       }
 
       alertsDisplay->mutex.lock();
@@ -137,14 +135,13 @@ void SmartItem::setActive(smart_params_t & _params)
    {
        qDebug("SmartItem with VisId %d -- maximum duration timer started with %u @%s:%d", visId, maxDurationTime, __func__, __LINE__);
 
-#if 0
-       qDebug("SmartItem with VisId %d minimal duration remained %d and active: %d @%s:%d", visId, minDurationQtimer->remainingTime(), minDurationQtimer->isActive(), __func__, __LINE__);
-       qDebug("SmartItem with VisId %d maximal duration remained %d and active: %d @%s:%d", visId, maxDurationQtimer->remainingTime(), maxDurationQtimer->isActive(),__func__, __LINE__);
-#endif
-
        maxDurationQtimer->stop();
-       maxDurationQtimer->setInterval(maxDurationTime);
-       maxDurationQtimer->start();
+
+       if(0 != maxDurationTime)//TODO for max duration timer
+       {
+           maxDurationQtimer->setInterval(maxDurationTime);
+           maxDurationQtimer->start();
+       }
    }
 }
 
@@ -152,11 +149,6 @@ void SmartItem::setInactive(void)
 { 
 
      qDebug("SmartItem with VisId %d deactivation fired, isActivated = %d @%s:%d", visId, isActived, __func__, __LINE__);
-
-#if 0
-     qDebug("SmartItem with VisId %d minimal duration remained %d and active: %d @%s:%d", visId, minDurationQtimer->remainingTime(), minDurationQtimer->isActive(), __func__, __LINE__);
-     qDebug("SmartItem with VisId %d maximal duration remained %d and active: %d @%s:%d", visId, maxDurationQtimer->remainingTime(), maxDurationQtimer->isActive(),__func__, __LINE__);
-#endif
 
     if(isActived)
     {
@@ -212,7 +204,15 @@ void SmartItem::fireItsMaxActiveTime()
     qDebug("SmartItem with VisId %d miximum duration timer fired @%s:%d", visId, __func__, __LINE__);
 
     //WARNING: Following funciong also stops the timer
-    visualDeactivate();
+    if(!minDurationQtimer->isActive())
+    {
+       visualDeactivate();
+    }
+    else
+    {
+        maxDurationQtimer->stop();
+        isActived = false;
+    }
 }
 
 

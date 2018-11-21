@@ -33,6 +33,8 @@ protected:
   can_id_t cid;
   IAlertDisplay * alertsDisplay;
 
+
+
   struct can_frame prev_frame; //NOTE: is not initialized till first frame is received.
   bool is_a_first_frame;
 

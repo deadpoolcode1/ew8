@@ -31,7 +31,8 @@ SOURCES += \
     tsrcanrxmsg.cpp \
     canrxmsgfactory.cpp \
     smartitem.cpp \
-    displaysignalizer.cpp
+    displaysignalizer.cpp \
+    candbsignal.cpp
 
 RESOURCES += qml.qrc
 
@@ -100,7 +101,8 @@ HEADERS += \
     tsrcanrxmsg.h \
     canrxmsgfactory.h \
     smartitem.h \
-    displaysignalizer.h
+    displaysignalizer.h \
+    candbsignal.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

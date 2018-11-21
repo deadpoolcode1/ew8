@@ -74,11 +74,36 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
 #define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
 
-#define CAN_MSG_MASTER_FLA_BYTE 1
-#define CAN_MSG_MASTER_FLA_MSK  0x80
+
+#define CAN_MSG_MASTER_SOUND_BYTE 0
+#define CAN_MSG_MASTER_SOUND_TYPE_MSK 0x07
+
+
+#define CAN_MSG_MASTER_TIME_IND_BYTE 0
+#define CAN_MSG_MASTER_TIME_IND_MSK  0x18
+#define CAN_MSG_MASTER_TIME_IND_SHIFT 0x3
+
+#define CAN_MSG_MASTER_SND_REP_MSK 0x60
+#define CAN_MSG_MASTER_SND_REP_SHIFT 0x5
+
+#define CAN_MSG_MASTER_SND_SUPPRESSED_MSK  0x80
+
+//===================================
+
+#define CAN_MSG_MASTER_SEC_DIAG_BYTE 1
+#define CAN_MSG_MASTER_SEC_DIAG_MSK 0x10
+
+
+#define CAN_MSG_MASTER_ZERO_SPEED_BYTE 1
+#define CAN_MSG_MASTER_ZERO_SPEED_MSK 1
 
 #define CAN_MSG_MASTER_BEAM_BYTE 1
 #define CAN_MSG_MASTER_BEAM_MSK  0x40
+
+#define CAN_MSG_MASTER_FLA_BYTE 1
+#define CAN_MSG_MASTER_FLA_MSK  0x80
+
+//===================================
 
 #define CAN_MSG_MASTER_HMW_BYTE 2
 #define CAN_MSG_MASTER_HMW_MSK  0xFE
@@ -87,6 +112,8 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_HMWEN_BYTE 2
 #define CAN_MSG_MASTER_HMWEN_MSK  0x01
 
+//===================================
+
 #define CAN_MSG_MASTER_ERR_ACT_BYTE 3
 #define CAN_MSG_MASTER_ERR_ACT_MSK  0x01
 
@@ -94,7 +121,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_ERR_CODE_MSK  0xFE
 #define CAN_MSG_MASTER_ERR_CODE_SHIFT  0x1
 
-
+//====================================
 
 #define CAN_MSG_MASTER_LDW_OFF_BYTE 4
 #define CAN_MSG_MASTER_LDW_OFF_MSK 0x01
@@ -108,6 +135,13 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_FCW_BYTE 4
 #define CAN_MSG_MASTER_FCW_MSK 0x08
 
+#define CAN_MSG_MASTER_MNTC_BYTE 4
+#define CAN_MSG_MASTER_MNTC_MSK 0x40
+
+#define CAN_MSG_MASTER_FLSAFE_BYTE 4
+#define CAN_MSG_MASTER_FLSAFE_MSK 0x80
+
+//====================================
 
 #define CAN_MSG_MASTER_PDZ_BYTE 5
 #define CAN_MSG_MASTER_PDZ_MSK 0x02
@@ -118,13 +152,37 @@ static const can_id_values_table_row_t can_id_values_table[] =
 #define CAN_MSG_MASTER_BLINKERS_BYTE 5
 #define CAN_MSG_MASTER_BLINKERS_MSK 0x08
 
+#define CAN_MSG_MASTER_CYCLIST_BYTE 5
+#define CAN_MSG_MASTER_CYCLIST_MSK 0x10
+
+
+#define CAN_MSG_MASTER_TAMPER_BYTE 5
+#define CAN_MSG_MASTER_TAMPER_MSK 0x20
+
+#define CAN_MSG_MASTER_SPEED_FMT_BYTE 5
+#define CAN_MSG_MASTER_SPEED_FMT_MSK 0x40
+
 #define CAN_MSG_MASTER_TSREN_BYTE 5
 #define CAN_MSG_MASTER_TSREN_MSK 0x80
+
+//====================================
+
+#define CAN_MSG_MASTER_TSR_WRNLEV_BYTE 6
+#define CAN_MSG_MASTER_TSR_WRNLEV_MSK 0x07
+
+#define CAN_MSG_MASTER_FLSAFE_LEV_BYTE 6
+#define CAN_MSG_MASTER_FLSAFE_LEV_MSK 0x18
+#define CAN_MSG_MASTER_FLSAFE_LEV_SHIFT 0x4
+
+//====================================
 
 #define CAN_MSG_MASTER_HW_LEVEL_BYTE 7
 #define CAN_MSG_MASTER_HW_LEVEL_MSK 0x3
 #define CAN_MSG_MASTER_HW_LEVEL_SHIFT 0x0
 
+#define CAN_MSG_MASTER_HW_REPEN_BYTE 7
+#define CAN_MSG_MASTER_HW_REPEN_MSK 0x04
+#define CAN_MSG_MASTER_HW_REPEN_SHIFT 0x3
 
 //Smart Adas defines:
 #define CAN_MSG_S_ADAS_M_ID_BYTE 0

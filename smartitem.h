@@ -44,7 +44,6 @@ protected:
     //TODO addTimers:
     //QDateTime qdt;
     bool isActived;
-    bool isNextActive;
     quint8 visId;
 
     AlertTypes::EnAlert itsAlert;

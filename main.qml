@@ -309,6 +309,22 @@ ApplicationWindow {
                 SmartItem {
 
                     //general features
+                    id: smart_slippery_side;
+                    objectName: "SMART_SLIPPERY_SIDE"
+                    property int layer_pri: 0
+                    canEntityType: Alert.SMART_SLIPPERY
+
+                    //special features
+                    is_main: false
+                    its_pair_alert: smart_slippery_main
+                    source:"../images/SmartAlerts/slippery.svg";
+
+                }
+
+
+                SmartItem {
+
+                    //general features
                     id: smart_sev_weather_side;
                     objectName: "SMART_SEV_WEATHER_SIDE"
                     property int layer_pri: 0
@@ -620,6 +636,21 @@ ApplicationWindow {
                         is_main: true
                         its_pair_alert: smart_animal_side
                         source:"../images/SmartAlerts/animal.svg";
+
+                    }
+
+                    SmartItem {
+
+                        //general features
+                        id: smart_slippery_main;
+                        objectName: "SMART_SLIPPERY_MAIN"
+                        property int layer_pri: 0
+                        canEntityType: Alert.SMART_SLIPPERY
+
+                        //special features
+                        is_main: true
+                        its_pair_alert: smart_slippery_side
+                        source:"../images/SmartAlerts/slippery.svg";
 
                     }
 

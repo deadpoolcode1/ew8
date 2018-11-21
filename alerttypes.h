@@ -91,6 +91,7 @@ public:
         SMART_BASE   = 20,
         SMART_ANIMAL = SMART_BASE + 1,
         SMART_SEV_WEATHER = SMART_BASE + 2,
+        SMART_SLIPPERY = SMART_BASE + 3,
 
         //Special Item:
          ALERT_END_OF_TYPE,

@@ -35,48 +35,6 @@ SmartCanRxMsg::can_msg_content_t SmartCanRxMsg::parse(struct can_frame *frame)
 
 void SmartCanRxMsg::process(struct can_frame * frame)
 {
-
-
-#if 0
-    //Overall frame compare
-    bool is_frame_updated = false;
-
-    //WARNING the first received frame is "preceeded" by a NULL frame
-    struct can_frame * preframe = nullptr;
-
-    if (is_a_first_frame)
-    {
-        is_a_first_frame = false;
-    }
-    else
-    {
-        preframe = &prev_frame;
-    }
-
-    if (preframe)
-    {
-        if (0 != memcmp(preframe, frame, sizeof(struct can_frame)))
-        {
-            is_frame_updated = true;
-        }
-    }
-    else
-    {
-        is_frame_updated = true;
-    }
-    //End of overall frame compare
-
-
-
-   if(!is_frame_updated)
-   {
-       //skip
-   }
-   else
-   {
-#endif
-
-
        //Extract Fields Block
        //NOTE: instead of previous frame of the message, previous frame of visual item is to be used.
 
@@ -88,20 +46,11 @@ void SmartCanRxMsg::process(struct can_frame * frame)
         qDebug("Smart Can Rx Msg with VisId %d processed @%s:%d", recv_fields.visId, __func__, __LINE__);
 
 
-
-
-
        //Activation/Deactivation Block
        SmartItem * smarti = SmartItem::getInstance(recv_fields.visId);
 
        smarti->setDisplay(alertsDisplay);
 
-#if 0
-       if(!smarti->isRunning())
-       {
-          smarti->start();
-       }
-#endif
 
        //construct smart item settings struct:
        SmartItem::smart_params_t smart_params;
@@ -112,10 +61,6 @@ void SmartCanRxMsg::process(struct can_frame * frame)
 
        smart_params.minDurationMs = recv_fields.minDuration * (convert2msec(recv_fields.minDurUnits));
        smart_params.maxDurationMs = recv_fields.maxDuration * (convert2msec(recv_fields.maxDurUnits));
-
- #if 0
-       alertsDisplay->mutex.lock();
-#endif
 
 
        if (recv_fields.activation)
@@ -128,16 +73,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
            smarti->setInactive();
        }
 
-#if 0
-       alertsDisplay->mutex.unlock();
-#endif
-
        //End of Activation/Deactivation Block
-
-#if 0
-       memcpy(&prev_frame, frame, sizeof(struct can_frame));
-   }
-#endif
 
 }
 
