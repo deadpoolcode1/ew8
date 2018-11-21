@@ -103,7 +103,7 @@ typedef struct sg_var_s
 }
 sg_var_t;
 
-sg_var_t extractSignal(char * name, struct can_frame *frame);
+sg_var_t extractSignal(const char * name, struct can_frame *frame);
 
 
 #endif //CANDBSIGNAL_H

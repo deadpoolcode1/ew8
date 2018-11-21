@@ -45,7 +45,7 @@
           sizeof(SignalsOfAfterMarket_AWS_0x700)/sizeof(Signal);
 
 
-  sg_var_t extractSignal(char * name, struct can_frame *frame)
+  sg_var_t extractSignal(const char * name, struct can_frame *frame)
   {
 
      sg_var_t ret;

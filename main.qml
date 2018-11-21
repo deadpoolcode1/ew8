@@ -992,6 +992,9 @@ ApplicationWindow {
 
                         Image {
 
+                            function setVisibleSlot() {setVisible(true)}
+                            function setInvisibleSlot() {setVisible(false)}
+
                             function setVisible(isVisible)
                             {
                                 visible = isVisible

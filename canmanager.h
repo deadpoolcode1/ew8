@@ -19,14 +19,7 @@
 #include "icanrxmsgfactory.h"
 
 
-typedef struct hmw_state_s
-{
-    AlertTypes::EnAlert alert;
-    //AlertTypes::EnHMW value;
-    quint8   value;
-    bool is_active;
-}
-hmw_state_t;
+
 
 class IAlertDisplay;
 class ICanRxMsgFactory;
@@ -59,12 +52,7 @@ private:
 
     //returns 1 to switch Inactive2Active, -1 to Active2Inactive, 0 to preserve the state:
     qint32 alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask);
-    void hmwStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
-    void beamStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
     void sliStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
-
-    void hmwStateParse(struct can_frame * frame, hmw_state_t * result);
-
     bool is_tsr_enabled;
 
 
