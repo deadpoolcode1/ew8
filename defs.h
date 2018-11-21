@@ -3,6 +3,8 @@
 
 #include <alerttypes.h>
 
+#include "candbsignal.h"
+
 
 #ifdef WIN32
 
@@ -56,19 +58,17 @@ typedef struct can_id_values_table_row_s
   can_id_t mnemonic;
   quint32 value;
   canrxmsg_type_t type;
+  Signal * sg_array;
+  const size_t sg_array_size;
 } can_id_values_table_row_t;
 
 
 
 static const can_id_values_table_row_t can_id_values_table[] =
 {
-  {can_id_master, 0x700, msg_simple},
-  {can_id_tsr,    0x727, msg_simple},
-  {can_id_s_adas, 0x7ac, msg_smart},
-#if 0
-  {can_id_left, 0x610},
-  {can_id_right, 0x620},
-#endif
+  {can_id_master, 0x700, msg_simple, SignalsOfAfterMarket_AWS_0x700, SignalsOfAfterMarket_AWS_0x700_size},
+  {can_id_tsr,    0x727, msg_simple, nullptr, 0},
+  {can_id_s_adas, 0x7ac, msg_smart, nullptr, 0},
 };
 
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))

@@ -104,7 +104,7 @@ void SmartItem::setActive(smart_params_t & _params)
 
           minDurationQtimer->stop();
 
-          if(0 != minDurationTime)//TODO for max duration timer
+          if(0 != minDurationTime)
           {
               minDurationQtimer->setInterval(minDurationTime);
               minDurationQtimer->start();
@@ -137,7 +137,7 @@ void SmartItem::setActive(smart_params_t & _params)
 
        maxDurationQtimer->stop();
 
-       if(0 != maxDurationTime)//TODO for max duration timer
+       if(0 != maxDurationTime)
        {
            maxDurationQtimer->setInterval(maxDurationTime);
            maxDurationQtimer->start();

@@ -2,17 +2,33 @@
 #define CANDBSIGNAL_H
 
 #include <QObject>
-#include "defs.h"
 
+#ifndef WIN32
+#include <linux/types.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <linux/can.h>
+#else
+#include "canlib.h"
+#endif
 
-enum SignalValueType
+typedef enum SignalValueType_e
 {
     SIGNAL_VALUE_TYPE_INTEGER = 0,
     SIGNAL_VALUE_TYPE_FLOAT   = 1,
-    SIGNAL_VALUE_TYPE_DOUBLE  = 2
-};
+    SIGNAL_VALUE_TYPE_DOUBLE  = 2,
+}
+SignalValueType;
 
-struct Signal
+typedef enum ext_sgval_type_s
+{
+    EXT_SG_VAL_TYPE_BROKEN = -1,
+    EXT_SG_VAL_TYPE_INTEGER = 0,
+    EXT_SG_VAL_TYPE_BOOL = 1,
+    EXT_SG_VAL_TYPE_DOUBLE = 2
+} ext_sgval_type_t;
+
+typedef struct Signal_s
 {
     const char* name;
     unsigned int startByte;
@@ -24,7 +40,11 @@ struct Signal
     double min;
     double max;
     SignalValueType valueType;
-};
+}
+Signal;
+
+extern Signal SignalsOfAfterMarket_AWS_0x700[];
+extern size_t SignalsOfAfterMarket_AWS_0x700_size;
 
 //NOTE: comments etc dropped.
 #if 0
@@ -69,5 +89,21 @@ canmsg_sg_t;
 extern canmsg_sg_t *canmsgs;
 
 #endif
+
+typedef struct sg_var_s
+{
+    ext_sgval_type_t sg_type;
+    union sg_var_u
+    {
+        double _double;
+        qint32 _int;
+        bool _bool;
+        quint64 container;
+    } sg_val;
+}
+sg_var_t;
+
+sg_var_t extractSignal(char * name, struct can_frame *frame);
+
 
 #endif //CANDBSIGNAL_H
