@@ -239,25 +239,6 @@ void CanManager::process()
         QTimer::singleShot(0,this,SLOT(process()));
 }
 
-qint32 CanManager::alertStateParseAndCmp(struct can_frame * prev, struct can_frame * recv, quint32 byte, quint8 mask)
-{
-    quint32 ret = 0;
-
-     quint32 recvState = (recv->data[byte]&mask)? 1 : 0;
-
-    if(prev)
-    {
-       quint32 prevState = (prev->data[byte]&mask)? 1 : 0;
-       ret = recvState - prevState;
-    }
-    else
-    {
-        ret = recvState? 1 : (-1);
-    }
-
-    return ret;
-}
-
 void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
 {
     //deactivation:

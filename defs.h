@@ -258,6 +258,13 @@ enum HW_Warn_level_e
 
 };
 
+enum PCW_PedDZ_e
+{
+    ped_Clear = 0,//"No pedestrian"
+    ped_PedDZ = 1,//"Pedestrian in danger zone"
+    ped_PCW = 2,//"PCW"
+};
+
 //TODO construct according to dbc layout(currently for 0x700 message):
 typedef struct aws_alerts_table_row_s
 {

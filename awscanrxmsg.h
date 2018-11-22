@@ -21,6 +21,9 @@ protected:
 
     //Used for signals that just match to display alerts one-to-one
     void one2oneParseAndProcess(struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity = true);
+
+    //PCW_PedDZ (enumeration used)
+    void pedAlertsParseAndProcess(struct can_frame * recv);
 };
 
 #endif // AWSCANRXMSG_H

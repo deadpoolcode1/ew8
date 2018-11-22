@@ -78,8 +78,8 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
 
                //byte 5:
+               pedAlertsParseAndProcess(frame);
 
-               //TODO PCW_PedDZ
 
  #if 0
 
@@ -182,5 +182,30 @@ void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * n
         alertsDisplay->deactivate(alert);
     }
 }
+
+void AwsCanRxMsg::pedAlertsParseAndProcess(struct can_frame * recv)
+{
+    switch(extractSignal("PCW_PedDZ",recv).sg_val._int)
+    {
+    case ped_Clear:
+        alertsDisplay->deactivate(AlertTypes::ALERT_PCW);
+        alertsDisplay->deactivate(AlertTypes::ALERT_PDZ);
+        break;
+    case ped_PedDZ:
+        alertsDisplay->deactivate(AlertTypes::ALERT_PCW);
+        alertsDisplay->activate(AlertTypes::ALERT_PDZ);
+        break;
+
+    case ped_PCW:
+        alertsDisplay->deactivate(AlertTypes::ALERT_PDZ);
+        alertsDisplay->activate(AlertTypes::ALERT_PCW);
+
+    default:
+        //skip
+        //NOTE: subject for error alert
+        break;
+    }
+}
+
 
 
