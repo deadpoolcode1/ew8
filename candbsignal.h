@@ -46,6 +46,9 @@ Signal;
 extern Signal SignalsOfAfterMarket_AWS_0x700[];
 extern size_t SignalsOfAfterMarket_AWS_0x700_size;
 
+extern Signal SignalsOfAfterMarket_TSR_0x727[];
+extern size_t SignalsOfAfterMarket_TSR_0x727_size;
+
 //NOTE: comments etc dropped.
 #if 0
 typedef struct candbvt_row_s
@@ -104,6 +107,11 @@ typedef struct sg_var_s
 sg_var_t;
 
 sg_var_t extractSignal(const char * name, struct can_frame *frame);
+
+#if 0
+//Used for signals that just match to display alerts one-to-one
+void one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay, struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity = true);
+#endif
 
 
 #endif //CANDBSIGNAL_H

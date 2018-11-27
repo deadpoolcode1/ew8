@@ -22,6 +22,8 @@ protected:
     //Used for signals that just match to display alerts one-to-one
     void one2oneParseAndProcess(struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity = true);
 
+    void one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity = true);
+
     //PCW_PedDZ (enumeration used)
     void pedAlertsParseAndProcess(struct can_frame * recv);
 };

@@ -485,8 +485,10 @@ ApplicationWindow {
                                 running: alert_pdz.visible
                                 loops: Animation.Infinite
 
-                                NumberAnimation { target: alert_pdz; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
-                                NumberAnimation { target: alert_pdz; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
+                                PauseAnimation {duration: 300}
+                                SmoothedAnimation { target: alert_pdz; property: "opacity"; from: 1.0; to: 0.0; duration: 100}
+                                PauseAnimation {duration: 200}
+                                SmoothedAnimation { target: alert_pdz; property: "opacity"; from: 0.0; to: 1.0; duration: 200}
 
                         }
 
@@ -525,17 +527,18 @@ ApplicationWindow {
                                 loops: Animation.Infinite
 
 
-                                /*
+/*
                                 PropertyAction {target: alert_fcw; property: "opacity"; value: 1.0}
                                 PauseAnimation {duration: 500}
                                 PropertyAction {target: alert_fcw; property: "opacity"; value: 0.0}
                                 PauseAnimation {duration: 300}
-                                */
+*/
 
 
-                                NumberAnimation { target: alert_fcw; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
-                                NumberAnimation { target: alert_fcw; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
-
+                                PauseAnimation {duration: 300}
+                                SmoothedAnimation { target: alert_fcw; property: "opacity"; from: 1.0; to: 0.0; duration: 100}
+                                PauseAnimation {duration: 200}
+                                SmoothedAnimation { target: alert_fcw; property: "opacity"; from: 0.0; to: 1.0; duration: 200}
                         }
 
                         /*

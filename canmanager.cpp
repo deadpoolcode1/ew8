@@ -19,6 +19,9 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
+#include <fcntl.h>
+#include <errno.h>
+
 #else
 
 #include "canlib.h"
@@ -50,8 +53,6 @@ void CanManager::init(void)
     iCanRxMsgFactory = new CanRxMsgFactory();
 
     CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, mydisplays);
-
-    is_tsr_enabled = false;
 
     for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
     {
@@ -126,6 +127,26 @@ void CanManager::init(void)
     }
 
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+
+    qint32 status = 0;
+
+    qint32 flags = fcntl(socknum, F_GETFL);
+
+    if(-1 != flags)
+    {
+        status = fcntl(socknum, F_SETFL, flags | O_NONBLOCK);
+    }
+    else
+    {
+
+    }
+
+    if(-1 == status)
+    {
+        qDebug("Unsuccess on NONBLOCKINK CAN socket configure");
+    }
+
+
     setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
 
     strcpy(ifr.ifr_name, "can0" );
@@ -163,7 +184,7 @@ void CanManager::read_frame(void)
     nbytes = read(socknum, &frame, sizeof(struct can_frame));
 
     if (nbytes < 0) {
-        fprintf(stderr,"CAN raw socket read");
+         //skip
     }
     else if (nbytes < (ssize_t)sizeof(struct can_frame))
     {
@@ -189,7 +210,7 @@ void CanManager::read_frame(void)
       DWORD time;
 
       //Waits up to 100 ms for a message
-         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 100);
+         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
          if (stat == canOK){
            if (flags & canMSG_ERROR_FRAME){
              printf("***ERROR FRAME RECEIVED***");
@@ -239,114 +260,6 @@ void CanManager::process()
         QTimer::singleShot(0,this,SLOT(process()));
 }
 
-void CanManager::sliStateParseAndProcess(struct can_frame * prev, struct can_frame * recv)
-{
-    //deactivation:
-    bool is_sign_in_prev =  false;
-    bool is_sign_in_recv =  false;
-
-    quint8 sign_prev;
-    quint8 sign_recv;
-
-    //quint8 supp_prev;
-    //quint8 supp_recv;
-
-    size_t i; //pick sign
-    size_t j; //filter sign
-    size_t k; //find action
-
-    //deactivation:
-    if(prev)
-    {
-        for (i = 0; i < 4; i++)
-        {
-
-            is_sign_in_recv = false;
-            sign_prev = prev->data[i*2];
-            //supp_prev = prev->data[1+i*2];
-
-            //filter:
-            if(recv)
-            {
-
-                for (j = 0; j < 4; j++)
-                {
-
-
-                    sign_recv = recv->data[j*2];
-                    //supp_recv = recv->data[1+j*2];
-
-                    if (sign_prev == sign_recv /*&& supp_prev == supp_recv*/)
-                    {
-                        is_sign_in_recv = true;
-                    }
-
-                }
-            }
-
-            if(!is_sign_in_recv)
-            {
-                //deactivate:
-                for (k = 0;k < tsr_alerts_table_size; k++)
-                {
-                    if(sign_prev == tsr_alerts_table[k].hexcode)
-                    {
-                        mydisplays->deactivate(tsr_alerts_table[k].alert);
-                        k = tsr_alerts_table_size;
-                    }
-                }
-
-            }
-        }
-    }
-
-
-
-    //activation:
-    if(recv)
-    {
-        for (i = 0; i < 4; i++)
-        {
-
-            is_sign_in_prev = false;
-            sign_recv = recv->data[i*2];
-            //supp_recv = recv->data[1+i*2];
-
-            //filter:
-            if(prev)
-            {
-                for (j = 0; j < 4; j++)
-                {
-                    sign_prev = prev->data[j*2];
-                    //supp_prev = prev->data[1+j*2];
-
-
-                    if (sign_prev == sign_recv /*&& supp_prev == supp_recv*/)
-                    {
-                        is_sign_in_prev = true;
-                    }
-                }
-            }
-
-
-
-            if(!is_sign_in_prev)
-            {
-                //activate:
-                for (k = 0;k < tsr_alerts_table_size; k++)
-                {
-                    if(sign_recv == tsr_alerts_table[k].hexcode)
-                    {
-                        mydisplays->activate(tsr_alerts_table[k].alert, tsr_alerts_table[k].value);
-                        k = tsr_alerts_table_size;
-                    }
-                }
-            }
-
-        }
-    }
-}
-
 void CanManager::parse_frame(struct can_frame * frame)
 {
     can_id_t received_id = can_id_undefined;
@@ -370,95 +283,5 @@ void CanManager::parse_frame(struct can_frame * frame)
         }
 
         //TODO move also to the OOP pattern
-        parse_frame1(frame);
-
-}
-
-void CanManager::parse_frame1(struct can_frame * frame)
-{
-    can_id_t received_id = can_id_undefined;
-    bool is_frame_updated = false;
-
-    for (size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
-    {
-         if(can_id_values_table[i].value == frame->can_id)
-         {
-             received_id = can_id_values_table[i].mnemonic;
-             
-             i = CAN_MESSAGES_TYPES_NUM;
-         }
-    }
-
-    //filter enabled/disabled messages (only can_id_tsr currently):
-    if(can_id_tsr == received_id && !is_tsr_enabled)
-    {
-        //TODO add array of enabled/disabled messages
-        //TODO make return point of the function single.
-        return;
-    }
-
-
-
-
-    //WARNING the first received frame is "preceeded" by a NULL frame
-    struct can_frame * preframe = nullptr;
-
-    if (is_a_first_frame[received_id])
-    {
-        is_a_first_frame[received_id] = false;
-    }
-    else
-    {
-        preframe = &prev_frame[received_id];
-    }
-
-    if (preframe)
-    {
-        if (0 != memcmp(preframe, frame, sizeof(struct can_frame)))
-        {
-            is_frame_updated = true;
-        }
-    }
-    else
-    {
-        is_frame_updated = true;
-    }
-
-    //display information:
-
-
-   if(!is_frame_updated)
-   {
-       //skip
-   }
-   else
-   {    
-
-        mydisplays->mutex.lock();
-
-        switch(received_id)
-        {
-               case can_id_master:
-               //moved to Strategy pattern
-           break;
-
-        case can_id_tsr:
-
-                sliStateParseAndProcess(preframe,frame);
-
-            break;
-
-        case can_id_s_adas:
-
-            break;
-
-        case can_id_undefined:
-            //never used
-            break;
-        }
-        mydisplays->mutex.unlock();
-
-        memcpy(&prev_frame[received_id], frame, sizeof(struct can_frame));
-   }
 
 }

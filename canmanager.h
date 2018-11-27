@@ -50,10 +50,6 @@ private:
 
     void init_frame(struct can_frame * frame);
 
-    void sliStateParseAndProcess(struct can_frame * prev, struct can_frame * recv);
-    bool is_tsr_enabled;
-
-
 #ifndef WIN32
     //inner variables
     int32_t socknum;

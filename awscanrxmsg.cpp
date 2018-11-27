@@ -2,6 +2,7 @@
 #include "canrxmsg.h"
 #include "simplecanrxmsg.h"
 #include "awscanrxmsg.h"
+#include "tsrcanrxmsg.h"
 
 AwsCanRxMsg::AwsCanRxMsg()
 {
@@ -80,28 +81,18 @@ void AwsCanRxMsg::process(struct can_frame * frame)
                //byte 5:
                pedAlertsParseAndProcess(frame);
 
+               bool is_enabled;
+               one2oneParseAndProcess(frame, "TSR_enabbled",&is_enabled);
 
- #if 0
-
-               //CAN_MSG_MASTER_TSREN_BYTE
-
-               if(1 == (alertAction = alertStateParseAndCmp(preframe, frame, CAN_MSG_MASTER_TSREN_BYTE, CAN_MSG_MASTER_TSREN_MSK)))
+               if(is_enabled)
                {
-                   is_tsr_enabled = true;
-
+                   TsrCanRxMsg::enable();
                }
-               else if (-1 == alertAction)
+               else
                {
-                   is_tsr_enabled = false;
-
-                   //reset active tsr alerts:
-                   if(false == is_a_first_frame[can_id_tsr])
-                   {
-                       sliStateParseAndProcess(&prev_frame[can_id_tsr], nullptr);
-                       is_a_first_frame[can_id_tsr] = true;
-                   }
+                   TsrCanRxMsg::disable();
                }
-#endif
+
 
        //End of extract fields block
 
@@ -166,8 +157,12 @@ void AwsCanRxMsg::hmwStateParseAndProcess(struct can_frame * recv)
      }
 }
 
+
 void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity)
 {
+#if 0
+    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
+#else
 
     bool desired = extractSignal(name,recv).sg_val._bool;
 
@@ -181,7 +176,30 @@ void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * n
     {
         alertsDisplay->deactivate(alert);
     }
+#endif
 }
+
+void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity)
+{
+#if 0
+    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
+#else
+
+    bool desired = extractSignal(name,recv).sg_val._bool;
+
+    bool do_active = (desired == polarity);
+
+    if(do_active)
+    {
+        *flag = true;
+    }
+    else
+    {
+        *flag = false;
+    }
+#endif
+}
+
 
 void AwsCanRxMsg::pedAlertsParseAndProcess(struct can_frame * recv)
 {

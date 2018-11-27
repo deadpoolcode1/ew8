@@ -44,6 +44,20 @@
   size_t  SignalsOfAfterMarket_AWS_0x700_size =
           sizeof(SignalsOfAfterMarket_AWS_0x700)/sizeof(Signal);
 
+  Signal SignalsOfAfterMarket_TSR_0x727[] = {
+      {"Vision_only_Sign_Type_D1", 0, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_supp_Sign_Type_D1", 1, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_Sign_Type_D2", 2, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_supp_Sign_Type_D2", 3, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_Sign_Type_D3", 4, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_supp_Sign_Type_D3", 5, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_Sign_Type_D4", 6, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Vision_only_supp_Sign_Type_D4", 7, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER}
+  };
+
+
+  size_t  SignalsOfAfterMarket_TSR_0x727_size =
+          sizeof(SignalsOfAfterMarket_TSR_0x727)/sizeof(Signal);
 
   sg_var_t extractSignal(const char * name, struct can_frame *frame)
   {
@@ -126,7 +140,24 @@
       return ret;
   }
 
+#if 0
+  one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay,struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity)
+  {
 
+      bool desired = extractSignal(name,recv).sg_val._bool;
+
+      bool do_active = (desired == polarity);
+
+      if(do_active)
+      {
+           alertsDisplay->activate(alert);
+      }
+      else
+      {
+          alertsDisplay->deactivate(alert);
+      }
+  }
+#endif
 
 #if 0
  //0x700 msg description
