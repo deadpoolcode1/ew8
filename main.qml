@@ -506,13 +506,16 @@ ApplicationWindow {
                         function setVisibleSlot() {visible = true}
                         function setInvisibleSlot() {visible = false}
 
+                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4; height: width;
+
+                        //x:20; y:20; width: 210; height: 210
+
+
                         id: alert_qrcode;
                         objectName: "QRCODE"
                         property int layer_pri: 0
                         property int canEntityType: Alert.ALERT_FCW
 
-                        width:210
-                        height: 210
 
                         visible: false;
                         rotation: 0;
