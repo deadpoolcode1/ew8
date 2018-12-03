@@ -2,21 +2,23 @@
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
+#include "qquickqrcode.h"
+
 #include "mainprocess.h"
 #include "alerttypes.h"
 
+class AlertTypes;
+class QQuickQRCode;
+
 int main(int argc, char *argv[])
 {
-
-
-    AlertTypes::declareQML();
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
     //Usage of QML enum in C++:
      AlertTypes::declareQML();
+     QQuickQRCode::declareQML();
 
     QQmlApplicationEngine engine;
 

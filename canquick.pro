@@ -32,7 +32,8 @@ SOURCES += \
     canrxmsgfactory.cpp \
     smartitem.cpp \
     displaysignalizer.cpp \
-    candbsignal.cpp
+    candbsignal.cpp \
+    qquickqrcode.cpp
 
 RESOURCES += qml.qrc
 
@@ -102,16 +103,19 @@ HEADERS += \
     canrxmsgfactory.h \
     smartitem.h \
     displaysignalizer.h \
-    candbsignal.h
+    candbsignal.h \
+    qquickqrcode.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 
 win32: INCLUDEPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
 
-linux: LIBS += -L'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/lib/' -lsocketcan
-linux: INCLUDEPATH += -I'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/include/'
+linux: LIBS += -L'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/lib/' -lsocketcan -lqrencode
 
+# WARNING: INCLUDEPATH @ linux is buggy  -- qtcreator does not see the headers for auto completion
+#linux: INCLUDEPATH += -I'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/include/'
+linux: QMAKE_CXXFLAGS += -I'/opt/poky-atmel/2.4.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/include/'
 
 #Specific preprocessor definitions:
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED

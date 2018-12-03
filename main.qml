@@ -1,4 +1,5 @@
 import MyQMLenums 0.1
+import com.mobileye.QRCode 0.1
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
@@ -362,6 +363,7 @@ ApplicationWindow {
 
             visible: true
 
+
             //tree instance:
             Item {
                 id: group1
@@ -498,6 +500,26 @@ ApplicationWindow {
 
                     ////////////////////////////////
                     //Atomic items:
+
+                    QRCode{
+
+                        function setVisibleSlot() {visible = true}
+                        function setInvisibleSlot() {visible = false}
+
+                        id: alert_qrcode;
+                        objectName: "QRCODE"
+                        property int layer_pri: 0
+                        property int canEntityType: Alert.ALERT_FCW
+
+                        width:210
+                        height: 210
+
+                        visible: false;
+                        rotation: 0;
+                    }
+
+
+
                     Image {
 
                         function setVisibleSlot() {setVisible(true)}
@@ -512,7 +534,7 @@ ApplicationWindow {
                         id: alert_fcw;
                         objectName: "FCW_ALERT"
                         property int layer_pri: 0
-                        property int canEntityType: Alert.ALERT_FCW
+                        //property int canEntityType: Alert.ALERT_FCW
                         opacity: 1.0
 
                         visible: false;
