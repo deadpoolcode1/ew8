@@ -969,6 +969,47 @@ ApplicationWindow {
 
                     }
 
+                    //////BLINKERS
+
+                    Item {
+                        id: groupBlinkers
+                        objectName: "BLINKERS_QtQG"
+                        property bool mutexGroup: false
+
+                        function setVisibleSlot() {setVisible(true)}
+                        function setInvisibleSlot() {setVisible(false)}
+
+                        function setVisible(isVisible)
+                        {
+                            visible = isVisible
+                        }
+
+                        property int layer_pri: 1
+                        property int canEntityType: Alert.QtQG
+
+                        visible: false;
+
+                        Image {
+
+                            function setVisibleSlot() {visible = true}
+                            function setInvisibleSlot() {visible = false}
+
+
+                            id: alert_blinkers;
+                            objectName: "ALERT_BLINKERS"
+                            property int layer_pri: 0
+                            property int canEntityType: Alert.ALERT_BLINKERS
+
+                            visible: false;
+                            x: 30; y: 100; width: 60; height: 60;
+                            fillMode: Image.PreserveAspectFit;
+                            source:"../images/EWAlerts/blinkers.png";
+                            rotation: 0;
+                        }
+                     }
+
+                    /////BLINKERS end
+
                     Item {
                         id: groupBeam
                         objectName: "BEAM_QtQG"

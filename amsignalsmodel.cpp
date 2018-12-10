@@ -6,6 +6,9 @@
 
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
+#include <vector>
+
+AMSignalsModel * AMSignalsModel::instance = nullptr;
 
 AMSignalsModel::AMSignalsModel()
 {
@@ -31,6 +34,8 @@ AMSignalsModel::AMSignalsModel()
         }
 
         jsonInitGraphicItemEnumMap();
+
+        jsonInitProtocolsAndSignalsVectors();
     }
     else
     {
@@ -41,7 +46,16 @@ AMSignalsModel::AMSignalsModel()
 
 }
 
+AMSignalsModel * AMSignalsModel::getInstance(void)
+{
 
+   if(nullptr == instance)
+   {
+     instance = new AMSignalsModel();
+   }
+
+   return instance;
+}
 
 
 void AMSignalsModel::jsonInitGraphicItemEnumMap(void)
@@ -74,6 +88,23 @@ qint32 AMSignalsModel::jsonGetGraphicItemEnum(QString jsonEnumItem)
     }
 
     return ret;
+}
+
+AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
+{
+
+    AMJsonProtocol * ret = nullptr;
+
+   for(std::vector<AMJsonProtocol>::iterator iter = jsonProtocols.begin();iter != jsonProtocols.end();++iter)
+    {
+        if(iter->getName() ==  aName)
+        {
+            ret =  &*iter;
+        }
+    }
+
+    return ret;
+
 }
 
 

@@ -24,13 +24,17 @@ public:
 
     AMJsonSignal(QString aName, QString action, QString type);
 
+    QString getName(void);
+
+    //TODO move two following statements to private section
+    QString action;
+    action_type_e type;
+
 private:
 
   QString name;
 
-  QString action;
 
-  action_type_e type;
 
   static json_action_t jsonSignalActionMap;
 };

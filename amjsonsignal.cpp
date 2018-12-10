@@ -27,3 +27,8 @@ AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType)
 
     //TODO initizlize actions map
 }
+
+ QString AMJsonSignal::getName(void)
+ {
+     return name;
+ }

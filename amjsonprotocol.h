@@ -14,6 +14,10 @@ public:
 
     void append(AMJsonSignal * signal);
 
+    QString getName(void);
+
+    AMJsonSignal * getSignal(QString aName);
+
 private:
     QString name;
     std::vector<AMJsonSignal> jsonSignals;

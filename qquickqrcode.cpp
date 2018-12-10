@@ -21,7 +21,7 @@ void QQuickQRCode::paint(QPainter * painter)
 {
 
 
-    QRcode *qrcode = QRcode_encodeString8bit(sample_sn, 4, QR_ECLEVEL_L);
+    QRcode *qrcode = QRcode_encodeString8bit(m_sn.toLatin1(), 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
     quint8 * data = qrcode->data;

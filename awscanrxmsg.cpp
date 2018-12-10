@@ -4,9 +4,14 @@
 #include "awscanrxmsg.h"
 #include "tsrcanrxmsg.h"
 
+#include "amsignalsmodel.h"
+#include "amjsonprotocol.h"
+#include "candbsignal.h"
+
 AwsCanRxMsg::AwsCanRxMsg()
 {
     cid = can_id_master;
+    itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("Aftermarket");
 }
 
 void AwsCanRxMsg::process(struct can_frame * frame)
@@ -92,6 +97,35 @@ void AwsCanRxMsg::process(struct can_frame * frame)
                {
                    TsrCanRxMsg::disable();
                }
+
+               //TODO for over all [unparsed] signals in message:
+
+
+               for (size_t i = 0; i < SignalsOfAfterMarket_AWS_0x700_size; i++)
+               {
+
+                   //JSON Driven Alerts Triggering:
+
+
+                   QString currSignalStr = SignalsOfAfterMarket_AWS_0x700[i].name;
+
+                   AMJsonSignal * jsonsig = itsJsonProtocol->getSignal(currSignalStr);
+
+                   if(nullptr != jsonsig)
+                   {
+
+                       if(AMJsonSignal::GraphicItem == jsonsig->type)
+                       {
+                           one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(AlertTypes::EnAlert)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
+                       }
+                   }
+               }
+
+              //
+
+
+
+               //////////////////////////////////////
 
 
        //End of extract fields block

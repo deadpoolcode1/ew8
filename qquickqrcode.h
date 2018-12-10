@@ -29,10 +29,11 @@ public:
 
 private:
     const quint8 whiteBlackBitMask = 0x01;
-    QString m_sn;
 
-    const char * sample_url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
-    const char * sample_sn = "2918011070900023";
+    QString  url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
+    QString  sn = "2918011070900023";
+
+    QString m_sn = url + sn;
 
     QImage * qimage;
     qint32  width;
