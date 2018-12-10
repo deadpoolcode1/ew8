@@ -1,5 +1,8 @@
 qmlscripts.files = *.qml
 qmlimages.files = resources/*
+signalcfgs.files = *.json
+dbcfiles.files = *.dbc
+
 win32: batches.files = *.bat
 
 QT += quick
@@ -33,7 +36,10 @@ SOURCES += \
     smartitem.cpp \
     displaysignalizer.cpp \
     candbsignal.cpp \
-    qquickqrcode.cpp
+    qquickqrcode.cpp \
+    amsignalsmodel.cpp \
+    amjsonprotocol.cpp \
+    amjsonsignal.cpp
 
 RESOURCES += qml.qrc
 
@@ -53,6 +59,18 @@ win32: qmlimages.path = $${OUT_PWD}/images
 qnx: qmlimages.path = /tmp/$${TARGET}/images
 else: unix:!android: qmlimages.path = /opt/$${TARGET}/images
 !isEmpty(qmlimages.path): INSTALLS += qmlimages
+
+win32: signalcfgs.path = $${OUT_PWD}/signals
+qnx: signalcfgs.path = /tmp/$${TARGET}/signals
+else: unix:!android: signalcfgs.path = /opt/$${TARGET}/signals
+!isEmpty(signalcfgs.path): INSTALLS += signalcfgs
+
+win32: dbcfiles.path = $${OUT_PWD}/dbc
+qnx: dbcfiles.path = /tmp/$${TARGET}/dbc
+else: unix:!android: dbcfiles.path = /opt/$${TARGET}/dbc
+!isEmpty(dbcfiles.path): INSTALLS += dbcfiles
+
+
 
 win32: batches.path = $${OUT_PWD}
 !isEmpty(batches.path): INSTALLS += batches
@@ -104,7 +122,10 @@ HEADERS += \
     smartitem.h \
     displaysignalizer.h \
     candbsignal.h \
-    qquickqrcode.h
+    qquickqrcode.h \
+    amsignalsmodel.h \
+    amjsonprotocol.h \
+    amjsonsignal.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

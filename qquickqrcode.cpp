@@ -1,5 +1,6 @@
 #include "qquickqrcode.h"
 
+//TODO add win32 support: libqrencode-win32.dll
 #include <qrencode.h>
 
 #include <QPainter>
@@ -18,20 +19,19 @@ QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPainted
 
 void QQuickQRCode::paint(QPainter * painter)
 {
-    const char * sample_sn = "2918011070900023";
 
-    //const char * sample_sn = "Hello!";
 
-    QRcode *qrcode = QRcode_encodeString8bit(sample_sn, 0, QR_ECLEVEL_L);
+    QRcode *qrcode = QRcode_encodeString8bit(sample_sn, 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
     quint8 * data = qrcode->data;
-    qint32 margin = 10;
+
+    qint32 margin = 3;
 
     qDebug("qrencode geometry is = %d,%d",qrcode->width,qrcode->width);
 
 
-     qimage = new QImage(width*sizeof(quint8)*3+(margin*2),width*sizeof(quint8)*3+(margin*2),QImage::Format_RGB888);
+     qimage = new QImage(width+(margin*2),width+(margin*2),QImage::Format_RGB888);
 
 
 
@@ -50,6 +50,10 @@ void QQuickQRCode::paint(QPainter * painter)
                 if(*(data+x+(y*width)) & (whiteBlackBitMask))
                 {
                     /*Put black pixel*/
+
+#if 1
+                    qimage->setPixelColor(margin+x,margin+y, blackColor);
+#else
                     qimage->setPixelColor(margin+x*3,margin+y*3, blackColor);
                     qimage->setPixelColor(margin+x*3,margin+y*3+1, blackColor);
                     qimage->setPixelColor(margin+x*3,margin+y*3+2, blackColor);
@@ -59,24 +63,28 @@ void QQuickQRCode::paint(QPainter * painter)
                     qimage->setPixelColor(margin+x*3+2,margin+y*3, blackColor);
                     qimage->setPixelColor(margin+x*3+2,margin+y*3+1, blackColor);
                     qimage->setPixelColor(margin+x*3+2,margin+y*3+2, blackColor);
+#endif
                 }
 
         }
 
     }
+
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 #endif
 
 
 
+
     qDebug("QImage geometry is = %d,%d",qimage->width(),qimage->height());
 
+    //QImage scaledImage = * qimage->scaled(156, 156, Qt::KeepAspectRatio);
 
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setBrush(QBrush(Qt::white));
     painter->setPen(Qt::NoPen);
 
-    painter->drawImage(0,0, *qimage);
+    painter->drawImage(0,0, * qimage);
 
     QRcode_free(qrcode);
 }

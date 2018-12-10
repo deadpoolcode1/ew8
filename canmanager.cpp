@@ -172,6 +172,13 @@ void CanManager::init(void)
       //TODO add filter,sampling point and normal mode
 
 #endif
+
+
+      signalsModel = new AMSignalsModel();
+
+      signalsModel->jsonGetGraphicItemEnum("ALERT_BLINKERS");
+
+      signalsModel->jsonInitProtocolsAndSignalsVectors();
 }
 
 void CanManager::read_frame(void)

@@ -49,6 +49,8 @@ CanRxMsg::CanRxMsg()
 {
     cid = can_id_undefined;
     is_a_first_frame = true;
+
+    itsJsonProtocol = nullptr;
 }
 
 can_id_t CanRxMsg::getCanId(void)

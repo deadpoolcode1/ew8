@@ -1,0 +1,130 @@
+#include "amsignalsmodel.h"
+#include <QFile>
+
+#include <QJsonArray>
+#include <QJsonObject>
+
+#include "amjsonprotocol.h"
+#include "amjsonsignal.h"
+
+AMSignalsModel::AMSignalsModel()
+{
+
+
+    QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("signals/EyeWatch8_Signals.json"));
+
+    if(jsonFile.exists())
+    {
+        qDebug ("JSON file exists");
+        if(jsonFile.open(QIODevice::ReadOnly))
+        {
+            qDebug("signals JSON scheme  successfully found and open.");
+
+            //TODO: evaluate json consistency
+
+
+            jsonDocument = QJsonDocument::fromJson(jsonFile.readAll());
+            jsonFile.close();
+
+            //End of file usage
+
+        }
+
+        jsonInitGraphicItemEnumMap();
+    }
+    else
+    {
+        qDebug("signals JSON scheme association failed.");
+        //TODO use some default scheme
+        //TODO Error Alert
+    }
+
+}
+
+
+
+
+void AMSignalsModel::jsonInitGraphicItemEnumMap(void)
+{
+    QJsonObject jsonObject = jsonDocument.object();
+
+    QJsonArray jsonArray = jsonObject["GraphicItem"].toArray();
+
+
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        qDebug("JSON: %s",  qPrintable(obj["enum"].toString()));
+        qDebug("JSON: %d",  obj["value"].toInt());
+
+        graphicItemsEnumMap.insert(std::pair<QString, qint32>(obj["enum"].toString(),obj["value"].toInt()));
+    }
+}
+
+qint32 AMSignalsModel::jsonGetGraphicItemEnum(QString jsonEnumItem)
+{
+    qint32 ret = -1;
+
+    json_enum_t::iterator iter;
+
+    iter = graphicItemsEnumMap.find(jsonEnumItem);
+
+    if(iter != graphicItemsEnumMap.end())
+    {
+        ret = iter->second;
+    }
+
+    return ret;
+}
+
+
+void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
+{
+
+    QJsonObject jsonObject = jsonDocument.object();
+
+    QJsonArray jsonArray = jsonObject["Protocols"].toArray();
+
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject protocol_obj = value.toObject();
+
+        qDebug("JSON: extracted %s protocol",  qPrintable(protocol_obj["protocol"].toString()));
+
+        QJsonValue protocolNameValue = protocol_obj["protocol"];
+
+        AMJsonProtocol * amjp = new AMJsonProtocol(protocolNameValue.toString());
+
+
+
+        //construct the current protocol's signals collection:
+
+        QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
+
+
+        foreach (const QJsonValue & signal_value, jsonSignalsArray) {
+               QJsonObject signal_obj = signal_value.toObject();
+
+               QString sigName;
+               QString sigAction;
+               QString sigType;
+
+               sigName = signal_obj["name"].toString();
+               sigAction = signal_obj["action"].toString();
+               sigType =  signal_obj["type"].toString();
+
+               AMJsonSignal * amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+
+               amjp->append(amjsg);
+        }
+
+
+        //insert protocol into Protocols collector.
+        jsonProtocols.push_back(*amjp);
+
+
+    }
+}
+
+
+
+
+

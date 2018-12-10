@@ -5,6 +5,8 @@
 
 #include "candbsignal.h"
 
+#include <map>
+
 
 #ifdef WIN32
 
@@ -28,6 +30,13 @@ typedef enum DISPLAY_ERRORS
     OBJECT_ALREADY_EXISTS_IN_MAP =3
 
 } DISPLAY_ERRORS_t;
+
+
+typedef enum ACTION_ERRORS
+{
+    ACTION_OK= 0,
+    ACTION_GENERAL_ERROR = 1,
+} ACTION_ERRORS_t;
 
 typedef enum FORCE_INVISIBILITY
 {
@@ -350,6 +359,6 @@ static const tsr_alerts_table_row_t tsr_alerts_table[] =
 
 static const size_t tsr_alerts_table_size = sizeof(tsr_alerts_table)/sizeof(tsr_alerts_table_row_t);
 
-
+typedef std::map <QString, qint32> json_enum_t;
 
 #endif // DEFS_H

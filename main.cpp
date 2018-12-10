@@ -7,6 +7,8 @@
 #include "mainprocess.h"
 #include "alerttypes.h"
 
+#include "amjsonsignal.h"
+
 class AlertTypes;
 class QQuickQRCode;
 

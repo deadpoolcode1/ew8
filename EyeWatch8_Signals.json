@@ -1,0 +1,21 @@
+{
+	"GraphicItem": [{
+			"enum": "ALERT_FCW",
+			"value": 2
+		},
+		{
+			"enum": "ALERT_BLINKERS",
+			"value": 13
+		}
+	],
+
+    "Protocols": [{
+		"protocol": "Aftermarket",
+        "signals": [
+        {"name": "Blinker_Reminder","action": "ALERT_BLINKERS","type": "GraphicItem"}
+                ,
+        {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"}
+            ]
+
+	}]
+}

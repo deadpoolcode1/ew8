@@ -510,12 +510,12 @@ ApplicationWindow {
 
                         //x:20; y:20; width: 210; height: 210
 
+                        contentsScale: 4
 
                         id: alert_qrcode;
                         objectName: "QRCODE"
                         property int layer_pri: 0
                         property int canEntityType: Alert.ALERT_FCW
-
 
                         visible: false;
                         rotation: 0;
@@ -551,48 +551,17 @@ ApplicationWindow {
                                 running: alert_fcw.visible
                                 loops: Animation.Infinite
 
-
-/*
-                                PropertyAction {target: alert_fcw; property: "opacity"; value: 1.0}
-                                PauseAnimation {duration: 500}
-                                PropertyAction {target: alert_fcw; property: "opacity"; value: 0.0}
                                 PauseAnimation {duration: 300}
-*/
-
-
-                                PauseAnimation {duration: 300}
-                                SmoothedAnimation { target: alert_fcw; property: "opacity"; from: 1.0; to: 0.0; duration: 100}
+                                //OpacityAnimator
+                                ScaleAnimator {target:  alert_fcw; from: 1; to: 0; duration: 100
+                                easing.type: Easing.InOutExpo;
+                                }
                                 PauseAnimation {duration: 200}
-                                SmoothedAnimation { target: alert_fcw; property: "opacity"; from: 0.0; to: 1.0; duration: 200}
+                                //OpacityAnimator
+                                ScaleAnimator {target:  alert_fcw; from: 0; to: 1; duration: 200
+                                easing.type: Easing.InOutExpo;
+                                }
                         }
-
-                        /*
-                        Timer {
-
-                            id: blinkTimer_fcw
-
-                            property int intervalOn: 500
-                            property int intervalOff: 300
-
-                            interval: intervalOn
-                            running: false
-                            repeat: true
-
-                            function setRunning(On)
-                            {
-                                interval = intervalOn
-                                running = On
-                            }
-
-
-                            onTriggered:
-                            {
-                                parent.visible = !parent.visible
-                                interval = (parent.visible ? intervalOn : intervalOff)
-                            }
-
-                        }
-                        */
 
                     }
 

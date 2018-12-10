@@ -17,12 +17,12 @@
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
-
-
+#include "amsignalsmodel.h"
 
 
 class IAlertDisplay;
 class ICanRxMsgFactory;
+class AMSignalsModel;
 
 class CanManager :  public QThread
 {
@@ -63,6 +63,8 @@ private:
 
     IAlertDisplay * mydisplays;
     ICanRxMsgFactory * iCanRxMsgFactory;
+    AMSignalsModel * signalsModel;
+
 };
 
 #endif // CANMANAGER_H

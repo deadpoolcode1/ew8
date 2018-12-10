@@ -7,8 +7,12 @@
 
 #include "canmanager.h"
 
+#include "amjsonprotocol.h"
+
 class IAlertDisplay;
 class ICanRxMsgFactory;
+
+class AMJsonProtocol;
 
 class CanRxMsg
 {
@@ -33,7 +37,7 @@ protected:
   can_id_t cid;
   IAlertDisplay * alertsDisplay;
 
-
+  AMJsonProtocol * itsJsonProtocol;
 
   struct can_frame prev_frame; //NOTE: is not initialized till first frame is received.
   bool is_a_first_frame;
