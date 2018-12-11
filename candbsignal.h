@@ -49,49 +49,8 @@ extern size_t SignalsOfAfterMarket_AWS_0x700_size;
 extern Signal SignalsOfAfterMarket_TSR_0x727[];
 extern size_t SignalsOfAfterMarket_TSR_0x727_size;
 
-//NOTE: comments etc dropped.
-#if 0
-typedef struct candbvt_row_s
-{
-    QString vt_name;
-    double val;
-}
-candbvt_row_t;
-
-typedef  struct candbvt_s
-{
-    candbvt_row_t * rows;
-    size_t size;
-} candbvt_t;
-
-typedef struct candbsignal_s
-
-{
-    QString sg_name;
-    quint8  bit_start;
-    quint8  bit_length;
-    bool    is_lt_endian;
-    bool    is_unsigned;
-    double  factor;
-    double  offset;
-    double  min;
-    double  max;
-    QString unit;
-    candbvt_t vt;
-}
-candbsignal_t;
-
-typedef struct canmsg_sg_s
-{
-    can_id_t cid;
-    size_t size;
-    candbsignal_t * cansignals;
-}
-canmsg_sg_t;
-
-extern canmsg_sg_t *canmsgs;
-
-#endif
+extern Signal SignalsOfSmartADAS_S_ADAS_0x7ac[];
+extern size_t SignalsOfSmartADAS_S_ADAS_0x7ac_size;
 
 typedef struct sg_var_s
 {

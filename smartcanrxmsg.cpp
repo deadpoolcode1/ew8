@@ -1,6 +1,7 @@
 #include "canrxmsg.h"
 #include "smartcanrxmsg.h"
 #include "smartitem.h"
+#include "candbsignal.h"
 
 class SmartItem;
 
@@ -16,16 +17,16 @@ SmartCanRxMsg::can_msg_content_t SmartCanRxMsg::parse(struct can_frame *frame)
 {
    can_msg_content_t content;
 
-   content.msgId = frame->data[CAN_MSG_S_ADAS_M_ID_BYTE];
-   content.visId = frame->data[CAN_MSG_S_ADAS_VIS_ITEM_BYTE];
-   content.visUnits = (visual_item_unit_t)((frame->data[CAN_MSG_S_ADAS_PARAM_UNIT_BYTE]&CAN_MSG_S_ADAS_PARAM_UNIT_MSK)>>CAN_MSG_S_ADAS_PARAM_UNIT_SHIFT);
-   content.minDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MINDUR_UNIT_BYTE]&CAN_MSG_S_ADAS_MINDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MINDUR_UNIT_SHIFT);
-   content.maxDurUnits = (duration_unit_t)((frame->data[CAN_MSG_S_ADAS_MAXDUR_UNIT_BYTE]&CAN_MSG_S_ADAS_MAXDUR_UNIT_MSK)>>CAN_MSG_S_ADAS_MAXDUR_UNIT_SHIFT);
-   content.activation = (bool)(frame->data[CAN_MSG_S_ADAS_ACTIV_BYTE]&CAN_MSG_S_ADAS_ACTIV_MSK);
-   content.paramInt =  frame->data[CAN_MSG_S_ADAS_PARAM_INT_BYTE];
-   content.paramFrac =  frame->data[CAN_MSG_S_ADAS_PARAM_FRAC_BYTE];
-   content.minDuration =  frame->data[CAN_MSG_S_ADAS_MINDUR_BYTE];
-   content.maxDuration =  frame->data[CAN_MSG_S_ADAS_MAXDUR_BYTE];
+   content.msgId = extractSignal("Message_serial_ID",frame).sg_val._int;
+   content.visId = extractSignal("Visual_Item_ID",frame).sg_val._int;
+   content.visUnits = (visual_item_unit_t)extractSignal("Float_parameter_unit",frame).sg_val._int;
+   content.minDurUnits = (duration_unit_t)extractSignal("Min_duration_unit",frame).sg_val._int;
+   content.maxDurUnits = (duration_unit_t)extractSignal("Max_duration_unit",frame).sg_val._int;
+   content.activation = extractSignal("Activation_Flag",frame).sg_val._bool;
+   content.paramInt = extractSignal("Float_parameter_int",frame).sg_val._int;
+   content.paramFrac =  extractSignal("Float_parameter_frac",frame).sg_val._int;
+   content.minDuration =  extractSignal("Min_duration_display",frame).sg_val._int;
+   content.maxDuration =  extractSignal("Max_duration_display",frame).sg_val._int;
 
    return content;
 

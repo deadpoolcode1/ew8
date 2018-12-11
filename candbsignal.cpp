@@ -59,6 +59,23 @@
   size_t  SignalsOfAfterMarket_TSR_0x727_size =
           sizeof(SignalsOfAfterMarket_TSR_0x727)/sizeof(Signal);
 
+  Signal SignalsOfSmartADAS_S_ADAS_0x7ac[] = {
+      {"Message_serial_ID", 0, 0, 8, false, 1, 0, 1, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Visual_Item_ID", 1, 0, 8, false, 1, 0, 1, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"reserved_2", 2, 0, 8, true, 1, 0, 0, 0, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Activation_Flag", 3, 0, 1, false, 1, 0, 0, 1, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Max_duration_unit", 3, 1, 2, false, 1, 0, 0, 3, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Min_duration_unit", 3, 3, 2, false, 1, 0, 0, 3, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Float_parameter_unit", 3, 5, 3, false, 1, 0, 0, 7, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Float_parameter_int", 4, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Float_parameter_frac", 5, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Min_duration_display", 6, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Max_duration_display", 7, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER}
+  };
+
+  size_t  SignalsOfSmartADAS_S_ADAS_0x7ac_size =
+          sizeof(SignalsOfSmartADAS_S_ADAS_0x7ac)/sizeof(Signal);
+
   sg_var_t extractSignal(const char * name, struct can_frame *frame)
   {
 
