@@ -49,10 +49,7 @@ can_id_undefined = -1,
 can_id_master = 0,
 can_id_tsr   =  1,
 can_id_s_adas = 2,
-#if 0
-can_id_left =   3,
-can_id_right =  4,
-#endif
+can_id_cq_info = 3,
 } can_id_t;
 
 typedef enum canrxmsg_type_e
@@ -78,6 +75,7 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_master, 0x700, msg_simple, SignalsOfAfterMarket_AWS_0x700, SignalsOfAfterMarket_AWS_0x700_size},
   {can_id_tsr,    0x727, msg_simple, SignalsOfAfterMarket_TSR_0x727, SignalsOfAfterMarket_TSR_0x727_size},
   {can_id_s_adas, 0x7ac, msg_smart,  SignalsOfSmartADAS_S_ADAS_0x7ac, SignalsOfSmartADAS_S_ADAS_0x7ac_size},
+  {can_id_cq_info,0x410, msg_simple, SignalsOfSeeQInfo_SN_System_0x410, SignalsOfSeeQInfo_SN_System_0x410_size},
 };
 
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))

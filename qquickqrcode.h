@@ -10,9 +10,8 @@ class QPainter;
 class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
-
+    Q_PROPERTY(QString sn  READ getSn  WRITE setSn  NOTIFY snChanged)
 #if 0
-    Q_PROPERTY(QString sn  /* READ sn  WRITE setSn NOTIFY snChanged*/);
     Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
     //TODO add encoded string propert
@@ -20,20 +19,33 @@ class QQuickQRCode : public QQuickPaintedItem
     //TODO add margin property
     //TODO add readonly width, height properties
 
+
+
 public:
     QQuickQRCode(QQuickPaintedItem * parentQQuickItem = nullptr);
     void paint(QPainter * painter);
 
     static void declareQML();
 
+    QString getSn(void){return sn;}
+
+    static void setSn(QString aSn){sn = aSn;}
+
+signals:
+
+    void snChanged(void);
+
+public slots:
+
+    void snChangedSlot(void){}
+
+
 
 private:
     const quint8 whiteBlackBitMask = 0x01;
 
-    QString  url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
-    QString  sn = "2918011070900023";
-
-    QString m_sn = url + sn;
+    const QString  url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
+    static QString  sn;
 
     QImage * qimage;
     qint32  width;

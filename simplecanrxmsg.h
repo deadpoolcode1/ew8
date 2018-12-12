@@ -1,6 +1,9 @@
 #ifndef SIMPLECANRXMSG_H
 #define SIMPLECANRXMSG_H
 
+#include "canrxmsg.h"
+
+class CanRxMsg;
 
 class SimpleCanRxMsg : public CanRxMsg
 {

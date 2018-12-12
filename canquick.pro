@@ -39,7 +39,9 @@ SOURCES += \
     qquickqrcode.cpp \
     amsignalsmodel.cpp \
     amjsonprotocol.cpp \
-    amjsonsignal.cpp
+    amjsonsignal.cpp \
+    \
+    seeqinfocanrxmsg.cpp
 
 RESOURCES += qml.qrc
 
@@ -125,7 +127,8 @@ HEADERS += \
     qquickqrcode.h \
     amsignalsmodel.h \
     amjsonprotocol.h \
-    amjsonsignal.h
+    amjsonsignal.h \
+    seeqinfocanrxmsg.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

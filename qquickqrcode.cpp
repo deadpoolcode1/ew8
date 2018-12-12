@@ -7,19 +7,22 @@
 
 class QPainter;
 
+QString QQuickQRCode::sn = "2918011070900023";
+
 void QQuickQRCode::declareQML() {
                 qmlRegisterType<QQuickQRCode>("com.mobileye.QRCode",0, 1, "QRCode");
             }
 
 QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPaintedItem(parentQQuickItem)
 {
-
-
+    connect(this, SIGNAL(snChanged()), SLOT(snChangedSlot()));
 }
+
 
 void QQuickQRCode::paint(QPainter * painter)
 {
 
+    QString m_sn = url + sn;
 
     QRcode *qrcode = QRcode_encodeString8bit(m_sn.toLatin1(), 4, QR_ECLEVEL_L);
 

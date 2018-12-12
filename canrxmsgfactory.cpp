@@ -6,6 +6,7 @@
 #include "smartcanrxmsg.h"
 #include "awscanrxmsg.h"
 #include "tsrcanrxmsg.h"
+#include "seeqinfocanrxmsg.h"
 
 #include "canrxmsgfactory.h"
 #include "icanrxmsgfactory.h"
@@ -31,6 +32,12 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(can_id_t cid)
     case can_id_s_adas:
 
         ret = new SmartCanRxMsg();
+
+        break;
+
+    case can_id_cq_info:
+
+        ret = new SeeQInfoCanRxMsg();
 
         break;
 

@@ -515,7 +515,7 @@ ApplicationWindow {
                         id: alert_qrcode;
                         objectName: "QRCODE"
                         property int layer_pri: 0
-                        property int canEntityType: Alert.ALERT_FCW
+                        property int canEntityType: Alert.ALERT_QRCODE
 
                         visible: false;
                         rotation: 0;
@@ -537,7 +537,7 @@ ApplicationWindow {
                         id: alert_fcw;
                         objectName: "FCW_ALERT"
                         property int layer_pri: 0
-                        //property int canEntityType: Alert.ALERT_FCW
+                        property int canEntityType: Alert.ALERT_FCW
                         opacity: 1.0
 
                         visible: false;

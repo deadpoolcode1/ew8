@@ -76,6 +76,50 @@
   size_t  SignalsOfSmartADAS_S_ADAS_0x7ac_size =
           sizeof(SignalsOfSmartADAS_S_ADAS_0x7ac)/sizeof(Signal);
 
+
+
+  Signal SignalsOfSeeQInfo_SN_System_0x410[] = {
+      {"SeeQSerialNumber0", 0, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeQSerialNumber1", 1, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeQSerialNumber2", 2, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeQSerialNumber3", 3, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeQSerialNumber4", 4, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"ManufacturerCode0", 5, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"ManufacturerCode1", 6, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Reserved410", 7, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER}
+  };
+
+  size_t  SignalsOfSeeQInfo_SN_System_0x410_size =
+          sizeof(SignalsOfSeeQInfo_SN_System_0x410)/sizeof(Signal);
+
+  Signal SignalsOfSeeQInfo_Time_Info_0x411[] = {
+      {"SeeqProductionDateWeek0", 0, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProductionDateWeek1", 1, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProductionDateYear0", 2, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProductionDateYear1", 3, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProduct0", 4, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProduct1", 5, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"SeeqProduct2", 6, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Reserved411", 7, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER}
+  };
+
+  size_t  SignalsOfSeeQInfo_Time_Info_0x411_size =
+          sizeof(SignalsOfSeeQInfo_Time_Info_0x411)/sizeof(Signal);
+
+  Signal SignalsOfSeeQInfo_App_Info_0x412[] = {
+      {"FW_brain_v_major", 0, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"FW_brain_v_minor", 1, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"FW_MEST_v_major", 2, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"FW_MEST_v_minor", 3, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"FW_MEST_v_subMinor", 4, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"FW_MEST_v_patchNumber", 5, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Reserved_412_1", 6, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER},
+      {"Reserved_412_2", 7, 0, 8, false, 1, 0, 0, 255, SIGNAL_VALUE_TYPE_INTEGER}
+  };
+
+  size_t  SignalsOfSeeQInfo_App_Info_0x412_size =
+          sizeof(SignalsOfSeeQInfo_App_Info_0x412)/sizeof(Signal);
+
   sg_var_t extractSignal(const char * name, struct can_frame *frame)
   {
 

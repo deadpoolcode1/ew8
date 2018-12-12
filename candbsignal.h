@@ -52,6 +52,15 @@ extern size_t SignalsOfAfterMarket_TSR_0x727_size;
 extern Signal SignalsOfSmartADAS_S_ADAS_0x7ac[];
 extern size_t SignalsOfSmartADAS_S_ADAS_0x7ac_size;
 
+extern Signal SignalsOfSeeQInfo_SN_System_0x410[];
+extern size_t  SignalsOfSeeQInfo_SN_System_0x410_size;
+
+extern Signal SignalsOfSeeQInfo_Time_Info_0x411[];
+extern size_t  SignalsOfSeeQInfo_Time_Info_0x411_size;
+
+extern Signal SignalsOfSeeQInfo_App_Info_0x412[];
+extern size_t  SignalsOfSeeQInfo_App_Info_0x412_size;
+
 typedef struct sg_var_s
 {
     ext_sgval_type_t sg_type;
