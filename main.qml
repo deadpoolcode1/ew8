@@ -514,7 +514,7 @@ ApplicationWindow {
 
                         id: alert_qrcode;
                         objectName: "QRCODE"
-                        property int layer_pri: 0
+                        property int layer_pri: 1
                         property int canEntityType: Alert.ALERT_QRCODE
 
                         visible: false;
@@ -998,7 +998,8 @@ ApplicationWindow {
                             id: alert_blinkers;
                             objectName: "ALERT_BLINKERS"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_BLINKERS
+                            property int canEntityType: 132
+                            //Alert.ALERT_BLINKERS
 
                             visible: false;
                             x: 30; y: 100; width: 60; height: 60;

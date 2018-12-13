@@ -14,7 +14,7 @@ class EntityType
 
 public:
 
-    typedef std::multimap<AlertTypes::EnAlert, RootedTreeNode*> t_TreeNodesTypeMap;
+    typedef std::multimap<DISPLAY_ITEM_ID, RootedTreeNode*> t_TreeNodesTypeMap;
 
     typedef std::pair<t_TreeNodesTypeMap::iterator,t_TreeNodesTypeMap::iterator> t_TreeNodesInterval;
 
@@ -22,8 +22,9 @@ public:
 
     static t_TreeNodesTypeMap * getMap();
     static void generateTypes();
+    static void generateSingleType(DISPLAY_ITEM_ID item_id);
 
-    static bool keyExist(AlertTypes::EnAlert type)
+    static bool keyExist(DISPLAY_ITEM_ID type)
     {
        if (EntityType::_typesMap.find(type) != _typesMap.end())
        {
@@ -35,7 +36,7 @@ public:
        }
     }
 
-    static EntityType::t_TreeNodesInterval findByEntityType(AlertTypes::EnAlert type)
+    static EntityType::t_TreeNodesInterval findByEntityType(DISPLAY_ITEM_ID type)
     {
        EntityType::t_TreeNodesInterval  ret;
 
@@ -52,8 +53,8 @@ public:
     }
 
 
-//    static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node);
-    static DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node)
+//    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node);
+    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node)
     {
 #ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
         if (_typesMap.find(type) == _typesMap.end())
@@ -85,7 +86,7 @@ private:
 
 
 //    RootedTreeNode* _node;
-//    AlertTypes::EnAlert _type;
+//    DISPLAY_ITEM_ID _type;
 };
 
 

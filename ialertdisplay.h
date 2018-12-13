@@ -12,8 +12,8 @@ class IAlertDisplay
 
   public:
 
-    virtual void activate(AlertTypes::EnAlert at, quint8 valueInt = 0, quint8 valueFrac = 0, visual_item_unit_t unit = viu_None) = 0;
-    virtual void deactivate(AlertTypes::EnAlert at) = 0;
+    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt = 0, quint8 valueFrac = 0, visual_item_unit_t unit = viu_None) = 0;
+    virtual void deactivate(DISPLAY_ITEM_ID at) = 0;
 
     QMutex mutex;
 };

@@ -8,6 +8,13 @@
 #include <map>
 
 
+#if 0
+#    define DISPLAY_ITEM_ID AlertTypes::EnAlert
+#else
+//Enables usage of JSON enums unlisted in C++
+#    define DISPLAY_ITEM_ID qint32
+#endif
+
 #ifdef WIN32
 
 struct can_frame{
@@ -279,7 +286,7 @@ typedef struct aws_alerts_table_row_s
    quint8 length_bits;
    qint32 minimum;
    qint32 maximum;
-   AlertTypes::EnAlert alert;
+   DISPLAY_ITEM_ID alert;
    quint8 value;
 }
 aws_alerts_table_row_t;
@@ -294,7 +301,7 @@ static const size_t aws_alerts_table_size = sizeof(aws_alerts_table)/sizeof(aws_
 typedef struct tsr_alerts_table_row_s
 {
    quint8 hexcode;
-   AlertTypes::EnAlert alert;
+   DISPLAY_ITEM_ID alert;
    quint8 value;
 }
 tsr_alerts_table_row_t;

@@ -3,9 +3,9 @@
 			"enum": "ALERT_FCW",
 			"value": 2
 		},
-		{
+        {
 			"enum": "ALERT_BLINKERS",
-			"value": 13
+            "value": 132
 		}
 	],
 

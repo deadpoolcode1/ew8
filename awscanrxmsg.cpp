@@ -72,15 +72,15 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
                //byte 4:
 
-               one2oneParseAndProcess(frame,"LDW_off",AlertTypes::ALERT_LDWOFF);
+               one2oneParseAndProcess(frame,"LDW_off",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LDWOFF);
 
-               one2oneParseAndProcess(frame,"LDW_off",AlertTypes::ALERT_LDWON,false);
+               one2oneParseAndProcess(frame,"LDW_off",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LDWON,false);
 
-               one2oneParseAndProcess(frame,"LLDW_on",AlertTypes::ALERT_LLDW);
+               one2oneParseAndProcess(frame,"LLDW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LLDW);
 
-               one2oneParseAndProcess(frame,"RLDW_on",AlertTypes::ALERT_RLDW);
+               one2oneParseAndProcess(frame,"RLDW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_RLDW);
 
-               one2oneParseAndProcess(frame,"FCW_on",AlertTypes::ALERT_FCW);
+               one2oneParseAndProcess(frame,"FCW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_FCW);
 
 
                //byte 5:
@@ -116,7 +116,7 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
                        if(AMJsonSignal::GraphicItem == jsonsig->type)
                        {
-                           one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(AlertTypes::EnAlert)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
+                           one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
                        }
                    }
                }
@@ -147,7 +147,7 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
 void AwsCanRxMsg::beamStateParseAndProcess(struct can_frame * recv)
 {
-    AlertTypes::EnAlert alert;
+    DISPLAY_ITEM_ID alert;
 
     alertsDisplay->deactivate(AlertTypes::ALERT_HI_BEAM);
     alertsDisplay->deactivate(AlertTypes::ALERT_LOW_BEAM);
@@ -192,7 +192,7 @@ void AwsCanRxMsg::hmwStateParseAndProcess(struct can_frame * recv)
 }
 
 
-void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity)
+void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
 {
 #if 0
     one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);

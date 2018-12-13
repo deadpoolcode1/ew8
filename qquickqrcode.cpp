@@ -44,8 +44,7 @@ void QQuickQRCode::paint(QPainter * painter)
 
      qimage->fill(whiteColor);
 
-#if 1
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
     for (qint32 y = 0; y < width; y++)
     {
         for (qint32 x = 0; x < width; x++)
@@ -53,31 +52,13 @@ void QQuickQRCode::paint(QPainter * painter)
                 if(*(data+x+(y*width)) & (whiteBlackBitMask))
                 {
                     /*Put black pixel*/
-
-#if 1
                     qimage->setPixelColor(margin+x,margin+y, blackColor);
-#else
-                    qimage->setPixelColor(margin+x*3,margin+y*3, blackColor);
-                    qimage->setPixelColor(margin+x*3,margin+y*3+1, blackColor);
-                    qimage->setPixelColor(margin+x*3,margin+y*3+2, blackColor);
-                    qimage->setPixelColor(margin+x*3+1,margin+y*3, blackColor);
-                    qimage->setPixelColor(margin+x*3+1,margin+y*3+1, blackColor);
-                    qimage->setPixelColor(margin+x*3+1,margin+y*3+2, blackColor);
-                    qimage->setPixelColor(margin+x*3+2,margin+y*3, blackColor);
-                    qimage->setPixelColor(margin+x*3+2,margin+y*3+1, blackColor);
-                    qimage->setPixelColor(margin+x*3+2,margin+y*3+2, blackColor);
-#endif
+
                 }
 
         }
 
     }
-
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#endif
-
-
-
 
     qDebug("QImage geometry is = %d,%d",qimage->width(),qimage->height());
 

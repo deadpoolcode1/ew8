@@ -6,6 +6,11 @@
 
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
+
+#include "entitytype.h"
+#include "rootedtreenode.h"
+
+//TODO consider replace with QVector, and std::map with QMap
 #include <vector>
 
 AMSignalsModel * AMSignalsModel::instance = nullptr;
@@ -71,6 +76,10 @@ void AMSignalsModel::jsonInitGraphicItemEnumMap(void)
         qDebug("JSON: %d",  obj["value"].toInt());
 
         graphicItemsEnumMap.insert(std::pair<QString, qint32>(obj["enum"].toString(),obj["value"].toInt()));
+
+        //TODO verify that those values are presented also in JSON signals
+        //TODO remove hardcoded ALERTS
+        EntityType::generateSingleType((DISPLAY_ITEM_ID)obj["value"].toInt());
     }
 }
 

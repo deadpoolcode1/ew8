@@ -66,9 +66,7 @@ void SeeQInfoCanRxMsg::process(struct can_frame * frame)
         quint8 num3 = extractSignal("SeeQSerialNumber3",frame).sg_val._int;
         quint8 num4 = extractSignal("SeeQSerialNumber4",frame).sg_val._int;
 
-
-         alertsDisplay->deactivate(AlertTypes::ALERT_QRCODE);
-
+        alertsDisplay->deactivate(AlertTypes::ALERT_QRCODE);
 
         if(num0 | num1 | num2 | num3 |num4)
         {
@@ -84,6 +82,9 @@ void SeeQInfoCanRxMsg::process(struct can_frame * frame)
                 );
             alertsDisplay->activate(AlertTypes::ALERT_QRCODE);
         }
+
+
+
 
 
 

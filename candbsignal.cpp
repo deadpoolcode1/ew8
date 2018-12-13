@@ -202,7 +202,7 @@
   }
 
 #if 0
-  one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay,struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity)
+  one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay,struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
   {
 
       bool desired = extractSignal(name,recv).sg_val._bool;

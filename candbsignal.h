@@ -78,7 +78,7 @@ sg_var_t extractSignal(const char * name, struct can_frame *frame);
 
 #if 0
 //Used for signals that just match to display alerts one-to-one
-void one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay, struct can_frame * recv, const char * name, AlertTypes::EnAlert alert, bool polarity = true);
+void one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay, struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity = true);
 #endif
 
 

@@ -15,7 +15,7 @@ SmartItem::SmartItem(quint8 aVisId)
 {
    visId = aVisId;
    //TODO ensure  SMART_BASE < range < ALERT_END_OF_TYPE
-   itsAlert = (AlertTypes::EnAlert)(AlertTypes::SMART_BASE + aVisId);
+   itsAlert = (DISPLAY_ITEM_ID)(AlertTypes::SMART_BASE + aVisId);
    isActived = false;
 
    alertsDisplay = nullptr;

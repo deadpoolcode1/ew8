@@ -141,7 +141,7 @@ void MainProcess::updateDisplay(void)
     flag_tree_changed = false;
 }
 
-void MainProcess::activate(AlertTypes::EnAlert alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)
@@ -150,7 +150,7 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 valueInt, quint8 va
         return;
     }
 #if 1
-    printf("function:%s alert: %d\n", __func__, alert);
+    qDebug("function:%s alert: %d\n", __func__, alert);
 #endif
 
     RootedTreeNode* nodeCGRT = nullptr;
@@ -182,7 +182,7 @@ void MainProcess::activate(AlertTypes::EnAlert alert, quint8 valueInt, quint8 va
     return;
 }
 
-void MainProcess::deactivate(AlertTypes::EnAlert alert)
+void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 {
     if (AlertTypes::ALERT_NONE == alert)
     {
@@ -190,9 +190,7 @@ void MainProcess::deactivate(AlertTypes::EnAlert alert)
         return;
     }
 
-#if 1
-    printf("function:%s alert: %d\n", __func__, alert);
-#endif
+    qDebug("function:%s alert: %d\n", __func__, alert);
 
     RootedTreeNode* nodeCGRT = nullptr;
 
@@ -231,7 +229,7 @@ void MainProcess::forceItemDeactivation(int _alertType, QString _objName) {
 
     RootedTreeNode* nodeCGRT = nullptr;
 
-    AlertTypes::EnAlert alertType = (AlertTypes::EnAlert)_alertType;
+    DISPLAY_ITEM_ID alertType = (DISPLAY_ITEM_ID)_alertType;
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alertType);
 

@@ -46,7 +46,7 @@ protected:
     bool isActived;
     quint8 visId;
 
-    AlertTypes::EnAlert itsAlert;
+    DISPLAY_ITEM_ID itsAlert;
 
 
     //functions:

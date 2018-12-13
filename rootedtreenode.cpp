@@ -95,7 +95,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 
 
 // esteblish link between atomic entityes (C++) and Alerts by EntityType  (map)
-    AlertTypes::EnAlert type = (AlertTypes::EnAlert)(qobject->property("canEntityType").toInt());
+    DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(qobject->property("canEntityType").toInt());
     if (type != AlertTypes::QtQG) // no link between groups and alert types!
     {
         bool keyExist = EntityType::keyExist(type);

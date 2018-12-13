@@ -25,22 +25,36 @@ EntityType::t_TreeNodesTypeMap * EntityType::getMap()
 void EntityType::generateTypes()
 {
 #ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
-    AlertTypes::EnAlert type;
+    DISPLAY_ITEM_ID type;
 
     for(int type_itr = AlertTypes::ALERT_NONE; type_itr < AlertTypes::ALERT_END_OF_TYPE; type_itr++)
     {
-        type =  (AlertTypes::EnAlert)type_itr;
+        type =  (DISPLAY_ITEM_ID)type_itr;
 
+        generateSingleType(type);
+    }
+
+    //TODO insert the JSON Enum Graphic Items:
+
+
+#endif
+}
+
+void EntityType::generateSingleType(DISPLAY_ITEM_ID item_id)
+{
+#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
         RootedTreeNode * nodeToInsert = nullptr;  //new RootedTreeNode();
 
-        EntityType::_typesMap.insert(std::pair<AlertTypes::EnAlert, RootedTreeNode*>(type,nodeToInsert));
-    }
+        if(0 == EntityType::_typesMap.count(item_id))
+        {
+            EntityType::_typesMap.insert(std::pair<DISPLAY_ITEM_ID, RootedTreeNode*>(item_id,nodeToInsert));
+        }
 #endif
 }
 
 
 #if 0
-DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node)
+DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node)
 {
     if (_typesMap.find(type) != _typesMap.end())
     {
@@ -60,7 +74,7 @@ DISPLAY_ERRORS_t linkByEntityType(AlertTypes::EnAlert type, RootedTreeNode* node
 }
 
 
-RootedTreeNode* EntityType::findEntityType(AlertTypes::EnAlert type)
+RootedTreeNode* EntityType::findEntityType(DISPLAY_ITEM_ID type)
 {
     return EntityType::_typesMap.find(type)->second;
 }
