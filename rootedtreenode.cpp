@@ -3,6 +3,7 @@
 #include "alerttypes.h"
 #include "entitytype.h"
 #include "layerspriorityq.h"
+#include "amsignalsmodel.h"
 
 // map initialization of EntityType should be done here for some magic reason...
 EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
@@ -95,39 +96,59 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 
 
 // esteblish link between atomic entityes (C++) and Alerts by EntityType  (map)
-    DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(qobject->property("canEntityType").toInt());
-    if (type != AlertTypes::QtQG) // no link between groups and alert types!
+
+    QVariant canEntityTypeQVar = qobject->property("canEntityType");
+
+    if(canEntityTypeQVar.isValid())
     {
-        bool keyExist = EntityType::keyExist(type);
-        if (!keyExist)
-        {
-#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
-            throw std::exception(/*"Object type does not exist"*/);
-            // add exception
-#endif
+
+        bool isInt = false;
+
+        DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
+
+        if(!isInt){
+            type = (DISPLAY_ITEM_ID)(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(canEntityTypeQVar.toString()));
         }
 
-        DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
-        if (res == GENERAL_ERROR)
+        if (type != AlertTypes::QtQG) // no link between groups and alert types!
         {
+            bool keyExist = EntityType::keyExist(type);
+            if (!keyExist)
+            {
 #ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
-            throw std::exception(/*"Object link to type failed"*/);
-            // add exception
+                throw std::exception(/*"Object type does not exist"*/);
+                // add exception
 #endif
+            }
+
+            DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
+            if (res == GENERAL_ERROR)
+            {
+#ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
+                throw std::exception(/*"Object link to type failed"*/);
+                // add exception
+#endif
+            }
+            else if(res == OBJECT_ALREADY_EXISTS_IN_MAP)
+            {
+                // add handling duplicated entries
+            }
+            //EntityType::getMap()[type] =  this;
+            mutexGroup = false; // default value for Atomic Item
         }
-        else if(res == OBJECT_ALREADY_EXISTS_IN_MAP)
+        else
         {
-            // add handling duplicated entries
+            mutexGroup = qobject->property("mutexGroup").toBool();  // real value for group
         }
-        //EntityType::getMap()[type] =  this;
-        mutexGroup = false; // default value for Atomic Item
+
     }
     else
     {
-        mutexGroup = qobject->property("mutexGroup").toBool();  // real value for group
+        mutexGroup = false; //default value
     }
 
     addChildrenFromObject(qobject);
+
 }
 
 void RootedTreeNode::addChildrenFromObject(QObject * qobject)

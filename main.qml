@@ -998,8 +998,8 @@ ApplicationWindow {
                             id: alert_blinkers;
                             objectName: "ALERT_BLINKERS"
                             property int layer_pri: 0
-                            property int canEntityType: 132
-                            //Alert.ALERT_BLINKERS
+                            //property int canEntityType: 132
+                            property string canEntityType: "ALERT_BLINKERS"
 
                             visible: false;
                             x: 30; y: 100; width: 60; height: 60;
