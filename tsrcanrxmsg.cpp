@@ -7,7 +7,7 @@ bool TsrCanRxMsg::is_enabled = false;
 
 TsrCanRxMsg::TsrCanRxMsg()
 {
-    cid = can_id_tsr;
+    setCanID(can_id_tsr);
 }
 
 void TsrCanRxMsg::enable()

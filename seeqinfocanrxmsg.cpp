@@ -12,7 +12,8 @@
 
 SeeQInfoCanRxMsg::SeeQInfoCanRxMsg()
 {
-  cid = can_id_cq_info;
+  setCanID(can_id_cq_info);
+  itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SeeQInfo");
 }
 
 void SeeQInfoCanRxMsg::process(struct can_frame * frame)

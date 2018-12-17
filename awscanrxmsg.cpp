@@ -10,7 +10,7 @@
 
 AwsCanRxMsg::AwsCanRxMsg()
 {
-    cid = can_id_master;
+    setCanID(can_id_master);
     itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("Aftermarket");
 }
 
@@ -98,28 +98,8 @@ void AwsCanRxMsg::process(struct can_frame * frame)
                    TsrCanRxMsg::disable();
                }
 
-               //TODO for over all [unparsed] signals in message:
 
-
-               for (size_t i = 0; i < SignalsOfAfterMarket_AWS_0x700_size; i++)
-               {
-
-                   //JSON Driven Alerts Triggering:
-
-
-                   QString currSignalStr = SignalsOfAfterMarket_AWS_0x700[i].name;
-
-                   AMJsonSignal * jsonsig = itsJsonProtocol->getSignal(currSignalStr);
-
-                   if(nullptr != jsonsig)
-                   {
-
-                       if(AMJsonSignal::GraphicItem == jsonsig->type)
-                       {
-                           one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
-                       }
-                   }
-               }
+               graphicItemsParseAndProcess(frame);
 
               //
 
@@ -190,50 +170,6 @@ void AwsCanRxMsg::hmwStateParseAndProcess(struct can_frame * recv)
 
      }
 }
-
-
-void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
-{
-#if 0
-    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
-#else
-
-    bool desired = extractSignal(name,recv).sg_val._bool;
-
-    bool do_active = (desired == polarity);
-
-    if(do_active)
-    {
-         alertsDisplay->activate(alert);
-    }
-    else
-    {
-        alertsDisplay->deactivate(alert);
-    }
-#endif
-}
-
-void AwsCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity)
-{
-#if 0
-    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
-#else
-
-    bool desired = extractSignal(name,recv).sg_val._bool;
-
-    bool do_active = (desired == polarity);
-
-    if(do_active)
-    {
-        *flag = true;
-    }
-    else
-    {
-        *flag = false;
-    }
-#endif
-}
-
 
 void AwsCanRxMsg::pedAlertsParseAndProcess(struct can_frame * recv)
 {

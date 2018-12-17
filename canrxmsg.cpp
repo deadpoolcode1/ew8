@@ -47,13 +47,36 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDis
 
 CanRxMsg::CanRxMsg()
 {
-    cid = can_id_undefined;
+    setCanID(can_id_undefined);
     is_a_first_frame = true;
 
     itsJsonProtocol = nullptr;
 }
 
-can_id_t CanRxMsg::getCanId(void)
+void CanRxMsg::setCanID(can_id_t canID)
+{
+    cid = canID;
+
+    if(can_id_undefined == canID)
+    {
+       canSignalsArray = nullptr;
+       canSignalsArray_size = 0;
+    }
+    else
+    {
+        //NOTE use table
+        for (size_t i = 0; i< CAN_MESSAGES_TYPES_NUM; i++)
+        {
+            if(canID == can_id_values_table[i].mnemonic)
+            {
+                canSignalsArray = can_id_values_table[i].sg_array;
+                canSignalsArray_size = can_id_values_table[i].sg_array_size;
+            }
+        }
+    }
+}
+
+can_id_t CanRxMsg::getCanID(void)
 {
     return cid;
 }

@@ -21,7 +21,6 @@ public:
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay);
     static CanRxMsg * getMsgByCanId(can_id_t cid);
     void setDisplay(IAlertDisplay *anAlertDisplay);
-    can_id_t getCanId(void);
 
     virtual void process(struct can_frame * frame) = 0;
     virtual void ack(void) = 0;
@@ -31,16 +30,23 @@ private:
   static size_t canRxMsgNumOfObjects;
   static CanRxMsg * createInstance(can_id_t cid);
   static ICanRxMsgFactory * iCanRxMsgFactory;
+  can_id_t cid;
 
 protected:
   CanRxMsg();
-  can_id_t cid;
+  void setCanID(can_id_t canID);
+  can_id_t getCanID(void);
+
+
   IAlertDisplay * alertsDisplay;
 
   AMJsonProtocol * itsJsonProtocol;
 
   struct can_frame prev_frame; //NOTE: is not initialized till first frame is received.
   bool is_a_first_frame;
+
+  Signal * canSignalsArray;
+  size_t canSignalsArray_size;
 
 };
 

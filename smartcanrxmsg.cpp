@@ -8,7 +8,7 @@ class SmartItem;
 
 SmartCanRxMsg::SmartCanRxMsg()
 {
-    cid = can_id_s_adas;
+    setCanID(can_id_s_adas);
     is_a_first_frame = true;
 }
 
