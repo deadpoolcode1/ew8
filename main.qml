@@ -918,7 +918,6 @@ ApplicationWindow {
 
 
                                 SequentialAnimation {
-
                                     running: alert_rldw.visible
                                     loops: Animation.Infinite
 
@@ -926,40 +925,7 @@ ApplicationWindow {
                                     PauseAnimation {duration: 500}
                                     PropertyAction {target: alert_rldw_right; property: "opacity"; value: 0.0}
                                     PauseAnimation {duration: 300}
-
-                                    /*
-                                        NumberAnimation { target: alert_rldw_right; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
-                                        NumberAnimation { target: alert_rldw_right; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
-                                        */
-
-                                }
-
-
-                                /*
-                                Timer {
-
-                                    id: blinkTimer_rldw
-
-                                    property int intervalOn: 500
-                                    property int intervalOff: 300
-
-                                    interval: intervalOn
-                                    running: false
-                                    repeat: true
-
-                                    function setRunning(On)
-                                    {
-                                        interval = intervalOn
-                                        running = On
-                                    }
-
-                                    onTriggered:
-                                    {
-                                        parent.visible = !parent.visible
-                                        interval = (parent.visible ? intervalOn : intervalOff)
-                                    }
-                                }
-                                */
+                                }  
                             }
                         }
 

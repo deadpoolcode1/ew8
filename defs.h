@@ -56,7 +56,8 @@ can_id_undefined = -1,
 can_id_master = 0,
 can_id_tsr   =  1,
 can_id_s_adas = 2,
-can_id_cq_info = 3,
+can_id_cq_system_info = 3,
+can_id_cq_time_info = 4,
 } can_id_t;
 
 typedef enum canrxmsg_type_e
@@ -82,146 +83,12 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_master, 0x700, msg_simple, SignalsOfAfterMarket_AWS_0x700, SignalsOfAfterMarket_AWS_0x700_size},
   {can_id_tsr,    0x727, msg_simple, SignalsOfAfterMarket_TSR_0x727, SignalsOfAfterMarket_TSR_0x727_size},
   {can_id_s_adas, 0x7ac, msg_smart,  SignalsOfSmartADAS_S_ADAS_0x7ac, SignalsOfSmartADAS_S_ADAS_0x7ac_size},
-  {can_id_cq_info,0x410, msg_simple, SignalsOfSeeQInfo_SN_System_0x410, SignalsOfSeeQInfo_SN_System_0x410_size},
+  {can_id_cq_system_info,0x410, msg_simple, SignalsOfSeeQInfo_SN_System_0x410, SignalsOfSeeQInfo_SN_System_0x410_size},
+  {can_id_cq_time_info,0x411, msg_simple, SignalsOfSeeQInfo_Time_Info_0x411, SignalsOfSeeQInfo_Time_Info_0x411_size},
 };
 
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
 #define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
-
-
-#define CAN_MSG_MASTER_SOUND_BYTE 0
-#define CAN_MSG_MASTER_SOUND_TYPE_MSK 0x07
-
-
-#define CAN_MSG_MASTER_TIME_IND_BYTE 0
-#define CAN_MSG_MASTER_TIME_IND_MSK  0x18
-#define CAN_MSG_MASTER_TIME_IND_SHIFT 0x3
-
-#define CAN_MSG_MASTER_SND_REP_MSK 0x60
-#define CAN_MSG_MASTER_SND_REP_SHIFT 0x5
-
-#define CAN_MSG_MASTER_SND_SUPPRESSED_MSK  0x80
-
-//===================================
-
-#define CAN_MSG_MASTER_SEC_DIAG_BYTE 1
-#define CAN_MSG_MASTER_SEC_DIAG_MSK 0x10
-
-
-#define CAN_MSG_MASTER_ZERO_SPEED_BYTE 1
-#define CAN_MSG_MASTER_ZERO_SPEED_MSK 1
-
-#define CAN_MSG_MASTER_BEAM_BYTE 1
-#define CAN_MSG_MASTER_BEAM_MSK  0x40
-
-#define CAN_MSG_MASTER_FLA_BYTE 1
-#define CAN_MSG_MASTER_FLA_MSK  0x80
-
-//===================================
-
-#define CAN_MSG_MASTER_HMW_BYTE 2
-#define CAN_MSG_MASTER_HMW_MSK  0xFE
-#define CAN_MSG_MASTER_HMW_SHIFT  0x1
-
-#define CAN_MSG_MASTER_HMWEN_BYTE 2
-#define CAN_MSG_MASTER_HMWEN_MSK  0x01
-
-//===================================
-
-#define CAN_MSG_MASTER_ERR_ACT_BYTE 3
-#define CAN_MSG_MASTER_ERR_ACT_MSK  0x01
-
-#define CAN_MSG_MASTER_ERR_CODE_BYTE 3
-#define CAN_MSG_MASTER_ERR_CODE_MSK  0xFE
-#define CAN_MSG_MASTER_ERR_CODE_SHIFT  0x1
-
-//====================================
-
-#define CAN_MSG_MASTER_LDW_OFF_BYTE 4
-#define CAN_MSG_MASTER_LDW_OFF_MSK 0x01
-
-#define CAN_MSG_MASTER_LLDW_BYTE 4
-#define CAN_MSG_MASTER_LLDW_MSK 0x02
-
-#define CAN_MSG_MASTER_RLDW_BYTE 4
-#define CAN_MSG_MASTER_RLDW_MSK 0x04
-
-#define CAN_MSG_MASTER_FCW_BYTE 4
-#define CAN_MSG_MASTER_FCW_MSK 0x08
-
-#define CAN_MSG_MASTER_MNTC_BYTE 4
-#define CAN_MSG_MASTER_MNTC_MSK 0x40
-
-#define CAN_MSG_MASTER_FLSAFE_BYTE 4
-#define CAN_MSG_MASTER_FLSAFE_MSK 0x80
-
-//====================================
-
-#define CAN_MSG_MASTER_PDZ_BYTE 5
-#define CAN_MSG_MASTER_PDZ_MSK 0x02
-
-#define CAN_MSG_MASTER_PCW_BYTE 5
-#define CAN_MSG_MASTER_PCW_MSK 0x04
-
-#define CAN_MSG_MASTER_BLINKERS_BYTE 5
-#define CAN_MSG_MASTER_BLINKERS_MSK 0x08
-
-#define CAN_MSG_MASTER_CYCLIST_BYTE 5
-#define CAN_MSG_MASTER_CYCLIST_MSK 0x10
-
-
-#define CAN_MSG_MASTER_TAMPER_BYTE 5
-#define CAN_MSG_MASTER_TAMPER_MSK 0x20
-
-#define CAN_MSG_MASTER_SPEED_FMT_BYTE 5
-#define CAN_MSG_MASTER_SPEED_FMT_MSK 0x40
-
-#define CAN_MSG_MASTER_TSREN_BYTE 5
-#define CAN_MSG_MASTER_TSREN_MSK 0x80
-
-//====================================
-
-#define CAN_MSG_MASTER_TSR_WRNLEV_BYTE 6
-#define CAN_MSG_MASTER_TSR_WRNLEV_MSK 0x07
-
-#define CAN_MSG_MASTER_FLSAFE_LEV_BYTE 6
-#define CAN_MSG_MASTER_FLSAFE_LEV_MSK 0x18
-#define CAN_MSG_MASTER_FLSAFE_LEV_SHIFT 0x4
-
-//====================================
-
-#define CAN_MSG_MASTER_HW_LEVEL_BYTE 7
-#define CAN_MSG_MASTER_HW_LEVEL_MSK 0x3
-#define CAN_MSG_MASTER_HW_LEVEL_SHIFT 0x0
-
-#define CAN_MSG_MASTER_HW_REPEN_BYTE 7
-#define CAN_MSG_MASTER_HW_REPEN_MSK 0x04
-#define CAN_MSG_MASTER_HW_REPEN_SHIFT 0x3
-
-//Smart Adas defines:
-#define CAN_MSG_S_ADAS_M_ID_BYTE 0
-#define CAN_MSG_S_ADAS_VIS_ITEM_BYTE 1
-
-#define CAN_MSG_S_ADAS_ACTIV_BYTE 3
-#define CAN_MSG_S_ADAS_ACTIV_MSK 0x1
-
-#define CAN_MSG_S_ADAS_MAXDUR_UNIT_BYTE 3
-#define CAN_MSG_S_ADAS_MAXDUR_UNIT_MSK 0x06
-#define CAN_MSG_S_ADAS_MAXDUR_UNIT_SHIFT 1
-
-#define CAN_MSG_S_ADAS_MINDUR_UNIT_BYTE 3
-#define CAN_MSG_S_ADAS_MINDUR_UNIT_MSK 0x18
-#define CAN_MSG_S_ADAS_MINDUR_UNIT_SHIFT 3
-
-#define CAN_MSG_S_ADAS_PARAM_UNIT_BYTE 3
-#define CAN_MSG_S_ADAS_PARAM_UNIT_MSK 0xE0
-#define CAN_MSG_S_ADAS_PARAM_UNIT_SHIFT 5
-
-#define CAN_MSG_S_ADAS_PARAM_INT_BYTE 4
-#define CAN_MSG_S_ADAS_PARAM_FRAC_BYTE 5
-
-#define CAN_MSG_S_ADAS_MINDUR_BYTE 6
-#define CAN_MSG_S_ADAS_MAXDUR_BYTE 7
 
 typedef enum visual_item_unit_e
 {

@@ -9,6 +9,8 @@
 
 #include "amjsonprotocol.h"
 
+class CanManager;
+
 class IAlertDisplay;
 class ICanRxMsgFactory;
 
@@ -23,7 +25,7 @@ public:
     void setDisplay(IAlertDisplay *anAlertDisplay);
 
     virtual void process(struct can_frame * frame) = 0;
-    virtual void ack(void) = 0;
+    virtual void ack(CanManager * canMngr) = 0;
 
 private:
   static CanRxMsg * CanRxMsgsPool[CAN_MESSAGES_TYPES_NUM];

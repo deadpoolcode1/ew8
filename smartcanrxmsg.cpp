@@ -3,6 +3,10 @@
 #include "smartitem.h"
 #include "candbsignal.h"
 
+#include "canmanager.h"
+
+class CanManager;
+
 class SmartItem;
 
 
@@ -39,7 +43,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        //Extract Fields Block
        //NOTE: instead of previous frame of the message, previous frame of visual item is to be used.
 
-       can_msg_content_t recv_fields = parse(frame);
+       recv_fields = parse(frame);
        //End of extract fields block
 
        //TODO: visual item status structure must be generated and its state must be saved
@@ -53,9 +57,9 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        smarti->setDisplay(alertsDisplay);
 
 
-       //construct smart item settings struct:
        SmartItem::smart_params_t smart_params;
 
+       //construct smart item settings struct:
        smart_params.visUnits = recv_fields.visUnits;
        smart_params.paramInt = recv_fields.paramInt;
        smart_params.paramFrac = recv_fields.paramFrac;
@@ -75,13 +79,27 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        }
 
        //End of Activation/Deactivation Block
-
 }
 
 
-void SmartCanRxMsg::ack()
+void SmartCanRxMsg::ack(CanManager * canMngr)
 {
+    //TODO construct using DBC
+    struct can_frame frame_to_send;
 
+
+    frame_to_send.can_id = 0x7ad;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = recv_fields.msgId;
+    frame_to_send.data[1] = recv_fields.visId;
+    frame_to_send.data[2] = 0x0;
+    frame_to_send.data[3] = recv_fields.activation? 0x1: 0x0;
+    frame_to_send.data[4] = 0x0;
+    frame_to_send.data[5] = 0x0;
+    frame_to_send.data[6] = 0x0;
+    frame_to_send.data[7] = 0x0;
+
+    canMngr->write_frame(&frame_to_send);
 
 }
 

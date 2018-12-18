@@ -2,6 +2,9 @@
 #define SIMPLECANRXMSG_H
 
 #include "canrxmsg.h"
+#include "canmanager.h"
+
+class CanManager;
 
 class CanRxMsg;
 
@@ -10,7 +13,7 @@ class SimpleCanRxMsg : public CanRxMsg
 public:
 
     virtual void process(struct can_frame * frame) = 0;
-    void ack(void);
+    void ack(CanManager * canMngr);
 
     void graphicItemsParseAndProcess(struct can_frame * frame);
     void argumentsSignalsParseAndProcess(struct can_frame * frame);

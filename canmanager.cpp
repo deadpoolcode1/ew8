@@ -256,8 +256,33 @@ void CanManager::init_frame(struct can_frame * frame)
       frame->data[7] = 0x0;
 }
 
-void CanManager::write_frame(void)
+void CanManager::write_frame(struct can_frame * frame_ptr)
 {
+#ifndef WIN32
+    ssize_t nbytes = 0;
+
+    nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
+
+    if (nbytes < 0) {
+         qDebug("Can not write to the CAN bus socket!");
+    }
+#else
+    //TODO implement for windows:
+
+      stat = canOK;
+
+      unsigned int flags;
+
+      DWORD time;
+
+      //Waits up to 100 ms for a message
+         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
+         if (stat == canOK){
+           if (flags & canMSG_ERROR_FRAME){
+             printf("**Transmitted frame is faulty***");
+           }
+         }
+#endif
 
 
 }
@@ -289,6 +314,7 @@ void CanManager::parse_frame(struct can_frame * frame)
         if(nullptr != curr)
         {
             curr->process(frame);
+            curr->ack(this);
         }
 
         //TODO move also to the OOP pattern

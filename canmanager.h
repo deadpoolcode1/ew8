@@ -32,7 +32,7 @@ public:
 
     CanManager(IAlertDisplay * alertdisp);
     void read_frame(void);
-    void write_frame(void);
+    void write_frame(struct can_frame * frame_ptr);
 
 
 public slots:

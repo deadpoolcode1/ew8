@@ -35,7 +35,7 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(can_id_t cid)
 
         break;
 
-    case can_id_cq_info:
+    case can_id_cq_system_info:
 
         ret = new SeeQInfoCanRxMsg();
 

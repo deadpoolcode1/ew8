@@ -8,7 +8,7 @@
 
 #include <QMetaEnum>
 
-AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType)
+AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType, ssize_t anIndex)
 {
 
 
@@ -20,6 +20,8 @@ AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType)
     action = anAction;
 
     type = (action_type_e)metaEnum.keyToValue(aType.toLatin1());
+
+    index = anIndex;
 
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
 

@@ -2,6 +2,11 @@
 #define SMARTCANRXMSG_H
 
 #include "canrxmsg.h"
+#include "smartitem.h"
+
+#include "canmanager.h"
+
+class CanManager;
 
 class CanRxMsg;
 
@@ -11,7 +16,7 @@ public:
     SmartCanRxMsg();
 
     void process(struct can_frame * frame);
-    void ack(void);
+    void ack(CanManager * canMngr);
 
 
 protected:
@@ -33,6 +38,12 @@ protected:
     can_msg_content_t parse(struct can_frame *frame);
 
      quint32 convert2msec (duration_unit_t unit);
+
+private:
+
+     can_msg_content_t recv_fields;
+
+
 };
 
 #endif // SMARTCANRXMSG_H

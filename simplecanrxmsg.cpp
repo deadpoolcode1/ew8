@@ -1,7 +1,9 @@
 #include "defs.h"
 #include "canrxmsg.h"
 #include "simplecanrxmsg.h"
+#include "canmanager.h"
 
+class CanManager;
 class CanRxMsg;
 
 SimpleCanRxMsg::SimpleCanRxMsg()
@@ -9,15 +11,13 @@ SimpleCanRxMsg::SimpleCanRxMsg()
    setCanID(can_id_undefined);
 }
 
-void SimpleCanRxMsg::ack()
+void SimpleCanRxMsg::ack(CanManager * canMngr)
 {
     /*skip*/
 }
 
 void SimpleCanRxMsg::graphicItemsParseAndProcess(struct can_frame * frame)
 {
-#if 1
-
     for (size_t i = 0; i < canSignalsArray_size; i++)
     {
 
@@ -37,10 +37,33 @@ void SimpleCanRxMsg::graphicItemsParseAndProcess(struct can_frame * frame)
             }
         }
     }
-
-#endif
-
 }
+
+void SimpleCanRxMsg::argumentsSignalsParseAndProcess(struct can_frame * frame)
+{
+    for (size_t i = 0; i < canSignalsArray_size; i++)
+    {
+        QString currSignalStr = canSignalsArray[i].name;
+        AMJsonSignal * jsonsig = itsJsonProtocol->getSignal(currSignalStr);
+
+        if(nullptr != jsonsig)
+        {
+
+            if(AMJsonSignal::StringArgument == jsonsig->type)
+            {
+                //TODO extract its index:
+
+                //QString action = (DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action);
+
+                if("QRCODE" == jsonsig->action)
+                {
+                   jsonsig->index;
+                }
+            }
+        }
+    }
+}
+
 
 
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)

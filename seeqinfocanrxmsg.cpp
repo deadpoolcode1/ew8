@@ -12,7 +12,7 @@
 
 SeeQInfoCanRxMsg::SeeQInfoCanRxMsg()
 {
-  setCanID(can_id_cq_info);
+  setCanID(can_id_cq_system_info);
   itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SeeQInfo");
 }
 
@@ -60,6 +60,9 @@ void SeeQInfoCanRxMsg::process(struct can_frame * frame)
 
 
        //NOTE: this time is displayed, when differs from zero
+
+        argumentsSignalsParseAndProcess(frame);
+
 
         quint8 num0 = extractSignal("SeeQSerialNumber0",frame).sg_val._int;
         quint8 num1 = extractSignal("SeeQSerialNumber1",frame).sg_val._int;
