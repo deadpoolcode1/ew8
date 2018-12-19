@@ -537,7 +537,7 @@ ApplicationWindow {
                         id: alert_fcw;
                         objectName: "FCW_ALERT"
                         property int layer_pri: 0
-                        property int canEntityType: Alert.ALERT_FCW
+                        property string canEntityType: "ALERT_FCW"
                         opacity: 1.0
 
                         visible: false;
@@ -741,7 +741,7 @@ ApplicationWindow {
                             id: ldw_off;
                             objectName: "ALERT_LDWOFF"
                             property int layer_pri: 2
-                            property int canEntityType: Alert.ALERT_LDWOFF
+                            property string canEntityType: "ALERT_LDWOFF"
 
                             visible: false;
                             height: parent.height;
@@ -768,7 +768,7 @@ ApplicationWindow {
                             id: ldw_on;
                             objectName: "ALERT_LDWON"
                             property int layer_pri: 1
-                            property int canEntityType: Alert.ALERT_LDWON
+                            property string canEntityType: "ALERT_LDWON"
 
                             visible: false;
                             height: parent.height;
@@ -797,7 +797,7 @@ ApplicationWindow {
                             id: alert_lldw;
                             objectName: "ALERT_LLDW"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_LLDW
+                            property string canEntityType: "ALERT_LLDW"
 
                             anchors.fill: parent
 
@@ -889,7 +889,7 @@ ApplicationWindow {
                             id: alert_rldw;
                             objectName: "ALERT_RLDW"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_RLDW
+                            property string canEntityType: "ALERT_RLDW"
 
                             anchors.fill: parent
 

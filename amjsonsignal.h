@@ -23,16 +23,23 @@ public:
     typedef ACTION_ERRORS_t (* action_ptr_t)(QVariant);
     typedef std::map<QString,action_ptr_t> json_action_t;
 
-    AMJsonSignal(QString name, QString action, QString type, ssize_t index = -1);
+    AMJsonSignal(QString name, QString action, QString type);
+
+    AMJsonSignal(QString name, QString action, bool polarity, QString type);
+
+    AMJsonSignal(QString name, QString action, QString type, ssize_t index);
 
     QString getName(void);
 
     //TODO move two following statements to private section
     QString action;
+    bool polarity;
     action_type_e type;
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
 private:
+
+  void init(QString name, QString action, bool polarity, QString type,ssize_t index);
 
   QString name;
 

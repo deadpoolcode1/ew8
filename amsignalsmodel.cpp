@@ -146,12 +146,50 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                QString sigName;
                QString sigAction;
                QString sigType;
+               bool polarity = true;
+               qint32 sigIndex = -1;
 
                sigName = signal_obj["name"].toString();
-               sigAction = signal_obj["action"].toString();
+
+
+               if (signal_obj["action"].isArray())
+               {
+                   QJsonArray actionArray = signal_obj["action"].toArray();
+
+                   sigAction = actionArray[0].toString();
+                   if ("inverted" == actionArray[1].toString())
+                   {
+                       polarity = false;
+                   }
+               }
+               else
+               {
+                   sigAction = signal_obj["action"].toString();
+               }
+
                sigType =  signal_obj["type"].toString();
 
-               AMJsonSignal * amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+
+               sigIndex = signal_obj["index"].toInt(-1);
+
+
+               AMJsonSignal * amjsg;
+
+               if(polarity)
+               {
+                   if(-1 == sigIndex)
+                   {
+                       amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+                   }
+                   else
+                   {
+                       amjsg = new AMJsonSignal(sigName, sigAction, sigType, sigIndex);
+                   }
+               }
+               else
+               {
+                   amjsg = new AMJsonSignal(sigName, sigAction, false, sigType);
+               }
 
                amjp->append(amjsg);
         }

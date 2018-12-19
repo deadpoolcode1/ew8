@@ -8,10 +8,24 @@
 
 #include <QMetaEnum>
 
-AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType, ssize_t anIndex)
+AMJsonSignal::AMJsonSignal(QString name, QString action, QString type)
 {
+    init(name, action, true, type, -1);
+}
+
+AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type)
+{
+     init(name, action, polarity, type, -1);
+}
+
+AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index)
+{
+     init(name, action, true, type, index);
+}
 
 
+void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex)
+{
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
 
@@ -23,11 +37,11 @@ AMJsonSignal::AMJsonSignal(QString aName, QString anAction, QString aType, ssize
 
     index = anIndex;
 
+    polarity = aPolarity;
+
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
 
-
-
-    //TODO initizlize actions map
+    //TODO use actions map
 }
 
  QString AMJsonSignal::getName(void)

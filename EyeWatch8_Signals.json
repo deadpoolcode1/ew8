@@ -1,16 +1,26 @@
 {
+    "NOTE":"every unique integer value can be used",
     "GraphicItem": [
-        {"enum": "ALERT_FCW", "value": 2},
-        {"enum": "ALERT_BLINKERS", "value": 132}
+        {"enum": "ALERT_FCW", "value": 31},
+        {"enum": "ALERT_LDWOFF", "value": 32},
+        {"enum": "ALERT_LDWON", "value": 33, "NOTE":"inverted"},
+        {"enum": "ALERT_LLDW","value": 34},
+        {"enum": "ALERT_RLDW", "value": 35},
+        {"enum": "ALERT_BLINKERS", "value": 36}
     ],
 
     "Protocols": [{
             "protocol": "Aftermarket",
             "signals": [
-                {"name": "Blinker_Reminder","action": "ALERT_BLINKERS","type": "GraphicItem"},
+
+                {"name": "FCW_on", "action": "ALERT_FCW","type": "GraphicItem"},
+                {"name": "LDW_off", "action": "ALERT_LDWOFF","type": "GraphicItem"},
+                {"name": "LDW_off", "action": ["ALERT_LDWON", "inverted"], "type": "GraphicItem"},
+                {"name": "LLDW_on", "action": "ALERT_LLDW","type": "GraphicItem"},
+                {"name": "RLDW_on", "action": "ALERT_RLDW","type": "GraphicItem"},
+                {"name": "Blinker_Reminder", "action": "ALERT_BLINKERS","type": "GraphicItem"},
                 {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"}
             ]
-
         }
         ,
         {

@@ -69,20 +69,6 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
 
 
-
-               //byte 4:
-
-               one2oneParseAndProcess(frame,"LDW_off",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LDWOFF);
-
-               one2oneParseAndProcess(frame,"LDW_off",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LDWON,false);
-
-               one2oneParseAndProcess(frame,"LLDW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_LLDW);
-
-               one2oneParseAndProcess(frame,"RLDW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_RLDW);
-
-               one2oneParseAndProcess(frame,"FCW_on",(DISPLAY_ITEM_ID)AlertTypes::ALERT_FCW);
-
-
                //byte 5:
                pedAlertsParseAndProcess(frame);
 

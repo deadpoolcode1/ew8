@@ -33,7 +33,7 @@ void SimpleCanRxMsg::graphicItemsParseAndProcess(struct can_frame * frame)
 
             if(AMJsonSignal::GraphicItem == jsonsig->type)
             {
-                one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
+                one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action),jsonsig->polarity);
             }
         }
     }
