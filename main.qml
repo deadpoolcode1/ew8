@@ -515,7 +515,7 @@ ApplicationWindow {
                         id: alert_qrcode;
                         objectName: "QRCODE"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_QRCODE
+                        property string canEntityType: "INFO_QRCODE"
 
                         visible: false;
                         rotation: 0;

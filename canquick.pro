@@ -5,6 +5,7 @@ dbcfiles.files = *.dbc
 
 win32: batches.files = *.bat
 
+
 QT += quick
 CONFIG += c++11
 
@@ -41,7 +42,9 @@ SOURCES += \
     amjsonprotocol.cpp \
     amjsonsignal.cpp \
     \
-    seeqinfocanrxmsg.cpp
+    canstringargumentsaccumulator.cpp \
+    seeqsysinfocanrxmsg.cpp \
+    seeqtimeinfocanrxmsg.cpp
 
 RESOURCES += qml.qrc
 
@@ -128,7 +131,9 @@ HEADERS += \
     amsignalsmodel.h \
     amjsonprotocol.h \
     amjsonsignal.h \
-    seeqinfocanrxmsg.h
+    canstringargumentsaccumulator.h \
+    seeqsysinfocanrxmsg.h \
+    seeqtimeinfocanrxmsg.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

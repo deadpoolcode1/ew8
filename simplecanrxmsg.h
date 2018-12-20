@@ -15,8 +15,8 @@ public:
     virtual void process(struct can_frame * frame) = 0;
     void ack(CanManager * canMngr);
 
-    void graphicItemsParseAndProcess(struct can_frame * frame);
-    void argumentsSignalsParseAndProcess(struct can_frame * frame);
+    void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
+    void argumentSignalProcess(struct can_frame * recv, const char * name, AMJsonSignal * jsonsig);
 
 protected:
      SimpleCanRxMsg();

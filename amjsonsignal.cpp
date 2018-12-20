@@ -2,11 +2,15 @@
 
 #include "amsignalsmodel.h"
 
+#include "canstringargumentsaccumulator.h"
+
 #include <iostream>
 
 #include <qdebug.h>
 
 #include <QMetaEnum>
+
+class CanStringArgumentsAccumulator;
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, QString type)
 {
@@ -38,6 +42,14 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
     index = anIndex;
 
     polarity = aPolarity;
+
+    if(StringArgument == type)
+    {
+#if 0
+        DISPLAY_ITEM_ID action_disp_id = AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(action);
+#endif
+        CanStringArgumentsAccumulator::getInstance(action)->growTriggeringSize(anIndex);
+    }
 
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
 

@@ -6,7 +6,8 @@
         {"enum": "ALERT_LDWON", "value": 33, "NOTE":"inverted"},
         {"enum": "ALERT_LLDW","value": 34},
         {"enum": "ALERT_RLDW", "value": 35},
-        {"enum": "ALERT_BLINKERS", "value": 36}
+        {"enum": "ALERT_BLINKERS", "value": 36},
+        {"enum": "INFO_QRCODE", "value": 37}
     ],
 
     "Protocols": [{
@@ -19,6 +20,7 @@
                 {"name": "LLDW_on", "action": "ALERT_LLDW","type": "GraphicItem"},
                 {"name": "RLDW_on", "action": "ALERT_RLDW","type": "GraphicItem"},
                 {"name": "Blinker_Reminder", "action": "ALERT_BLINKERS","type": "GraphicItem"},
+                {"name": "reserved5", "action": "INFO_QRCODE","type": "GraphicItem"},
                 {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"}
             ]
         }
@@ -26,26 +28,26 @@
         {
             "protocol":"SeeQInfo",
             "signals":[
-                {"name":"SeeqProductionDateYear0","action":"QRCODE", "type":"StringArgument","index": 0},
-                {"name":"SeeqProductionDateYear1","action":"QRCODE", "type":"StringArgument","index": 1},
-                {"name":"SeeqProductionDateWeek0","action":"QRCODE", "type":"StringArgument","index": 2},
-                {"name":"SeeqProductionDateWeek1","action":"QRCODE", "type":"StringArgument","index": 3},
+                {"name":"SeeqProductionDateYear0","action":"INFO_QRCODE", "type":"StringArgument","index": 0},
+                {"name":"SeeqProductionDateYear1","action":"INFO_QRCODE", "type":"StringArgument","index": 1},
+                {"name":"SeeqProductionDateWeek0","action":"INFO_QRCODE", "type":"StringArgument","index": 2},
+                {"name":"SeeqProductionDateWeek1","action":"INFO_QRCODE", "type":"StringArgument","index": 3},
 
-                {"name":"SeeqProduct0","action":"QRCODE", "type":"StringArgument","index": 4},
-                {"name":"SeeqProduct1","action":"QRCODE", "type":"StringArgument","index": 5},
-                {"name":"SeeqProduct2","action":"QRCODE", "type":"StringArgument","index": 6},
+                {"name":"SeeqProduct0","action":"INFO_QRCODE", "type":"StringArgument","index": 4},
+                {"name":"SeeqProduct1","action":"INFO_QRCODE", "type":"StringArgument","index": 5},
+                {"name":"SeeqProduct2","action":"INFO_QRCODE", "type":"StringArgument","index": 6},
 
-                {"name":"ManufacturerCode0","action":"QRCODE", "type":"StringArgument","index": 7},
-                {"name":"ManufacturerCode1","action":"QRCODE", "type":"StringArgument","index": 8},
+                {"name":"ManufacturerCode0","action":"INFO_QRCODE", "type":"StringArgument","index": 7},
+                {"name":"ManufacturerCode1","action":"INFO_QRCODE", "type":"StringArgument","index": 8},
 
-                {"name":"Reserved410","action":"QRCODE", "type":"StringArgument","index": 9},
-                {"name":"Reserved411","action":"QRCODE", "type":"StringArgument","index": 10},
+                {"name":"Reserved410","action":"INFO_QRCODE", "type":"StringArgument","index": 9},
+                {"name":"Reserved411","action":"INFO_QRCODE", "type":"StringArgument","index": 10},
 
-                {"name":"SeeQSerialNumber0","action":"QRCODE", "type":"StringArgument","index": 11},
-                {"name":"SeeQSerialNumber1","action":"QRCODE", "type":"StringArgument","index": 12},
-                {"name":"SeeQSerialNumber2","action":"QRCODE", "type":"StringArgument","index": 13},
-                {"name":"SeeQSerialNumber3","action":"QRCODE", "type":"StringArgument","index": 14},
-                {"name":"SeeQSerialNumber4","action":"QRCODE", "type":"StringArgument","index": 15}
+                {"name":"SeeQSerialNumber0","action":"INFO_QRCODE", "type":"StringArgument","index": 11},
+                {"name":"SeeQSerialNumber1","action":"INFO_QRCODE", "type":"StringArgument","index": 12},
+                {"name":"SeeQSerialNumber2","action":"INFO_QRCODE", "type":"StringArgument","index": 13},
+                {"name":"SeeQSerialNumber3","action":"INFO_QRCODE", "type":"StringArgument","index": 14},
+                {"name":"SeeQSerialNumber4","action":"INFO_QRCODE", "type":"StringArgument","index": 15}
             ]
         }
 

@@ -85,7 +85,7 @@ void AwsCanRxMsg::process(struct can_frame * frame)
                }
 
 
-               graphicItemsParseAndProcess(frame);
+               canRxJsonSignalsParseAndProcess(frame);
 
               //
 

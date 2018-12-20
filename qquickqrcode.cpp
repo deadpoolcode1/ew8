@@ -1,9 +1,12 @@
 #include "qquickqrcode.h"
+#include "canstringargumentsaccumulator.h"
 
 //TODO add win32 support: libqrencode-win32.dll
 #include <qrencode.h>
 
 #include <QPainter>
+
+class CanStringArgumentsAccumulator;
 
 class QPainter;
 
@@ -16,6 +19,8 @@ void QQuickQRCode::declareQML() {
 QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPaintedItem(parentQQuickItem)
 {
     connect(this, SIGNAL(snChanged()), SLOT(snChangedSlot()));
+    connect(CanStringArgumentsAccumulator::getInstance("INFO_QRCODE"),SIGNAL(argumentComplete(QString)),
+            this, SLOT(snChangedArgumentSlot(QString)));
 }
 
 

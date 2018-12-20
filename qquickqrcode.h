@@ -39,6 +39,15 @@ public slots:
 
     void snChangedSlot(void){}
 
+    void snChangedArgumentSlot(QString arg)
+    {
+        sn =  arg;
+        qDebug("New sn: %s", qPrintable(arg));
+        this->setVisible(true);
+        update();
+
+    }
+
 
 
 private:

@@ -3,6 +3,10 @@
 #include "simplecanrxmsg.h"
 #include "canmanager.h"
 
+#include "canstringargumentsaccumulator.h"
+
+class CanStringArgumentsAccumulator;
+
 class CanManager;
 class CanRxMsg;
 
@@ -16,7 +20,7 @@ void SimpleCanRxMsg::ack(CanManager * canMngr)
     /*skip*/
 }
 
-void SimpleCanRxMsg::graphicItemsParseAndProcess(struct can_frame * frame)
+void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 {
     for (size_t i = 0; i < canSignalsArray_size; i++)
     {
@@ -35,33 +39,23 @@ void SimpleCanRxMsg::graphicItemsParseAndProcess(struct can_frame * frame)
             {
                 one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action),jsonsig->polarity);
             }
+            else if (AMJsonSignal::StringArgument == jsonsig->type)
+            {
+               argumentSignalProcess(frame, currSignalStr.toLatin1(), jsonsig);
+            }
         }
     }
 }
 
-void SimpleCanRxMsg::argumentsSignalsParseAndProcess(struct can_frame * frame)
+void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, const char * name, AMJsonSignal * jsonsig)
 {
-    for (size_t i = 0; i < canSignalsArray_size; i++)
-    {
-        QString currSignalStr = canSignalsArray[i].name;
-        AMJsonSignal * jsonsig = itsJsonProtocol->getSignal(currSignalStr);
+    char value;
+    //TODO review this casting
+    value = (char)(extractSignal(name,recv).sg_val._int & 0xFF);
 
-        if(nullptr != jsonsig)
-        {
+    qDebug("argumentSignalProcess signal %s, %c", name, value);
 
-            if(AMJsonSignal::StringArgument == jsonsig->type)
-            {
-                //TODO extract its index:
-
-                //QString action = (DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action);
-
-                if("QRCODE" == jsonsig->action)
-                {
-                   jsonsig->index;
-                }
-            }
-        }
-    }
+    CanStringArgumentsAccumulator::getInstance(jsonsig->action)->insertCharFromSignal(jsonsig->index,value);
 }
 
 

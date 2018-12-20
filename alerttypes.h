@@ -80,10 +80,9 @@ public:
         ALERT_PLAYGROUND = 11,
         ALERT_END_ALL_RESTR = 12,
         ALERT_NO_PASS = 13,
-        ALERT_QRCODE = 14,
 
         //Smart Items:
-        SMART_BASE   = 15,
+        SMART_BASE   = 14,
         SMART_ANIMAL = SMART_BASE + 1,
         SMART_SEV_WEATHER = SMART_BASE + 2,
         SMART_SLIPPERY = SMART_BASE + 3,

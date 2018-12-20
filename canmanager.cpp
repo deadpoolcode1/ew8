@@ -173,7 +173,7 @@ void CanManager::init(void)
 
 #endif
 
-
+#if 0
       signalsModel = AMSignalsModel::getInstance();
 
       signalsModel->jsonGetGraphicItemEnum("ALERT_BLINKERS");
@@ -181,6 +181,7 @@ void CanManager::init(void)
       AMJsonProtocol * amjp = signalsModel->getProtocol("Aftermarket");
 
       qDebug("JSON: I am protocol and my name is: %s", qPrintable(amjp->getName()));
+#endif
 }
 
 void CanManager::read_frame(void)
