@@ -10,7 +10,7 @@ class CanStringArgumentsAccumulator;
 
 class QPainter;
 
-QString QQuickQRCode::sn = "2918011070900023";
+QString QQuickQRCode::sn = "";
 
 void QQuickQRCode::declareQML() {
                 qmlRegisterType<QQuickQRCode>("com.mobileye.QRCode",0, 1, "QRCode");
@@ -18,9 +18,10 @@ void QQuickQRCode::declareQML() {
 
 QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPaintedItem(parentQQuickItem)
 {
-    connect(this, SIGNAL(snChanged()), SLOT(snChangedSlot()));
     connect(CanStringArgumentsAccumulator::getInstance("INFO_QRCODE"),SIGNAL(argumentComplete(QString)),
             this, SLOT(snChangedArgumentSlot(QString)));
+
+    margin = 3;
 }
 
 
@@ -33,8 +34,6 @@ void QQuickQRCode::paint(QPainter * painter)
 
     width = (qrcode->width);
     quint8 * data = qrcode->data;
-
-    qint32 margin = 3;
 
     qDebug("qrencode geometry is = %d,%d",qrcode->width,qrcode->width);
 
@@ -76,4 +75,21 @@ void QQuickQRCode::paint(QPainter * painter)
     painter->drawImage(0,0, * qimage);
 
     QRcode_free(qrcode);
+}
+
+QString QQuickQRCode::getSn(void){return sn;}
+
+void QQuickQRCode::setSn(QString aSn)
+{
+    snUpdate(aSn);
+}
+
+void QQuickQRCode::snUpdate(QString arg)
+{
+    if(sn != arg)
+    {
+        sn =  arg;
+        qDebug("New sn: %s", qPrintable(arg));
+        update();
+    }
 }

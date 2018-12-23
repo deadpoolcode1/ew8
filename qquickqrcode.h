@@ -10,7 +10,7 @@ class QPainter;
 class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString sn  READ getSn  WRITE setSn  NOTIFY snChanged)
+    Q_PROPERTY(QString sn  READ getSn  WRITE setSn)
 #if 0
     Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
@@ -27,25 +27,18 @@ public:
 
     static void declareQML();
 
-    QString getSn(void){return sn;}
+    QString getSn(void);
 
-    static void setSn(QString aSn){sn = aSn;}
+    void setSn(QString aSn);
 
 signals:
 
-    void snChanged(void);
 
 public slots:
 
-    void snChangedSlot(void){}
-
     void snChangedArgumentSlot(QString arg)
     {
-        sn =  arg;
-        qDebug("New sn: %s", qPrintable(arg));
-        this->setVisible(true);
-        update();
-
+        snUpdate(arg);
     }
 
 
@@ -56,9 +49,12 @@ private:
     const QString  url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
     static QString  sn;
 
+    qint32 margin;
+
     QImage * qimage;
     qint32  width;
 
+    void snUpdate(QString arg);
 
 };
 

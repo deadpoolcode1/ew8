@@ -62,14 +62,11 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, const char *
 
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
 {
-#if 0
-    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
-#else
-
     bool desired = extractSignal(name,recv).sg_val._bool;
 
     bool do_active = (desired == polarity);
 
+    alertsDisplay->mutex.lock();
     if(do_active)
     {
          alertsDisplay->activate(alert);
@@ -78,15 +75,11 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char 
     {
         alertsDisplay->deactivate(alert);
     }
-#endif
+    alertsDisplay->mutex.unlock();
 }
 
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity)
 {
-#if 0
-    one2oneParseAndProcessGeneral(alertsDisplay, recv, name, alert, polarity);
-#else
-
     bool desired = extractSignal(name,recv).sg_val._bool;
 
     bool do_active = (desired == polarity);
@@ -99,6 +92,5 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char 
     {
         *flag = false;
     }
-#endif
 }
 
