@@ -10,7 +10,16 @@
         {"enum": "INFO_QRCODE", "value": 37}
     ],
 
-    "Protocols": [{
+
+    "Protocols": [
+        {
+            "protocol":["Buttons","GPIO"],
+            "signals":[
+                {"name":"LeftButton", "action": "INFO_QRCODE", "type": "GraphicItem"}
+            ]
+        }
+        ,
+        {
             "protocol": "Aftermarket",
             "signals": [
 
@@ -20,7 +29,6 @@
                 {"name": "LLDW_on", "action": "ALERT_LLDW","type": "GraphicItem"},
                 {"name": "RLDW_on", "action": "ALERT_RLDW","type": "GraphicItem"},
                 {"name": "Blinker_Reminder", "action": "ALERT_BLINKERS","type": "GraphicItem"},
-                {"name": "reserved5", "action": "INFO_QRCODE","type": "GraphicItem"},
                 {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"}
             ]
         }

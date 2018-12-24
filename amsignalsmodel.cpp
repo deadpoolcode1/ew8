@@ -127,11 +127,37 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject protocol_obj = value.toObject();
 
-        qDebug("JSON: extracted %s protocol",  qPrintable(protocol_obj["protocol"].toString()));
+        QJsonValue protocolNameValue;
+        QJsonValue protocolTypeValue;
 
-        QJsonValue protocolNameValue = protocol_obj["protocol"];
+
+        bool isNotDefaultProtocolType = (protocol_obj["protocol"].isArray());
+
+        if(isNotDefaultProtocolType)
+        {
+
+            QJsonArray protocol_array = protocol_obj["protocol"].toArray();
+
+           protocolNameValue = protocol_array.at(0);
+
+           protocolTypeValue = protocol_array.at(1);
+
+
+        }
+        else
+        {
+            protocolNameValue = protocol_obj["protocol"];
+        }
 
         AMJsonProtocol * amjp = new AMJsonProtocol(protocolNameValue.toString());
+
+        if(isNotDefaultProtocolType)
+        {
+            //TODO set the protocol type
+            amjp->setType(protocolTypeValue);
+        }
+
+         qDebug("JSON: extracted %s protocol, its type %s",  qPrintable(amjp->getName()),qPrintable(amjp->getTypeQString()));
 
 
 
@@ -197,7 +223,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         //insert protocol into Protocols collector.
         jsonProtocols.push_back(*amjp);
-
 
     }
 }
