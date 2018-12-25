@@ -9,24 +9,22 @@ AMJsonProtocol::AMJsonProtocol(QString aName)
     type = CAN; //default choise
 }
 
-void AMJsonProtocol::append(AMJsonSignal *signal)
+void AMJsonProtocol::append(AMJsonSignal * signal)
 {
-
-    jsonSignals.push_back(*signal);
-
+    if(signal)
+    {
+        jsonSignals.insert(signal->getName(), * signal);
+    }
+    else
+    {
+        qDebug("uninitialized signal");
+    }
 }
 
-AMJsonSignal * AMJsonProtocol::getSignal(QString aName)
+QList<AMJsonSignal> AMJsonProtocol::getSignalEntries(QString aName)
 {
-    AMJsonSignal * ret = nullptr;
-
-   for(std::vector<AMJsonSignal>::iterator iter = jsonSignals.begin();iter != jsonSignals.end();++iter)
-    {
-        if(iter->getName() ==  aName)
-        {
-            ret =  &*iter;
-        }
-    }
+    QList<AMJsonSignal> ret;
+    ret = jsonSignals.values(aName);
     return ret;
 }
 

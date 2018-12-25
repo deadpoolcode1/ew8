@@ -13,10 +13,10 @@ class SimpleCanRxMsg : public CanRxMsg
 public:
 
     virtual void process(struct can_frame * frame) = 0;
-    void ack(CanManager * canMngr);
+    void ack(CanManager *);
 
     void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
-    void argumentSignalProcess(struct can_frame * recv, const char * name, AMJsonSignal * jsonsig);
+    void argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
 
 protected:
      SimpleCanRxMsg();

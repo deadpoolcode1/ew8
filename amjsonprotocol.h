@@ -3,7 +3,7 @@
 
 #include "amjsonsignal.h"
 #include "canrxmsg.h"
-#include <vector>
+#include <QMultiMap>
 
 class AMJsonSignal;
 
@@ -27,7 +27,7 @@ public:
 
     QString getName(void);
 
-    AMJsonSignal * getSignal(QString aName);
+    QList<AMJsonSignal> getSignalEntries(QString aName);
 
     void setType(QJsonValue typeValue);
     protocol_type_e getType(void);
@@ -37,7 +37,7 @@ public:
 private:
     QString name;
     protocol_type_e type;
-    std::vector<AMJsonSignal> jsonSignals;
+    QMultiMap<QString,AMJsonSignal> jsonSignals;
 
 
 };
