@@ -13,7 +13,12 @@ class SmartItem;
 SmartCanRxMsg::SmartCanRxMsg()
 {
     setCanID(can_id_s_adas);
+
+    //TODO: find if needed?
     is_a_first_frame = true;
+
+    itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SmartADAS");
+    initCanJsonSignalsListInProcessOrder();
 }
 
 

@@ -95,3 +95,42 @@ CanRxMsg * CanRxMsg::getMsgByCanId(can_id_t cid)
     return ret;
 }
 
+void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
+{
+    for (size_t i = 0; i < canSignalsArray_size; i++)
+    {
+
+        //JSON Driven Alerts Triggering:
+
+
+        QString currSignalStr = canSignalsArray[i].name;
+
+        //TODO single return point
+        if (itsJsonProtocol)
+        {
+
+            QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
+
+            foreach (AMJsonSignal * jsonsig, signalsList)
+            {
+                switch(jsonsig->type)
+                {
+                case AMJsonSignal::Enabler:
+
+                     canJsonSignalsListInProcessOrder.prepend(jsonsig);
+
+                    break;
+
+                default:
+
+                    canJsonSignalsListInProcessOrder.append(jsonsig);
+
+                    break;
+                }
+
+            }
+
+        }
+    }
+}
+

@@ -24,6 +24,9 @@ public:
     static CanRxMsg * getMsgByCanId(can_id_t cid);
     void setDisplay(IAlertDisplay *anAlertDisplay);
 
+    //NOTE: depends on JSON and DBC already parsed
+    void initCanJsonSignalsListInProcessOrder(void);
+
     virtual void process(struct can_frame * frame) = 0;
     virtual void ack(CanManager * canMngr) = 0;
 
@@ -49,6 +52,8 @@ protected:
 
   Signal * canSignalsArray;
   size_t canSignalsArray_size;
+
+  QList<AMJsonSignal *> canJsonSignalsListInProcessOrder;
 
 };
 

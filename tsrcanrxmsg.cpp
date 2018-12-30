@@ -8,6 +8,8 @@ bool TsrCanRxMsg::is_enabled = false;
 TsrCanRxMsg::TsrCanRxMsg()
 {
     setCanID(can_id_tsr);
+    itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("Aftermarket_TSR");
+    initCanJsonSignalsListInProcessOrder();
 }
 
 void TsrCanRxMsg::enable()

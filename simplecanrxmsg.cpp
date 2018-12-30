@@ -22,26 +22,20 @@ void SimpleCanRxMsg::ack(CanManager *)
 
 void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 {
-    for (size_t i = 0; i < canSignalsArray_size; i++)
+
+    QList<AMJsonSignal *>::iterator it;
+
+    //WARNING: Did not use foreach to show, the sequence is important
+    for (it = canJsonSignalsListInProcessOrder.begin(); it != canJsonSignalsListInProcessOrder.end(); it++)
     {
 
-        //JSON Driven Alerts Triggering:
+       AMJsonSignal * jsonsig = *it;
+
+        QString currSignalStr = jsonsig->getName();
 
 
-        QString currSignalStr = canSignalsArray[i].name;
-
-        //TODO single return point
-        if(itsJsonProtocol->getIsEnabled())
+        if(jsonsig->itsProtocol->getIsEnabled()&&jsonsig->getIsEnabled())
         {
-
-
-        QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
-
-        foreach (AMJsonSignal * jsonsig, signalsList)
-        {
-            //TODO single return point
-            if(jsonsig->getIsEnabled())
-            {
 
             switch(jsonsig->type)
             {
@@ -64,12 +58,11 @@ void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
             default:
                 qDebug("Usupported Json Signal Type");;
                 break;
+
             }
         }
-        }
+    }
 
-    }
-    }
 }
 
 void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
