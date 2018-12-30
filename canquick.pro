@@ -5,9 +5,7 @@ dbcfiles.files = *.dbc
 
 win32: batches.files = *.bat
 
-
 QT += quick
-
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -106,7 +104,23 @@ DISTFILES += \
     resources/EWAlerts/no_pass.svg \
     resources/EWAlerts/playground.svg \
     TSR.qml \
-    SmartItem.qml
+    SmartItem.qml \
+    resources/Containers/Artboard 40@2x.png \
+    resources/Containers/example@2x.png \
+    resources/Containers/Left-frame@2x.png \
+    resources/Containers/logo@2x.png \
+    resources/Containers/right-frame@2x.png \
+    resources/Containers/top-bar-frame@2x.png \
+    resources/SmartAlerts/bww@2x.png \
+    resources/SmartAlerts/coffee@2x.png \
+    resources/Statuses/gps@2x.png \
+    resources/Statuses/ihc@2x.png \
+    resources/Statuses/ihc_low@2x.png \
+    resources/Statuses/OTA@2x.png \
+    resources/Statuses/ts@2x.png \
+    resources/TSRAlerts/sli@2x.png \
+    resources/SmartAlerts/animal.svg \
+    resources/SmartAlerts/slippery.svg
 
 HEADERS += \
     canmanager.h \

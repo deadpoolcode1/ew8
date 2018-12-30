@@ -4,25 +4,25 @@
 
 #include "canstringargumentsaccumulator.h"
 
-#include <iostream>
-
 #include <qdebug.h>
 
 #include <QMetaEnum>
 
+#include <QObject>
+
 class CanStringArgumentsAccumulator;
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, QString type)
+AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
     init(name, action, true, type, -1);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type)
+AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
 {
      init(name, action, polarity, type, -1);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index)
+AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
 {
      init(name, action, true, type, index);
 }
@@ -43,6 +43,10 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
     polarity = aPolarity;
 
+    is_enabled = true;
+
+    itsProtocol = nullptr;
+
     if(StringArgument == type)
     {
 #if 0
@@ -60,3 +64,31 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
  {
      return name;
  }
+
+ void AMJsonSignal::connect2EnabledDisabled(AMSignalsModel * model)
+ {
+     if(Enabler == type)
+     {
+         AMJsonProtocol * prot = model->getProtocol(action);
+
+         if(prot){
+             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
+         }
+
+         QList<AMJsonSignal *> jsonSigList = itsProtocol->getSignalEntries(action);
+
+         foreach(AMJsonSignal * jsig, jsonSigList)
+         {
+             connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
+         }
+
+         emit enableDisableConnected(false);
+     }
+ }
+
+ void AMJsonSignal::enableDisableThis(bool onOff)
+ {
+     is_enabled = onOff;
+     qDebug ("Signal %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
+ }
+

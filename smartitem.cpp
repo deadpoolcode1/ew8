@@ -11,7 +11,7 @@
 SmartItem * SmartItem::smartItemsPool[];
 size_t  SmartItem::smartItemsPoolNumOfObjects = 0;
 
-SmartItem::SmartItem(quint8 aVisId)
+SmartItem::SmartItem(quint8 aVisId, QObject * parent) : QObject(parent)
 {
    visId = aVisId;
    //TODO ensure  SMART_BASE < range < ALERT_END_OF_TYPE

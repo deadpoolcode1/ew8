@@ -17,6 +17,7 @@ public:
 
     void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
     void argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
+    void enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
 
 protected:
      SimpleCanRxMsg();

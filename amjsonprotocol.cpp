@@ -2,18 +2,21 @@
 
 #include "amjsonsignal.h"
 
-AMJsonProtocol::AMJsonProtocol(QString aName)
+#include <QObject>
+
+AMJsonProtocol::AMJsonProtocol(QString aName, QObject * parent) : QObject(parent)
 {
     qDebug("JSON: new protocol extracted: %s",qPrintable(aName));
     name = aName;
     type = CAN; //default choise
+    is_enabled = true;
 }
 
 void AMJsonProtocol::append(AMJsonSignal * signal)
 {
     if(signal)
     {
-        jsonSignals.insert(signal->getName(), * signal);
+        jsonSignals.insert(signal->getName(), signal);
     }
     else
     {
@@ -21,9 +24,9 @@ void AMJsonProtocol::append(AMJsonSignal * signal)
     }
 }
 
-QList<AMJsonSignal> AMJsonProtocol::getSignalEntries(QString aName)
+QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(QString aName)
 {
-    QList<AMJsonSignal> ret;
+    QList<AMJsonSignal*> ret;
     ret = jsonSignals.values(aName);
     return ret;
 }
@@ -59,4 +62,10 @@ QString AMJsonProtocol::getTypeQString(void)
 QString AMJsonProtocol::getName(void)
 {
     return name;
+}
+
+void AMJsonProtocol::enableDisableThis(bool onOff)
+{
+    is_enabled = onOff;
+    qDebug ("Protocol %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
 }

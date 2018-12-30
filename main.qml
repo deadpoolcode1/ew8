@@ -12,29 +12,6 @@ ApplicationWindow {
 
     signal itemSelfDeactivated(int canEntityType, string _objectName)
 
-     /*
-    //WARNING: used in ticks protocol
-    //WARNING: the [indices] are just mnemonics
-    property var hmw_nums_arr: [
-            [Alert.HMW_01] = "0.1",
-            [Alert.HMW_02] = "0.2",
-            [Alert.HMW_03] = "0.3",
-            [Alert.HMW_04] = "0.4",
-            [Alert.HMW_05] = "0.5",
-            [Alert.HMW_06] = "0.6",
-            [Alert.HMW_07] = "0.7",
-            [Alert.HMW_08] = "0.8",
-            [Alert.HMW_09] = "0.9",
-            [Alert.HMW_10] = "1.0",
-            [Alert.HMW_12] = "1.2",
-            [Alert.HMW_14] = "1.4",
-            [Alert.HMW_16] = "1.6",
-            [Alert.HMW_18] = "1.8",
-            [Alert.HMW_20] = "2.0",
-            [Alert.HMW_25] = "2.5",
-            [Alert.HMW_GR] = "  ",
-            ]
-     */
 
     //WARNING: the [indices] are just mnemonics
     property var sli_arr: [
@@ -72,35 +49,136 @@ ApplicationWindow {
 
 
 
-    Item {
+    Rectangle {
 
         id: general_panel
 
-        x: 0
+        color: "black"
 
-        y: 0
+        width: page.width
 
-        width: 320
-
-        height: 240
+        height: page.height
 
         visible: true
 
-
-
-
-        Rectangle {
+        Image {
             id: status_panel
 
-            color: "#19191a"
+             objectName: "status_panel_root"
 
-            objectName: "status_panel_root"
+            width: general_panel.width
+            height: general_panel.height/7
+            anchors.top: general_panel.top
 
-            width: parent.width
-            height: parent.height/7
-            anchors.top: parent.top
+            fillMode: Image.Stretch
+
+            source:"../images/Containers/top-bar-frame@2x.png";
 
             visible: true
+
+            Image{
+
+            height: status_panel.height*8/10
+            x: status_panel.x + status_panel.width/2 - width/2
+
+            fillMode: Image.PreserveAspectFit
+
+            source:"../images/Containers/logo@2x.png";
+
+            }
+
+            //Lefter from logo:
+
+            Image{
+
+                id: alert_blinkers;
+                objectName: "ALERT_BLINKERS"
+                property int layer_pri: 0
+                property string canEntityType: "ALERT_BLINKERS"
+
+                function setVisibleSlot() {visible = true}
+                function setInvisibleSlot() {visible = false}
+
+                height: status_panel.height*8/10
+                x: status_panel.x + status_panel.width/10
+                fillMode: Image.PreserveAspectFit
+
+                visible: false
+
+                source:"../images/Statuses/ts@2x.png";
+
+            }
+
+            Item {
+                id: groupBeam
+                objectName: "BEAM_QtQG"
+                property bool mutexGroup: true
+
+                function setVisibleSlot() {setVisible(true)}
+                function setInvisibleSlot() {setVisible(false)}
+
+                function setVisible(isVisible)
+                {
+                    visible = isVisible
+                }
+
+                property int layer_pri: 0
+                property int canEntityType: Alert.QtQG
+
+                visible: false;
+
+                Image {
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    id: alert_hi_beam;
+                    objectName: "ALERT_HI_BEAM"
+                    property int layer_pri: 0
+                    property string canEntityType: "ALERT_HI_BEAM"
+
+                    visible: false;
+                    height: status_panel.height*8/10
+                    x: status_panel.x + (status_panel.width*2/10)
+                    fillMode: Image.PreserveAspectFit;
+                    source:"../images/Statuses/ihc@2x.png";
+                    rotation: 0;
+                }
+
+                Image {
+
+                    function setVisibleSlot() {setVisible(true)}
+                    function setInvisibleSlot() {setVisible(false)}
+
+                    function setVisible(isVisible)
+                    {
+                        visible = isVisible
+                    }
+
+                    id: alert_low_beam;
+                    objectName: "ALERT_LOW_BEAM"
+                    property int layer_pri: 0
+                    property string canEntityType: "ALERT_LOW_BEAM"
+
+                    visible: false;
+                    height: status_panel.height*8/10
+                    x: status_panel.x + (status_panel.width*2/10)
+                    fillMode: Image.PreserveAspectFit;
+                    source:"../images/Statuses/ihc_low@2x.png";
+                    rotation: 0;
+                }
+
+
+
+            }
+
+            //TODO on right from logo
+
         }
 
         Rectangle {
@@ -109,7 +187,7 @@ ApplicationWindow {
             objectName: "left_panel_root"
 
 
-            color: "#191919"
+            color: "transparent"
 
             width: 50
             anchors.top: status_panel.bottom
@@ -279,7 +357,7 @@ ApplicationWindow {
 
             objectName: "right_panel_root"
 
-            color: "#191919"
+            color: "transparent"
 
             width: 50
             anchors.top: status_panel.bottom
@@ -359,7 +437,7 @@ ApplicationWindow {
             property int canEntityType: Alert.QtQG
             property bool mutexGroup: false
 
-            color: "black"
+            color: "transparent"
 
             visible: true
 
@@ -393,7 +471,7 @@ ApplicationWindow {
                     id: alert_pcw
                     objectName: "PCW_ALERT"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_PCW
+                    property string canEntityType: "ALERT_PCW"
 
                     function setVisibleSlot() {setVisible(true)}
                     function setInvisibleSlot() {setVisible(false)}
@@ -473,7 +551,7 @@ ApplicationWindow {
                         id: alert_pdz;
                         objectName: "PDZ_ALERT"
                         property int layer_pri: 1
-                        property int canEntityType: Alert.ALERT_PDZ
+                        property string canEntityType: "ALERT_PDZ"
                         opacity: 1.0
 
                         visible: false;
@@ -662,10 +740,8 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_sev_weather_side
-                        source:"../images/SmartAlerts/severWeather.svg";
-
+                        source:"../images/SmartAlerts/bww@2x.png";
                     }
-
                 }
 
                 Item
@@ -935,113 +1011,7 @@ ApplicationWindow {
 
                     }
 
-                    //////BLINKERS
 
-                    Item {
-                        id: groupBlinkers
-                        objectName: "BLINKERS_QtQG"
-                        property bool mutexGroup: false
-
-                        function setVisibleSlot() {setVisible(true)}
-                        function setInvisibleSlot() {setVisible(false)}
-
-                        function setVisible(isVisible)
-                        {
-                            visible = isVisible
-                        }
-
-                        property int layer_pri: 1
-                        property int canEntityType: Alert.QtQG
-
-                        visible: false;
-
-                        Image {
-
-                            function setVisibleSlot() {visible = true}
-                            function setInvisibleSlot() {visible = false}
-
-
-                            id: alert_blinkers;
-                            objectName: "ALERT_BLINKERS"
-                            property int layer_pri: 0
-                            //property int canEntityType: 132
-                            property string canEntityType: "ALERT_BLINKERS"
-
-                            visible: false;
-                            x: 30; y: 100; width: 60; height: 60;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/blinkers.png";
-                            rotation: 0;
-                        }
-                     }
-
-                    /////BLINKERS end
-
-                    Item {
-                        id: groupBeam
-                        objectName: "BEAM_QtQG"
-                        property bool mutexGroup: true
-
-                        function setVisibleSlot() {setVisible(true)}
-                        function setInvisibleSlot() {setVisible(false)}
-
-                        function setVisible(isVisible)
-                        {
-                            visible = isVisible
-                        }
-
-                        property int layer_pri: 1
-                        property int canEntityType: Alert.QtQG
-
-                        visible: false;
-
-                        Image {
-
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_hi_beam;
-                            objectName: "ALERT_HI_BEAM"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HI_BEAM
-
-                            visible: false;
-                            x: 100; y: 100; width: 60; height: 60;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/fla_armed.png";
-                            rotation: 0;
-                        }
-
-                        Image {
-
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: alert_low_beam;
-                            objectName: "ALERT_LOW_BEAM"
-                            property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_LOW_BEAM
-
-                            visible: false;
-                            x: 100; y: 100; width: 60; height: 60;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/fla_armed_low.png";
-                            rotation: 0;
-                        }
-
-
-
-                    }
 
 
                     Item {
@@ -1084,7 +1054,7 @@ ApplicationWindow {
                             id: alert_hmw_alert;
                             objectName: "ALERT_HMW_ALERT"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW_ALERT
+                            property string canEntityType: "ALERT_HMW_ALERT"
                             property int canEntityArg: 0x00
 
                             visible: false;
@@ -1119,7 +1089,7 @@ ApplicationWindow {
                             id: alert_hmw_monitor;
                             objectName: "ALERT_HMW_MONITOR"
                             property int layer_pri: 0
-                            property int canEntityType: Alert.ALERT_HMW_MONITOR
+                            property string canEntityType: "ALERT_HMW_MONITOR"
                             property int canEntityArg: 0x00
 
                             visible: false;

@@ -27,7 +27,7 @@ MainProcess* MainProcess::getInstance(QObject * aComponentObject)
 }
 
 
-MainProcess::MainProcess(QObject *aComponentObject)
+MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(parent)
 {
 
     componentObject = aComponentObject;

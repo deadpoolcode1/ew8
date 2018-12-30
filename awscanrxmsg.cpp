@@ -56,42 +56,27 @@ void AwsCanRxMsg::process(struct can_frame * frame)
    {
        //Extract Fields Block
 
-                   //byte 0
-                   //Currently skipped
 
-                   //byte 1:
+       bool is_enabled;
+       one2oneParseAndProcess(frame, "TSR_enabbled",&is_enabled);
 
-               beamStateParseAndProcess(frame);
-
-                  //byte 2:
-
-               hmwStateParseAndProcess(frame);
-
-
-
-               //byte 5:
-               pedAlertsParseAndProcess(frame);
-
-               bool is_enabled;
-               one2oneParseAndProcess(frame, "TSR_enabbled",&is_enabled);
-
-               if(is_enabled)
-               {
-                   TsrCanRxMsg::enable();
-               }
-               else
-               {
-                   TsrCanRxMsg::disable();
-               }
+       if(is_enabled)
+       {
+           TsrCanRxMsg::enable();
+       }
+       else
+       {
+           TsrCanRxMsg::disable();
+       }
 
 
-               canRxJsonSignalsParseAndProcess(frame);
+       canRxJsonSignalsParseAndProcess(frame);
 
-              //
+       //
 
 
 
-               //////////////////////////////////////
+       //////////////////////////////////////
 
 
        //End of extract fields block
@@ -109,77 +94,5 @@ void AwsCanRxMsg::process(struct can_frame * frame)
        memcpy(&prev_frame, frame, sizeof(struct can_frame));
    }
 }
-
-
-void AwsCanRxMsg::beamStateParseAndProcess(struct can_frame * recv)
-{
-    DISPLAY_ITEM_ID alert;
-
-    alertsDisplay->deactivate(AlertTypes::ALERT_HI_BEAM);
-    alertsDisplay->deactivate(AlertTypes::ALERT_LOW_BEAM);
-
-    if(recv)
-    {
-        sg_var_t newFLAState = extractSignal("FLA_Armed",recv);
-
-        if(newFLAState.sg_val._bool)
-        {
-        sg_var_t newBeamState = extractSignal("Hi_Low_BeamControl",recv);
-        alert = newBeamState.sg_val._bool ? AlertTypes::ALERT_HI_BEAM : AlertTypes::ALERT_LOW_BEAM;
-        alertsDisplay->activate(alert);
-        }
-    }
-}
-
-void AwsCanRxMsg::hmwStateParseAndProcess(struct can_frame * recv)
-{
-    bool valid = extractSignal("Headway_valid",recv).sg_val._bool;
-    quint8 state;
-    quint8 value;
-
-     alertsDisplay->deactivate(AlertTypes::ALERT_HMW_MONITOR);
-     alertsDisplay->deactivate(AlertTypes::ALERT_HMW_ALERT);
-
-     if(valid && (HW_Clear != (state = extractSignal("HW_Warning_level",recv).sg_val._int)))
-     {
-
-         value = extractSignal("Headway_measurement",recv).sg_val._int;
-
-        if(HW_Alert == state)
-        {
-          alertsDisplay->activate(AlertTypes::ALERT_HMW_ALERT, value);
-        }
-        else
-        {
-          alertsDisplay->activate(AlertTypes::ALERT_HMW_MONITOR, value);
-        }
-
-     }
-}
-
-void AwsCanRxMsg::pedAlertsParseAndProcess(struct can_frame * recv)
-{
-    switch(extractSignal("PCW_PedDZ",recv).sg_val._int)
-    {
-    case ped_Clear:
-        alertsDisplay->deactivate(AlertTypes::ALERT_PCW);
-        alertsDisplay->deactivate(AlertTypes::ALERT_PDZ);
-        break;
-    case ped_PedDZ:
-        alertsDisplay->deactivate(AlertTypes::ALERT_PCW);
-        alertsDisplay->activate(AlertTypes::ALERT_PDZ);
-        break;
-
-    case ped_PCW:
-        alertsDisplay->deactivate(AlertTypes::ALERT_PDZ);
-        alertsDisplay->activate(AlertTypes::ALERT_PCW);
-
-    default:
-        //skip
-        //NOTE: subject for error alert
-        break;
-    }
-}
-
 
 

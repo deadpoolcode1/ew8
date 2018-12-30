@@ -1,13 +1,19 @@
 {
     "NOTE":"every unique integer value can be used",
     "GraphicItem": [
-        {"enum": "ALERT_FCW", "value": 31},
+        {"enum": "ALERT_FCW", "value": 29},
+        {"enum": "ALERT_PDZ", "value": 30},
+        {"enum": "ALERT_PCW", "value": 31},
         {"enum": "ALERT_LDWOFF", "value": 32},
         {"enum": "ALERT_LDWON", "value": 33, "NOTE":"inverted"},
         {"enum": "ALERT_LLDW","value": 34},
         {"enum": "ALERT_RLDW", "value": 35},
         {"enum": "ALERT_BLINKERS", "value": 36},
-        {"enum": "INFO_QRCODE", "value": 37}
+        {"enum": "ALERT_HMW_ALERT", "value": 37},
+        {"enum": "ALERT_HMW_MONITOR", "value": 38},
+        {"enum": "ALERT_HI_BEAM", "value": 39},
+        {"enum": "ALERT_LOW_BEAM", "value": 40},
+        {"enum": "INFO_QRCODE", "value": 41}
     ],
 
 
@@ -22,14 +28,29 @@
         {
             "protocol": "Aftermarket",
             "signals": [
-
                 {"name": "FCW_on", "action": "ALERT_FCW","type": "GraphicItem"},
                 {"name": "LDW_off", "action": "ALERT_LDWOFF","type": "GraphicItem"},
                 {"name": "LDW_off", "action": ["ALERT_LDWON", "inverted"], "type": "GraphicItem"},
                 {"name": "LLDW_on", "action": "ALERT_LLDW","type": "GraphicItem"},
                 {"name": "RLDW_on", "action": "ALERT_RLDW","type": "GraphicItem"},
                 {"name": "Blinker_Reminder", "action": "ALERT_BLINKERS","type": "GraphicItem"},
-                {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"}
+
+                {"name": "FLA_Armed", "action": "Hi_Low_BeamControl", "type": "Enabler"},
+                {"name": "Hi_Low_BeamControl", "action": "ALERT_HI_BEAM","type": "GraphicItem"},
+                {"name": "Hi_Low_BeamControl", "action": ["ALERT_LOW_BEAM","inverted"],"type": "GraphicItem"},
+
+                {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"},
+
+                {"name": "PCW_PedDZ", "action":"ALERT_PCW", "type":"GraphicItem", "Set": 2},
+                {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem","Set": 1},
+
+
+                {"name": "HW_Warning_level", "action":"ALERT_HMW_ALERT", "type":"GraphicItem", "Set": 2},
+                {"name": "HW_Warning_level", "action":"ALERT_HMW_MONITOR", "type":"GraphicItem","Set": 1},
+
+
+                {"name": "Headway_measurement", "action":"ALERT_HMW_MONITOR", "type":"IntegerArgument","index": 0},
+                {"name": "Headway_measurement", "action":"ALERT_HMW_ALERT", "type":"IntegerArgument","index": 0}
             ]
         }
         ,

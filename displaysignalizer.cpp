@@ -1,6 +1,6 @@
 #include "displaysignalizer.h"
 
-DisplaySignalizer::DisplaySignalizer()
+DisplaySignalizer::DisplaySignalizer(QQuickItem * parent) :  QQuickItem(parent)
 {
 
 }

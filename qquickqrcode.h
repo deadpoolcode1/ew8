@@ -22,7 +22,7 @@ class QQuickQRCode : public QQuickPaintedItem
 
 
 public:
-    QQuickQRCode(QQuickPaintedItem * parentQQuickItem = nullptr);
+    explicit QQuickQRCode(QQuickPaintedItem * parentQQuickItem = nullptr);
     void paint(QPainter * painter);
 
     static void declareQML();

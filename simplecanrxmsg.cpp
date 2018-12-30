@@ -30,19 +30,45 @@ void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
         QString currSignalStr = canSignalsArray[i].name;
 
-        QList<AMJsonSignal> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
-
-        foreach(AMJsonSignal jsonsig, signalsList)
+        //TODO single return point
+        if(itsJsonProtocol->getIsEnabled())
         {
-            if(AMJsonSignal::GraphicItem == jsonsig.type)
+
+
+        QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
+
+        foreach (AMJsonSignal * jsonsig, signalsList)
+        {
+            //TODO single return point
+            if(jsonsig->getIsEnabled())
             {
-                one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig.action),jsonsig.polarity);
-            }
-            else if (AMJsonSignal::StringArgument == jsonsig.type)
+
+            switch(jsonsig->type)
             {
-                argumentSignalProcess(frame, &jsonsig);
+            case AMJsonSignal::GraphicItem:
+
+                one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action),jsonsig->polarity);
+
+                break;
+
+            case AMJsonSignal::StringArgument:
+                argumentSignalProcess(frame, jsonsig);
+                break;
+
+            case AMJsonSignal::Enabler:
+
+                enableSignalProcess(frame, jsonsig);
+
+                break;
+
+            default:
+                qDebug("Usupported Json Signal Type");;
+                break;
             }
         }
+        }
+
+    }
     }
 }
 
@@ -55,6 +81,15 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
     qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), value);
 
     CanStringArgumentsAccumulator::getInstance(jsonsig->action)->insertCharFromSignal(jsonsig->index,value);
+}
+
+void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
+{
+    bool desired = extractSignal(jsonsig->getName().toLatin1(),recv).sg_val._bool;
+
+    bool do_active = (desired == jsonsig->polarity);
+
+    emit jsonsig->enableDisableConnected(do_active);
 }
 
 

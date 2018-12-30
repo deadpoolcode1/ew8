@@ -35,7 +35,7 @@ public:
     void setInactive(void);
 
 protected:
-     explicit SmartItem(quint8 aVisId);
+    explicit SmartItem(quint8 aVisId, QObject * parent = nullptr);
     static SmartItem * smartItemsPool[MAX_SMART_ITEMS_NUM];
     static size_t  smartItemsPoolNumOfObjects;
 

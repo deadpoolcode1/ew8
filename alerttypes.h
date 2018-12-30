@@ -15,31 +15,6 @@ class AlertTypes : public QObject
 public:
     explicit AlertTypes(QObject *parent = nullptr): QObject(parent){}
 
-#if 0
-    //WARNING used in ticks protocol 
-    enum EnHMW
-    {
-        HMW_01 = 0x0,
-        HMW_02 = 0x1,
-        HMW_03 = 0x2,
-        HMW_04 = 0x3,
-        HMW_05 = 0x4,
-        HMW_06 = 0x5,
-        HMW_07 = 0x6,
-        HMW_08 = 0x7,
-        HMW_09 = 0x8,
-        HMW_10 = 0x9,
-        HMW_12 = 0xA,
-        HMW_14 = 0xB,
-        HMW_16 = 0xC,
-        HMW_18 = 0xD,
-        HMW_20 = 0xE,
-        HMW_25 = 0xF,
-        HMW_GR = 0x10,
-    };
-    Q_ENUMS(EnHMW)
-#endif
-
     enum EnSliRegular
     {
         SLI_10 =  0x0,
@@ -68,21 +43,15 @@ public:
 
         //Alert Items:
         ALERT_NONE = 1,
-        ALERT_PDZ = 2,
-        ALERT_PCW = 3,
-        ALERT_HMW_ALERT = 4,
-        ALERT_HMW_MONITOR = 5,
-        ALERT_HI_BEAM = 6,
-        ALERT_LOW_BEAM = 7,
-        ALERT_SLI = 8,
-        ALERT_FORWARD = 9,
-        ALERT_MOTORWAY = 10,
-        ALERT_PLAYGROUND = 11,
-        ALERT_END_ALL_RESTR = 12,
-        ALERT_NO_PASS = 13,
+        ALERT_SLI = 2,
+        ALERT_FORWARD = 3,
+        ALERT_MOTORWAY = 4,
+        ALERT_PLAYGROUND = 5,
+        ALERT_END_ALL_RESTR = 6,
+        ALERT_NO_PASS = 7,
 
         //Smart Items:
-        SMART_BASE   = 14,
+        SMART_BASE   = 8,
         SMART_ANIMAL = SMART_BASE + 1,
         SMART_SEV_WEATHER = SMART_BASE + 2,
         SMART_SLIPPERY = SMART_BASE + 3,

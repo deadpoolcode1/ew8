@@ -4,13 +4,13 @@
 #include "amjsonsignal.h"
 #include "canrxmsg.h"
 #include <QMultiMap>
+#include <QObject>
 
 class AMJsonSignal;
 
-class AMJsonProtocol
+class AMJsonProtocol : public QObject
 {
-
-   Q_GADGET
+   Q_OBJECT
 
 public:
 
@@ -21,23 +21,31 @@ public:
     };
     Q_ENUM(protocol_type_e)
 
-    AMJsonProtocol(QString aName);
+    explicit AMJsonProtocol(QString aName, QObject * parent = nullptr);
 
     void append(AMJsonSignal * signal);
 
     QString getName(void);
 
-    QList<AMJsonSignal> getSignalEntries(QString aName);
+    QList<AMJsonSignal*> getSignalEntries(QString aName);
 
     void setType(QJsonValue typeValue);
     protocol_type_e getType(void);
     QString getTypeQString(void);
 
+     bool getIsEnabled(void){return is_enabled;}
+
+public slots:
+
+    void enableDisableThis(bool OnOff);
 
 private:
     QString name;
     protocol_type_e type;
-    QMultiMap<QString,AMJsonSignal> jsonSignals;
+
+    bool is_enabled;
+
+    QMultiMap<QString,AMJsonSignal*> jsonSignals;
 
 
 };

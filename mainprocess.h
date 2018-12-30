@@ -13,7 +13,7 @@ class MainProcess : public QThread, IAlertDisplay
     Q_OBJECT
 public:
 
-    explicit MainProcess(QObject *aComponentObject);
+    explicit MainProcess(QObject *aComponentObject, QThread * parent = nullptr);
 
     int launchEverything(void);
 

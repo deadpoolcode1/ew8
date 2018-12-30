@@ -10,6 +10,7 @@
 #include <QObject>
 
 class AMJsonProtocol;
+class AMJsonSignal;
 
 class AMSignalsModel
 {
@@ -30,11 +31,11 @@ private:
 
     json_enum_t graphicItemsEnumMap;
 
-    std::vector<AMJsonProtocol> jsonProtocols;
+    QMap<QString,AMJsonProtocol*> jsonProtocols;
 
     void jsonInitGraphicItemEnumMap(void);
 
-
+    QList<AMJsonSignal *> jsonEnablerSignals;
 
     QJsonDocument jsonDocument;
 };

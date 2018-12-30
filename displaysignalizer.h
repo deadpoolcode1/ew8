@@ -8,7 +8,7 @@ class DisplaySignalizer : public QQuickItem
 {
     Q_OBJECT
 public:
-    DisplaySignalizer();
+    DisplaySignalizer(QQuickItem * parent = nullptr);
 
 signals:
     void setVisibleSignal(QVariant valueInt, QVariant valueFrac, QVariant unit);

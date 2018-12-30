@@ -38,7 +38,7 @@
 #include "canrxmsgfactory.h"
 #include "canrxmsg.h"
 
-CanManager::CanManager(IAlertDisplay * alertdisp)
+CanManager::CanManager(IAlertDisplay * alertdisp, QThread * parent) : QThread(parent)
 {
     mydisplays = alertdisp;
     init();

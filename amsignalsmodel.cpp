@@ -102,15 +102,9 @@ qint32 AMSignalsModel::jsonGetGraphicItemEnum(QString jsonEnumItem)
 AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 {
 
-    AMJsonProtocol * ret = nullptr;
+    AMJsonProtocol * ret;
 
-   for(std::vector<AMJsonProtocol>::iterator iter = jsonProtocols.begin();iter != jsonProtocols.end();++iter)
-    {
-        if(iter->getName() ==  aName)
-        {
-            ret =  &*iter;
-        }
-    }
+    ret = jsonProtocols.value(aName,nullptr);
 
     return ret;
 
@@ -217,14 +211,33 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                    amjsg = new AMJsonSignal(sigName, sigAction, false, sigType);
                }
 
+
                amjp->append(amjsg);
+               amjsg->itsProtocol = amjp;
+
+               if(AMJsonSignal::Enabler == amjsg->type)
+               {
+                   //TODO move the Enablers List inside this function
+                   jsonEnablerSignals.append(amjsg);
+               }
         }
 
 
         //insert protocol into Protocols collector.
-        jsonProtocols.push_back(*amjp);
+        jsonProtocols.insert(amjp->getName(),amjp);
 
     }
+
+    //TODO connect enablers to their enabled/disabled targets
+
+    // //////////////////////////////////////
+
+    foreach (AMJsonSignal * enabler, jsonEnablerSignals) {
+
+        enabler->connect2EnabledDisabled(this);
+
+    }
+
 }
 
 
