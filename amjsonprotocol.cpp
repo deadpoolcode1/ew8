@@ -64,8 +64,29 @@ QString AMJsonProtocol::getName(void)
     return name;
 }
 
-void AMJsonProtocol::enableDisableThis(bool onOff)
+void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
 {
-    is_enabled = onOff;
-    qDebug ("Protocol %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
+    if(is_enabled == onOff)
+    {
+        //skip
+    }
+    else
+    {
+        is_enabled = onOff;
+        qDebug ("Protocol %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
+
+        if(alertDisplay&&!is_enabled)
+        {
+            //Turn all Graphic Item off
+            alertDisplay->mutex.lock();
+            foreach (AMJsonSignal * jsonsig , jsonSignals)
+            {
+                if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
+                {
+                    alertDisplay->deactivate(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
+                }
+            }
+            alertDisplay->mutex.unlock();
+        }
+    }
 }

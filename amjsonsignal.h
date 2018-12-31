@@ -8,9 +8,13 @@
 
 #include "amjsonprotocol.h"
 
+#include "ialertdisplay.h"
+
 class AMSignalsModel;
 
 class AMJsonProtocol;
+
+class IAlertDisplay;
 
 class AMJsonSignal: public QObject
 {
@@ -55,11 +59,11 @@ public:
 
 signals:
 
-    void enableDisableConnected(bool OnOff);
+    void enableDisableConnected(bool OnOff, IAlertDisplay * alertDisplay);
 
 public slots:
 
-    void enableDisableThis(bool OnOff);
+    void enableDisableThis(bool OnOff, IAlertDisplay * alertDisplay);
 
 private:
 

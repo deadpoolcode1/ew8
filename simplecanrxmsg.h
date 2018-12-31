@@ -16,16 +16,20 @@ public:
     void ack(CanManager *);
 
     void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
-    void argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
-    void enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
+
 
 protected:
      SimpleCanRxMsg();
 
      //Used for signals that just match to display alerts one-to-one
-     void one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity = true);
+     void one2oneParseAndProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
 
+     void argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
+     void enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
+
+#if 0
      void one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity = true);
+#endif
 
 };
 

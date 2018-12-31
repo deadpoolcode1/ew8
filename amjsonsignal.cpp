@@ -72,23 +72,39 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
          AMJsonProtocol * prot = model->getProtocol(action);
 
          if(prot){
-             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
+             connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),prot,SLOT(enableDisableThis(bool, IAlertDisplay *)));
          }
 
          QList<AMJsonSignal *> jsonSigList = itsProtocol->getSignalEntries(action);
 
          foreach(AMJsonSignal * jsig, jsonSigList)
          {
-             connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
+             connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),jsig,SLOT(enableDisableThis(bool, IAlertDisplay *)));
          }
 
-         emit enableDisableConnected(false);
+         emit enableDisableConnected(false, nullptr);
      }
  }
 
- void AMJsonSignal::enableDisableThis(bool onOff)
+ void AMJsonSignal::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
  {
-     is_enabled = onOff;
-     qDebug ("Signal %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
+     if(is_enabled == onOff)
+     {
+         //skip
+     }
+     else
+     {
+         is_enabled = onOff;
+         qDebug ("Signal %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
+
+         if(alertDisplay&&!is_enabled&&GraphicItem == type)
+         {
+             alertDisplay->mutex.lock();
+             alertDisplay->deactivate(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(action));
+            alertDisplay->mutex.unlock();
+         }
+     }
+
+
  }
 

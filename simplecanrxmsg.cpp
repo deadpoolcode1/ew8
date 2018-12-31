@@ -41,7 +41,7 @@ void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
             {
             case AMJsonSignal::GraphicItem:
 
-                one2oneParseAndProcess(frame,currSignalStr.toLatin1(),(DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action),jsonsig->polarity);
+                one2oneParseAndProcess(frame, jsonsig);
 
                 break;
 
@@ -82,14 +82,18 @@ void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal 
 
     bool do_active = (desired == jsonsig->polarity);
 
-    emit jsonsig->enableDisableConnected(do_active);
+    emit jsonsig->enableDisableConnected(do_active, alertsDisplay);
 }
 
 
 
-void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
+void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
 {
-    bool desired = extractSignal(name,recv).sg_val._bool;
+    DISPLAY_ITEM_ID alert = (DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action);
+
+    bool polarity = jsonsig->polarity;
+
+    bool desired = extractSignal(jsonsig->getName().toLatin1(),recv).sg_val._bool;
 
     bool do_active = (desired == polarity);
 
@@ -105,6 +109,7 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char 
     alertsDisplay->mutex.unlock();
 }
 
+#if 0
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity)
 {
     bool desired = extractSignal(name,recv).sg_val._bool;
@@ -120,4 +125,4 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char 
         *flag = false;
     }
 }
-
+#endif

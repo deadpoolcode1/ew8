@@ -37,7 +37,7 @@ public:
 
 public slots:
 
-    void enableDisableThis(bool OnOff);
+    void enableDisableThis(bool OnOff, IAlertDisplay * alertDisplay);
 
 private:
     QString name;

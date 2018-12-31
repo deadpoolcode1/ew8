@@ -58,7 +58,7 @@ void CanStringArgumentsAccumulator::insertCharFromSignal(size_t anIndex, char aC
 
         ch_result[maxIndex+1] = '\0';
 
-        for (size_t i = 0; i < (maxIndex+1); i++)
+        for (ssize_t i = 0; i < (maxIndex+1); i++)
         {
             ch_result[i] = charactersMap[i];
         }
