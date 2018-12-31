@@ -168,6 +168,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                QString sigType;
                bool polarity = true;
                qint32 sigIndex = -1;
+               qint32 sigTrueValue;
 
                sigName = signal_obj["name"].toString();
 
@@ -192,14 +193,23 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
                sigIndex = signal_obj["index"].toInt(-1);
 
-
                AMJsonSignal * amjsg;
 
                if(polarity)
                {
                    if(-1 == sigIndex)
                    {
-                       amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+                       //TODO verify syntax the signal on DBC side must be boolean
+                       if(signal_obj.find("Set") == signal_obj.end())
+                       {
+                          amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+                       }
+                       else
+                       {
+                          //TODO verify syntax the signal on DBC side must be non-boolean integer
+                          sigTrueValue = signal_obj["Set"].toInt(0);
+                          amjsg = new AMJsonSignal(sigName, sigAction, sigTrueValue, sigType);
+                       }
                    }
                    else
                    {

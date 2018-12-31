@@ -26,6 +26,16 @@
         }
         ,
         {
+            "protocol": "Aftermarket_TSR",
+            "signals":[
+                {"name":"Vision_only_Sign_Type_D1", "action": "INFO_TSR", "type": "EnumItem"},
+                {"name":"Vision_only_Sign_Type_D2", "action": "INFO_TSR", "type": "EnumItem"},
+                {"name":"Vision_only_Sign_Type_D3", "action": "INFO_TSR", "type": "EnumItem"},
+                {"name":"Vision_only_Sign_Type_D4", "action": "INFO_TSR", "type": "EnumItem"}
+            ]
+        }
+        ,
+        {
             "protocol": "Aftermarket",
             "signals": [
                 {"name": "FCW_on", "action": "ALERT_FCW","type": "GraphicItem"},

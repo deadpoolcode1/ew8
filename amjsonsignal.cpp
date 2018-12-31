@@ -14,21 +14,26 @@ class CanStringArgumentsAccumulator;
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
-    init(name, action, true, type, -1);
+    init(name, action, true, type, -1, 0);
 }
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
 {
-     init(name, action, polarity, type, -1);
+     init(name, action, polarity, type, -1, 0);
 }
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
 {
-     init(name, action, true, type, index);
+     init(name, action, true, type, index, 0);
+}
+
+AMJsonSignal::AMJsonSignal(QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
+{
+     init(name, action, true, type, -1, trueValue);
 }
 
 
-void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex)
+void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, qint32 aTrueValue)
 {
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
@@ -46,6 +51,8 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
     is_enabled = true;
 
     itsProtocol = nullptr;
+
+    trueValue = aTrueValue;
 
     if(StringArgument == type)
     {

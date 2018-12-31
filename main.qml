@@ -484,7 +484,7 @@ ApplicationWindow {
                     visible: false;
                     x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/pcw.png";
+                    source:"../images/EWAlerts/pcw-green@2x.png";
                     rotation: 0;
 
                 }
@@ -557,8 +557,8 @@ ApplicationWindow {
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/pdz.png";
-                        rotation: 0;
+                        source:"../images/EWAlerts/pcw-green@2x.png";
+                        rotation: 90;
 
                         SequentialAnimation {
 

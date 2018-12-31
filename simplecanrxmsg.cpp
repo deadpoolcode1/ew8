@@ -76,13 +76,43 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
     CanStringArgumentsAccumulator::getInstance(jsonsig->action)->insertCharFromSignal(jsonsig->index,value);
 }
 
+bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active)
+{
+    sg_var_t sgvar = extractSignal(jsonsig->getName().toLatin1(),recv);
+
+    bool success = true;
+
+    if (sgvar.sg_type == EXT_SG_VAL_TYPE_BOOL)
+    {
+        bool desired = sgvar.sg_val._bool;
+        *do_active = (desired == jsonsig->polarity);
+    }
+    else if (sgvar.sg_type == EXT_SG_VAL_TYPE_INTEGER)
+    {
+        qint32 desired = sgvar.sg_val._int;
+        *do_active = (desired == jsonsig->trueValue);
+    }
+    else
+    {
+        //TODO verify on Json Parsing
+        success = false;
+        qDebug("Warning: On/Off json signals support boolean or integer input only");
+    }
+
+    return success;
+
+}
+
 void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
 {
-    bool desired = extractSignal(jsonsig->getName().toLatin1(),recv).sg_val._bool;
+    bool do_active;
 
-    bool do_active = (desired == jsonsig->polarity);
+    bool success = extractSetUnsetAction(recv,jsonsig, &do_active);
 
-    emit jsonsig->enableDisableConnected(do_active, alertsDisplay);
+    if (success)
+    {
+       emit jsonsig->enableDisableConnected(do_active, alertsDisplay);
+    }
 }
 
 
@@ -91,22 +121,23 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSigna
 {
     DISPLAY_ITEM_ID alert = (DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action);
 
-    bool polarity = jsonsig->polarity;
+    bool do_active;
 
-    bool desired = extractSignal(jsonsig->getName().toLatin1(),recv).sg_val._bool;
+    bool success = extractSetUnsetAction(recv,jsonsig, &do_active);
 
-    bool do_active = (desired == polarity);
-
-    alertsDisplay->mutex.lock();
-    if(do_active)
+    if (success)
     {
-         alertsDisplay->activate(alert);
+        alertsDisplay->mutex.lock();
+        if (do_active)
+        {
+            alertsDisplay->activate(alert);
+        }
+        else
+        {
+            alertsDisplay->deactivate(alert);
+        }
+        alertsDisplay->mutex.unlock();
     }
-    else
-    {
-        alertsDisplay->deactivate(alert);
-    }
-    alertsDisplay->mutex.unlock();
 }
 
 #if 0
