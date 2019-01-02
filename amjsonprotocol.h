@@ -33,7 +33,7 @@ public:
     protocol_type_e getType(void);
     QString getTypeQString(void);
 
-     bool getIsEnabled(void){return is_enabled;}
+     bool getIsEnabled(void) {return disablers.isEmpty();}
 
 public slots:
 
@@ -43,7 +43,7 @@ private:
     QString name;
     protocol_type_e type;
 
-    bool is_enabled;
+    QList<QObject *> disablers;
 
     QMultiMap<QString,AMJsonSignal*> jsonSignals;
 

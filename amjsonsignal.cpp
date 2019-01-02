@@ -14,26 +14,35 @@ class CanStringArgumentsAccumulator;
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
-    init(name, action, true, type, -1, 0);
+    init(name, action, true, type, -1, nullptr);
 }
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
 {
-     init(name, action, polarity, type, -1, 0);
+     init(name, action, polarity, type, -1, nullptr);
 }
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
 {
-     init(name, action, true, type, index, 0);
+     init(name, action, true, type, index, nullptr);
 }
 
 AMJsonSignal::AMJsonSignal(QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
 {
-     init(name, action, true, type, -1, trueValue);
+     QList<qint32> * trueValues = new QList<qint32>;
+
+     trueValues->append(trueValue);
+
+     init(name, action, true, type, -1, trueValues);
+}
+
+AMJsonSignal::AMJsonSignal(QString name, QString action, QList<qint32> * trueValues, QString type, QObject * parent) : QObject(parent)
+{
+     init(name, action, true, type, -1, trueValues);
 }
 
 
-void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, qint32 aTrueValue)
+void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues)
 {
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
@@ -48,11 +57,9 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
     polarity = aPolarity;
 
-    is_enabled = true;
-
     itsProtocol = nullptr;
 
-    trueValue = aTrueValue;
+    trueValues = aTrueValues;
 
     if(StringArgument == type)
     {
@@ -74,11 +81,13 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
  void AMJsonSignal::connect2EnabledDisabled(AMSignalsModel * model)
  {
+     //NOTE:Enablers to enablers are not be permitted, to avoid recoursion.
+     //     Enablers do not enable/disable "itsProtocol".
      if(Enabler == type)
      {
          AMJsonProtocol * prot = model->getProtocol(action);
 
-         if(prot){
+         if(prot&&(prot != this->itsProtocol)){
              connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),prot,SLOT(enableDisableThis(bool, IAlertDisplay *)));
          }
 
@@ -86,7 +95,10 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
          foreach(AMJsonSignal * jsig, jsonSigList)
          {
-             connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),jsig,SLOT(enableDisableThis(bool, IAlertDisplay *)));
+             if(AMJsonSignal::Enabler != jsig->type)
+             {
+                 connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),jsig,SLOT(enableDisableThis(bool, IAlertDisplay *)));
+             }
          }
 
          emit enableDisableConnected(false, nullptr);
@@ -95,23 +107,34 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
  void AMJsonSignal::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
  {
-     if(is_enabled == onOff)
-     {
-         //skip
-     }
-     else
-     {
-         is_enabled = onOff;
-         qDebug ("Signal %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
 
-         if(alertDisplay&&!is_enabled&&GraphicItem == type)
+     bool is_pre_enabled = disablers.isEmpty();
+
+     if (false == onOff && !disablers.contains(sender()))
+     {
+         disablers.append(sender());
+     }
+     else if (true == onOff && disablers.contains(sender()))
+     {
+         disablers.removeOne(sender());
+     }
+
+     bool is_post_enabled = disablers.isEmpty();
+
+     if(is_pre_enabled && !is_post_enabled)
+     {
+         qDebug ("Signal %s is %s",qPrintable(name), "disabled");
+
+         if(alertDisplay&&GraphicItem == type)
          {
              alertDisplay->mutex.lock();
              alertDisplay->deactivate(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(action));
             alertDisplay->mutex.unlock();
          }
      }
-
-
+     else if (!is_pre_enabled && is_post_enabled)
+     {
+         qDebug ("Signal %s is %s",qPrintable(name), "enabled");
+     }
  }
 

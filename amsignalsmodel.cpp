@@ -204,6 +204,20 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                        {
                           amjsg = new AMJsonSignal(sigName, sigAction, sigType);
                        }
+                       else if (signal_obj["Set"].isArray())
+                       {
+                           //TODO verify syntax the signal on DBC side must be non-boolean integer
+                           QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
+
+                           QList<qint32> * sigTrueValues = new QList<qint32>();
+
+                           foreach(QJsonValue value, sigTrueValues_Array)
+                           {
+                               sigTrueValues->append(value.toInt(0));
+                           }
+
+                           amjsg = new AMJsonSignal(sigName, sigAction, sigTrueValues, sigType);
+                       }
                        else
                        {
                           //TODO verify syntax the signal on DBC side must be non-boolean integer

@@ -90,7 +90,7 @@ bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal
     else if (sgvar.sg_type == EXT_SG_VAL_TYPE_INTEGER)
     {
         qint32 desired = sgvar.sg_val._int;
-        *do_active = (desired == jsonsig->trueValue);
+        *do_active = (nullptr != (jsonsig->trueValues))&&(jsonsig->trueValues->contains(desired));
     }
     else
     {

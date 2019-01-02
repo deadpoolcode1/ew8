@@ -41,6 +41,8 @@ public:
 
     AMJsonSignal(QString name, QString action, qint32 trueValue, QString type , QObject * parent = nullptr);
 
+    AMJsonSignal(QString name, QString action, QList<qint32> * trueValues, QString type , QObject * parent = nullptr);
+
     AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent = nullptr);
 
     AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent = nullptr);
@@ -49,13 +51,13 @@ public:
 
     AMJsonProtocol * itsProtocol;
 
-    bool getIsEnabled(void){return is_enabled;}
+    bool getIsEnabled(void) {return disablers.isEmpty();}
 
     //TODO move two following statements to private section
     QString action;
     bool polarity;
     action_type_e type;
-    qint32 trueValue;//actual, when is not boolean
+    QList<qint32> * trueValues;//actual, when is not boolean
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
     //WARNING: connect the enabled signals and protocols
@@ -72,11 +74,11 @@ public slots:
 
 private:
 
-  void init(QString name, QString action, bool polarity, QString type,ssize_t index, qint32 trueValue);
+  void init(QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
 
   QString name;
 
-  bool is_enabled;
+  QList<QObject *> disablers;
 
   static json_action_t jsonSignalActionMap;
 };

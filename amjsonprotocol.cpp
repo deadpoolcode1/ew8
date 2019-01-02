@@ -9,7 +9,6 @@ AMJsonProtocol::AMJsonProtocol(QString aName, QObject * parent) : QObject(parent
     qDebug("JSON: new protocol extracted: %s",qPrintable(aName));
     name = aName;
     type = CAN; //default choise
-    is_enabled = true;
 }
 
 void AMJsonProtocol::append(AMJsonSignal * signal)
@@ -66,16 +65,34 @@ QString AMJsonProtocol::getName(void)
 
 void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
 {
-    if(is_enabled == onOff)
-    {
-        //skip
-    }
-    else
-    {
-        is_enabled = onOff;
-        qDebug ("Protocol %s is %s",qPrintable(name), onOff?"enabled" : "disabled");
 
-        if(alertDisplay&&!is_enabled)
+    bool is_pre_enabled = disablers.isEmpty();
+
+    if (false == onOff && !disablers.contains(sender()))
+    {
+        disablers.append(sender());
+    }
+    else if (true == onOff && disablers.contains(sender()))
+    {
+        disablers.removeOne(sender());
+    }
+
+    bool is_post_enabled = disablers.isEmpty();
+
+    if(is_pre_enabled && !is_post_enabled)
+    {
+        qDebug ("Protocol %s is %s",qPrintable(name), "disabled");
+
+
+        foreach (AMJsonSignal * jsonsig , jsonSignals)
+        {
+            if(AMJsonSignal::Enabler == jsonsig->type)
+            {
+                jsonsig->enableDisableConnected(false, alertDisplay);
+            }
+        }
+
+        if(alertDisplay)
         {
             //Turn all Graphic Item off
             alertDisplay->mutex.lock();
@@ -89,4 +106,9 @@ void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
             alertDisplay->mutex.unlock();
         }
     }
+    else if (!is_pre_enabled && is_post_enabled)
+    {
+        qDebug ("Protocol %s is %s",qPrintable(name), "enabled");
+    }
 }
+

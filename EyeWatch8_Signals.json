@@ -44,7 +44,7 @@
                 {"name": "LLDW_on", "action": "ALERT_LLDW","type": "GraphicItem"},
                 {"name": "RLDW_on", "action": "ALERT_RLDW","type": "GraphicItem"},
                 {"name": "Blinker_Reminder", "action": "ALERT_BLINKERS","type": "GraphicItem"},
-
+                {"name": "time_indicator", "action": "Hi_Low_BeamControl", "type": "Enabler", "Set": [1,2]},
                 {"name": "FLA_Armed", "action": "Hi_Low_BeamControl", "type": "Enabler"},
                 {"name": "Hi_Low_BeamControl", "action": "ALERT_HI_BEAM","type": "GraphicItem"},
                 {"name": "Hi_Low_BeamControl", "action": ["ALERT_LOW_BEAM","inverted"],"type": "GraphicItem"},
@@ -52,7 +52,7 @@
                 {"name": "TSR_enable", "action": "Aftermarket_TSR", "type": "Enabler"},
 
                 {"name": "PCW_PedDZ", "action":"ALERT_PCW", "type":"GraphicItem", "Set": 2},
-                {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem","Set": 1},
+                {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem", "Set": 1},
 
 
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_ALERT", "type":"GraphicItem", "Set": 2},
