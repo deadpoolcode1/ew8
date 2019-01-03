@@ -143,6 +143,17 @@ void MainProcess::updateDisplay(void)
 
 void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
 {
+     activate(alert, false, "", valueInt, valueFrac, unit);
+}
+
+void MainProcess::activate(DISPLAY_ITEM_ID alert, QString arg)
+{
+    activate(alert, true, arg, 0, 0, viu_None);
+}
+
+
+void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
+{
 
     if (AlertTypes::ALERT_NONE == alert)
     {
@@ -173,7 +184,14 @@ void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueF
         }
         else
         {
-            nodeCGRT->setCanEntityArgs(valueInt, valueFrac, unit);
+            if(isStrArg)
+            {
+                nodeCGRT->setCanEntityArg(strArg);
+            }
+            else
+            {
+                nodeCGRT->setCanEntityArgs(valueInt, valueFrac, unit);
+            }
             nodeCGRT->activate();
             flag_tree_changed = true;
         }

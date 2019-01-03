@@ -38,6 +38,7 @@ public:
     void handleMutexGroup();
 
     void setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
+    void setCanEntityArg(QString stringArg);
 
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
@@ -71,6 +72,7 @@ private:
     quint8 valueInt;
     quint8 valueFrac;
     visual_item_unit_t unit;
+    QString stringArg;
 };
 
 

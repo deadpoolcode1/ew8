@@ -5,6 +5,8 @@
 
 #include <QPainter>
 
+#include "defs.h"
+
 class QPainter;
 
 class QQuickQRCode : public QQuickPaintedItem
@@ -53,6 +55,8 @@ private:
 
     QImage * qimage;
     qint32  width;
+
+    DISPLAY_ITEM_ID type;
 
     void snUpdate(QString arg);
 

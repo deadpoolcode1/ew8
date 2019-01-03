@@ -12,40 +12,42 @@
 
 class CanStringArgumentsAccumulator;
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
-    init(name, action, true, type, -1, nullptr);
+    init(protocol, name, action, true, type, -1, nullptr);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
 {
-     init(name, action, polarity, type, -1, nullptr);
+     init(protocol, name, action, polarity, type, -1, nullptr);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
 {
-     init(name, action, true, type, index, nullptr);
+     init(protocol, name, action, true, type, index, nullptr);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
 {
      QList<qint32> * trueValues = new QList<qint32>;
 
      trueValues->append(trueValue);
 
-     init(name, action, true, type, -1, trueValues);
+     init(protocol, name, action, true, type, -1, trueValues);
 }
 
-AMJsonSignal::AMJsonSignal(QString name, QString action, QList<qint32> * trueValues, QString type, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QList<qint32> * trueValues, QString type, QObject * parent) : QObject(parent)
 {
-     init(name, action, true, type, -1, trueValues);
+     init(protocol, name, action, true, type, -1, trueValues);
 }
 
 
-void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues)
 {
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
+
+    itsProtocol = aProtocol;
 
     name = aName;
 
@@ -57,16 +59,12 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
 
     polarity = aPolarity;
 
-    itsProtocol = nullptr;
-
     trueValues = aTrueValues;
 
     if(StringArgument == type)
     {
-#if 0
-        DISPLAY_ITEM_ID action_disp_id = AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(action);
-#endif
-        CanStringArgumentsAccumulator::getInstance(action)->growTriggeringSize(anIndex);
+        DISPLAY_ITEM_ID action_disp_id = itsProtocol->itsModel->jsonGetGraphicItemEnum(action);
+        CanStringArgumentsAccumulator::getInstance(action_disp_id)->growTriggeringSize(anIndex);
     }
 
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
@@ -79,13 +77,13 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
      return name;
  }
 
- void AMJsonSignal::connect2EnabledDisabled(AMSignalsModel * model)
+ void AMJsonSignal::connect2EnabledDisabled()
  {
      //NOTE:Enablers to enablers are not be permitted, to avoid recoursion.
      //     Enablers do not enable/disable "itsProtocol".
      if(Enabler == type)
      {
-         AMJsonProtocol * prot = model->getProtocol(action);
+         AMJsonProtocol * prot = itsProtocol->itsModel->getProtocol(action);
 
          if(prot&&(prot != this->itsProtocol)){
              connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),prot,SLOT(enableDisableThis(bool, IAlertDisplay *)));
@@ -128,7 +126,7 @@ void AMJsonSignal::init(QString aName, QString anAction, bool aPolarity, QString
          if(alertDisplay&&GraphicItem == type)
          {
              alertDisplay->mutex.lock();
-             alertDisplay->deactivate(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(action));
+             alertDisplay->deactivate(itsProtocol->itsModel->jsonGetGraphicItemEnum(action));
             alertDisplay->mutex.unlock();
          }
      }

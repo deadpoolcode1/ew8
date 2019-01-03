@@ -11,7 +11,7 @@ class CanStringArgumentsAccumulator : public QObject
 {
     Q_OBJECT
 public:
-    static CanStringArgumentsAccumulator * getInstance(QString action);
+    static CanStringArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
 
     void growTriggeringSize(ssize_t index);
 
@@ -19,7 +19,7 @@ public:
 
 private:
     explicit CanStringArgumentsAccumulator(QObject *parent = nullptr);
-    static QMap<QString,CanStringArgumentsAccumulator*> objectsMap;
+    static QMap<DISPLAY_ITEM_ID,CanStringArgumentsAccumulator*> objectsMap;
     QMap<size_t,char> charactersMap;
     ssize_t maxIndex;
 

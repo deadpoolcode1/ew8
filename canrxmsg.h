@@ -54,7 +54,6 @@ protected:
   size_t canSignalsArray_size;
 
   QList<AMJsonSignal *> canJsonSignalsListInProcessOrder;
-
 };
 
 #endif // CANRXMSG_H

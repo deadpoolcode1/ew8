@@ -1,5 +1,6 @@
 #include "qquickqrcode.h"
 #include "canstringargumentsaccumulator.h"
+#include "amsignalsmodel.h"
 
 //TODO add win32 support: libqrencode-win32.dll
 #include <qrencode.h>
@@ -7,6 +8,8 @@
 #include <QPainter>
 
 class CanStringArgumentsAccumulator;
+
+class AMSignalsModel;
 
 class QPainter;
 
@@ -18,31 +21,6 @@ void QQuickQRCode::declareQML() {
 
 QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPaintedItem(parentQQuickItem)
 {
-
-    //TODO: instead of hardcoded string "INFO_QRCODE" integer key to be used.
-#if 0
-    //TODO: from rootednodetree.cpp:100, enclose in a function.
-
-    QVariant canEntityTypeQVar = property("canEntityType");
-
-    if(canEntityTypeQVar.isValid())
-    {
-
-        bool isInt = false;
-
-        DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
-
-        if(!isInt){
-            type = (DISPLAY_ITEM_ID)(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(canEntityTypeQVar.toString()));
-        }
-    }
-#endif
-
-    /// //////////////////////
-
-    connect(CanStringArgumentsAccumulator::getInstance("INFO_QRCODE"),SIGNAL(argumentComplete(QString)),
-            this, SLOT(snChangedArgumentSlot(QString)));
-
     margin = 3;
 }
 

@@ -18,6 +18,8 @@ public:
 
     static AMSignalsModel * getInstance(void);
 
+    static QMutex instanceMutex;
+
     qint32 jsonGetGraphicItemEnum(QString jsonEnumItem);
     void jsonInitProtocolsAndSignalsVectors(void);
 
@@ -25,7 +27,7 @@ public:
 
 private:
 
-    AMSignalsModel();
+    explicit AMSignalsModel();
 
     static AMSignalsModel * instance;
 

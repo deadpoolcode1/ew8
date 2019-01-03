@@ -16,6 +16,7 @@ RootedTreeNode::RootedTreeNode(QObject * qobject)
     valueInt = 0;
     valueFrac = 0;
     unit = viu_None;
+    stringArg = "";
 
     convertfromQObject(qobject);
 }
@@ -54,6 +55,12 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 
     this->qmlSignalizer = new DisplaySignalizer();
 
+    if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlotStr(QVariant)")))
+    {
+        QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignalStr(QVariant)),
+                         this->qmlItem, SLOT(setVisibleSlotStr(QVariant)));
+        qDebug("setVisibleSlotStr(QVariant) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(void)")))
     {
@@ -193,6 +200,11 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
+void RootedTreeNode::setCanEntityArg(QString stringArg)
+{
+    this->stringArg = stringArg;
+}
+
  void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
  {
      this->valueInt = valueInt;
@@ -313,20 +325,12 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
 
     if(visible)
     {
-#if 1
+        emit this->qmlSignalizer->setVisibleSignalStr(QVariant(stringArg));
         emit this->qmlSignalizer->setVisibleSignal((QVariant)valueInt,(QVariant)valueFrac,(QVariant)unit);
     }
     else
     {
         emit this->qmlSignalizer->setInvisibleSignal();
-#else
-        QMetaObject::invokeMethod(this->qmlItem,"setVisibleSlot");
-         QMetaObject::invokeMethod(this->qmlItem,"setVisibleSlot",Q_ARG(QVariant, valueInt));
-    }
-    else
-    {
-        QMetaObject::invokeMethod(this->qmlItem,"setInvisibleSlot");
-#endif
     }
     return OK;
 }

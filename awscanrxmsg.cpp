@@ -57,21 +57,6 @@ void AwsCanRxMsg::process(struct can_frame * frame)
    {
        //Extract Fields Block
 
-#if 0
-       bool is_enabled;
-       one2oneParseAndProcess(frame, "TSR_enabbled",&is_enabled);
-
-       if(is_enabled)
-       {
-           TsrCanRxMsg::enable();
-       }
-       else
-       {
-           TsrCanRxMsg::disable();
-       }
-#endif
-
-
        canRxJsonSignalsParseAndProcess(frame);
 
        //

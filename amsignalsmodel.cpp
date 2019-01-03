@@ -10,15 +10,12 @@
 #include "entitytype.h"
 #include "rootedtreenode.h"
 
-//TODO consider replace with QVector, and std::map with QMap
-#include <vector>
-
 AMSignalsModel * AMSignalsModel::instance = nullptr;
+QMutex AMSignalsModel::instanceMutex;
+
 
 AMSignalsModel::AMSignalsModel()
 {
-
-
     QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("signals/EyeWatch8_Signals.json"));
 
     if(jsonFile.exists())
@@ -53,11 +50,14 @@ AMSignalsModel::AMSignalsModel()
 
 AMSignalsModel * AMSignalsModel::getInstance(void)
 {
-
-   if(nullptr == instance)
-   {
-     instance = new AMSignalsModel();
-   }
+    if(nullptr == instance){
+        instanceMutex.lock();
+        if(nullptr == instance)
+        {
+            instance = new AMSignalsModel();
+        }
+        instanceMutex.unlock();
+    }
 
    return instance;
 }
@@ -143,7 +143,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
             protocolNameValue = protocol_obj["protocol"];
         }
 
-        AMJsonProtocol * amjp = new AMJsonProtocol(protocolNameValue.toString());
+        AMJsonProtocol * amjp = new AMJsonProtocol(protocolNameValue.toString(),this);
 
         if(isNotDefaultProtocolType)
         {
@@ -202,7 +202,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                        //TODO verify syntax the signal on DBC side must be boolean
                        if(signal_obj.find("Set") == signal_obj.end())
                        {
-                          amjsg = new AMJsonSignal(sigName, sigAction, sigType);
+                          amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigType);
                        }
                        else if (signal_obj["Set"].isArray())
                        {
@@ -216,23 +216,23 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                                sigTrueValues->append(value.toInt(0));
                            }
 
-                           amjsg = new AMJsonSignal(sigName, sigAction, sigTrueValues, sigType);
+                           amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigTrueValues, sigType);
                        }
                        else
                        {
                           //TODO verify syntax the signal on DBC side must be non-boolean integer
                           sigTrueValue = signal_obj["Set"].toInt(0);
-                          amjsg = new AMJsonSignal(sigName, sigAction, sigTrueValue, sigType);
+                          amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigTrueValue, sigType);
                        }
                    }
                    else
                    {
-                       amjsg = new AMJsonSignal(sigName, sigAction, sigType, sigIndex);
+                       amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigType, sigIndex);
                    }
                }
                else
                {
-                   amjsg = new AMJsonSignal(sigName, sigAction, false, sigType);
+                   amjsg = new AMJsonSignal(amjp, sigName, sigAction, false, sigType);
                }
 
 
@@ -258,7 +258,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
     foreach (AMJsonSignal * enabler, jsonEnablerSignals) {
 
-        enabler->connect2EnabledDisabled(this);
+        enabler->connect2EnabledDisabled();
 
     }
 

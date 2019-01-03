@@ -43,7 +43,8 @@ SOURCES += \
     \
     canstringargumentsaccumulator.cpp \
     seeqsysinfocanrxmsg.cpp \
-    seeqtimeinfocanrxmsg.cpp
+    seeqtimeinfocanrxmsg.cpp \
+    canintargumentsaccumulator.cpp
 
 RESOURCES += qml.qrc
 
@@ -148,7 +149,8 @@ HEADERS += \
     amjsonsignal.h \
     canstringargumentsaccumulator.h \
     seeqsysinfocanrxmsg.h \
-    seeqtimeinfocanrxmsg.h
+    seeqtimeinfocanrxmsg.h \
+    canintargumentsaccumulator.h
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
 

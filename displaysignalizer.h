@@ -12,6 +12,7 @@ public:
 
 signals:
     void setVisibleSignal(QVariant valueInt, QVariant valueFrac, QVariant unit);
+    void setVisibleSignalStr(QVariant);
     void setInvisibleSignal(void);
 
 public slots:

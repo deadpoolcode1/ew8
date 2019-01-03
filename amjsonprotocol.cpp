@@ -4,11 +4,13 @@
 
 #include <QObject>
 
-AMJsonProtocol::AMJsonProtocol(QString aName, QObject * parent) : QObject(parent)
+AMJsonProtocol::AMJsonProtocol(QString aName,  AMSignalsModel * aModel, QObject * parent) : QObject(parent)
 {
     qDebug("JSON: new protocol extracted: %s",qPrintable(aName));
     name = aName;
     type = CAN; //default choise
+
+    itsModel = aModel;
 }
 
 void AMJsonProtocol::append(AMJsonSignal * signal)

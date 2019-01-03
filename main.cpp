@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     //Usage of QML enum in C++:
-     AlertTypes::declareQML();
-     QQuickQRCode::declareQML();
+    AlertTypes::declareQML();
+    QQuickQRCode::declareQML();
 
     QQmlApplicationEngine engine;
 

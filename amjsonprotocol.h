@@ -21,7 +21,7 @@ public:
     };
     Q_ENUM(protocol_type_e)
 
-    explicit AMJsonProtocol(QString aName, QObject * parent = nullptr);
+    explicit AMJsonProtocol(QString aName, AMSignalsModel * aModel, QObject * parent = nullptr);
 
     void append(AMJsonSignal * signal);
 
@@ -34,6 +34,8 @@ public:
     QString getTypeQString(void);
 
      bool getIsEnabled(void) {return disablers.isEmpty();}
+
+     AMSignalsModel * itsModel;
 
 public slots:
 

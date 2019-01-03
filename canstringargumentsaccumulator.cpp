@@ -6,26 +6,26 @@
 
 #include <ctype.h>
 
-QMap<QString,CanStringArgumentsAccumulator*> CanStringArgumentsAccumulator::objectsMap;
+QMap<DISPLAY_ITEM_ID,CanStringArgumentsAccumulator*> CanStringArgumentsAccumulator::objectsMap;
 
 CanStringArgumentsAccumulator::CanStringArgumentsAccumulator(QObject *parent) : QObject(parent)
 {
      maxIndex = -1;
 }
 
-CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(QString action)
+CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPLAY_ITEM_ID graphicItem)
 {
 
     CanStringArgumentsAccumulator * ret = nullptr;
 
-    if(objectsMap.contains(action))
+    if(objectsMap.contains(graphicItem))
     {
-         ret = objectsMap.find(action).value();
+         ret = objectsMap.find(graphicItem).value();
     }
     else
     {
       ret = new CanStringArgumentsAccumulator();
-      objectsMap.insert(action, ret);
+      objectsMap.insert(graphicItem, ret);
     }
 
     return ret;
@@ -66,6 +66,7 @@ void CanStringArgumentsAccumulator::insertCharFromSignal(size_t anIndex, char aC
         result = new QString(ch_result);
 
         argumentComplete(*result);
+
         charactersMap.clear();
     }
 

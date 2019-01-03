@@ -441,7 +441,6 @@ ApplicationWindow {
 
             visible: true
 
-
             //tree instance:
             Item {
                 id: group1
@@ -550,7 +549,7 @@ ApplicationWindow {
 
                         id: alert_pdz;
                         objectName: "PDZ_ALERT"
-                        property int layer_pri: 1
+                        property int layer_pri: 0
                         property string canEntityType: "ALERT_PDZ"
                         opacity: 1.0
 
@@ -581,8 +580,14 @@ ApplicationWindow {
 
                     QRCode{
 
-                        function setVisibleSlot() {visible = true}
+                        function setVisibleSlot() {
+                        //sn = snStrArg;
+                        visible = true
+                        console.log("QR Displayed")
+                        }
                         function setInvisibleSlot() {visible = false}
+
+                        sn: "NA"
 
                          x: main_panel.width/8; y: 20; width: main_panel.width*3/4; height: width;
 
@@ -592,7 +597,7 @@ ApplicationWindow {
 
                         id: alert_qrcode;
                         objectName: "QRCODE"
-                        property int layer_pri: 1
+                        property int layer_pri: 0
                         property string canEntityType: "INFO_QRCODE"
 
                         visible: false;

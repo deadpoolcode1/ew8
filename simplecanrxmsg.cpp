@@ -73,7 +73,7 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
 
     qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), value);
 
-    CanStringArgumentsAccumulator::getInstance(jsonsig->action)->insertCharFromSignal(jsonsig->index,value);
+    CanStringArgumentsAccumulator::getInstance(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action))->insertCharFromSignal(jsonsig->index,value);
 }
 
 bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active)
@@ -129,7 +129,7 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSigna
     {
         alertsDisplay->mutex.lock();
         if (do_active)
-        {
+        {           
             alertsDisplay->activate(alert);
         }
         else

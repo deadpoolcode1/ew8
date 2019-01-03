@@ -37,15 +37,15 @@ public:
     //TODO replace with QMap
     typedef std::map<QString,action_ptr_t> json_action_t;
 
-    AMJsonSignal(QString name, QString action, QString type, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QString type, QObject * parent = nullptr);
 
-    AMJsonSignal(QString name, QString action, qint32 trueValue, QString type , QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, qint32 trueValue, QString type , QObject * parent = nullptr);
 
-    AMJsonSignal(QString name, QString action, QList<qint32> * trueValues, QString type , QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QList<qint32> * trueValues, QString type , QObject * parent = nullptr);
 
-    AMJsonSignal(QString name, QString action, bool polarity, QString type, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type, QObject * parent = nullptr);
 
-    AMJsonSignal(QString name, QString action, QString type, ssize_t index, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QString type, ssize_t index, QObject * parent = nullptr);
 
     QString getName(void);
 
@@ -62,7 +62,7 @@ public:
 
     //WARNING: connect the enabled signals and protocols
     //just after all of them are inserted in the model.
-    void connect2EnabledDisabled(AMSignalsModel * model);
+    void connect2EnabledDisabled();
 
 signals:
 
@@ -74,7 +74,7 @@ public slots:
 
 private:
 
-  void init(QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
+  void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
 
   QString name;
 
