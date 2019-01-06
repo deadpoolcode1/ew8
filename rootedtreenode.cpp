@@ -325,7 +325,9 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
 
     if(visible)
     {
-        emit this->qmlSignalizer->setVisibleSignalStr(QVariant(stringArg));
+        QVariant qstr(stringArg);
+
+        emit this->qmlSignalizer->setVisibleSignalStr(qstr);
         emit this->qmlSignalizer->setVisibleSignal((QVariant)valueInt,(QVariant)valueFrac,(QVariant)unit);
     }
     else

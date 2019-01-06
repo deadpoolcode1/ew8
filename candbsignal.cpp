@@ -180,7 +180,7 @@
 
          case SIGNAL_VALUE_TYPE_INTEGER:
 
-             if(1 ==sg_desired->numOfBits)
+             if(1 == sg_desired->numOfBits || (sg_desired->min == 0 && sg_desired->max == 1))
              {
                  ret.sg_val._bool = (bool)raw_val;
                  ret.sg_type = EXT_SG_VAL_TYPE_BOOL;

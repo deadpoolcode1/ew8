@@ -40,7 +40,7 @@
             "signals": [
 
 
-                {"name": "reserved5", "action": "INFO_QRCODE", "type": "GraphicItem"},
+                {"name": "reserved5", "action": "INFO_QRCODE", "type": "GraphicItem", "Set": 1},
                 {"name": "FCW_on", "action": "ALERT_FCW","type": "GraphicItem"},
                 {"name": "LDW_off", "action": "ALERT_LDWOFF","type": "GraphicItem"},
                 {"name": "LDW_off", "action": ["ALERT_LDWON", "inverted"], "type": "GraphicItem"},

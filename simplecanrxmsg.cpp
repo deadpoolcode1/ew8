@@ -130,7 +130,10 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSigna
         alertsDisplay->mutex.lock();
         if (do_active)
         {           
-            alertsDisplay->activate(alert);
+            if(alert ==  41)
+                alertsDisplay->activate(alert,"Hello!");
+            else
+                alertsDisplay->activate(alert);
         }
         else
         {

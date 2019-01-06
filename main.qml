@@ -580,8 +580,8 @@ ApplicationWindow {
 
                     QRCode{
 
-                        function setVisibleSlot() {
-                        //sn = snStrArg;
+                        function setVisibleSlotStr(snStrArg) {
+                        sn = snStrArg;
                         visible = true
                         console.log("QR Displayed")
                         }
