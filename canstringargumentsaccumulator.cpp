@@ -1,46 +1,41 @@
 #include "canstringargumentsaccumulator.h"
 
+#include "canargumentsaccumulator.h"
+
 #include <QMap>
 
 #include <QStringBuilder>
 
 #include <ctype.h>
 
-QMap<DISPLAY_ITEM_ID,CanStringArgumentsAccumulator*> CanStringArgumentsAccumulator::objectsMap;
+const char * CanStringArgumentsAccumulator::argumentsTypeName = "String";
 
-CanStringArgumentsAccumulator::CanStringArgumentsAccumulator(QObject *parent) : QObject(parent)
-{
-     maxIndex = -1;
-}
+CanStringArgumentsAccumulator::CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent) : CanArgumentsAccumulator(parent)
+{}
 
 CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPLAY_ITEM_ID graphicItem)
 {
 
     CanStringArgumentsAccumulator * ret = nullptr;
 
-    if(objectsMap.contains(graphicItem))
+    CanArgumentsAccumulator * generalInstance;
+
+    if(nullptr == (generalInstance = getExistingInstance(graphicItem)))
     {
-         ret = objectsMap.find(graphicItem).value();
+        ret = new CanStringArgumentsAccumulator();
+        objectsMap.insert(graphicItem, ret);
     }
-    else
+    else if (generalInstance->getArgumentsTypeName() == argumentsTypeName)
     {
-      ret = new CanStringArgumentsAccumulator();
-      objectsMap.insert(graphicItem, ret);
+        ret = (CanStringArgumentsAccumulator *) generalInstance;
     }
+
 
     return ret;
 }
 
-void CanStringArgumentsAccumulator::growTriggeringSize(ssize_t anIndex)
-{
-    if (maxIndex < anIndex)
-    {
-        maxIndex = anIndex;
-    }
 
-}
-
-void CanStringArgumentsAccumulator::insertCharFromSignal(size_t anIndex, char aChar)
+void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 aChar)
 {
 
     QString * result =   nullptr;
@@ -50,7 +45,7 @@ void CanStringArgumentsAccumulator::insertCharFromSignal(size_t anIndex, char aC
         aChar = 'X';
     }
 
-    charactersMap.insert(anIndex, aChar);
+    charactersMap.insert(anIndex, (char)aChar);
 
     if ((maxIndex +1)== charactersMap.count())
     {

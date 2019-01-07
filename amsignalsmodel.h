@@ -39,6 +39,10 @@ private:
 
     QList<AMJsonSignal *> jsonEnablerSignals;
 
+    //NOTE: for later one 2 one connecting
+    QMap<QString,AMJsonSignal *> jsonGraphicItemSignals;
+    QList<AMJsonSignal *> jsonArgumentSignals;
+
     QJsonDocument jsonDocument;
 };
 

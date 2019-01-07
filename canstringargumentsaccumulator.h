@@ -7,21 +7,27 @@
 #include <QObject>
 #include <QVector>
 
-class CanStringArgumentsAccumulator : public QObject
+#include "canargumentsaccumulator.h"
+
+class CanArgumentsAccumulator;
+
+class CanStringArgumentsAccumulator : public CanArgumentsAccumulator
 {
     Q_OBJECT
 public:
     static CanStringArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
 
-    void growTriggeringSize(ssize_t index);
+    void insertValueFromSignal(size_t anIndex, qint8 aChar);
 
-    void insertCharFromSignal(size_t anIndex, char aChar);
+    virtual const char * getArgumentsTypeName() {return argumentsTypeName;}
+
 
 private:
-    explicit CanStringArgumentsAccumulator(QObject *parent = nullptr);
-    static QMap<DISPLAY_ITEM_ID,CanStringArgumentsAccumulator*> objectsMap;
+    static const char * argumentsTypeName;
+
+    explicit CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
+
     QMap<size_t,char> charactersMap;
-    ssize_t maxIndex;
 
 signals:
 

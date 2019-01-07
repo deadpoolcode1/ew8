@@ -4,6 +4,8 @@
 
 #include "canstringargumentsaccumulator.h"
 
+#include "canintargumentsaccumulator.h"
+
 #include <qdebug.h>
 
 #include <QMetaEnum>
@@ -11,6 +13,7 @@
 #include <QObject>
 
 class CanStringArgumentsAccumulator;
+class CanIntArgumentsAccumulator;
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
@@ -46,6 +49,8 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 {
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
+
+    hasArguments = false;
 
     itsProtocol = aProtocol;
 
@@ -135,4 +140,49 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          qDebug ("Signal %s is %s",qPrintable(name), "enabled");
      }
  }
+
+ void AMJsonSignal::connect2Arguments(AMJsonSignal * argumentSignal)
+ {
+
+     if(!hasArguments)
+     {
+         if (argumentSignal->type == AMJsonSignal::IntArgument)
+         {
+
+
+             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(itsProtocol->itsModel->jsonGetGraphicItemEnum(argumentSignal->action));
+             if(intAcc)
+             {
+                 connect(intAcc, SIGNAL(argumentComplete(qint8,qint8,qint8)),this,SLOT(argumentComplete(qint8,qint8,qint8)));
+                 hasArguments = true;
+                 argType = IntArgument;
+             }
+         }
+         else if(argumentSignal->type == AMJsonSignal::StringArgument)
+         {
+             CanStringArgumentsAccumulator * strAcc = CanStringArgumentsAccumulator::getInstance(itsProtocol->itsModel->jsonGetGraphicItemEnum(argumentSignal->action));
+
+             if(strAcc)
+             {
+                 connect(strAcc, SIGNAL(argumentComplete(QString)),this,SLOT(argumentComplete(QString)));
+                 hasArguments = true;
+                 argType = StringArgument;
+             }
+
+         }
+     }
+
+ }
+
+
+ void AMJsonSignal::argumentComplete(QString anArg)
+ {
+
+ }
+
+ void AMJsonSignal::argumentComplete(qint8 intArg, qint8 fracArg, qint8 unitArg)
+ {
+
+ }
+
 

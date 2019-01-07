@@ -60,9 +60,14 @@ public:
     QList<qint32> * trueValues;//actual, when is not boolean
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
+
     //WARNING: connect the enabled signals and protocols
     //just after all of them are inserted in the model.
     void connect2EnabledDisabled();
+
+    //TODO: For code reliability, verify that is not connected more than once!
+    //NOTE: graphicItem signal appears at most once for one DISPLAY_GRAPHIC_ITEM.
+    void connect2Arguments(AMJsonSignal * argumentSignal);
 
 signals:
 
@@ -72,7 +77,14 @@ public slots:
 
     void enableDisableThis(bool OnOff, IAlertDisplay * alertDisplay);
 
+    void argumentComplete(qint8,qint8,qint8);
+    void argumentComplete(QString);
+
 private:
+
+  bool hasArguments;
+
+  action_type_e argType;
 
   void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
 

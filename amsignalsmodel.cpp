@@ -4,11 +4,20 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include <QObject>
+
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
 
 #include "entitytype.h"
 #include "rootedtreenode.h"
+
+#include "canstringargumentsaccumulator.h"
+#include "canintargumentsaccumulator.h"
+
+
+class CanIntArgumentsAccumulator;
+class CanStringArgumentsAccumulator;
 
 AMSignalsModel * AMSignalsModel::instance = nullptr;
 QMutex AMSignalsModel::instanceMutex;
@@ -239,10 +248,30 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                amjp->append(amjsg);
                amjsg->itsProtocol = amjp;
 
-               if(AMJsonSignal::Enabler == amjsg->type)
+
+               switch (amjsg->type)
                {
-                   //TODO move the Enablers List inside this function
+               case AMJsonSignal::Enabler:
+
                    jsonEnablerSignals.append(amjsg);
+
+                   break;
+
+               case AMJsonSignal::GraphicItem:
+
+                   jsonGraphicItemSignals.insert(amjsg->action, amjsg);
+
+                   break;
+
+               case AMJsonSignal::StringArgument:
+               case AMJsonSignal::IntArgument:
+
+                   jsonArgumentSignals.append(amjsg);
+
+                   break;
+                default:
+                   /* skip*/
+                   break;
                }
         }
 
@@ -256,12 +285,25 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
     // //////////////////////////////////////
 
-    foreach (AMJsonSignal * enabler, jsonEnablerSignals) {
+    foreach (AMJsonSignal * enabler, jsonEnablerSignals)
+    {
 
         enabler->connect2EnabledDisabled();
 
     }
 
+    foreach (AMJsonSignal * argument, jsonArgumentSignals)
+    {
+        QMap<QString,AMJsonSignal *>::iterator it = jsonGraphicItemSignals.find(argument->action);
+
+        if(it != jsonGraphicItemSignals.end())
+        {
+            AMJsonSignal *jsonsig = it.value();
+            jsonsig->connect2Arguments(argument);
+
+            jsonGraphicItemSignals.remove(argument->action);
+        }
+    }
 }
 
 

@@ -71,9 +71,9 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
     //TODO review this casting
     value = (char)(extractSignal((jsonsig->getName()).toLatin1(),recv).sg_val._int & 0xFF);
 
-    qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), value);
+    qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), (qint8) value);
 
-    CanStringArgumentsAccumulator::getInstance(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action))->insertCharFromSignal(jsonsig->index,value);
+    CanStringArgumentsAccumulator::getInstance(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action))->insertValueFromSignal(jsonsig->index,value);
 }
 
 bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active)
