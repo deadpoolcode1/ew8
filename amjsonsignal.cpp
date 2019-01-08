@@ -6,6 +6,8 @@
 
 #include "canintargumentsaccumulator.h"
 
+#include "graphicitemsenummap.h"
+
 #include <qdebug.h>
 
 #include <QMetaEnum>
@@ -68,7 +70,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     if(StringArgument == type)
     {
-        DISPLAY_ITEM_ID action_disp_id = itsProtocol->itsModel->jsonGetGraphicItemEnum(action);
+        DISPLAY_ITEM_ID action_disp_id = GraphicItemsEnumMap::getId(action);
         CanStringArgumentsAccumulator::getInstance(action_disp_id)->growTriggeringSize(anIndex);
     }
 
@@ -131,7 +133,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          if(alertDisplay&&GraphicItem == type)
          {
              alertDisplay->mutex.lock();
-             alertDisplay->deactivate(itsProtocol->itsModel->jsonGetGraphicItemEnum(action));
+             alertDisplay->deactivate(GraphicItemsEnumMap::getId(action));
             alertDisplay->mutex.unlock();
          }
      }
@@ -150,7 +152,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          {
 
 
-             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(itsProtocol->itsModel->jsonGetGraphicItemEnum(argumentSignal->action));
+             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(argumentSignal->action));
              if(intAcc)
              {
                  connect(intAcc, SIGNAL(argumentComplete(qint8,qint8,qint8)),this,SLOT(argumentComplete(qint8,qint8,qint8)));
@@ -160,7 +162,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          }
          else if(argumentSignal->type == AMJsonSignal::StringArgument)
          {
-             CanStringArgumentsAccumulator * strAcc = CanStringArgumentsAccumulator::getInstance(itsProtocol->itsModel->jsonGetGraphicItemEnum(argumentSignal->action));
+             CanStringArgumentsAccumulator * strAcc = CanStringArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(argumentSignal->action));
 
              if(strAcc)
              {

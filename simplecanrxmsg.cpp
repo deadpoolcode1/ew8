@@ -5,6 +5,8 @@
 
 #include "canstringargumentsaccumulator.h"
 
+#include "graphicitemsenummap.h"
+
 class CanStringArgumentsAccumulator;
 
 class CanManager;
@@ -73,7 +75,7 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
 
     qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), (qint8) value);
 
-    CanStringArgumentsAccumulator::getInstance(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action))->insertValueFromSignal(jsonsig->index,value);
+    CanStringArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(jsonsig->action))->insertValueFromSignal(jsonsig->index,value);
 }
 
 bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active)
@@ -119,7 +121,7 @@ void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal 
 
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
 {
-    DISPLAY_ITEM_ID alert = (DISPLAY_ITEM_ID)AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action);
+    DISPLAY_ITEM_ID alert = GraphicItemsEnumMap::getId(jsonsig->action);
 
     bool do_active;
 

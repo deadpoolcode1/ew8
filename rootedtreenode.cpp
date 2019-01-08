@@ -5,6 +5,8 @@
 #include "layerspriorityq.h"
 #include "amsignalsmodel.h"
 
+#include "graphicitemsenummap.h"
+
 // map initialization of EntityType should be done here for some magic reason...
 EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
 
@@ -114,7 +116,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
 
         if(!isInt){
-            type = (DISPLAY_ITEM_ID)(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(canEntityTypeQVar.toString()));
+            type = (DISPLAY_ITEM_ID)GraphicItemsEnumMap::getId(canEntityTypeQVar.toString());
         }
 
         if (type != AlertTypes::QtQG) // no link between groups and alert types!

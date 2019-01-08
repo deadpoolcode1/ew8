@@ -15,6 +15,8 @@
 #include "canstringargumentsaccumulator.h"
 #include "canintargumentsaccumulator.h"
 
+#include "amjsonconfigreader.h"
+
 
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
@@ -25,36 +27,7 @@ QMutex AMSignalsModel::instanceMutex;
 
 AMSignalsModel::AMSignalsModel()
 {
-    QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("signals/EyeWatch8_Signals.json"));
-
-    if(jsonFile.exists())
-    {
-        qDebug ("JSON file exists");
-        if(jsonFile.open(QIODevice::ReadOnly))
-        {
-            qDebug("signals JSON scheme  successfully found and open.");
-
-            //TODO: evaluate json consistency
-
-
-            jsonDocument = QJsonDocument::fromJson(jsonFile.readAll());
-            jsonFile.close();
-
-            //End of file usage
-
-        }
-
-        jsonInitGraphicItemEnumMap();
-
-        jsonInitProtocolsAndSignalsVectors();
-    }
-    else
-    {
-        qDebug("signals JSON scheme association failed.");
-        //TODO use some default scheme
-        //TODO Error Alert
-    }
-
+    jsonInitProtocolsAndSignalsVectors();
 }
 
 AMSignalsModel * AMSignalsModel::getInstance(void)
@@ -69,43 +42,6 @@ AMSignalsModel * AMSignalsModel::getInstance(void)
     }
 
    return instance;
-}
-
-
-void AMSignalsModel::jsonInitGraphicItemEnumMap(void)
-{
-    QJsonObject jsonObject = jsonDocument.object();
-
-    QJsonArray jsonArray = jsonObject["GraphicItem"].toArray();
-
-
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
-        qDebug("JSON: %s",  qPrintable(obj["enum"].toString()));
-        qDebug("JSON: %d",  obj["value"].toInt());
-
-        graphicItemsEnumMap.insert(std::pair<QString, qint32>(obj["enum"].toString(),obj["value"].toInt()));
-
-        //TODO verify that those values are presented also in JSON signals
-        //TODO remove hardcoded ALERTS
-        EntityType::generateSingleType((DISPLAY_ITEM_ID)obj["value"].toInt());
-    }
-}
-
-qint32 AMSignalsModel::jsonGetGraphicItemEnum(QString jsonEnumItem)
-{
-    qint32 ret = -1;
-
-    json_enum_t::iterator iter;
-
-    iter = graphicItemsEnumMap.find(jsonEnumItem);
-
-    if(iter != graphicItemsEnumMap.end())
-    {
-        ret = iter->second;
-    }
-
-    return ret;
 }
 
 AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
@@ -123,8 +59,7 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
 
-    QJsonObject jsonObject = jsonDocument.object();
-
+    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
     QJsonArray jsonArray = jsonObject["Protocols"].toArray();
 
     foreach (const QJsonValue & value, jsonArray) {

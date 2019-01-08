@@ -2,6 +2,8 @@
 
 #include "amjsonsignal.h"
 
+#include "graphicitemsenummap.h"
+
 #include <QObject>
 
 AMJsonProtocol::AMJsonProtocol(QString aName,  AMSignalsModel * aModel, QObject * parent) : QObject(parent)
@@ -102,7 +104,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
             {
                 if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
                 {
-                    alertDisplay->deactivate(AMSignalsModel::getInstance()->jsonGetGraphicItemEnum(jsonsig->action));
+                    alertDisplay->deactivate(GraphicItemsEnumMap::getId(jsonsig->action));
                 }
             }
             alertDisplay->mutex.unlock();

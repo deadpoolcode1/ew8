@@ -20,7 +20,6 @@ public:
 
     static QMutex instanceMutex;
 
-    qint32 jsonGetGraphicItemEnum(QString jsonEnumItem);
     void jsonInitProtocolsAndSignalsVectors(void);
 
     AMJsonProtocol * getProtocol(QString aName);
@@ -31,19 +30,13 @@ private:
 
     static AMSignalsModel * instance;
 
-    json_enum_t graphicItemsEnumMap;
-
     QMap<QString,AMJsonProtocol*> jsonProtocols;
-
-    void jsonInitGraphicItemEnumMap(void);
 
     QList<AMJsonSignal *> jsonEnablerSignals;
 
     //NOTE: for later one 2 one connecting
     QMap<QString,AMJsonSignal *> jsonGraphicItemSignals;
     QList<AMJsonSignal *> jsonArgumentSignals;
-
-    QJsonDocument jsonDocument;
 };
 
 #endif // AMSIGNALSMODEL_H

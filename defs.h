@@ -12,7 +12,7 @@
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else
 //Enables usage of JSON enums unlisted in C++
-#    define DISPLAY_ITEM_ID qint32
+    typedef qint32 DISPLAY_ITEM_ID;
 #endif
 
 #ifdef WIN32
