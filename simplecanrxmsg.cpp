@@ -113,7 +113,7 @@ void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal 
 
     if (success)
     {
-       emit jsonsig->enableDisableConnected(do_active, alertsDisplay);
+       emit jsonsig->enableDisableConnected(do_active);
     }
 }
 
@@ -121,27 +121,20 @@ void SimpleCanRxMsg:: enableSignalProcess(struct can_frame * recv, AMJsonSignal 
 
 void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSignal * jsonsig)
 {
-    DISPLAY_ITEM_ID alert = GraphicItemsEnumMap::getId(jsonsig->action);
-
     bool do_active;
 
     bool success = extractSetUnsetAction(recv,jsonsig, &do_active);
 
     if (success)
     {
-        alertsDisplay->mutex.lock();
         if (do_active)
         {           
-            if(alert ==  41)
-                alertsDisplay->activate(alert,"Hello!");
-            else
-                alertsDisplay->activate(alert);
+            jsonsig->activate();
         }
         else
         {
-            alertsDisplay->deactivate(alert);
+            jsonsig->deactivate();
         }
-        alertsDisplay->mutex.unlock();
     }
 }
 

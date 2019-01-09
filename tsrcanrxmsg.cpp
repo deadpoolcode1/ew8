@@ -81,15 +81,7 @@ void TsrCanRxMsg::process(struct can_frame * frame)
 
                //End of extract fields block
 
-               alertsDisplay->mutex.lock();
-               //Activation/Deactivation Block
                qDebug("TSR Can Rx Msg with new info processed @%s:%d", __func__, __LINE__);
-
-
-               //TODO set simple items
-
-               //End of Activation/Deactivation Block
-               alertsDisplay->mutex.unlock();
 
                memcpy(&prev_frame, frame, sizeof(struct can_frame));
            }
@@ -154,7 +146,7 @@ void TsrCanRxMsg::sliStateParseAndProcess(struct can_frame * prev, struct can_fr
                 {
                     if(sign_prev == tsr_alerts_table[k].hexcode)
                     {
-                        alertsDisplay->deactivate(tsr_alerts_table[k].alert);
+                        itsJsonProtocol->itsModel->getItsCanManager()->getItsDisplay()->deactivate(tsr_alerts_table[k].alert);
                         k = tsr_alerts_table_size;
                     }
                 }
@@ -200,7 +192,7 @@ void TsrCanRxMsg::sliStateParseAndProcess(struct can_frame * prev, struct can_fr
                 {
                     if(sign_recv == tsr_alerts_table[k].hexcode)
                     {
-                        alertsDisplay->activate(tsr_alerts_table[k].alert, tsr_alerts_table[k].value);
+                        itsJsonProtocol->itsModel->getItsCanManager()->getItsDisplay()->activate(tsr_alerts_table[k].alert, tsr_alerts_table[k].value);
                         k = tsr_alerts_table_size;
                     }
                 }

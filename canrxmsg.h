@@ -22,7 +22,6 @@ public:
 
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel);
     static CanRxMsg * getMsgByCanId(can_id_t cid);
-    void setDisplay(IAlertDisplay *anAlertDisplay);
 
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
@@ -46,9 +45,6 @@ protected:
   CanRxMsg();
 
   can_id_t getCanID(void);
-
-
-  IAlertDisplay * alertsDisplay;
 
   AMJsonProtocol * itsJsonProtocol;
 

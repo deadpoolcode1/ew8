@@ -52,9 +52,13 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
 
+    isActivated = false;
+
     hasArguments = false;
 
     itsProtocol = aProtocol;
+    itsDisplay =  aProtocol->itsModel->getItsCanManager()->getItsDisplay();
+
 
     name = aName;
 
@@ -93,7 +97,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          AMJsonProtocol * prot = itsProtocol->itsModel->getProtocol(action);
 
          if(prot&&(prot != this->itsProtocol)){
-             connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),prot,SLOT(enableDisableThis(bool, IAlertDisplay *)));
+             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
          }
 
          QList<AMJsonSignal *> jsonSigList = itsProtocol->getSignalEntries(action);
@@ -106,11 +110,44 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
              }
          }
 
-         emit enableDisableConnected(false, nullptr);
+         emit enableDisableConnected(false);
      }
  }
 
- void AMJsonSignal::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
+ void AMJsonSignal::activate(void)
+ {
+     if(GraphicItem == type)
+     {
+         //TODO: request active arguments
+
+         if(isActivated)
+         {
+             //reactivate on arguments change
+         }
+         else
+         {
+             itsDisplay->mutex.lock();
+             itsDisplay->activate(GraphicItemsEnumMap::getId(action));
+             itsDisplay->mutex.unlock();
+
+             isActivated = true;
+         }
+     }
+ }
+
+ void AMJsonSignal::deactivate(void)
+ {
+     if(GraphicItem == type && isActivated)
+     {
+         itsDisplay->mutex.lock();
+         itsDisplay->deactivate(GraphicItemsEnumMap::getId(action));
+         itsDisplay->mutex.unlock();
+
+         isActivated = false;
+     }
+ }
+
+ void AMJsonSignal::enableDisableThis(bool onOff)
  {
 
      bool is_pre_enabled = disablers.isEmpty();
@@ -129,13 +166,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      if(is_pre_enabled && !is_post_enabled)
      {
          qDebug ("Signal %s is %s",qPrintable(name), "disabled");
-
-         if(alertDisplay&&GraphicItem == type)
-         {
-             alertDisplay->mutex.lock();
-             alertDisplay->deactivate(GraphicItemsEnumMap::getId(action));
-            alertDisplay->mutex.unlock();
-         }
+         deactivate();
      }
      else if (!is_pre_enabled && is_post_enabled)
      {
@@ -185,6 +216,11 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
  void AMJsonSignal::argumentComplete(qint8 intArg, qint8 fracArg, qint8 unitArg)
  {
 
+ }
+
+ bool AMJsonSignal::getIsActived(void)
+ {
+     return isActivated;
  }
 
 

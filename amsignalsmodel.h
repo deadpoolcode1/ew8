@@ -6,21 +6,25 @@
 #include <defs.h>
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
+#include "canmanager.h"
 
 #include <QObject>
 
 class AMJsonProtocol;
 class AMJsonSignal;
+class CanManager;
 
 class AMSignalsModel
 {
 public:
 
-    explicit AMSignalsModel();
+    explicit AMSignalsModel(CanManager * aManager);
 
     void jsonInitProtocolsAndSignalsVectors(void);
 
     AMJsonProtocol * getProtocol(QString aName);
+
+    CanManager * getItsCanManager(void);
 
 private:
 
@@ -31,6 +35,7 @@ private:
     //NOTE: for later one 2 one connecting
     QMap<QString,AMJsonSignal *> jsonGraphicItemSignals;
     QList<AMJsonSignal *> jsonArgumentSignals;
+    CanManager * itsCanManager;
 };
 
 #endif // AMSIGNALSMODEL_H

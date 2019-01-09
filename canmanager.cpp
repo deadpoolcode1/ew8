@@ -40,10 +40,15 @@
 
 CanManager::CanManager(IAlertDisplay * alertdisp, QThread * parent) : QThread(parent)
 {
-    mydisplays = alertdisp;
+    itsDisplay = alertdisp;
     init();
     connect(this, SIGNAL(started()),SLOT(process()));
 }
+
+ IAlertDisplay * CanManager::getItsDisplay(void)
+ {
+    return itsDisplay;
+ }
 
 
 void CanManager::init(void)
@@ -52,9 +57,9 @@ void CanManager::init(void)
 
     iCanRxMsgFactory = new CanRxMsgFactory();
 
-    amSignalsModel = new AMSignalsModel();
+    amSignalsModel = new AMSignalsModel(this);
 
-    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, mydisplays, amSignalsModel);
+    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, itsDisplay, amSignalsModel);
 
     for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
     {

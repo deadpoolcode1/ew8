@@ -56,7 +56,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
        //Activation/Deactivation Block
        SmartItem * smarti = SmartItem::getInstance(recv_fields.visId);
 
-       smarti->setDisplay(alertsDisplay);
+       smarti->setDisplay(itsJsonProtocol->itsModel->getItsCanManager()->getItsDisplay());
 
 
        SmartItem::smart_params_t smart_params;

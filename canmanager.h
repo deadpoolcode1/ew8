@@ -33,6 +33,7 @@ public:
     CanManager(IAlertDisplay * alertdisp, QThread * parent = nullptr);
     void read_frame(void);
     void write_frame(struct can_frame * frame_ptr);
+    IAlertDisplay * getItsDisplay(void);
 
 
 public slots:
@@ -61,7 +62,7 @@ private:
     canStatus  stat;
 #endif
 
-    IAlertDisplay * mydisplays;
+    IAlertDisplay * itsDisplay;
     ICanRxMsgFactory * iCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
 

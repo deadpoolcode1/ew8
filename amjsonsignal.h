@@ -1,7 +1,6 @@
 #ifndef AMJSONSIGNAL_H
 #define AMJSONSIGNAL_H
 
-#include <map>
 #include "defs.h"
 
 #include <QObject>
@@ -71,18 +70,30 @@ public:
 
 signals:
 
-    void enableDisableConnected(bool OnOff, IAlertDisplay * alertDisplay);
+    void enableDisableConnected(bool OnOff);
 
 public slots:
 
-    void enableDisableThis(bool OnOff, IAlertDisplay * alertDisplay);
+    void enableDisableThis(bool OnOff);
 
     void argumentComplete(qint8,qint8,qint8);
     void argumentComplete(QString);
 
+    //WARNING: next three fields actual for GraphicItemSignal
+    bool getIsActived(void);
+    void deactivate(void);
+
+    //NOTE: reactivates on new args
+    void activate(void);
+
 private:
 
   bool hasArguments;
+
+  //NOTE: Two next fields are actual for GraphicItem Signals
+  //TODO: Move to GraphicItemSignal on future SRP split
+  bool isActivated;
+  IAlertDisplay * itsDisplay;
 
   action_type_e argType;
 

@@ -92,7 +92,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
         {
             if(AMJsonSignal::Enabler == jsonsig->type)
             {
-                jsonsig->enableDisableConnected(false, alertDisplay);
+                jsonsig->enableDisableConnected(false);
             }
         }
 

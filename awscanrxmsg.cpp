@@ -57,24 +57,9 @@ void AwsCanRxMsg::process(struct can_frame * frame)
 
        canRxJsonSignalsParseAndProcess(frame);
 
-       //
-
-
-
-       //////////////////////////////////////
-
-
        //End of extract fields block
 
-       alertsDisplay->mutex.lock();
-       //Activation/Deactivation Block
        qDebug("AWS Can Rx Msg with new info processed @%s:%d", __func__, __LINE__);
-
-
-       //TODO set simple items
-
-       //End of Activation/Deactivation Block
-       alertsDisplay->mutex.unlock();
 
        memcpy(&prev_frame, frame, sizeof(struct can_frame));
    }

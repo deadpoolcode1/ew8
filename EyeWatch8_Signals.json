@@ -92,6 +92,13 @@
                 {"name":"SeeQSerialNumber4","action":"INFO_QRCODE", "type":"StringArgument","index": 15}
             ]
         }
+        ,
+        {
+            "protocol": "SmartADAS",
+            "signals": [
 
+            ]
+        }
     ]
+
 }

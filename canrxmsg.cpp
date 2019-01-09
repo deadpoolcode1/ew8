@@ -27,11 +27,6 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     initCanJsonSignalsListInProcessOrder();
 }
 
-void CanRxMsg::setDisplay(IAlertDisplay *anAlertDisplay)
-{
-    alertsDisplay = anAlertDisplay;
-}
-
 void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel)
 {
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
@@ -43,7 +38,6 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDis
             CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic, amSignalsModel);
             if(nullptr != CanRxMsgsPool[canRxMsgNumOfObjects])
             {
-                CanRxMsgsPool[canRxMsgNumOfObjects]->setDisplay(anAlertDisplay);
                 canRxMsgNumOfObjects++;
             }
         }

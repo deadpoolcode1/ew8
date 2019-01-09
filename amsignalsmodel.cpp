@@ -17,13 +17,21 @@
 
 #include "amjsonconfigreader.h"
 
+#include "canmanager.h"
+
 
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
 
-AMSignalsModel::AMSignalsModel()
+AMSignalsModel::AMSignalsModel(CanManager * aCanManager)
 {
+    itsCanManager =  aCanManager;
     jsonInitProtocolsAndSignalsVectors();
+}
+
+CanManager * AMSignalsModel::getItsCanManager(void)
+{
+    return itsCanManager;
 }
 
 AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
