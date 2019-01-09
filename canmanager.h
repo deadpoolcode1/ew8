@@ -63,7 +63,7 @@ private:
 
     IAlertDisplay * mydisplays;
     ICanRxMsgFactory * iCanRxMsgFactory;
-    AMSignalsModel * signalsModel;
+    AMSignalsModel * amSignalsModel;
 
 };
 

@@ -21,27 +21,9 @@
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
 
-AMSignalsModel * AMSignalsModel::instance = nullptr;
-QMutex AMSignalsModel::instanceMutex;
-
-
 AMSignalsModel::AMSignalsModel()
 {
     jsonInitProtocolsAndSignalsVectors();
-}
-
-AMSignalsModel * AMSignalsModel::getInstance(void)
-{
-    if(nullptr == instance){
-        instanceMutex.lock();
-        if(nullptr == instance)
-        {
-            instance = new AMSignalsModel();
-        }
-        instanceMutex.unlock();
-    }
-
-   return instance;
 }
 
 AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)

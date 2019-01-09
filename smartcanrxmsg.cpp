@@ -16,9 +16,6 @@ SmartCanRxMsg::SmartCanRxMsg()
 
     //TODO: find if needed?
     is_a_first_frame = true;
-
-    itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SmartADAS");
-    initCanJsonSignalsListInProcessOrder();
 }
 
 

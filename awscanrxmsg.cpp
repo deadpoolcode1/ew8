@@ -11,8 +11,6 @@
 AwsCanRxMsg::AwsCanRxMsg()
 {
     setCanID(can_id_master);
-    itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("Aftermarket");
-    initCanJsonSignalsListInProcessOrder();
 }
 
 void AwsCanRxMsg::process(struct can_frame * frame)

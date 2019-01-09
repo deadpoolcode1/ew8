@@ -13,10 +13,6 @@
 SeeQSysInfoCanRxMsg::SeeQSysInfoCanRxMsg()
 {
   setCanID(can_id_cq_system_info);
-  itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SeeQInfo");
-
-  initCanJsonSignalsListInProcessOrder();
-
 }
 
 void SeeQSysInfoCanRxMsg::process(struct can_frame * frame)

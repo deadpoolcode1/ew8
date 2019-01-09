@@ -13,10 +13,6 @@
 SeeQTimeInfoCanRxMsg::SeeQTimeInfoCanRxMsg()
 {
   setCanID(can_id_cq_time_info);
-  itsJsonProtocol =  AMSignalsModel::getInstance()->getProtocol("SeeQInfo");
-
-  initCanJsonSignalsListInProcessOrder();
-
 }
 
 void SeeQTimeInfoCanRxMsg::process(struct can_frame * frame)

@@ -7,18 +7,24 @@ CanRxMsg * CanRxMsg::CanRxMsgsPool[];
 size_t CanRxMsg::canRxMsgNumOfObjects = 0;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 
-CanRxMsg * CanRxMsg::createInstance(can_id_t cid)
+CanRxMsg * CanRxMsg::createInstance(can_id_t cid, AMSignalsModel * model)
 {
     CanRxMsg * ret = getMsgByCanId(cid);
     //TODO review the check location
     if(nullptr == ret) //create new unstance
     {
       //TODO use factory and init with id
-        ret = iCanRxMsgFactory->createCanRxMsgInstance(cid);
+        ret = iCanRxMsgFactory->createCanRxMsgInstance(cid, model);
 
 
     }
     return ret;
+}
+
+void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
+{
+    itsJsonProtocol = aJsonProtocol;
+    initCanJsonSignalsListInProcessOrder();
 }
 
 void CanRxMsg::setDisplay(IAlertDisplay *anAlertDisplay)
@@ -26,7 +32,7 @@ void CanRxMsg::setDisplay(IAlertDisplay *anAlertDisplay)
     alertsDisplay = anAlertDisplay;
 }
 
-void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDisplay *anAlertDisplay)
+void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel)
 {
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
 
@@ -34,7 +40,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDis
     {
         if(canRxMsgNumOfObjects < CAN_MESSAGES_TYPES_NUM)
         {
-            CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic);
+            CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic, amSignalsModel);
             if(nullptr != CanRxMsgsPool[canRxMsgNumOfObjects])
             {
                 CanRxMsgsPool[canRxMsgNumOfObjects]->setDisplay(anAlertDisplay);

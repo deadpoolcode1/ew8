@@ -20,9 +20,14 @@ class CanRxMsg
 {
 public:
 
-    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay);
+    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel);
     static CanRxMsg * getMsgByCanId(can_id_t cid);
     void setDisplay(IAlertDisplay *anAlertDisplay);
+
+    //TODO: 1) move the method usage to the ICanRxMsgFactory.
+    //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
+    void setCanID(can_id_t canID);
+    void setItsJsonProtocol(AMJsonProtocol * aJsonProtocol);
 
     //NOTE: depends on JSON and DBC already parsed
     void initCanJsonSignalsListInProcessOrder(void);
@@ -33,13 +38,13 @@ public:
 private:
   static CanRxMsg * CanRxMsgsPool[CAN_MESSAGES_TYPES_NUM];
   static size_t canRxMsgNumOfObjects;
-  static CanRxMsg * createInstance(can_id_t cid);
+  static CanRxMsg * createInstance(can_id_t cid, AMSignalsModel * model);
   static ICanRxMsgFactory * iCanRxMsgFactory;
   can_id_t cid;
 
 protected:
   CanRxMsg();
-  void setCanID(can_id_t canID);
+
   can_id_t getCanID(void);
 
 

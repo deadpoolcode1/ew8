@@ -16,19 +16,13 @@ class AMSignalsModel
 {
 public:
 
-    static AMSignalsModel * getInstance(void);
-
-    static QMutex instanceMutex;
+    explicit AMSignalsModel();
 
     void jsonInitProtocolsAndSignalsVectors(void);
 
     AMJsonProtocol * getProtocol(QString aName);
 
 private:
-
-    explicit AMSignalsModel();
-
-    static AMSignalsModel * instance;
 
     QMap<QString,AMJsonProtocol*> jsonProtocols;
 
