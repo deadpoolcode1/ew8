@@ -56,6 +56,8 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     hasArguments = false;
 
+    areArgumentsReceived = false;
+
     itsProtocol = aProtocol;
     itsDisplay =  aProtocol->itsModel->getItsCanManager()->getItsDisplay();
 
@@ -114,20 +116,37 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      }
  }
 
- void AMJsonSignal::activate(void)
+ void AMJsonSignal::activate(bool do_reactivate)
  {
      if(GraphicItem == type)
      {
-         //TODO: request active arguments
 
-         if(isActivated)
-         {
-             //reactivate on arguments change
-         }
-         else
+         DISPLAY_ITEM_ID alert = GraphicItemsEnumMap::getId(action);
+
+         if(!isActivated || do_reactivate)
          {
              itsDisplay->mutex.lock();
-             itsDisplay->activate(GraphicItemsEnumMap::getId(action));
+
+             if(do_reactivate&&isActivated)
+             {
+                 itsDisplay->deactivate(alert);
+             }
+
+             if(!hasArguments)
+             {
+                 itsDisplay->activate(alert);
+             }
+             else if (areArgumentsReceived)
+             {
+                if(argType == IntArgument)
+                {
+                    itsDisplay->activate(alert,argInt,argFrac,(visual_item_unit_t) argUnits);
+                }
+                else if (argType == StringArgument)
+                {
+                    itsDisplay->activate(alert, argStr);
+                }
+             }
              itsDisplay->mutex.unlock();
 
              isActivated = true;
@@ -186,7 +205,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
              CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(argumentSignal->action));
              if(intAcc)
              {
-                 connect(intAcc, SIGNAL(argumentComplete(qint8,qint8,qint8)),this,SLOT(argumentComplete(qint8,qint8,qint8)));
+                 connect(intAcc, SIGNAL(argumentComplete(quint8,quint8,quint8)),this,SLOT(argumentComplete(quint8,quint8,quint8)));
                  hasArguments = true;
                  argType = IntArgument;
              }
@@ -211,11 +230,54 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
  void AMJsonSignal::argumentComplete(QString anArg)
  {
 
+     bool isChanged = (argStr != anArg);
+
+     argStr = anArg;
+
+     if (isActivated)
+     {
+         if (!areArgumentsReceived)
+         {
+             areArgumentsReceived = true;
+             activate(true);
+         }
+         else if (isChanged)
+         {
+             activate(true);
+         }
+     }
+
+     areArgumentsReceived = true;
  }
 
- void AMJsonSignal::argumentComplete(qint8 intArg, qint8 fracArg, qint8 unitArg)
+ //TODO in same frame arguments must be handled before GraphicItems
+ void AMJsonSignal::argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)
  {
+    qDebug("argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)");
+    bool areChanged =
+            (argInt != intArg ||
+            argFrac != fracArg ||
+            argUnits != unitArg)
+            ;
 
+    argInt = intArg;
+    argFrac = fracArg;
+    argUnits = unitArg;
+
+    if (isActivated)
+    {
+        if (!areArgumentsReceived)
+        {
+            areArgumentsReceived = true;
+            activate(true);
+        }
+        else if (areChanged)
+        {
+            activate(true);
+        }
+    }
+
+    areArgumentsReceived = true;
  }
 
  bool AMJsonSignal::getIsActived(void)

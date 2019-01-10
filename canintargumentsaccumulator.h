@@ -25,12 +25,12 @@ private:
 
      explicit CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 
-    qint8 intValue[3];
+    quint8 intValue[3];
     bool flagValue[3];
 
 signals:
 
-    void argumentComplete(qint8 intValue, qint8 fracValue, quint8 unitValue);
+    void argumentComplete(quint8 intValue, quint8 fracValue, quint8 unitValue);
 
 public slots:
 };

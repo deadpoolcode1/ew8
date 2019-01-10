@@ -27,7 +27,7 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     initCanJsonSignalsListInProcessOrder();
 }
 
-void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory,IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel)
+void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel)
 {
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
 

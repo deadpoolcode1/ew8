@@ -4,10 +4,12 @@
 #include "canmanager.h"
 
 #include "canstringargumentsaccumulator.h"
+#include "canintargumentsaccumulator.h"
 
 #include "graphicitemsenummap.h"
 
 class CanStringArgumentsAccumulator;
+class CanIntArgumentsAccumulator;
 
 class CanManager;
 class CanRxMsg;
@@ -47,6 +49,7 @@ void SimpleCanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
                 break;
 
+            case AMJsonSignal::IntArgument:
             case AMJsonSignal::StringArgument:
                 argumentSignalProcess(frame, jsonsig);
                 break;
@@ -73,9 +76,18 @@ void SimpleCanRxMsg::argumentSignalProcess(struct can_frame * recv, AMJsonSignal
     //TODO review this casting
     value = (char)(extractSignal((jsonsig->getName()).toLatin1(),recv).sg_val._int & 0xFF);
 
+    DISPLAY_ITEM_ID alert = GraphicItemsEnumMap::getId(jsonsig->action);
+
     qDebug("argumentSignalProcess signal %s, %c", qPrintable(jsonsig->getName()), (qint8) value);
 
-    CanStringArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(jsonsig->action))->insertValueFromSignal(jsonsig->index,value);
+    if (AMJsonSignal::StringArgument == jsonsig->type)
+    {
+        CanStringArgumentsAccumulator::getInstance(alert)->insertValueFromSignal(jsonsig->index,value);
+    }
+    else if (AMJsonSignal::IntArgument == jsonsig->type)
+    {
+         CanIntArgumentsAccumulator::getInstance(alert)->insertValueFromSignal(jsonsig->index,value);
+    }
 }
 
 bool SimpleCanRxMsg::extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active)
@@ -138,20 +150,3 @@ void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, AMJsonSigna
     }
 }
 
-#if 0
-void SimpleCanRxMsg::one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity)
-{
-    bool desired = extractSignal(name,recv).sg_val._bool;
-
-    bool do_active = (desired == polarity);
-
-    if(do_active)
-    {
-        *flag = true;
-    }
-    else
-    {
-        *flag = false;
-    }
-}
-#endif

@@ -62,8 +62,8 @@
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_MONITOR", "type":"GraphicItem","Set": 1},
 
 
-                {"name": "Headway_measurement", "action":"ALERT_HMW_MONITOR", "type":"IntegerArgument","index": 0},
-                {"name": "Headway_measurement", "action":"ALERT_HMW_ALERT", "type":"IntegerArgument","index": 0}
+                {"name": "Headway_measurement", "action":"ALERT_HMW_MONITOR", "type":"IntArgument","index": 0},
+                {"name": "Headway_measurement", "action":"ALERT_HMW_ALERT", "type":"IntArgument","index": 0}
             ]
         }
         ,

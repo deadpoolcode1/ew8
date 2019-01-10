@@ -76,7 +76,7 @@ public slots:
 
     void enableDisableThis(bool OnOff);
 
-    void argumentComplete(qint8,qint8,qint8);
+    void argumentComplete(quint8,quint8,quint8);
     void argumentComplete(QString);
 
     //WARNING: next three fields actual for GraphicItemSignal
@@ -84,11 +84,17 @@ public slots:
     void deactivate(void);
 
     //NOTE: reactivates on new args
-    void activate(void);
+    void activate(bool do_reactivate = false);
 
 private:
 
   bool hasArguments;
+  bool areArgumentsReceived;
+
+  quint8 argInt;
+  quint8 argFrac;
+  quint8 argUnits;
+  QString argStr;
 
   //NOTE: Two next fields are actual for GraphicItem Signals
   //TODO: Move to GraphicItemSignal on future SRP split

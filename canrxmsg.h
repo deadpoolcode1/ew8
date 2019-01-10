@@ -20,7 +20,7 @@ class CanRxMsg
 {
 public:
 
-    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, IAlertDisplay *anAlertDisplay, AMSignalsModel * amSignalsModel);
+    static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static CanRxMsg * getMsgByCanId(can_id_t cid);
 
     //TODO: 1) move the method usage to the ICanRxMsgFactory.

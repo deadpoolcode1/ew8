@@ -59,7 +59,7 @@ void CanManager::init(void)
 
     amSignalsModel = new AMSignalsModel(this);
 
-    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, itsDisplay, amSignalsModel);
+    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, amSignalsModel);
 
     for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
     {
