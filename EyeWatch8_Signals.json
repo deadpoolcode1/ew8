@@ -58,6 +58,8 @@
                 {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem", "Set": 1},
 
 
+                {"name": "Headway_valid", "action":"HW_Warning_level", "type":"Enabler"},
+
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_ALERT", "type":"GraphicItem", "Set": 2},
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_MONITOR", "type":"GraphicItem","Set": 1},
 

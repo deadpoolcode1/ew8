@@ -97,6 +97,9 @@ CanRxMsg * CanRxMsg::getMsgByCanId(can_id_t cid)
 
 void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 {
+
+    QList<AMJsonSignal*> signalsToAppendList;
+
     for (size_t i = 0; i < canSignalsArray_size; i++)
     {
 
@@ -117,20 +120,27 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 {
                 case AMJsonSignal::Enabler:
 
-                     canJsonSignalsListInProcessOrder.prepend(jsonsig);
+                    canJsonSignalsListInProcessOrder.prepend(jsonsig);
+
+                    break;
+
+                case AMJsonSignal::StringArgument:
+                case AMJsonSignal::IntArgument:
+
+                    canJsonSignalsListInProcessOrder.append(jsonsig);
 
                     break;
 
                 default:
 
-                    canJsonSignalsListInProcessOrder.append(jsonsig);
+                    signalsToAppendList.append(jsonsig);
 
                     break;
                 }
-
             }
-
         }
     }
+
+    canJsonSignalsListInProcessOrder.append(signalsToAppendList);
 }
 

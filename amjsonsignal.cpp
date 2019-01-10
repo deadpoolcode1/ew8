@@ -108,7 +108,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
          {
              if(AMJsonSignal::Enabler != jsig->type)
              {
-                 connect(this,SIGNAL(enableDisableConnected(bool, IAlertDisplay *)),jsig,SLOT(enableDisableThis(bool, IAlertDisplay *)));
+                 connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
              }
          }
 
