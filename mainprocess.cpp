@@ -12,6 +12,9 @@
 #include "alerttypes.h"
 #include "entitytype.h"
 #include "rootedtreenode.h"
+#include "graphicitemsenummap.h"
+
+class GraphicItemsEnumMap;
 
 MainProcess* MainProcess::instance = nullptr;
 
@@ -97,8 +100,8 @@ int MainProcess::launchEverything()
 {
     QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
 
-    QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(int, QString)),
-                      this, SLOT(forceItemDeactivation(int, QString)));
+    QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(QVariant, QString)),
+                      this, SLOT(forceItemDeactivation(QVariant, QString)));
 
     canmgr->start();
 
@@ -241,13 +244,20 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 
 }
 
-void MainProcess::forceItemDeactivation(int _alertType, QString _objName) {
+void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {
 
     qDebug("Called the C++ slot with message: %d:%s" , _alertType  , _objName.toLocal8Bit().constData());
 
     RootedTreeNode* nodeCGRT = nullptr;
 
-    DISPLAY_ITEM_ID alertType = (DISPLAY_ITEM_ID)_alertType;
+    bool isInt;
+
+    DISPLAY_ITEM_ID alertType = (DISPLAY_ITEM_ID)_alertType.toInt(&isInt);
+
+    if(!isInt)
+    {
+        alertType = GraphicItemsEnumMap::getId(_alertType.toString());
+    }
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alertType);
 

@@ -54,7 +54,6 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 // esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
-
     this->qmlSignalizer = new DisplaySignalizer();
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlotStr(QVariant)")))
@@ -166,7 +165,9 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
    RootedTreeNode * curnode;
    children = new LayersPriorityQ();  // priority queue of children for C++ node
 
-   foreach(QObject * curchild, qobject->children())
+   //WARNING: Dirty Hack
+   //TODO: check need to replace QObject-s of QtQuick to QQuickItem-s
+   foreach(QObject * curchild, ((QQuickItem*)qobject)->childItems())
    {
 
        curnode = new RootedTreeNode(curchild);

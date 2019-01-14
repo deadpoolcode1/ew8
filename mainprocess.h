@@ -28,7 +28,7 @@ public:
 
 public slots:
 
-    void forceItemDeactivation(int _alertType, QString _objName);
+    void forceItemDeactivation(QVariant _alertType, QString _objName);
 
     void process();
 

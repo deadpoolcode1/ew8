@@ -1,7 +1,6 @@
 #ifndef ENTITYTYPE_H
 #define ENTITYTYPE_H
 
-#include <map>
 #include "defs.h"
 #include "rootedtreenode.h"
 #include "alerttypes.h"

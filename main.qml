@@ -10,28 +10,7 @@ ApplicationWindow {
 
     objectName: "AppWindow"
 
-    signal itemSelfDeactivated(int canEntityType, string _objectName)
-
-
-    //WARNING: the [indices] are just mnemonics
-    property var sli_arr: [
-        [Alert.SLI_10]  =  "10",
-        [Alert.SLI_20]  =  "20",
-        [Alert.SLI_30]  =  "30",
-        [Alert.SLI_40]  =  "40",
-        [Alert.SLI_50]  =  "50",
-        [Alert.SLI_60]  =  "60",
-        [Alert.SLI_70]  =  "70",
-        [Alert.SLI_80]  =  "80",
-        [Alert.SLI_90]  =  "90",
-        [Alert.SLI_100] = "100",
-        [Alert.SLI_110] = "110",
-        [Alert.SLI_120] = "120",
-        [Alert.SLI_130] = "130",
-        [Alert.SLI_140] = "140",
-    ]
-
-
+    signal itemSelfDeactivated(var canEntityType, string _objectName)
 
     width: 320
     height: 240
@@ -169,7 +148,7 @@ ApplicationWindow {
                     height: status_panel.height*8/10
                     x: status_panel.x + (status_panel.width*2/10)
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/Statuses/ihc_low@2x.png";
+                    source:"../images/Statuses/ihc_low@lincz.png";
                     rotation: 0;
                 }
 
@@ -216,22 +195,33 @@ ApplicationWindow {
                 visible: false;
 
 
+                Repeater{
+
+                    id: alert_sli_side_d1
+
+                    model:14
+
                 TSR {
                     //general features
-                    id: alert_sli_side;
-                    objectName: "ALERT_SLI_SIDE"
-                    property int layer_pri: 0
-                    canEntityType: Alert.ALERT_SLI
-                    canEntityArg: Alert.SLI_100
 
+                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D1"
+                    property int layer_pri: 0
+                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
+                    canEntityArg: (index+1)*10
                     //special features
                     is_main: false
-                    its_pair_alert: alert_sli_main
-                    source:"../images/EWAlerts/sli.png";
+                    its_pair_alert: alert_sli_main_d1
+
+                    source:"../images/TSRAlerts/sli@lincz.png";
+
+                    Component.onCompleted:
+                    {
+                        console.log("item"+objectName.toString()+"says its entity type:" + canEntityType)
+                    }
 
                     //TODO move text to TSR_SLI
                     Text {
-                        text: page.sli_arr[parent.canEntityArg]
+                        text: parent.canEntityArg.toString()
                         font.family: "Arial"
                         font.pointSize: parent.is_main ? 40 : 10
                         font.bold: true
@@ -242,21 +232,111 @@ ApplicationWindow {
                     }
                 }
 
+                }
+
+                Repeater{
+
+                    id: alert_sli_side_d2
+
+                    model:14
 
                 TSR {
-
                     //general features
-                    id: alert_forward_side;
-                    objectName: "ALERT_SLI_SIDE"
-                    property int layer_pri: 0
-                    canEntityType: Alert.ALERT_FORWARD
 
+                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D2"
+                    property int layer_pri: 0
+                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D2"
+                    canEntityArg: (index+1)*10
                     //special features
                     is_main: false
-                    its_pair_alert: alert_forward_main
-                    source:"../images/EWAlerts/forward.svg";
+                    its_pair_alert: alert_sli_main_d2
+
+                    source:"../images/TSRAlerts/sli@lincz.png";
+
+                    //TODO move text to TSR_SLI
+                    Text {
+                        text: parent.canEntityArg.toString()
+                        font.family: "Arial"
+                        font.pointSize: parent.is_main ? 40 : 10
+                        font.bold: true
+                        color: "black"
+                        opacity: 1
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter : parent.verticalCenter
+                    }
+                }
 
                 }
+
+                Repeater{
+
+                    id: alert_sli_side_d3
+
+                    model:14
+
+                TSR {
+                    //general features
+
+                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D3"
+                    property int layer_pri: 0
+                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D3"
+                    canEntityArg: (index+1)*10
+                    //special features
+                    is_main: false
+                    its_pair_alert: alert_sli_main_d3
+
+                    source:"../images/TSRAlerts/sli@lincz.png";
+
+                    //TODO move text to TSR_SLI
+                    Text {
+                        text: parent.canEntityArg.toString()
+                        font.family: "Arial"
+                        font.pointSize: parent.is_main ? 40 : 10
+                        font.bold: true
+                        color: "black"
+                        opacity: 1
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter : parent.verticalCenter
+                    }
+                }
+
+                }
+
+                Repeater{
+
+                    id: alert_sli_side_d4
+
+                    model:14
+
+                TSR {
+                    //general features
+
+                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D4"
+                    property int layer_pri: 0
+                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D4"
+                    canEntityArg: (index+1)*10
+                    //special features
+                    is_main: false
+                    its_pair_alert: alert_sli_main_d4
+
+                    source:"../images/TSRAlerts/sli@lincz.png";
+
+                    //TODO move text to TSR_SLI
+                    Text {
+                        text: parent.canEntityArg.toString()
+                        font.family: "Arial"
+                        font.pointSize: parent.is_main ? 40 : 10
+                        font.bold: true
+                        color: "black"
+                        opacity: 1
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter : parent.verticalCenter
+                    }
+                }
+
+                }
+
+
 
 
 
@@ -275,8 +355,7 @@ ApplicationWindow {
                     id: alert_motorway_side;
                     objectName: "ALERT_MOTORWAY_SIDE"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_MOTORWAY
-
+                    property string canEntityType: "ALERT_MOTORWAY"
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/EWAlerts/motorway.svg";
@@ -297,7 +376,7 @@ ApplicationWindow {
                     id: alert_playground_side;
                     objectName: "ALERT_PLAYGROUND_SIDE"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_PLAYGROUND
+                    property string canEntityType: "ALERT_PLAYGROUND"
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -311,7 +390,7 @@ ApplicationWindow {
                     id: alert_no_pass_side;
                     objectName: "ALERT_NO_PASS_SIDE"
                     property int layer_pri: 0
-                    canEntityType: Alert.ALERT_NO_PASS
+                    canEntityType: "ALERT_NO_PASS"
 
                     //special features
                     is_main: false
@@ -335,7 +414,7 @@ ApplicationWindow {
                     id: alert_end_all_restr_side;
                     objectName: "ALERT_END_ALL_RESTR_SIDE"
                     property int layer_pri: 0
-                    property int canEntityType: Alert.ALERT_END_ALL_RESTR
+                    property string canEntityType: "ALERT_END_ALL_RESTR"
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -412,7 +491,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_sev_weather_main
-                    source:"../images/SmartAlerts/severWeather.svg";
+                    source:"../images/SmartAlerts/bww@2x.png";
 
                 }
 
@@ -597,13 +676,30 @@ ApplicationWindow {
 
                         id: alert_qrcode;
                         objectName: "QRCODE"
-                        property int layer_pri: 0
+                        property int layer_pri: 1
                         property string canEntityType: "INFO_QRCODE"
 
                         visible: false;
                         rotation: 0;
                     }
 
+                    Image {
+
+                        function setVisibleSlot(code) {visible = true;}
+                        function setInvisibleSlot() {visible = false}
+
+                        id: alert_error;
+                        objectName: "ERROR_ALERT"
+                        property int layer_pri: 1
+                        property string canEntityType: "ALERT_ERROR"
+                        opacity: 1.0
+
+                        visible: false;
+                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
+                        fillMode: Image.PreserveAspectFit;
+                        source:"../images/EWAlerts/error@lincz.png";
+                        rotation: 0;
+                    }
 
 
                     Image {
@@ -648,46 +744,141 @@ ApplicationWindow {
 
                     }
 
-                    TSR {
-                        //general features
-                        id: alert_sli_main;
-                        objectName: "ALERT_SLI_MAIN"
-                        property int layer_pri: 1
-                        canEntityType: Alert.ALERT_SLI
-                        canEntityArg: Alert.SLI_100
 
-                        //special features
-                        is_main: true
-                        its_pair_alert: alert_sli_side
-                        source:"../images/EWAlerts/sli.png";
+                    Repeater{
 
-                        //TODO move text to TSR_SLI
-                        Text {
-                            text: page.sli_arr[parent.canEntityArg]
-                            font.family: "Arial"
-                            font.pointSize: parent.is_main ? 40 : 10
-                            font.bold: true
-                            color: "black"
-                            opacity: 1
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter : parent.verticalCenter
+                        id: alert_sli_main_d1
+
+                        model:14
+
+                        TSR {
+
+                            //general features
+                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D1"
+                            property int layer_pri: 1
+                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
+                            canEntityArg: (index+1)*10
+
+                            //special features
+                            is_main: true
+                            its_pair_alert: alert_sli_side_d1
+                            source:"../images/TSRAlerts/sli@lincz.png";
+
+                            //TODO move text to TSR_SLI
+                            Text {
+                                text: parent.canEntityArg.toString();
+                                font.family: "Arial"
+                                font.pointSize: parent.is_main ? 40 : 10
+                                font.bold: true
+                                color: "black"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter : parent.verticalCenter
+                            }
                         }
                     }
 
-                    TSR {
+                    Repeater{
 
-                        //general features
-                        id: alert_forward_main;
-                        objectName: "ALERT_SLI_MAIN"
-                        property int layer_pri: 1
-                        canEntityType: Alert.ALERT_FORWARD
+                        id: alert_sli_main_d2
 
-                        //special features
-                        is_main: true
-                        its_pair_alert: alert_forward_side
-                        source:"../images/EWAlerts/forward.svg";
+                        model:14
 
+                        TSR {
+                            //general features
+                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D2"
+                            property int layer_pri: 1
+                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D2"
+                            canEntityArg: (index+1)*10
+
+                            //special features
+                            is_main: true
+                            its_pair_alert: alert_sli_side_d2
+
+
+                            source:"../images/TSRAlerts/sli@lincz.png";
+
+                            //TODO move text to TSR_SLI
+                            Text {
+                                text: parent.canEntityArg.toString();
+                                font.family: "Arial"
+                                font.pointSize: parent.is_main ? 40 : 10
+                                font.bold: true
+                                color: "black"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter : parent.verticalCenter
+                            }
+                        }
                     }
+
+                    Repeater{
+
+                        id: alert_sli_main_d3
+
+                        model:14
+
+                        TSR {
+                            //general features
+                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D3"
+                            property int layer_pri: 1
+                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D3"
+                            canEntityArg: (index+1)*10
+
+                            //special features
+                            is_main: true
+                            its_pair_alert: alert_sli_side_d3
+
+                            source:"../images/TSRAlerts/sli@lincz.png";
+
+                            //TODO move text to TSR_SLI
+                            Text {
+                                text: parent.canEntityArg.toString();
+                                font.family: "Arial"
+                                font.pointSize: parent.is_main ? 40 : 10
+                                font.bold: true
+                                color: "black"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter : parent.verticalCenter
+                            }
+                        }
+                    }
+
+                    Repeater{
+
+                        id: alert_sli_main_d4
+
+                        model:14
+
+                        TSR {
+                            //general features
+                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D1"
+                            property int layer_pri: 1
+                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
+                            canEntityArg: (index+1)*10
+
+                            //special features
+                            is_main: true
+                            its_pair_alert: alert_sli_side_d4
+
+
+                            source:"../images/TSRAlerts/sli@lincz.png";
+
+                            //TODO move text to TSR_SLI
+                            Text {
+                                text: parent.canEntityArg.toString();
+                                font.family: "Arial"
+                                font.pointSize: parent.is_main ? 40 : 10
+                                font.bold: true
+                                color: "black"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter : parent.verticalCenter
+                            }
+                        }
+                    }
+
 
                     TSR {
 
@@ -695,7 +886,7 @@ ApplicationWindow {
                         id: alert_no_pass_main;
                         objectName: "ALERT_NO_PASS_MAIN"
                         property int layer_pri: 1
-                        canEntityType: Alert.ALERT_NO_PASS
+                        canEntityType: "ALERT_NO_PASS"
 
                         //special features
                         is_main: true

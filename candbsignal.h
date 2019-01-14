@@ -43,6 +43,14 @@ typedef struct Signal_s
 }
 Signal;
 
+typedef struct Value_s
+{
+    const char* name;
+    unsigned int value;
+}
+Value;
+
+
 extern Signal SignalsOfAfterMarket_AWS_0x700[];
 extern size_t SignalsOfAfterMarket_AWS_0x700_size;
 

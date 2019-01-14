@@ -67,7 +67,7 @@ QString AMJsonProtocol::getName(void)
     return name;
 }
 
-void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
+void AMJsonProtocol::enableDisableThis(bool onOff)
 {
 
     bool is_pre_enabled = disablers.isEmpty();
@@ -96,18 +96,13 @@ void AMJsonProtocol::enableDisableThis(bool onOff, IAlertDisplay * alertDisplay)
             }
         }
 
-        if(alertDisplay)
+
+        foreach (AMJsonSignal * jsonsig , jsonSignals)
         {
-            //Turn all Graphic Item off
-            alertDisplay->mutex.lock();
-            foreach (AMJsonSignal * jsonsig , jsonSignals)
+            if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
             {
-                if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
-                {
-                    alertDisplay->deactivate(GraphicItemsEnumMap::getId(jsonsig->action));
-                }
+                jsonsig->deactivate();
             }
-            alertDisplay->mutex.unlock();
         }
     }
     else if (!is_pre_enabled && is_post_enabled)
