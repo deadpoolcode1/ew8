@@ -190,7 +190,7 @@ ApplicationWindow {
                 }
 
                 property int layer_pri: 0
-                property int canEntityType: Alert.QtQG
+
 
                 visible: false;
 
@@ -200,6 +200,7 @@ ApplicationWindow {
                     objectName: "SLI_SIDE_ALERT_GROUP"
                     property bool mutexGroup: true
                     property int layer_pri: 0
+                    property int canEntityType: Alert.QtQG
 
                 Repeater{
 
@@ -629,7 +630,7 @@ ApplicationWindow {
 
                         function setVisible(isVisible)
                         {
-                            //blinkTimer_fcw.setRunning(isVisible)
+
                             visible = isVisible
                         }
 
@@ -640,10 +641,11 @@ ApplicationWindow {
                         opacity: 1.0
 
                         visible: false;
-                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
+                        x: 0; y: 20; width: 210; height: 140;
+                        //x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/pcw-green@2x.png";
-                        rotation: 90;
+                        source:"../images/EWAlerts/pdz@lincz.png";
+                        rotation: 0;
 
                         SequentialAnimation {
 
@@ -768,7 +770,7 @@ ApplicationWindow {
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/fcw.png";
+                        source:"../images/EWAlerts/fcw@lincz.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -1263,7 +1265,7 @@ ApplicationWindow {
 
                         ////////////////////////////////
                         //Atomic items:
-                        Image {
+                        Item {
 
                             function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
                             function setInvisibleSlot() {setVisible(false)}
@@ -1280,25 +1282,60 @@ ApplicationWindow {
                             property int canEntityArg: 0x00
 
                             visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source: "../images/EWAlerts/hmw_red.png";
-                            rotation: 0;
 
+                            y: 20
+
+                            x: main_panel.width/8;
+
+                            width: main_panel.width*3/4;
+
+                            height: main_panel.height*4/5
+
+                            Image{
+
+                                visible: true
+                                width: main_panel.width*3/4;
+                                fillMode: Image.PreserveAspectFit;
+                                source: "../images/EWAlerts/car@2x.png";
+                                rotation: 0;
+
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.top : parent.top
+
+                            }
+
+                            Image{
+
+                                visible: true
+                                width: main_panel.width*3/4;
+                                fillMode: Image.PreserveAspectFit;
+                                source: "../images/EWAlerts/hmw-lines@2x.png";
+                                rotation: 0;
+
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
 
                             Text {
+
+                                visible: true
+
+                                width: main_panel.width*3/4;
+
                                 text: (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
                                 font.family: "Arial"
-                                font.pointSize: 62
+                                font.pointSize: 45
                                 font.bold: true
                                 color: "red"
                                 opacity: 1
+                                horizontalAlignment: Text.AlignHCenter
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.bottom : parent.bottom
                             }
 
+
                         }
-                        Image {
+                        Item {
 
                             function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
                             function setInvisibleSlot() {setVisible(false)}
@@ -1309,31 +1346,65 @@ ApplicationWindow {
                             }
 
                             id: alert_hmw_monitor;
-                            objectName: "ALERT_HMW_MONITOR"
+                            objectName: "HMW_MONITOR_ALERT"
                             property int layer_pri: 0
                             property string canEntityType: "ALERT_HMW_MONITOR"
                             property int canEntityArg: 0x00
 
                             visible: false;
-                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/hmw_green.png";
-                            rotation: 0;
 
+                            y: 20
+
+                            x: main_panel.width/8;
+
+                            width: main_panel.width*3/4;
+
+                            height: main_panel.height*4/5
+
+                            Image{
+
+                                visible: true
+                                width: main_panel.width*3/4;
+                                fillMode: Image.PreserveAspectFit;
+                                source: "../images/EWAlerts/car@2x.png";
+                                rotation: 0;
+
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.top : parent.top
+
+                            }
+
+                            Image{
+
+                                visible: true
+                                width: main_panel.width*3/4;
+                                fillMode: Image.PreserveAspectFit;
+                                source: "../images/EWAlerts/hmw-lines-green@lincz.png";
+                                rotation: 0;
+
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
 
                             Text {
-                                text:  (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
+
+                                visible: true
+
+                                width: main_panel.width*3/4;
+
+                                text: (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
                                 font.family: "Arial"
-                                font.pointSize: 62
+                                font.pointSize: 45
                                 font.bold: true
                                 color: "#00ff00"
                                 opacity: 1
+                                horizontalAlignment: Text.AlignHCenter
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.bottom: parent.bottom
+                                anchors.bottom : parent.bottom
                             }
 
-                        }
 
+                        }
 
                     }
 
