@@ -62,19 +62,19 @@
         {"enum": "ALERT_SLI_130_D3", "value": 84},
         {"enum": "ALERT_SLI_140_D3", "value": 85},
 
-        {"enum": "ALERT_SLI_10_D3", "value": 86},
-        {"enum": "ALERT_SLI_20_D3", "value": 87},
-        {"enum": "ALERT_SLI_30_D3", "value": 88},
-        {"enum": "ALERT_SLI_40_D3", "value": 89},
-        {"enum": "ALERT_SLI_50_D3", "value": 90},
-        {"enum": "ALERT_SLI_60_D3", "value": 91},
-        {"enum": "ALERT_SLI_70_D3", "value": 92},
-        {"enum": "ALERT_SLI_80_D3", "value": 93},
-        {"enum": "ALERT_SLI_90_D3", "value": 94},
-        {"enum": "ALERT_SLI_110_D3", "value": 95},
-        {"enum": "ALERT_SLI_120_D3", "value": 96},
-        {"enum": "ALERT_SLI_130_D3", "value": 97},
-        {"enum": "ALERT_SLI_140_D3", "value": 98}
+        {"enum": "ALERT_SLI_10_D4", "value": 86},
+        {"enum": "ALERT_SLI_20_D4", "value": 87},
+        {"enum": "ALERT_SLI_30_D4", "value": 88},
+        {"enum": "ALERT_SLI_40_D4", "value": 89},
+        {"enum": "ALERT_SLI_50_D4", "value": 90},
+        {"enum": "ALERT_SLI_60_D4", "value": 91},
+        {"enum": "ALERT_SLI_70_D4", "value": 92},
+        {"enum": "ALERT_SLI_80_D4", "value": 93},
+        {"enum": "ALERT_SLI_90_D4", "value": 94},
+        {"enum": "ALERT_SLI_110_D4", "value": 95},
+        {"enum": "ALERT_SLI_120_D4", "value": 96},
+        {"enum": "ALERT_SLI_130_D4", "value": 97},
+        {"enum": "ALERT_SLI_140_D4", "value": 98}
     ],
 
 

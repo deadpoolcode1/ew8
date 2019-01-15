@@ -59,10 +59,12 @@ Image {
 
         onTriggered:
         {
-            page.itemSelfDeactivated(parent.canEntityType, parent.objectName);
-            if(!is_main)
+            if(is_main)
             {
-                console.log("side alert activated")
+                page.itemSelfDeactivated(parent.canEntityType, parent.objectName);
+            }
+            else
+            {
                 visible = true
             }
         }

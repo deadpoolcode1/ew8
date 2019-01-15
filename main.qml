@@ -195,6 +195,12 @@ ApplicationWindow {
                 visible: false;
 
 
+                Item{
+
+                    objectName: "SLI_SIDE_ALERT_GROUP"
+                    property bool mutexGroup: true
+                    property int layer_pri: 0
+
                 Repeater{
 
                     id: alert_sli_side_d1
@@ -204,7 +210,7 @@ ApplicationWindow {
                 TSR {
                     //general features
 
-                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D1"
+                    objectName: "SLI_SIDE_"+(index+1)+"0_D1"
                     property int layer_pri: 0
                     canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
                     canEntityArg: (index+1)*10
@@ -244,7 +250,7 @@ ApplicationWindow {
                     //general features
 
                     objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D2"
-                    property int layer_pri: 0
+                    property int layer_pri: index
                     canEntityType: "ALERT_SLI_"+(index+1)+"0_D2"
                     canEntityArg: (index+1)*10
                     //special features
@@ -278,7 +284,7 @@ ApplicationWindow {
                     //general features
 
                     objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D3"
-                    property int layer_pri: 0
+                    property int layer_pri: index
                     canEntityType: "ALERT_SLI_"+(index+1)+"0_D3"
                     canEntityArg: (index+1)*10
                     //special features
@@ -312,7 +318,7 @@ ApplicationWindow {
                     //general features
 
                     objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D4"
-                    property int layer_pri: 0
+                    property int layer_pri: index
                     canEntityType: "ALERT_SLI_"+(index+1)+"0_D4"
                     canEntityArg: (index+1)*10
                     //special features
@@ -335,6 +341,7 @@ ApplicationWindow {
                 }
 
                 }
+                }//end of group
 
 
 
@@ -610,7 +617,7 @@ ApplicationWindow {
                         }
                         visible: false
 
-                    }
+
 
 
 
@@ -652,53 +659,92 @@ ApplicationWindow {
 
                     }
 
-
-
-                    ////////////////////////////////
-                    //Atomic items:
-
-                    QRCode{
-
-                        function setVisibleSlotStr(snStrArg) {
-                        sn = snStrArg;
-                        visible = true
-                        console.log("QR Displayed")
-                        }
-                        function setInvisibleSlot() {visible = false}
-
-                        sn: "NA"
-
-                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4; height: width;
-
-                        //x:20; y:20; width: 210; height: 210
-
-                        contentsScale: 4
-
-                        id: alert_qrcode;
-                        objectName: "QRCODE"
-                        property int layer_pri: 1
-                        property string canEntityType: "INFO_QRCODE"
-
-                        visible: false;
-                        rotation: 0;
                     }
 
-                    Image {
 
-                        function setVisibleSlot(code) {visible = true;}
-                        function setInvisibleSlot() {visible = false}
 
-                        id: alert_error;
-                        objectName: "ERROR_ALERT"
-                        property int layer_pri: 1
-                        property string canEntityType: "ALERT_ERROR"
-                        opacity: 1.0
+                    Item {
+                        id: groupErrors
+                        objectName: "ERR_QtQG"
+                        property bool mutexGroup: false
+
+                        function setVisibleSlot()
+                        {
+                            visible = true
+                        }
+
+                        function setInvisibleSlot()
+                        {
+                            visible = false
+                        }
+
+                        property int layer_pri: 0
+                        property int canEntityType: Alert.QtQG
 
                         visible: false;
-                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
-                        fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/error@lincz.png";
-                        rotation: 0;
+
+
+                        QRCode{
+
+                            function setVisibleSlotStr(snStrArg) {
+                            sn = snStrArg;
+                            visible = true
+                            console.log("QR Displayed")
+                            }
+                            function setInvisibleSlot() {visible = false}
+
+                            sn: "NA"
+
+                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4; height: width;
+
+                            //x:20; y:20; width: 210; height: 210
+
+                            contentsScale: 4
+
+                            id: alert_qrcode;
+                            objectName: "QRCODE"
+                            property int layer_pri: 0
+                            property string canEntityType: "INFO_QRCODE"
+
+                            visible: false;
+                            rotation: 0;
+                        }
+
+                        Image {
+
+                            function setVisibleSlot(code) {visible = true; error_code = code}
+                            function setInvisibleSlot() {visible = false}
+
+                            id: alert_error;
+                            objectName: "ERROR_ALERT"
+                            property int layer_pri: 0
+                            property string canEntityType: "ALERT_ERROR"
+                            property int error_code: 0
+                            opacity: 1.0
+
+                            visible: false;
+                            x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
+                            fillMode: Image.PreserveAspectFit;
+                            source:"../images/EWAlerts/error@lincz.png";
+                            rotation: 0;
+
+                            Text {
+                                text: "ER-"+parent.error_code.toString(16).toUpperCase()
+                                font.family: "Arial"
+                                font.pointSize:  20
+                                font.bold: true
+                                color: "#ffffff"
+                                opacity: 1
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.top : parent.bottom
+                            }
+
+
+                        }
+
+
+
+
                     }
 
 
@@ -762,7 +808,7 @@ ApplicationWindow {
                             //special features
                             is_main: true
                             its_pair_alert: alert_sli_side_d1
-                            source:"../images/TSRAlerts/sli@lincz.png";
+                            source:"../images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
                             Text {
@@ -796,7 +842,7 @@ ApplicationWindow {
                             its_pair_alert: alert_sli_side_d2
 
 
-                            source:"../images/TSRAlerts/sli@lincz.png";
+                            source:"../images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
                             Text {
@@ -829,7 +875,7 @@ ApplicationWindow {
                             is_main: true
                             its_pair_alert: alert_sli_side_d3
 
-                            source:"../images/TSRAlerts/sli@lincz.png";
+                            source:"../images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
                             Text {
@@ -863,7 +909,7 @@ ApplicationWindow {
                             its_pair_alert: alert_sli_side_d4
 
 
-                            source:"../images/TSRAlerts/sli@lincz.png";
+                            source:"../images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
                             Text {
@@ -952,31 +998,10 @@ ApplicationWindow {
 
                     property int layer_pri: 2
 
-                    function setVisibleSlot() {setVisible(true)}
-                    function setInvisibleSlot() {setVisible(false)}
+                   function setVisibleSlot() {visible = true}
+                   function setInvisibleSlot() {visible = false}
 
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
                     visible: false
-
-
-                    Item {
-                        id: groupErrors
-                        objectName: "ERR_QtQG"
-                        property bool mutexGroup: false
-
-                        function setVisible(isVisible)
-                        {
-                            visible = isVisible
-                        }
-
-                        property int layer_pri: 0
-                        property int canEntityType: Alert.QtQG
-
-                        visible: false;
-                    }
 
                     Item {
                         id: groupLanes
@@ -985,103 +1010,102 @@ ApplicationWindow {
 
                         anchors.fill: parent
 
-                        function setVisibleSlot() {setVisible(true)}
-                        function setInvisibleSlot() {setVisible(false)}
-
-                        function setVisible(isVisible)
-                        {
-                            visible = isVisible
-                        }
+                        function setVisibleSlot() {visible = true}
+                        function setInvisibleSlot() {visible = false}
 
                         property int layer_pri: 1
                         property int canEntityType: Alert.QtQG
 
                         visible: false;
 
-                        ////////////////////////////////
-                        //Atomic items:
-                        Image {
 
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: ldw_off;
-                            objectName: "ALERT_LDWOFF"
-                            property int layer_pri: 2
-                            property string canEntityType: "ALERT_LDWOFF"
-
-                            visible: false;
-                            height: parent.height;
-                            anchors.bottom: parent.bottom
-                            anchors.horizontalCenter : parent.horizontalCenter
-
-
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/ldwoff.png";
-                            rotation: 0;
-
-
-                        }
-                        Image {
-
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
-                            id: ldw_on;
-                            objectName: "ALERT_LDWON"
-                            property int layer_pri: 1
-                            property string canEntityType: "ALERT_LDWON"
-
-                            visible: false;
-                            height: parent.height;
-                            anchors.bottom: parent.bottom
-                            anchors.horizontalCenter : parent.horizontalCenter
-
-                            fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/ldwon.png";
-                            rotation: 0;
-
-
-                        }
-
-                        Item
-                        {
-
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                //blinkTimer_lldw.setRunning(isVisible)
-                                visible = isVisible
-                            }
-
-                            id: alert_lldw;
-                            objectName: "ALERT_LLDW"
-                            property int layer_pri: 0
-                            property string canEntityType: "ALERT_LLDW"
+                        Item {
+                            id: groupLanes_left
+                            objectName: "LANES_LEFT_QtQG"
+                            property bool mutexGroup: false
 
                             anchors.fill: parent
 
+                            function setVisibleSlot() {visible = true}
+                            function setInvisibleSlot() {visible = false}
+
+                            property int layer_pri: 1
+                            property int canEntityType: Alert.QtQG
+
+                            visible: false;
+
                             Image {
-                                id: alert_lldw_left
-                                visible: true;
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_ldwoff_left
+
+                                objectName: "ALERT_LDWOFF_LEFT"
+                                property int layer_pri: 0
+                                property string canEntityType: "ALERT_LDWOFF"
+
+                                visible:false
+
                                 height: parent.height;
                                 anchors.bottom: parent.bottom
-                                anchors.horizontalCenter : parent.horizontalCenter
+                                anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/lldw_L.png";
+                                source:"../images/EWAlerts/laneL_off@lincz.png";
+                                rotation: 0;
+
+
+
+                            }
+
+
+                            Image {
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_ldwon_left
+
+                                objectName: "LDWON_LEFT_ALERT"
+                                property int layer_pri: 2
+                                property string canEntityType: "ALERT_LDWON"
+
+                                visible:false
+
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+
+                                fillMode: Image.PreserveAspectFit;
+                                source:"../images/EWAlerts/laneL_monitor@lincz.png";
+                                rotation: 0;
+
+
+
+                            }
+
+
+
+                            Image {
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_lldw
+
+                                objectName: "LLDW_ALERT"
+                                property int layer_pri: 1
+                                property string canEntityType: "ALERT_LLDW"
+
+                                visible:false
+
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+
+                                fillMode: Image.PreserveAspectFit;
+                                source:"../images/EWAlerts/laneL_alert@2x.png";
                                 rotation: 0;
 
 
@@ -1090,120 +1114,122 @@ ApplicationWindow {
                                     running: alert_lldw.visible
                                     loops: Animation.Infinite
 
-                                    PropertyAction {target: alert_lldw_left; property: "opacity"; value: 1.0}
+                                    PropertyAction {target: alert_lldw; property: "opacity"; value: 1.0}
                                     PauseAnimation {duration: 500}
-                                    PropertyAction {target: alert_lldw_left; property: "opacity"; value: 0.0}
+                                    PropertyAction {target: alert_lldw; property: "opacity"; value: 0.0}
                                     PauseAnimation {duration: 300}
 
-                                    /*
-                                        NumberAnimation { target: alert_lldw_left; property: "opacity"; from: 1.0; to: 0.0; duration: 300}
-                                        NumberAnimation { target: alert_lldw_left; property: "opacity"; from: 0.0; to: 1.0; duration: 500}
-                                        */
                                 }
-
-
-
-                                /*
-                                Timer {
-
-                                    id: blinkTimer_lldw
-
-                                    property int intervalOn: 500
-                                    property int intervalOff: 300
-
-                                    interval: intervalOn
-                                    running: false
-                                    repeat: true
-
-                                    function setRunning(On)
-                                    {
-                                        interval = intervalOn
-                                        running = On
-                                    }
-
-                                    onTriggered:
-                                    {
-                                        parent.visible = !parent.visible
-                                        interval = (parent.visible ? intervalOn : intervalOff)
-                                    }
-                                }
-                                */
                             }
 
-                            Image {
-                                visible: true;
-                                height: parent.height;
-                                anchors.bottom: parent.bottom
-                                anchors.horizontalCenter : parent.horizontalCenter
-
-                                fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/lldw_R.png";
-                                rotation: 0;
-
-
-
-                            }
                         }
 
 
-                        /////////////////////////////////
-                        Item
-                        {
-                            function setVisibleSlot() {setVisible(true)}
-                            function setInvisibleSlot() {setVisible(false)}
 
-                            function setVisible(isVisible)
-                            {
-                                //blinkTimer_rldw.setRunning(isVisible)
-                                visible = isVisible
-                            }
-
-                            id: alert_rldw;
-                            objectName: "ALERT_RLDW"
-                            property int layer_pri: 0
-                            property string canEntityType: "ALERT_RLDW"
+                        Item {
+                            id: groupLanes_right
+                            objectName: "LANES_RIGHT_QtQG"
+                            property bool mutexGroup: false
 
                             anchors.fill: parent
 
+                            function setVisibleSlot() {visible = true}
+                            function setInvisibleSlot() {visible = false}
+
+                            property int layer_pri: 1
+                            property int canEntityType: Alert.QtQG
+
+                            visible: false;
+
                             Image {
-                                visible: true;
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_ldwoff_right
+
+                                objectName: "ALERT_LDWOFF_RIGHT"
+                                property int layer_pri: 0
+                                property string canEntityType: "ALERT_LDWOFF"
+
+                                visible:false
+
                                 height: parent.height;
                                 anchors.bottom: parent.bottom
-                                anchors.horizontalCenter : parent.horizontalCenter
+                                anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/rldw_L.png";
+                                source:"../images/EWAlerts/laneR_off@2x.png";
                                 rotation: 0;
+
+
+
                             }
 
+
                             Image {
-                                id:alert_rldw_right
-                                visible: true;
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_ldwon_right
+
+                                objectName: "LDWON_RIGHT_ALERT"
+                                property int layer_pri: 2
+                                property string canEntityType: "ALERT_LDWON"
+
+                                visible:false
+
                                 height: parent.height;
                                 anchors.bottom: parent.bottom
-                                anchors.horizontalCenter : parent.horizontalCenter
-
+                                anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/rldw_R.png";
+                                source:"../images/EWAlerts/laneR_monitor@lincz.png";
+                                rotation: 0;
+
+
+
+                            }
+
+
+
+                            Image {
+
+                                function setVisibleSlot() {visible = true}
+                                function setInvisibleSlot() {visible = false}
+
+                                id: alert_rldw
+
+                                objectName: "RLDW_ALERT"
+                                property int layer_pri: 1
+                                property string canEntityType: "ALERT_RLDW"
+
+                                visible:false
+
+                                height: parent.height;
+                                anchors.bottom: parent.bottom
+                                anchors.right: parent.right
+
+                                fillMode: Image.PreserveAspectFit;
+                                source:"../images/EWAlerts/laneR_alert@lincz.png";
                                 rotation: 0;
 
 
                                 SequentialAnimation {
+
                                     running: alert_rldw.visible
                                     loops: Animation.Infinite
 
-                                    PropertyAction {target: alert_rldw_right; property: "opacity"; value: 1.0}
+                                    PropertyAction {target: alert_rldw; property: "opacity"; value: 1.0}
                                     PauseAnimation {duration: 500}
-                                    PropertyAction {target: alert_rldw_right; property: "opacity"; value: 0.0}
+                                    PropertyAction {target: alert_rldw; property: "opacity"; value: 0.0}
                                     PauseAnimation {duration: 300}
-                                }  
+
+                                }
                             }
+
                         }
-
-
-
-                        //////////////////////////////////
 
                     }
 
