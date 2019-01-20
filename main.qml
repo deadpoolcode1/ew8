@@ -770,7 +770,7 @@ ApplicationWindow {
                         visible: false;
                         x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/fcw@lincz.png";
+                        source:"../images/EWAlerts/fcw@lincz300x300.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -1296,7 +1296,7 @@ ApplicationWindow {
                                 visible: true
                                 width: main_panel.width*3/4;
                                 fillMode: Image.PreserveAspectFit;
-                                source: "../images/EWAlerts/car@2x.png";
+                                source: "../images/EWAlerts/car-red@lincz.png";
                                 rotation: 0;
 
                                 anchors.horizontalCenter: parent.horizontalCenter

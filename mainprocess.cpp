@@ -246,7 +246,6 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 
 void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {
 
-    qDebug("Called the C++ slot with message: %d:%s" , _alertType  , _objName.toLocal8Bit().constData());
 
     RootedTreeNode* nodeCGRT = nullptr;
 
@@ -258,6 +257,9 @@ void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {
     {
         alertType = GraphicItemsEnumMap::getId(_alertType.toString());
     }
+
+    qDebug("Called the C++ slot with message: %d:%s" , alertType  ,qPrintable(_objName));
+
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alertType);
 

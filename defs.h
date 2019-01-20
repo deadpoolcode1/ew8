@@ -18,12 +18,9 @@
 #ifdef WIN32
 
 struct can_frame{
-      long can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-      uint    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
-      uchar    __pad;   /* padding */
-      uchar    __res0;  /* reserved / padding */
-      uchar    __res1;  /* reserved / padding */
-      uchar    data[8];
+      long can_id; 
+      quint32    can_dlc;
+      quint8    data[8];
 };
 
 #endif
@@ -70,7 +67,11 @@ canrxmsg_type_t;
 typedef struct can_id_values_table_row_s
 {
   can_id_t mnemonic;
+#ifndef WIN32
   quint32 value;
+#else
+   long value;
+#endif
   canrxmsg_type_t type;
   Signal * sg_array;
   const size_t sg_array_size;

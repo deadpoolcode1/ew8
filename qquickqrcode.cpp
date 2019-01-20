@@ -2,7 +2,6 @@
 #include "canstringargumentsaccumulator.h"
 #include "amsignalsmodel.h"
 
-//TODO add win32 support: libqrencode-win32.dll
 #include <qrencode.h>
 
 #include <QPainter>

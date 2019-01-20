@@ -251,9 +251,11 @@ void CanManager::init_frame(struct can_frame * frame)
 {
       frame->can_id =  0x0;
       frame->can_dlc = 0x0;
+#ifndef WIN32
       frame->__pad =   0x0;
       frame->__res0 =  0x0;
       frame->__res1 =  0x0;
+#endif
       frame->data[0] = 0x0;
       frame->data[1] = 0x0;
       frame->data[2] = 0x0;
@@ -284,7 +286,7 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
       DWORD time;
 
       //Waits up to 100 ms for a message
-         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
+         stat = canReadWait(hnd, &(frame_ptr->can_id), (frame_ptr->data), &(frame_ptr->can_dlc), &flags, &time, 10);
          if (stat == canOK){
            if (flags & canMSG_ERROR_FRAME){
              printf("**Transmitted frame is faulty***");
