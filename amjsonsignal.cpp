@@ -8,6 +8,8 @@
 
 #include "graphicitemsenummap.h"
 
+#include "candbsignal.h"
+
 #include <qdebug.h>
 
 #include <QMetaEnum>
@@ -52,15 +54,10 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
 
-    isActivated = false;
-
-    hasArguments = false;
-
-    areArgumentsReceived = false;
+    itsValueTable = nullptr;
 
     itsProtocol = aProtocol;
-    itsDisplay =  aProtocol->itsModel->getItsCanManager()->getItsDisplay();
-
+    itsAMJsonActionFactory = aProtocol->itsModel->getItsAMJsonActionFactory();
 
     name = aName;
 
@@ -73,6 +70,11 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
     polarity = aPolarity;
 
     trueValues = aTrueValues;
+
+    if(EnumItem != type)
+    {
+        itsAction = itsAMJsonActionFactory->createAMJsonActionInstance(this,type,action);
+    }
 
     if(StringArgument == type)
     {
@@ -90,80 +92,57 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      return name;
  }
 
- void AMJsonSignal::connect2EnabledDisabled()
+Signal * AMJsonSignal::getCanDbSignal()
  {
-     //NOTE:Enablers to enablers are not be permitted, to avoid recoursion.
-     //     Enablers do not enable/disable "itsProtocol".
-     if(Enabler == type)
+    return itsCanDbSignal;
+ }
+
+void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
+{
+    itsCanDbSignal = canSignalPtr;
+}
+
+ void AMJsonSignal::process(QVariant extractedCANsignal)
+ {
+     if(itsProtocol->getIsEnabled()&&this->getIsEnabled())
      {
-         AMJsonProtocol * prot = itsProtocol->itsModel->getProtocol(action);
+       if(itsValueTable != nullptr)
+       {
+           itsValueTable->value(extractedCANsignal.toInt());
+       }
+       else
+       {
+         bool do_activate;
+         bool success = extractSetUnsetAction(extractedCANsignal, &do_activate);
 
-         if(prot&&(prot != this->itsProtocol)){
-             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
-         }
-
-         QList<AMJsonSignal *> jsonSigList = itsProtocol->getSignalEntries(action);
-
-         foreach(AMJsonSignal * jsig, jsonSigList)
-         {
-             if(AMJsonSignal::Enabler != jsig->type)
-             {
-                 connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
-             }
-         }
-
-         emit enableDisableConnected(false);
+         itsAction->process(success ? do_activate : extractedCANsignal);
+       }
      }
  }
 
- void AMJsonSignal::activate(bool do_reactivate)
+
+ bool AMJsonSignal::extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active)
  {
-     if(GraphicItem == type)
+     bool success = true;
+
+     if (extractedCANsignal.type() == QVariant::Bool)
      {
-
-         DISPLAY_ITEM_ID alert = GraphicItemsEnumMap::getId(action);
-
-         if(!isActivated || do_reactivate)
-         {
-             itsDisplay->mutex.lock();
-
-             if(do_reactivate&&isActivated)
-             {
-                 itsDisplay->deactivate(alert);
-             }
-
-             if(!hasArguments)
-             {
-                 itsDisplay->activate(alert);
-             }
-             else if (areArgumentsReceived)
-             {
-                if(argType == IntArgument)
-                {
-                    itsDisplay->activate(alert,argInt,argFrac,(visual_item_unit_t) argUnits);
-                }
-                else if (argType == StringArgument)
-                {
-                    itsDisplay->activate(alert, argStr);
-                }
-             }
-             itsDisplay->mutex.unlock();
-
-             isActivated = true;
-         }
+         bool desired = extractedCANsignal.toBool();
+         *do_active = (desired == polarity);
      }
- }
-
- void AMJsonSignal::deactivate(void)
- {
-     if(GraphicItem == type && isActivated)
+     else if (extractedCANsignal.type() == QVariant::Int && nullptr != (trueValues))
      {
-         itsDisplay->mutex.lock();
-         itsDisplay->deactivate(GraphicItemsEnumMap::getId(action));
-         itsDisplay->mutex.unlock();
-
-         isActivated = false;
+         qint32 desired = extractedCANsignal.toInt();
+         *do_active = (trueValues->contains(desired));
      }
+     else
+     {
+         //TODO verify on Json Parsing
+         success = false;
+     }
+
+     return success;
+
  }
 
  void AMJsonSignal::enableDisableThis(bool onOff)
@@ -185,7 +164,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      if(is_pre_enabled && !is_post_enabled)
      {
          qDebug ("Signal %s is %s",qPrintable(name), "disabled");
-         deactivate();
+         deactivateAllGraphicItems();
      }
      else if (!is_pre_enabled && is_post_enabled)
      {
@@ -193,96 +172,52 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      }
  }
 
- void AMJsonSignal::connect2Arguments(AMJsonSignal * argumentSignal)
+ void AMJsonSignal::triggerAllDisablers(void)
  {
-
-     if(!hasArguments)
+     if(Enabler == type)
      {
-         if (argumentSignal->type == AMJsonSignal::IntArgument)
+         if(nullptr == itsValueTable)
          {
-
-
-             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(argumentSignal->action));
-             if(intAcc)
+             if(nullptr != itsAction)
              {
-                 connect(intAcc, SIGNAL(argumentComplete(quint8,quint8,quint8)),this,SLOT(argumentComplete(quint8,quint8,quint8)));
-                 hasArguments = true;
-                 argType = IntArgument;
+                 emit ((AMJsonEnablerAction *)itsAction)-> enableDisableConnected(false);
              }
          }
-         else if(argumentSignal->type == AMJsonSignal::StringArgument)
+         else
          {
-             CanStringArgumentsAccumulator * strAcc = CanStringArgumentsAccumulator::getInstance(GraphicItemsEnumMap::getId(argumentSignal->action));
-
-             if(strAcc)
+             foreach (AMJsonAction * anAction, *itsValueTable)
              {
-                 connect(strAcc, SIGNAL(argumentComplete(QString)),this,SLOT(argumentComplete(QString)));
-                 hasArguments = true;
-                 argType = StringArgument;
+                 emit ((AMJsonEnablerAction *)anAction)-> enableDisableConnected(false);
              }
-
          }
      }
-
  }
 
 
- void AMJsonSignal::argumentComplete(QString anArg)
+ void AMJsonSignal::deactivateAllGraphicItems(void)
  {
-
-     bool isChanged = (argStr != anArg);
-
-     argStr = anArg;
-
-     if (isActivated)
+     if(GraphicItem == type)
      {
-         if (!areArgumentsReceived)
+         if(nullptr == itsValueTable)
          {
-             areArgumentsReceived = true;
-             activate(true);
+             if(nullptr != itsAction)
+             {
+                 ((AMJsonGraphicItemAction *)itsAction)-> deactivate();
+             }
          }
-         else if (isChanged)
+         else
          {
-             activate(true);
+             foreach (AMJsonAction * anAction, *itsValueTable)
+             {
+                 ((AMJsonGraphicItemAction *)anAction)-> deactivate();
+             }
          }
      }
-
-     areArgumentsReceived = true;
  }
 
- //TODO in same frame arguments must be handled before GraphicItems
- void AMJsonSignal::argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)
- {
-    qDebug("argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)");
-    bool areChanged =
-            (argInt != intArg ||
-            argFrac != fracArg ||
-            argUnits != unitArg)
-            ;
 
-    argInt = intArg;
-    argFrac = fracArg;
-    argUnits = unitArg;
 
-    if (isActivated)
-    {
-        if (!areArgumentsReceived)
-        {
-            areArgumentsReceived = true;
-            activate(true);
-        }
-        else if (areChanged)
-        {
-            activate(true);
-        }
-    }
 
-    areArgumentsReceived = true;
- }
 
- bool AMJsonSignal::getIsActived(void)
- {
-     return isActivated;
- }
 
 

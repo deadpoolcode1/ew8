@@ -201,53 +201,25 @@
   size_t  SignalsOfSeeQInfo_App_Info_0x412_size =
           sizeof(SignalsOfSeeQInfo_App_Info_0x412)/sizeof(Signal);
 
-  sg_var_t extractSignal(const char * name, struct can_frame *frame)
+  sg_var_t extractSignal(Signal * canSignal, struct can_frame *frame)
   {
 
      sg_var_t ret;
-     Signal * sg_array =  nullptr;
-     Signal * sg_desired = nullptr;
-     size_t   sg_array_size = 0;
+
+
 
      ret.sg_type =  EXT_SG_VAL_TYPE_BROKEN;
      ret.sg_val._double = 0;
 
-     //Choose appropiate Signals Array
-     for (size_t i=0; i<CAN_MESSAGES_TYPES_NUM; i++)
-     {
-         if(can_id_values_table[i].value ==  frame->can_id)
-         {
-             sg_array = can_id_values_table[i].sg_array;
-             sg_array_size = can_id_values_table[i].sg_array_size;
-             i =  CAN_MESSAGES_TYPES_NUM;
-
-         }
-
-     }
-
-     if(sg_array)
-     {
-         for(size_t i=0; i< sg_array_size;i++)
-         {
-             if(0 == strcmp(sg_array[i].name,name))
-             {
-                 sg_desired =  sg_array + i;
-                 i = sg_array_size;
-             }
-
-         }
-
-     }
-
-     if(sg_desired)
+     if(canSignal)
      {
          //Extract the signal value
 
-         quint8 cut_mask = 0xFF>>(0x08 - (sg_desired->numOfBits));
+         quint8 cut_mask = 0xFF>>(0x08 - (canSignal->numOfBits));
          quint8 raw_val =
-                 frame->data[(sg_desired->startByte)]>>(sg_desired->startBit)&cut_mask;
+                 frame->data[(canSignal->startByte)]>>(canSignal->startBit)&cut_mask;
 
-         switch(sg_desired->valueType)
+         switch(canSignal->valueType)
          {
          case SIGNAL_VALUE_TYPE_DOUBLE:
              ret.sg_val._double = (double)raw_val;
@@ -261,7 +233,7 @@
 
          case SIGNAL_VALUE_TYPE_INTEGER:
 
-             if(1 == sg_desired->numOfBits || (sg_desired->min == 0 && sg_desired->max == 1))
+             if(1 == canSignal->numOfBits || (canSignal->min == 0 && canSignal->max == 1))
              {
                  ret.sg_val._bool = (bool)raw_val;
                  ret.sg_type = EXT_SG_VAL_TYPE_BOOL;
@@ -282,37 +254,40 @@
       return ret;
   }
 
-#if 0
-  one2oneParseAndProcessGeneral(IAlertDisplay * alertsDisplay,struct can_frame * recv, const char * name, DISPLAY_ITEM_ID alert, bool polarity)
+  Signal * extractSignalPtr(const char * name, quint32 msgId)
   {
+      Signal * ret = nullptr;
 
-      bool desired = extractSignal(name,recv).sg_val._bool;
+      Signal * sg_array = nullptr;
+      size_t sg_array_size = 0;
 
-      bool do_active = (desired == polarity);
-
-      if(do_active)
+      //Choose appropiate Signals Array
+      for (size_t i=0; i<CAN_MESSAGES_TYPES_NUM; i++)
       {
-           alertsDisplay->activate(alert);
+          if(can_id_values_table[i].value ==  msgId)
+          {
+              sg_array = can_id_values_table[i].sg_array;
+              sg_array_size = can_id_values_table[i].sg_array_size;
+              i =  CAN_MESSAGES_TYPES_NUM;
+
+          }
+
       }
-      else
+
+      if(sg_array)
       {
-          alertsDisplay->deactivate(alert);
+          for(size_t i=0; i< sg_array_size;i++)
+          {
+              if(0 == strcmp(sg_array[i].name,name))
+              {
+                  ret =  sg_array + i;
+                  i = sg_array_size;
+              }
+
+          }
+
       }
+
+      return ret;
+
   }
-#endif
-
-#if 0
- //0x700 msg description
-candbsignal_t aws_rx_msg_sg[] =
-{
-    sound_type
-} ;
-
-size_t aws_rx_msg_sg_size = (sizeof(aws_rx_msg_sg)/sizeof(candbsignal_t));
-
-canmsg_sg_t aws_rx_msg = {
-  .cid = can_id_master,
-  .size = aws_alerts_table_size,
-  .cansignals = aws_rx_msg_sg,
- };
-#endif

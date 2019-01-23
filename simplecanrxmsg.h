@@ -20,22 +20,6 @@ public:
 
 protected:
      SimpleCanRxMsg();
-
-     //Used for signals that just match to display alerts one-to-one
-     void one2oneParseAndProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
-
-     void argumentSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
-     void enableSignalProcess(struct can_frame * recv, AMJsonSignal * jsonsig);
-
-     /**
-      * @returns: success status
-      */
-     bool extractSetUnsetAction(struct can_frame * recv, AMJsonSignal * jsonsig, bool * do_active);
-
-#if 0
-     void one2oneParseAndProcess(struct can_frame * recv, const char * name, bool * flag, bool polarity = true);
-#endif
-
 };
 
 #endif // SIMPLECANRXMSG_H

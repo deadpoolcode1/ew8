@@ -19,6 +19,8 @@
 
 #include "canmanager.h"
 
+#include "amjsonactionfactory.h"
+
 
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
@@ -26,6 +28,8 @@ class CanStringArgumentsAccumulator;
 AMSignalsModel::AMSignalsModel(CanManager * aCanManager)
 {
     itsCanManager =  aCanManager;
+    itsAMJsonActionFactory = new AMJsonActionFactory();
+
     jsonInitProtocolsAndSignalsVectors();
 }
 
@@ -174,24 +178,32 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                amjsg->itsProtocol = amjp;
 
 
+               //functional connections:
+
                switch (amjsg->type)
                {
                case AMJsonSignal::Enabler:
 
-                   jsonEnablerSignals.append(amjsg);
+                   jsonEnablerActions.append((AMJsonEnablerAction *)amjsg->getItsAction());
 
                    break;
 
                case AMJsonSignal::GraphicItem:
 
-                   jsonGraphicItemSignals.insert(amjsg->action, amjsg);
+                   jsonGraphicItemActions.insert(amjsg->getItsAction()->getActionName(), (AMJsonGraphicItemAction *)amjsg->getItsAction());
 
                    break;
 
                case AMJsonSignal::StringArgument:
                case AMJsonSignal::IntArgument:
 
-                   jsonArgumentSignals.append(amjsg);
+                   jsonArgumentActions.append((AMJsonArgumentAction *)(amjsg->getItsAction()));
+
+                   break;
+
+               case AMJsonSignal::EnumItem:
+
+                  qDebug ("Value tables are not implemented yet");
 
                    break;
                 default:
@@ -201,34 +213,39 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
         }
 
 
+
         //insert protocol into Protocols collector.
         jsonProtocols.insert(amjp->getName(),amjp);
 
     }
 
+ #if 1
     //TODO connect enablers to their enabled/disabled targets
 
     // //////////////////////////////////////
 
-    foreach (AMJsonSignal * enabler, jsonEnablerSignals)
+    foreach (AMJsonEnablerAction * enabler, jsonEnablerActions)
     {
 
         enabler->connect2EnabledDisabled();
 
     }
 
-    foreach (AMJsonSignal * argument, jsonArgumentSignals)
+    foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
     {
-        QMap<QString,AMJsonSignal *>::iterator it = jsonGraphicItemSignals.find(argument->action);
+        //TODO: think about arguments : actions 1:n
+        QMap<QString,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
 
-        if(it != jsonGraphicItemSignals.end())
+        if(it != jsonGraphicItemActions.end())
         {
-            AMJsonSignal *jsonsig = it.value();
-            jsonsig->connect2Arguments(argument);
+            AMJsonGraphicItemAction *jsonaction = it.value();
+            //TODO add forced arguments feature to graphicItemAction
+            jsonaction->connect2Arguments(argument);
 
-            jsonGraphicItemSignals.remove(argument->action);
+            jsonGraphicItemActions.remove(argument->getActionName());
         }
     }
+#endif
 }
 
 

@@ -92,7 +92,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
         {
             if(AMJsonSignal::Enabler == jsonsig->type)
             {
-                jsonsig->enableDisableConnected(false);
+                jsonsig->triggerAllDisablers();
             }
         }
 
@@ -101,7 +101,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
         {
             if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
             {
-                jsonsig->deactivate();
+                jsonsig->deactivateAllGraphicItems();
             }
         }
     }

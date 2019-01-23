@@ -40,14 +40,23 @@ SOURCES += \
     amsignalsmodel.cpp \
     amjsonprotocol.cpp \
     amjsonsignal.cpp \
-    \
     canstringargumentsaccumulator.cpp \
     seeqsysinfocanrxmsg.cpp \
     seeqtimeinfocanrxmsg.cpp \
     canintargumentsaccumulator.cpp \
     canargumentsaccumulator.cpp \
     amjsonconfigreader.cpp \
-    graphicitemsenummap.cpp
+    graphicitemsenummap.cpp \
+    amjsonaction.cpp \
+    amjsongraphicitemaction.cpp \
+    amjsonenableraction.cpp \
+    amjsonargumentaction.cpp \
+    amjsonstringargumentaction.cpp \
+    amjsonnumericargumentaction.cpp \
+    amjsonactionfactory.cpp
+
+
+
 
 RESOURCES += qml.qrc
 
@@ -156,7 +165,15 @@ HEADERS += \
     canintargumentsaccumulator.h \
     canargumentsaccumulator.h \
     amjsonconfigreader.h \
-    graphicitemsenummap.h
+    graphicitemsenummap.h \
+    amjsonaction.h \
+    amjsongraphicitemaction.h \
+    amjsonenableraction.h \
+    amjsonargumentaction.h \
+    amjsonstringargumentaction.h \
+    amjsonnumericargumentaction.h \
+    iamjsonactionfactory.h \
+    amjsonactionfactory.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32

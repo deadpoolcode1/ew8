@@ -9,6 +9,16 @@
 
 #include "ialertdisplay.h"
 
+#include "amjsonaction.h"
+
+#include "iamjsonactionfactory.h"
+
+#include <QHash>
+
+class AMJsonAction;
+
+class IAMJsonActionFactory;
+
 class AMSignalsModel;
 
 class AMJsonProtocol;
@@ -32,10 +42,6 @@ public:
     };
     Q_ENUM(action_type_e)
 
-    typedef ACTION_ERRORS_t (* action_ptr_t)(QVariant);
-    //TODO replace with QMap
-    typedef std::map<QString,action_ptr_t> json_action_t;
-
     AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QString type, QObject * parent = nullptr);
 
     AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, qint32 trueValue, QString type , QObject * parent = nullptr);
@@ -52,56 +58,42 @@ public:
 
     bool getIsEnabled(void) {return disablers.isEmpty();}
 
+    void process(QVariant pureExtractedCANsignal);
+
+    void deactivateAllGraphicItems(void);
+
+    void triggerAllDisablers(void);
+
+    Signal * getCanDbSignal(void);
+
+    void setItsCanDbSignal(Signal * canSignalPtr);
+
     //TODO move two following statements to private section
+
+    //TODO remove
     QString action;
+
     bool polarity;
     action_type_e type;
     QList<qint32> * trueValues;//actual, when is not boolean
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
+    AMJsonAction * getItsAction(){return itsValueTable ? nullptr : itsAction;}
 
-    //WARNING: connect the enabled signals and protocols
-    //just after all of them are inserted in the model.
-    void connect2EnabledDisabled();
 
-    //TODO: For code reliability, verify that is not connected more than once!
-    //NOTE: graphicItem signal appears at most once for one DISPLAY_GRAPHIC_ITEM.
-    void connect2Arguments(AMJsonSignal * argumentSignal);
-
-signals:
-
-    void enableDisableConnected(bool OnOff);
+    bool extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active);
 
 public slots:
 
     void enableDisableThis(bool OnOff);
 
-    void argumentComplete(quint8,quint8,quint8);
-    void argumentComplete(QString);
-
-    //WARNING: next three fields actual for GraphicItemSignal
-    bool getIsActived(void);
-    void deactivate(void);
-
-    //NOTE: reactivates on new args
-    void activate(bool do_reactivate = false);
-
 private:
 
-  bool hasArguments;
-  bool areArgumentsReceived;
+  AMJsonAction * itsAction;
 
-  quint8 argInt;
-  quint8 argFrac;
-  quint8 argUnits;
-  QString argStr;
+  QHash<qint32,AMJsonAction *> * itsValueTable;
 
-  //NOTE: Two next fields are actual for GraphicItem Signals
-  //TODO: Move to GraphicItemSignal on future SRP split
-  bool isActivated;
-  IAlertDisplay * itsDisplay;
-
-  action_type_e argType;
+  IAMJsonActionFactory * itsAMJsonActionFactory;
 
   void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
 
@@ -109,7 +101,7 @@ private:
 
   QList<QObject *> disablers;
 
-  static json_action_t jsonSignalActionMap;
+  Signal * itsCanDbSignal;
 };
 
 #endif // AMJSONSIGNAL_H

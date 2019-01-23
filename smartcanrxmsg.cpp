@@ -5,6 +5,8 @@
 
 #include "canmanager.h"
 
+#include "candbsignal.h"
+
 class CanManager;
 
 class SmartItem;
@@ -23,16 +25,16 @@ SmartCanRxMsg::can_msg_content_t SmartCanRxMsg::parse(struct can_frame *frame)
 {
    can_msg_content_t content;
 
-   content.msgId = extractSignal("Message_serial_ID",frame).sg_val._int;
-   content.visId = extractSignal("Visual_Item_ID",frame).sg_val._int;
-   content.visUnits = (visual_item_unit_t)extractSignal("Float_parameter_unit",frame).sg_val._int;
-   content.minDurUnits = (duration_unit_t)extractSignal("Min_duration_unit",frame).sg_val._int;
-   content.maxDurUnits = (duration_unit_t)extractSignal("Max_duration_unit",frame).sg_val._int;
-   content.activation = extractSignal("Activation_Flag",frame).sg_val._bool;
-   content.paramInt = extractSignal("Float_parameter_int",frame).sg_val._int;
-   content.paramFrac =  extractSignal("Float_parameter_frac",frame).sg_val._int;
-   content.minDuration =  extractSignal("Min_duration_display",frame).sg_val._int;
-   content.maxDuration =  extractSignal("Max_duration_display",frame).sg_val._int;
+   content.msgId = extractSignal(extractSignalPtr("Message_serial_ID",frame->can_id),frame).sg_val._int;
+   content.visId = extractSignal(extractSignalPtr("Visual_Item_ID",frame->can_id),frame).sg_val._int;
+   content.visUnits = (visual_item_unit_t)extractSignal(extractSignalPtr("Float_parameter_unit",frame->can_id),frame).sg_val._int;
+   content.minDurUnits = (duration_unit_t)extractSignal(extractSignalPtr("Min_duration_unit",frame->can_id),frame).sg_val._int;
+   content.maxDurUnits = (duration_unit_t)extractSignal(extractSignalPtr("Max_duration_unit",frame->can_id),frame).sg_val._int;
+   content.activation = extractSignal(extractSignalPtr("Activation_Flag",frame->can_id),frame).sg_val._bool;
+   content.paramInt = extractSignal(extractSignalPtr("Float_parameter_int",frame->can_id),frame).sg_val._int;
+   content.paramFrac =  extractSignal(extractSignalPtr("Float_parameter_frac",frame->can_id),frame).sg_val._int;
+   content.minDuration =  extractSignal(extractSignalPtr("Min_duration_display",frame->can_id),frame).sg_val._int;
+   content.maxDuration =  extractSignal(extractSignalPtr("Max_duration_display",frame->can_id),frame).sg_val._int;
 
    return content;
 

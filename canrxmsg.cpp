@@ -116,6 +116,10 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
             foreach (AMJsonSignal * jsonsig, signalsList)
             {
+
+                jsonsig->setItsCanDbSignal(canSignalsArray+i);
+
+                //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
                 {
                 case AMJsonSignal::Enabler:

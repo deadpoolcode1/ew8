@@ -6,9 +6,22 @@
 #include <defs.h>
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
+#include "amjsonaction.h"
+#include "amjsongraphicitemaction.h"
+#include "amjsonargumentaction.h"
+#include "amjsonenableraction.h"
 #include "canmanager.h"
 
+#include "iamjsonactionfactory.h"
+
 #include <QObject>
+
+class IAMJsonActionFactory;
+
+class AMJsonAction;
+class AMJsonEnablerAction;
+class AMJsonArgumentAction;
+class AMJsonGraphicItemAction;
 
 class AMJsonProtocol;
 class AMJsonSignal;
@@ -26,16 +39,20 @@ public:
 
     CanManager * getItsCanManager(void);
 
+    IAMJsonActionFactory * getItsAMJsonActionFactory(){return itsAMJsonActionFactory;}
+
 private:
 
     QMap<QString,AMJsonProtocol*> jsonProtocols;
 
-    QList<AMJsonSignal *> jsonEnablerSignals;
+    QList<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
-    QMap<QString,AMJsonSignal *> jsonGraphicItemSignals;
-    QList<AMJsonSignal *> jsonArgumentSignals;
+    QMap<QString,AMJsonGraphicItemAction *> jsonGraphicItemActions;
+    QList<AMJsonArgumentAction *> jsonArgumentActions;
+
     CanManager * itsCanManager;
+    IAMJsonActionFactory * itsAMJsonActionFactory;
 };
 
 #endif // AMSIGNALSMODEL_H
