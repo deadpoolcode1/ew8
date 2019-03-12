@@ -5,7 +5,7 @@
         {"enum": "ALERT_PDZ", "value": 30},
         {"enum": "ALERT_PCW", "value": 31},
         {"enum": "ALERT_LDWOFF", "value": 32},
-        {"enum": "ALERT_LDWON", "value": 33, "NOTE":"inverted"},
+        {"enum": "ALERT_LDWON", "value": 33},
         {"enum": "ALERT_LLDW","value": 34},
         {"enum": "ALERT_RLDW", "value": 35},
         {"enum": "ALERT_BLINKERS", "value": 36},
@@ -134,23 +134,11 @@
                 {"name":"Vision_only_Sign_Type_D3", "action": "ALERT_SLI_130_D3", "type": "GraphicItem", "Set":[12, 40]},
                 {"name":"Vision_only_Sign_Type_D3", "action": "ALERT_SLI_140_D3", "type": "GraphicItem", "Set":[13, 41]},
 
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_10_D4", "type": "GraphicItem", "Set":[0, 28]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_20_D4", "type": "GraphicItem", "Set":[1, 29]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_30_D4", "type": "GraphicItem", "Set":[2, 30]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_40_D4", "type": "GraphicItem", "Set":[3, 31]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_50_D4", "type": "GraphicItem", "Set":[4, 32]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_60_D4", "type": "GraphicItem", "Set":[5, 33]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_70_D4", "type": "GraphicItem", "Set":[6, 34]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_80_D4", "type": "GraphicItem", "Set":[7, 35]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_90_D4", "type": "GraphicItem", "Set":[8, 36]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_100_D4", "type": "GraphicItem", "Set":[9, 37]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_110_D4", "type": "GraphicItem", "Set":[10, 38]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_120_D4", "type": "GraphicItem", "Set":[11, 39]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_130_D4", "type": "GraphicItem", "Set":[12, 40]},
-                {"name":"Vision_only_Sign_Type_D4", "action": "ALERT_SLI_140_D4", "type": "GraphicItem", "Set":[13, 41]}
+                {"name":"Vision_only_Sign_Type_D4", "action": "Vision_only_Sign_Type", "type": "GraphicItem", "isValueTable": true}
+
             ],
             "value_tables":[
-                {"name":"Vision_only_Sign_Type", "type": "GraphicItem", "rows":[
+                {"name":"Vision_only_Sign_Type", "rows":[
                         {"value": "Standard regular 10 kph", "action": "ALERT_SLI", "arg": 10},
                         {"value": "standard regular 20 kph", "action": "ALERT_SLI", "arg": 20},
                         {"value": "standard regular 30 kph", "action": "ALERT_SLI", "arg": 30},

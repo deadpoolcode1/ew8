@@ -21,17 +21,17 @@ class CanIntArgumentsAccumulator;
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, QObject * parent) : QObject(parent)
 {
-    init(protocol, name, action, true, type, -1, nullptr);
+    init(protocol, name, action, true, type, -1, nullptr, false);
 }
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
 {
-     init(protocol, name, action, polarity, type, -1, nullptr);
+     init(protocol, name, action, polarity, type, -1, nullptr, false);
 }
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
 {
-     init(protocol, name, action, true, type, index, nullptr);
+     init(protocol, name, action, true, type, index, nullptr, false);
 }
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
@@ -40,16 +40,16 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString acti
 
      trueValues->append(trueValue);
 
-     init(protocol, name, action, true, type, -1, trueValues);
+     init(protocol, name, action, true, type, -1, trueValues, false);
 }
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QList<qint32> * trueValues, QString type, QObject * parent) : QObject(parent)
 {
-     init(protocol, name, action, true, type, -1, trueValues);
+     init(protocol, name, action, true, type, -1, trueValues, false);
 }
 
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
 {
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
@@ -71,7 +71,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     trueValues = aTrueValues;
 
-    if(EnumItem != type)
+    if(false ==  isValueTable)
     {
         itsAction = itsAMJsonActionFactory->createAMJsonActionInstance(this,type,action);
     }

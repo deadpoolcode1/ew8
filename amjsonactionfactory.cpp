@@ -28,12 +28,6 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonSignal * aJ
         ret =  new AMJsonEnablerAction(aJsonSignal, action);
         break;
 
-    case (qint32)AMJsonSignal::EnumItem:
-
-        qDebug("Unsupported AMJsonActionType");
-
-        break;
-
     case (qint32)AMJsonSignal::StringArgument:
         tmpStr = new AMJsonStringArgumentAction(aJsonSignal, action);
         tmpStr->setIndex(aJsonSignal->index);

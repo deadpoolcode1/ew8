@@ -34,11 +34,10 @@ public:
     //TODO split to oop-pattern
     enum action_type_e
     {
-        GraphicItem = 1,
-        Enabler = 2,
-        EnumItem = 3,
-        StringArgument = 4,
-        IntArgument = 5,
+        GraphicItem = 0,
+        Enabler = 1,
+        StringArgument = 2,
+        IntArgument = 3,
     };
     Q_ENUM(action_type_e)
 
@@ -95,7 +94,7 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues);
+  void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues, bool isValueTable);
 
   QString name;
 

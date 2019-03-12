@@ -49,7 +49,6 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 
 }
 
-
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
 
@@ -59,41 +58,9 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject protocol_obj = value.toObject();
 
-        QJsonValue protocolNameValue;
-        QJsonValue protocolTypeValue;
+        AMJsonProtocol *amjp = new AMJsonProtocol(protocol_obj["protocol"], this);
 
-
-        bool isNotDefaultProtocolType = (protocol_obj["protocol"].isArray());
-
-        if(isNotDefaultProtocolType)
-        {
-
-            QJsonArray protocol_array = protocol_obj["protocol"].toArray();
-
-           protocolNameValue = protocol_array.at(0);
-
-           protocolTypeValue = protocol_array.at(1);
-
-
-        }
-        else
-        {
-            protocolNameValue = protocol_obj["protocol"];
-        }
-
-        AMJsonProtocol * amjp = new AMJsonProtocol(protocolNameValue.toString(),this);
-
-        if(isNotDefaultProtocolType)
-        {
-            //TODO set the protocol type
-            amjp->setType(protocolTypeValue);
-        }
-
-         qDebug("JSON: extracted %s protocol, its type %s",  qPrintable(amjp->getName()),qPrintable(amjp->getTypeQString()));
-
-
-
-        //construct the current protocol's signals collection:
+        amjp->collectValueTables(protocol_obj["value_tables"]);
 
         QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
 
@@ -111,6 +78,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                sigName = signal_obj["name"].toString();
 
 
+               //Action parsing:
                if (signal_obj["action"].isArray())
                {
                    QJsonArray actionArray = signal_obj["action"].toArray();
@@ -125,9 +93,9 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                {
                    sigAction = signal_obj["action"].toString();
                }
+               //end of Action parsing
 
                sigType =  signal_obj["type"].toString();
-
 
                sigIndex = signal_obj["index"].toInt(-1);
 
@@ -180,17 +148,24 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
                //functional connections:
 
+
+
                switch (amjsg->type)
                {
                case AMJsonSignal::Enabler:
 
                    jsonEnablerActions.append((AMJsonEnablerAction *)amjsg->getItsAction());
 
+                   //TODO: consider value table case
+
                    break;
 
                case AMJsonSignal::GraphicItem:
 
                    jsonGraphicItemActions.insert(amjsg->getItsAction()->getActionName(), (AMJsonGraphicItemAction *)amjsg->getItsAction());
+
+
+                   //TODO: consider value table case
 
                    break;
 
@@ -199,13 +174,11 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
                    jsonArgumentActions.append((AMJsonArgumentAction *)(amjsg->getItsAction()));
 
-                   break;
-
-               case AMJsonSignal::EnumItem:
-
-                  qDebug ("Value tables are not implemented yet");
+                   //TODO: consider value table case
 
                    break;
+
+
                 default:
                    /* skip*/
                    break;
@@ -219,10 +192,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
     }
 
- #if 1
-    //TODO connect enablers to their enabled/disabled targets
-
-    // //////////////////////////////////////
 
     foreach (AMJsonEnablerAction * enabler, jsonEnablerActions)
     {
@@ -245,7 +214,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
             jsonGraphicItemActions.remove(argument->getActionName());
         }
     }
-#endif
 }
 
 
