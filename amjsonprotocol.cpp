@@ -9,7 +9,7 @@
 
 #include "graphicitemsenummap.h"
 
-AMJsonProtocol::AMJsonProtocol(QJsonValue protocolNameAndType,  AMSignalsModel * aModel, QObject * parent) : QObject(parent)
+AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameAndType, QObject * parent) : QObject(parent)
 {
     QJsonValue protocolNameValue;
     QJsonValue protocolTypeValue;

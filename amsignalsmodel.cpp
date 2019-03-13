@@ -58,97 +58,25 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject protocol_obj = value.toObject();
 
-        AMJsonProtocol *amjp = new AMJsonProtocol(protocol_obj["protocol"], this);
+        AMJsonProtocol *amjp = new AMJsonProtocol(this, protocol_obj["protocol"]);
 
         amjp->collectValueTables(protocol_obj["value_tables"]);
+
+        // //////////////////////////////////////
 
         QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
 
 
         foreach (const QJsonValue & signal_value, jsonSignalsArray) {
-               QJsonObject signal_obj = signal_value.toObject();
 
-               QString sigName;
-               QString sigAction;
-               QString sigType;
-               bool polarity = true;
-               qint32 sigIndex = -1;
-               qint32 sigTrueValue;
-
-               sigName = signal_obj["name"].toString();
-
-
-               //Action parsing:
-               if (signal_obj["action"].isArray())
-               {
-                   QJsonArray actionArray = signal_obj["action"].toArray();
-
-                   sigAction = actionArray[0].toString();
-                   if ("inverted" == actionArray[1].toString())
-                   {
-                       polarity = false;
-                   }
-               }
-               else
-               {
-                   sigAction = signal_obj["action"].toString();
-               }
-               //end of Action parsing
-
-               sigType =  signal_obj["type"].toString();
-
-               sigIndex = signal_obj["index"].toInt(-1);
+               // /////////////////////////////////////////////////////////////////
 
                AMJsonSignal * amjsg;
 
-               if(polarity)
-               {
-                   if(-1 == sigIndex)
-                   {
-                       //TODO verify syntax the signal on DBC side must be boolean
-                       if(signal_obj.find("Set") == signal_obj.end())
-                       {
-                          amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigType);
-                       }
-                       else if (signal_obj["Set"].isArray())
-                       {
-                           //TODO verify syntax the signal on DBC side must be non-boolean integer
-                           QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
-
-                           QList<qint32> * sigTrueValues = new QList<qint32>();
-
-                           foreach(QJsonValue value, sigTrueValues_Array)
-                           {
-                               sigTrueValues->append(value.toInt(0));
-                           }
-
-                           amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigTrueValues, sigType);
-                       }
-                       else
-                       {
-                          //TODO verify syntax the signal on DBC side must be non-boolean integer
-                          sigTrueValue = signal_obj["Set"].toInt(0);
-                          amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigTrueValue, sigType);
-                       }
-                   }
-                   else
-                   {
-                       amjsg = new AMJsonSignal(amjp, sigName, sigAction, sigType, sigIndex);
-                   }
-               }
-               else
-               {
-                   amjsg = new AMJsonSignal(amjp, sigName, sigAction, false, sigType);
-               }
-
-
-               amjp->append(amjsg);
-               amjsg->itsProtocol = amjp;
+               amjsg = new AMJsonSignal(amjp, signal_value);
 
 
                //functional connections:
-
-
 
                switch (amjsg->type)
                {

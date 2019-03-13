@@ -14,40 +14,100 @@
 
 #include <QMetaEnum>
 
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
+
 #include <QObject>
 
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, QObject * parent) : QObject(parent)
+
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
 {
-    init(protocol, name, action, true, type, -1, nullptr, false);
+
+    //Signal row parsing:
+    QJsonObject signal_obj = singleSignalsEntry.toObject();
+    QString sigName;
+    QString sigAction;
+    QString sigType;
+    bool polarity = true;
+    qint32 sigIndex = -1;
+
+    sigName = signal_obj["name"].toString();
+
+
+    //Action parsing:
+    if (signal_obj["action"].isArray())
+    {
+        QJsonArray actionArray = signal_obj["action"].toArray();
+
+        sigAction = actionArray[0].toString();
+        if ("inverted" == actionArray[1].toString())
+        {
+            polarity = false;
+        }
+    }
+    else
+    {
+        sigAction = signal_obj["action"].toString();
+    }
+    //end of Action parsing
+
+    sigType =  signal_obj["type"].toString();
+
+    sigIndex = signal_obj["index"].toInt(-1);
+
+    if(polarity)
+    {
+        if(-1 == sigIndex)
+        {
+            //TODO verify syntax the signal on DBC side must be boolean
+            if(signal_obj.find("Set") == signal_obj.end())
+            {
+
+              //Used properties: (aProtocol, sigName, sigAction, sigType)
+                init(aProtocol, sigName, sigAction, true, sigType, -1, nullptr, false);
+
+            }
+            else //extract field of True Values
+            {
+                //TODO verify syntax the signal on DBC side must be non-boolean integer
+                QList<qint32> * sigTrueValues = new QList<qint32>();
+
+                if (signal_obj["Set"].isArray()){
+
+                    QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
+
+
+                    foreach(QJsonValue value, sigTrueValues_Array)
+                    {
+                        sigTrueValues->append(value.toInt(0));
+                    }
+                }
+                else
+                {
+                    qint32 sigTrueValue = signal_obj["Set"].toInt(0);
+                    sigTrueValues->append(sigTrueValue);
+                }
+
+                 //Used properties: (aProtocol, sigName, sigAction, sigTrueValues, sigType)
+                 init(aProtocol, sigName, sigAction, true, sigType, -1, sigTrueValues, false);
+            }
+        }
+        else
+        {
+            //Used properties (argument signal) : (aProtocol, sigName, sigAction, sigType, sigIndex)
+             init(aProtocol, sigName, sigAction, true, sigType, sigIndex, nullptr, false);
+        }
+    }
+    else
+    {
+        //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
+        init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
+    }
 }
-
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, bool polarity, QString type, QObject * parent) : QObject(parent)
-{
-     init(protocol, name, action, polarity, type, -1, nullptr, false);
-}
-
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QString type, ssize_t index, QObject * parent) : QObject(parent)
-{
-     init(protocol, name, action, true, type, index, nullptr, false);
-}
-
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, qint32 trueValue, QString type, QObject * parent) : QObject(parent)
-{
-     QList<qint32> * trueValues = new QList<qint32>;
-
-     trueValues->append(trueValue);
-
-     init(protocol, name, action, true, type, -1, trueValues, false);
-}
-
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * protocol, QString name, QString action, QList<qint32> * trueValues, QString type, QObject * parent) : QObject(parent)
-{
-     init(protocol, name, action, true, type, -1, trueValues, false);
-}
-
 
 void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
 {
@@ -81,6 +141,9 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
         DISPLAY_ITEM_ID action_disp_id = GraphicItemsEnumMap::getId(action);
         CanStringArgumentsAccumulator::getInstance(action_disp_id)->growTriggeringSize(anIndex);
     }
+
+
+    itsProtocol->append(this);
 
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
 

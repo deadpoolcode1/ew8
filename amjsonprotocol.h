@@ -24,7 +24,7 @@ public:
     Q_ENUM(protocol_type_e)
 
 
-    explicit AMJsonProtocol(QJsonValue protocolNameAndType, AMSignalsModel * aModel, QObject * parent = nullptr);
+    explicit AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameAndType, QObject * parent = nullptr);
 
     void append(AMJsonSignal * signal);
 

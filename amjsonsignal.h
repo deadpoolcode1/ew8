@@ -41,15 +41,7 @@ public:
     };
     Q_ENUM(action_type_e)
 
-    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QString type, QObject * parent = nullptr);
-
-    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, qint32 trueValue, QString type , QObject * parent = nullptr);
-
-    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QList<qint32> * trueValues, QString type , QObject * parent = nullptr);
-
-    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type, QObject * parent = nullptr);
-
-    AMJsonSignal(AMJsonProtocol * aProtocol, QString name, QString action, QString type, ssize_t index, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent = nullptr);
 
     QString getName(void);
 
