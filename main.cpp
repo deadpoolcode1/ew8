@@ -9,6 +9,8 @@
 
 #include "amjsonsignal.h"
 
+#include "defs.h"
+
 class AlertTypes;
 class QQuickQRCode;
 
@@ -30,7 +32,6 @@ int main(int argc, char *argv[])
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
     mp->launchEverything();
-
 
     return app.exec();
 }

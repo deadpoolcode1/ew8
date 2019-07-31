@@ -57,6 +57,10 @@ extern size_t SignalsOfAfterMarket_AWS_0x700_size;
 extern Signal SignalsOfAfterMarket_TSR_0x727[];
 extern size_t SignalsOfAfterMarket_TSR_0x727_size;
 
+extern  Value ValuesOfVisionOnlySignType[];
+extern  size_t ValuesOfVisionOnlySignType_size;
+
+
 extern Signal SignalsOfSmartADAS_S_ADAS_0x7ac[];
 extern size_t SignalsOfSmartADAS_S_ADAS_0x7ac_size;
 

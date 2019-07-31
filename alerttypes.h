@@ -7,6 +7,7 @@
 
 #include <QQmlEngine>
 
+//TODO try convert to Q_GADGET
 class AlertTypes : public QObject
 {
 

@@ -13,9 +13,11 @@ class AMJsonNumericArgumentAction : public AMJsonArgumentAction
     Q_OBJECT
 
 public:
-   explicit AMJsonNumericArgumentAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent = nullptr);
+   explicit AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent = nullptr);
 
-   void process(QVariant extractedCANsignal);
+   void process(QObject * sender, QVariant extractedCANsignal);
+
+   bool isItsArgumentsType(qint32 type);
 
 private:
    CanIntArgumentsAccumulator * itsArgumentAccumulator;

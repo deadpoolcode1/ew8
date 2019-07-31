@@ -7,23 +7,36 @@
 #include <QJsonArray>
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
+#include "iamjsonactionfactory.h"
 
 class AMJsonAction;
 class AMJsonSignal;
 class QJsonArray;
+class IAMJsonActionFactory;
 
-class AmJsonActionsMultiplexor
+class AmJsonActionsMultiplexor: public QObject
 {
+    Q_OBJECT
+
+
+public:
+
+    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, const vt_name2hex_t * name2hex, QString type, QObject * parent = nullptr);
+
+    QHash<qint32,AMJsonAction *> * getItsValueTable();
+
+    qint32 getItsValuesType(void);
+
 private:
-    QString type;
+    const vt_name2hex_t * name2hex;
+    action_type_e  type;
     QJsonArray itsRawRows;
     QHash<qint32,AMJsonAction *> itsValueTable;
+    void initByType(QString aType);
 
-public: 
-    AmJsonActionsMultiplexor(QJsonArray vt_rows);
+    AMJsonProtocol * itsProtocol;
+    IAMJsonActionFactory * itsActionFactory;
 
-    //NOTE: returns true if the type is newly initialized, or same as previous
-    bool initByType(QString aType);
 };
 
 #endif // AMJSONACTIONSMULTIPLEXOR_H

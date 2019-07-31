@@ -39,6 +39,8 @@ public:
 
     CanManager * getItsCanManager(void);
 
+    void storeCollectedAction(AMJsonAction * anAction);
+
     IAMJsonActionFactory * getItsAMJsonActionFactory(){return itsAMJsonActionFactory;}
 
 private:

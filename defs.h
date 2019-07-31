@@ -5,9 +5,6 @@
 
 #include "candbsignal.h"
 
-#include <map>
-
-
 #if 0
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else
@@ -88,6 +85,21 @@ static const can_id_values_table_row_t can_id_values_table[] =
   {can_id_cq_time_info,0x411, msg_simple, SignalsOfSeeQInfo_Time_Info_0x411, SignalsOfSeeQInfo_Time_Info_0x411_size},
 };
 
+//WARNING: on dbc realization the VT must be encapsulated in its protocol.
+typedef struct vt_name2hex_s
+{
+  const char* name;
+  Value * vt_array;
+  const size_t vt_array_size;
+} vt_name2hex_t;
+
+static const vt_name2hex_t vt_name2hex_table[] =
+{
+    {"Vision_only_Sign_Type",ValuesOfVisionOnlySignType,ValuesOfVisionOnlySignType_size},
+};
+
+static const size_t vt_name2hex_table_size = sizeof(vt_name2hex_table)/sizeof(vt_name2hex_t);
+
 #define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
 #define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
 
@@ -146,5 +158,16 @@ enum PCW_PedDZ_e
     ped_PedDZ = 1,//"Pedestrian in danger zone"
     ped_PCW = 2,//"PCW"
 };
+
+#if 0
+enum action_type_e
+{
+    GraphicItem = 0,
+    Enabler = 1,
+    StringArgument = 2,
+    IntArgument = 3,
+};
+Q_DECLARE_METATYPE(action_type_e)
+#endif
 
 #endif // DEFS_H

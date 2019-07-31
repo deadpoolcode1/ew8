@@ -68,6 +68,7 @@ void AMJsonProtocol::collectValueTables(QJsonValue protocolValueTables)
      QJsonArray jsonValueTablesArray = protocolValueTables.toArray();
 
       QString vt_name;
+      QString vt_type;
       QJsonArray vt_rows;
 
      //collect the value tables names:
@@ -76,9 +77,23 @@ void AMJsonProtocol::collectValueTables(QJsonValue protocolValueTables)
 
             //take the name and create an empty corresponding multiplexor entry.
           vt_name = vt_obj["name"].toString();
+          vt_type = vt_obj["type"].toString();
           vt_rows = vt_obj["rows"].toArray();
 
-          AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(vt_rows);
+          const vt_name2hex_t * name2hex;
+
+          //TODO find the pointer
+          for(size_t i = 0; i < vt_name2hex_table_size; i++)
+          {
+              if(0 == vt_name.compare(vt_name2hex_table[i].name))
+              {
+                  name2hex = &vt_name2hex_table[i];
+                  i = vt_name2hex_table_size;
+              }
+          }
+
+
+          AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows,name2hex,vt_type);
 
           addMultiplexor(vt_name,aMultiplexor);
      }
@@ -144,16 +159,14 @@ bool AMJsonProtocol::addMultiplexor(QString name, AmJsonActionsMultiplexor * mux
 }
 
 //NOTE: fails when lacks name or different type already assigned
-bool AMJsonProtocol::initMultiplexorByType(QString name,QString type)
+AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(QString name)
 {
-    bool ret = false;
+    AmJsonActionsMultiplexor * ret = nullptr;
 
     if(jsonMultiplexors.contains(name))
     {
-        AmJsonActionsMultiplexor * mux = jsonMultiplexors.value(name);
-        ret = mux->initByType(type);
+        ret = jsonMultiplexors.value(name);
     }
-
     return ret;
 }
 
@@ -182,7 +195,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
 
         foreach (AMJsonSignal * jsonsig , jsonSignals)
         {
-            if(AMJsonSignal::Enabler == jsonsig->type)
+            if(Enabler == jsonsig->type)
             {
                 jsonsig->triggerAllDisablers();
             }
@@ -191,7 +204,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
 
         foreach (AMJsonSignal * jsonsig , jsonSignals)
         {
-            if((jsonsig->getIsEnabled())&&(AMJsonSignal::GraphicItem == jsonsig->type))
+            if((jsonsig->getIsEnabled())&&(GraphicItem == jsonsig->type))
             {
                 jsonsig->deactivateAllGraphicItems();
             }

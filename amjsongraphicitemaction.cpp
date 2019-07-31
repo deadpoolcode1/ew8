@@ -15,29 +15,62 @@ class AMJsonSignal;
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
 
-AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent): AMJsonAction(aJsonSignal, action, parent)
+QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
+
+AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, QString action)
 {
-   itsGraphicItemID = GraphicItemsEnumMap::getId(action);
-   itsDisplay = aJsonSignal->itsProtocol->itsModel->getItsCanManager()->getItsDisplay();
-   isActivated = false;
+    DISPLAY_ITEM_ID aGraphicItemID = GraphicItemsEnumMap::getId(action);
+
+    AMJsonGraphicItemAction * ret =  nullptr;
+
+    ret = itsObjects.value(aGraphicItemID, nullptr);
+
+    if(nullptr == ret)
+    {
+        ret = new AMJsonGraphicItemAction(aJsonProtocol, aGraphicItemID, action);
+        itsObjects.insert(aGraphicItemID, ret);
+    }
+
+    return ret;
+}
+
+AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
+{
+   itsGraphicItemID = aGraphicItemID;
+   itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
    hasArguments = false;
    areArgumentsReceived = false;
 }
 
-void AMJsonGraphicItemAction::process(QVariant extractedCANsignal)
-{
+void AMJsonGraphicItemAction::process(QObject * sender, QVariant extractedCANsignal)
+{   
+    bool isSenderListed = activators.contains(sender);
+
     if (extractedCANsignal.toBool())
     {
-        activate();
+        if(!isSenderListed)
+        {
+            activate();
+            activators.append(sender);
+        }
     }
     else
     {
-        deactivate();
+        if(isSenderListed)
+        {
+            if(1 == activators.count())
+            {
+                deactivate();
+            }
+            activators.removeOne(sender);
+        }
     }
 }
 
 void AMJsonGraphicItemAction::activate(bool do_reactivate)
 {
+
+    bool isActivated = getIsActived();
 
     if(!isActivated || do_reactivate)
     {
@@ -64,21 +97,17 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
         }
         itsDisplay->mutex.unlock();
-
-        isActivated = true;
     }
 
 }
 
 void AMJsonGraphicItemAction::deactivate(void)
 {
-    if(isActivated)
+    if(getIsActived())
     {
         itsDisplay->mutex.lock();
         itsDisplay->deactivate(itsGraphicItemID);
         itsDisplay->mutex.unlock();
-
-        isActivated = false;
     }
 }
 
@@ -88,6 +117,8 @@ void AMJsonGraphicItemAction::argumentComplete(QString anArg)
     bool isChanged = (argStr != anArg);
 
     argStr = anArg;
+
+    bool isActivated =  getIsActived();
 
     if (isActivated)
     {
@@ -119,6 +150,8 @@ void AMJsonGraphicItemAction::argumentComplete(quint8 intArg, quint8 fracArg, qu
    argFrac = fracArg;
    argUnits = unitArg;
 
+   bool isActivated = getIsActived();
+
    if (isActivated)
    {
        if (!areArgumentsReceived)
@@ -137,7 +170,7 @@ void AMJsonGraphicItemAction::argumentComplete(quint8 intArg, quint8 fracArg, qu
 
 bool AMJsonGraphicItemAction::getIsActived(void)
 {
-    return isActivated;
+    return !(activators.isEmpty());
 }
 
 
@@ -145,7 +178,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
 {
     if(!hasArguments)
     {
-        if (argumentAction->getItsJsonSignal()->type == AMJsonSignal::IntArgument)
+        if (argumentAction->isItsArgumentsType(IntArgument))
         {
 
 
@@ -157,7 +190,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
                 isArgOfStringType = false;
             }
         }
-        else if(argumentAction->getItsJsonSignal()->type == AMJsonSignal::StringArgument)
+        else if(argumentAction->isItsArgumentsType(StringArgument))
         {
             CanStringArgumentsAccumulator * strAcc = CanStringArgumentsAccumulator::getInstance(itsGraphicItemID);
 

@@ -8,16 +8,19 @@
 #include "amjsonaction.h"
 
 class AMJsonAction;
+class AMJsonProtocol;
 
 class AMJsonArgumentAction : public AMJsonAction
 {
 public:
-    explicit AMJsonArgumentAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonArgumentAction(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, AMJsonAction * parent = nullptr);
 
     //NOTE: default index value (0)
     void setIndex(ssize_t anIndex) {itsIndex = anIndex;}
 
-    virtual void process(QVariant extractedCANsignal) = 0;
+    virtual bool isItsArgumentsType(qint32 type) = 0;
+
+    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
 
 protected:
 

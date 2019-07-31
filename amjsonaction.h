@@ -2,27 +2,32 @@
 #define AMJSONACTION_H
 
 #include <QObject>
+#include "actiontype.h"
 
-class AMJsonSignal;
+class AMJsonProtocol;
 
 class AMJsonAction : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit AMJsonAction(AMJsonSignal * aJsonSignal, QString action, QObject *parent = nullptr);
+    explicit AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, QObject *parent = nullptr);
 
-    AMJsonSignal * getItsJsonSignal(void);
+    AMJsonProtocol * getItsJsonProtocol(void);
 
      QString getActionName(void);
 
-    virtual void process(QVariant extractedCANsignal) = 0;
+    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
 
-protected:
+    action_type_e getActionType(void);
+
+private:
 
     QString action;
 
-    AMJsonSignal * itsCANSignal;
+    action_type_e type;
+
+    AMJsonProtocol * itsProtocol;
 
 signals:
 

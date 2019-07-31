@@ -122,14 +122,14 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
                 {
-                case AMJsonSignal::Enabler:
+                case Enabler:
 
                     canJsonSignalsListInProcessOrder.prepend(jsonsig);
 
                     break;
 
-                case AMJsonSignal::StringArgument:
-                case AMJsonSignal::IntArgument:
+                case StringArgument:
+                case IntArgument:
 
                     canJsonSignalsListInProcessOrder.append(jsonsig);
 

@@ -45,8 +45,8 @@ public:
      //NOTE: fails when name already exists
      bool addMultiplexor(QString name, AmJsonActionsMultiplexor * mux);
 
-     //NOTE: fails when lacks name or different type already assigned
-     bool initMultiplexorByType(QString name,QString type);
+     //NOTE: returns nullptr when lacks name or different type already assigned
+     AmJsonActionsMultiplexor * getMultiplexorByName(QString name);
 
 public slots:
 

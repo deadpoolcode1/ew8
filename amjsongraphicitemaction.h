@@ -2,6 +2,7 @@
 #define AMJSONGRAPHICITEMACTION_H
 
 #include <QObject>
+#include <QMap>
 
 #include "defs.h"
 #include "amjsonaction.h"
@@ -20,14 +21,13 @@ class AMJsonGraphicItemAction: public AMJsonAction
     Q_OBJECT
 
 public:
-    explicit AMJsonGraphicItemAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent = nullptr);
 
-    void process(QVariant extractedCANsignal);
+    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, QString action);
+
+    void process(QObject * sender, QVariant extractedCANsignal);
 
     bool getIsActived(void);
-    void deactivate(void);
 
-    void activate(bool do_reactivate = false);
 
     //TODO: For code reliability, verify that is not connected more than once!
     //NOTE: graphicItem signal appears at most once for one DISPLAY_GRAPHIC_ITEM.
@@ -39,6 +39,14 @@ public slots:
     void argumentComplete(QString strArg);
 
 private:
+
+    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent = nullptr);
+
+    void deactivate(void);
+
+    void activate(bool do_reactivate = false);
+
+
     DISPLAY_ITEM_ID itsGraphicItemID;
 
     bool hasArguments;
@@ -51,9 +59,11 @@ private:
 
     bool isArgOfStringType;
 
-    bool isActivated;
     IAlertDisplay * itsDisplay;
 
+    static QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
+
+    QList<QObject *> activators;
 };
 
 #endif // AMJSONGRAPHICITEMACTION_H

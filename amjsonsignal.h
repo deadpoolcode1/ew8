@@ -32,14 +32,6 @@ class AMJsonSignal: public QObject
 public:
 
     //TODO split to oop-pattern
-    enum action_type_e
-    {
-        GraphicItem = 0,
-        Enabler = 1,
-        StringArgument = 2,
-        IntArgument = 3,
-    };
-    Q_ENUM(action_type_e)
 
     AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent = nullptr);
 
@@ -83,6 +75,11 @@ private:
   AMJsonAction * itsAction;
 
   QHash<qint32,AMJsonAction *> * itsValueTable;
+  AMJsonAction * activatedAction;
+
+  void setActivatedAction(AMJsonAction * anAction){activatedAction = anAction;}
+
+  AMJsonAction * getActivatedAction(void){return activatedAction;}
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 

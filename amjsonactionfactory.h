@@ -11,7 +11,7 @@ public:
 
     explicit AMJsonActionFactory(){/*empty*/}
 
-    AMJsonAction * createAMJsonActionInstance(AMJsonSignal * aJsonSignal, qint32 type, QString action);
+    AMJsonAction * createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index);
 };
 
 #endif // AMJSONACTIONFACTORY_H

@@ -1,15 +1,16 @@
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
 
-AMJsonAction::AMJsonAction(AMJsonSignal * aJsonSignal, QString anAction, QObject *parent) : QObject(parent)
+AMJsonAction::AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e aType, QString anAction, QObject *parent) : QObject(parent)
 {
   action = anAction;
-  itsCANSignal = aJsonSignal;
+  itsProtocol = aJsonProtocol;
+  type = aType;
 }
 
-AMJsonSignal * AMJsonAction::getItsJsonSignal(void)
+AMJsonProtocol * AMJsonAction::getItsJsonProtocol(void)
 {
-    return itsCANSignal;
+    return itsProtocol;
 }
 
  QString AMJsonAction::getActionName(void)
@@ -17,4 +18,8 @@ AMJsonSignal * AMJsonAction::getItsJsonSignal(void)
      return action;
  }
 
+action_type_e AMJsonAction::getActionType(void)
+{
+  return type;
+}
 

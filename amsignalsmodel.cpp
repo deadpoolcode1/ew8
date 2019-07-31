@@ -66,7 +66,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
 
-
         foreach (const QJsonValue & signal_value, jsonSignalsArray) {
 
                // /////////////////////////////////////////////////////////////////
@@ -76,56 +75,26 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
                amjsg = new AMJsonSignal(amjp, signal_value);
 
 
-               //functional connections:
+               AMJsonAction * anAction = amjsg->getItsAction();
 
-               switch (amjsg->type)
+               //Verify is Value Table
+               if(anAction != nullptr)
                {
-               case AMJsonSignal::Enabler:
-
-                   jsonEnablerActions.append((AMJsonEnablerAction *)amjsg->getItsAction());
-
-                   //TODO: consider value table case
-
-                   break;
-
-               case AMJsonSignal::GraphicItem:
-
-                   jsonGraphicItemActions.insert(amjsg->getItsAction()->getActionName(), (AMJsonGraphicItemAction *)amjsg->getItsAction());
-
-
-                   //TODO: consider value table case
-
-                   break;
-
-               case AMJsonSignal::StringArgument:
-               case AMJsonSignal::IntArgument:
-
-                   jsonArgumentActions.append((AMJsonArgumentAction *)(amjsg->getItsAction()));
-
-                   //TODO: consider value table case
-
-                   break;
-
-
-                default:
-                   /* skip*/
-                   break;
+                   storeCollectedAction(anAction);
                }
+
         }
-
-
 
         //insert protocol into Protocols collector.
         jsonProtocols.insert(amjp->getName(),amjp);
 
     }
 
+    //functional connections of the stored Actions:
 
     foreach (AMJsonEnablerAction * enabler, jsonEnablerActions)
     {
-
         enabler->connect2EnabledDisabled();
-
     }
 
     foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
@@ -141,6 +110,36 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
             jsonGraphicItemActions.remove(argument->getActionName());
         }
+    }
+}
+
+void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)
+{
+    switch (anAction->getActionType())
+    {
+    case Enabler:
+
+        jsonEnablerActions.append((AMJsonEnablerAction *)anAction);
+
+        break;
+
+    case GraphicItem:
+
+        jsonGraphicItemActions.insert(anAction->getActionName(), (AMJsonGraphicItemAction *)anAction);
+
+        break;
+
+    case StringArgument:
+    case IntArgument:
+
+        jsonArgumentActions.append((AMJsonArgumentAction *)anAction);
+
+        break;
+
+
+     default:
+        /* skip*/
+        break;
     }
 }
 

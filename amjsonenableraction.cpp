@@ -5,26 +5,26 @@
 class AMJsonProtocol;
 class AMJsonSignal;
 
-AMJsonEnablerAction::AMJsonEnablerAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent): AMJsonAction(aJsonSignal, action, parent)
+AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
 {
-
+/*empty*/
 }
 
 void AMJsonEnablerAction::connect2EnabledDisabled(void)
 {
     //NOTE:Enablers to enablers are not be permitted, to avoid recoursion.
     //     Enablers do not enable/disable "itsProtocol".
-        AMJsonProtocol * prot = getItsJsonSignal()->itsProtocol->itsModel->getProtocol(action);
+        AMJsonProtocol * prot = getItsJsonProtocol()->itsModel->getProtocol(getActionName());
 
-        if(prot&&(prot != getItsJsonSignal()->itsProtocol)){
+        if(prot&&(prot != getItsJsonProtocol())){
             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
         }
 
-        QList<AMJsonSignal *> jsonSigList = getItsJsonSignal()->itsProtocol->getSignalEntries(action);
+        QList<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
 
         foreach(AMJsonSignal * jsig, jsonSigList)
         {
-            if(AMJsonSignal::Enabler != jsig->type)
+            if(Enabler != jsig->type)
             {
                 connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
             }
@@ -34,7 +34,7 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
 
 }
 
-void AMJsonEnablerAction::process(QVariant extractedCANsignal)
+void AMJsonEnablerAction::process(QObject * sender, QVariant extractedCANsignal)
 {
        emit enableDisableConnected(extractedCANsignal.toBool());
 }

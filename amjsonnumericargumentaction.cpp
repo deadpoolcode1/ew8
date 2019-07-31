@@ -2,14 +2,23 @@
 
 #include "canintargumentsaccumulator.h"
 
+#include "amjsonsignal.h"
+
+class AMJsonProtocol;
+
 class CanIntArgumentsAccumulator;
 
-AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonSignal * aJsonSignal, QString action, AMJsonAction * parent): AMJsonArgumentAction(aJsonSignal, action, parent)
+AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, IntArgument, action, parent)
 {
     itsArgumentAccumulator = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonNumericArgumentAction::process(QVariant extractedCANsignal)
+void AMJsonNumericArgumentAction::process(QObject * sender, QVariant extractedCANsignal)
 {
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toInt());
+}
+
+bool AMJsonNumericArgumentAction::isItsArgumentsType(qint32 type)
+{
+    return (type == (qint32)IntArgument);
 }

@@ -35,6 +35,8 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
     bool polarity = true;
     qint32 sigIndex = -1;
 
+    activatedAction = nullptr;
+
     sigName = signal_obj["name"].toString();
 
 
@@ -68,7 +70,22 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
             {
 
               //Used properties: (aProtocol, sigName, sigAction, sigType)
-                init(aProtocol, sigName, sigAction, true, sigType, -1, nullptr, false);
+
+                //Find is a value table:
+                bool isValueTable;
+
+                if(signal_obj.find("isValueTable") == signal_obj.end())
+                {
+                   isValueTable = false;
+                }
+                else
+                {
+                   isValueTable = signal_obj["isValueTable"].toBool(false);
+                }
+
+
+
+                init(aProtocol, sigName, sigAction, true, sigType, -1, nullptr, isValueTable);
 
             }
             else //extract field of True Values
@@ -111,9 +128,6 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
 void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
 {
-    QMetaObject metaObj = this->staticMetaObject;
-    QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("action_type_e"));
-
     itsValueTable = nullptr;
 
     itsProtocol = aProtocol;
@@ -123,7 +137,6 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     action = anAction;
 
-    type = (action_type_e)metaEnum.keyToValue(aType.toLatin1());
 
     index = anIndex;
 
@@ -133,7 +146,18 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     if(false ==  isValueTable)
     {
-        itsAction = itsAMJsonActionFactory->createAMJsonActionInstance(this,type,action);
+        type = ActionType::fromString(aType);/*(action_type_e)metaEnum.keyToValue(aType.toLatin1());*/
+        itsAction = itsAMJsonActionFactory->createAMJsonActionInstance(this->itsProtocol,type,action,index);
+    }
+    else
+    {
+        AmJsonActionsMultiplexor * mux = itsProtocol->getMultiplexorByName(action);
+        if(nullptr != mux)
+        {
+            type = (action_type_e)(mux->getItsValuesType());
+            itsValueTable = mux->getItsValueTable();
+        }
+
     }
 
     if(StringArgument == type)
@@ -171,14 +195,34 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
      {
        if(itsValueTable != nullptr)
        {
-           itsValueTable->value(extractedCANsignal.toInt());
+           AMJsonAction * toActivate = itsValueTable->value(extractedCANsignal.toInt());
+
+           AMJsonAction * toDeactivate = getActivatedAction();
+
+           if(toActivate != toDeactivate)//WARNING: without args only
+           {
+
+               if(toDeactivate != nullptr){
+                   toDeactivate->process(this, false);
+               }
+
+               if(toActivate != nullptr)
+               {
+                   toActivate->process(this, true);
+               }
+
+               setActivatedAction(toActivate);
+           }
+
+
+           //TODO activate the action apropiately
        }
        else
        {
          bool do_activate;
          bool success = extractSetUnsetAction(extractedCANsignal, &do_activate);
 
-         itsAction->process(success ? do_activate : extractedCANsignal);
+         itsAction->process(this, success ? do_activate : extractedCANsignal);
        }
      }
  }
@@ -265,14 +309,26 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
          {
              if(nullptr != itsAction)
              {
-                 ((AMJsonGraphicItemAction *)itsAction)-> deactivate();
+                 itsAction -> process(this, QVariant(false));
              }
          }
          else
          {
-             foreach (AMJsonAction * anAction, *itsValueTable)
+             AMJsonAction * activeAction = getActivatedAction();
+
+             if(nullptr != activeAction)
              {
-                 ((AMJsonGraphicItemAction *)anAction)-> deactivate();
+                 setActivatedAction(nullptr);
+                 activeAction->process(this, QVariant(false));
+             }
+             else
+             {
+# if 0
+                 foreach (AMJsonAction * anAction, *itsValueTable)
+                 {
+                     anAction -> process(this, QVariant(false));
+                 }
+#endif
              }
          }
      }

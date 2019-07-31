@@ -177,8 +177,8 @@ ApplicationWindow {
 
             Column {
                 spacing:5
-                id: groupSliSide
-                objectName: "SLI_SIDE_QtQG"
+                id: groupTSRSide
+                objectName: "TSR_SIDE_QtQG"
                 property bool mutexGroup: false
 
                 function setVisibleSlot() {setVisible(true)}
@@ -194,30 +194,22 @@ ApplicationWindow {
 
                 visible: false;
 
-
-                Item{
-
-                    objectName: "SLI_SIDE_ALERT_GROUP"
-                    property bool mutexGroup: true
-                    property int layer_pri: 0
-                    property int canEntityType: Alert.QtQG
-
                 Repeater{
 
-                    id: alert_sli_side_d1
+                    id: alert_sli_side
 
                     model:14
 
                 TSR {
                     //general features
 
-                    objectName: "SLI_SIDE_"+(index+1)+"0_D1"
+                    objectName: "SLI_SIDE_"+(index+1)+"0"
                     property int layer_pri: 0
-                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
+                    canEntityType: "ALERT_SLI_"+(index+1)+"0"
                     canEntityArg: (index+1)*10
                     //special features
                     is_main: false
-                    its_pair_alert: alert_sli_main_d1
+                    its_pair_alert: alert_sli_main
 
                     source:"../images/TSRAlerts/sli@lincz.png";
 
@@ -240,113 +232,6 @@ ApplicationWindow {
                 }
 
                 }
-
-                Repeater{
-
-                    id: alert_sli_side_d2
-
-                    model:14
-
-                TSR {
-                    //general features
-
-                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D2"
-                    property int layer_pri: index
-                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D2"
-                    canEntityArg: (index+1)*10
-                    //special features
-                    is_main: false
-                    its_pair_alert: alert_sli_main_d2
-
-                    source:"../images/TSRAlerts/sli@lincz.png";
-
-                    //TODO move text to TSR_SLI
-                    Text {
-                        text: parent.canEntityArg.toString()
-                        font.family: "Arial"
-                        font.pointSize: parent.is_main ? 40 : 10
-                        font.bold: true
-                        color: "black"
-                        opacity: 1
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter : parent.verticalCenter
-                    }
-                }
-
-                }
-
-                Repeater{
-
-                    id: alert_sli_side_d3
-
-                    model:14
-
-                TSR {
-                    //general features
-
-                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D3"
-                    property int layer_pri: index
-                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D3"
-                    canEntityArg: (index+1)*10
-                    //special features
-                    is_main: false
-                    its_pair_alert: alert_sli_main_d3
-
-                    source:"../images/TSRAlerts/sli@lincz.png";
-
-                    //TODO move text to TSR_SLI
-                    Text {
-                        text: parent.canEntityArg.toString()
-                        font.family: "Arial"
-                        font.pointSize: parent.is_main ? 40 : 10
-                        font.bold: true
-                        color: "black"
-                        opacity: 1
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter : parent.verticalCenter
-                    }
-                }
-
-                }
-
-                Repeater{
-
-                    id: alert_sli_side_d4
-
-                    model:14
-
-                TSR {
-                    //general features
-
-                    objectName: "ALERT_SLI_SIDE_"+(index+1)+"0_D4"
-                    property int layer_pri: index
-                    canEntityType: "ALERT_SLI_"+(index+1)+"0_D4"
-                    canEntityArg: (index+1)*10
-                    //special features
-                    is_main: false
-                    its_pair_alert: alert_sli_main_d4
-
-                    source:"../images/TSRAlerts/sli@lincz.png";
-
-                    //TODO move text to TSR_SLI
-                    Text {
-                        text: parent.canEntityArg.toString()
-                        font.family: "Arial"
-                        font.pointSize: parent.is_main ? 40 : 10
-                        font.bold: true
-                        color: "black"
-                        opacity: 1
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter : parent.verticalCenter
-                    }
-                }
-
-                }
-                }//end of group
-
-
-
-
 
                 Image {
 
@@ -795,21 +680,21 @@ ApplicationWindow {
 
                     Repeater{
 
-                        id: alert_sli_main_d1
+                        id: alert_sli_main
 
                         model:14
 
                         TSR {
 
                             //general features
-                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D1"
+                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0"
                             property int layer_pri: 1
-                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
+                            canEntityType: "ALERT_SLI_"+(index+1)+"0"
                             canEntityArg: (index+1)*10
 
                             //special features
                             is_main: true
-                            its_pair_alert: alert_sli_side_d1
+                            its_pair_alert: alert_sli_side
                             source:"../images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
@@ -825,108 +710,6 @@ ApplicationWindow {
                             }
                         }
                     }
-
-                    Repeater{
-
-                        id: alert_sli_main_d2
-
-                        model:14
-
-                        TSR {
-                            //general features
-                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D2"
-                            property int layer_pri: 1
-                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D2"
-                            canEntityArg: (index+1)*10
-
-                            //special features
-                            is_main: true
-                            its_pair_alert: alert_sli_side_d2
-
-
-                            source:"../images/TSRAlerts/sli@lincz300x300.png";
-
-                            //TODO move text to TSR_SLI
-                            Text {
-                                text: parent.canEntityArg.toString();
-                                font.family: "Arial"
-                                font.pointSize: parent.is_main ? 40 : 10
-                                font.bold: true
-                                color: "black"
-                                opacity: 1
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter : parent.verticalCenter
-                            }
-                        }
-                    }
-
-                    Repeater{
-
-                        id: alert_sli_main_d3
-
-                        model:14
-
-                        TSR {
-                            //general features
-                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D3"
-                            property int layer_pri: 1
-                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D3"
-                            canEntityArg: (index+1)*10
-
-                            //special features
-                            is_main: true
-                            its_pair_alert: alert_sli_side_d3
-
-                            source:"../images/TSRAlerts/sli@lincz300x300.png";
-
-                            //TODO move text to TSR_SLI
-                            Text {
-                                text: parent.canEntityArg.toString();
-                                font.family: "Arial"
-                                font.pointSize: parent.is_main ? 40 : 10
-                                font.bold: true
-                                color: "black"
-                                opacity: 1
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter : parent.verticalCenter
-                            }
-                        }
-                    }
-
-                    Repeater{
-
-                        id: alert_sli_main_d4
-
-                        model:14
-
-                        TSR {
-                            //general features
-                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0_D1"
-                            property int layer_pri: 1
-                            canEntityType: "ALERT_SLI_"+(index+1)+"0_D1"
-                            canEntityArg: (index+1)*10
-
-                            //special features
-                            is_main: true
-                            its_pair_alert: alert_sli_side_d4
-
-
-                            source:"../images/TSRAlerts/sli@lincz300x300.png";
-
-                            //TODO move text to TSR_SLI
-                            Text {
-                                text: parent.canEntityArg.toString();
-                                font.family: "Arial"
-                                font.pointSize: parent.is_main ? 40 : 10
-                                font.bold: true
-                                color: "black"
-                                opacity: 1
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter : parent.verticalCenter
-                            }
-                        }
-                    }
-
 
                     TSR {
 

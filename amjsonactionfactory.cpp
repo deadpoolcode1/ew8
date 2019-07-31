@@ -7,11 +7,11 @@
 
 #include "amjsonsignal.h"
 
-class AMJsonSignal;
+class AMJsonProtocol;
 class AMJsonStringArgumentAction;
 class AMJsonNumericArgumentAction;
 
-AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonSignal * aJsonSignal, qint32 type, QString action)
+AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index)
 {
     AMJsonAction * ret = nullptr;
 
@@ -20,23 +20,24 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonSignal * aJ
 
     switch(type)
     {
-    case (qint32)AMJsonSignal::GraphicItem:
-        ret =  new AMJsonGraphicItemAction(aJsonSignal, action);
+    case GraphicItem:
+        //TODO NOTE: must be uniq to the action.
+        ret =  AMJsonGraphicItemAction::getInstance(aJsonProtocol, action);
         break;
 
-    case (qint32)AMJsonSignal::Enabler:
-        ret =  new AMJsonEnablerAction(aJsonSignal, action);
+    case Enabler:
+        ret =  new AMJsonEnablerAction(aJsonProtocol, action);
         break;
 
-    case (qint32)AMJsonSignal::StringArgument:
-        tmpStr = new AMJsonStringArgumentAction(aJsonSignal, action);
-        tmpStr->setIndex(aJsonSignal->index);
+    case StringArgument:
+        tmpStr = new AMJsonStringArgumentAction(aJsonProtocol, action);
+        tmpStr->setIndex(index);
         ret = (AMJsonAction *) tmpStr;
         break;
 
-    case (qint32)AMJsonSignal::IntArgument:
-        tmpNum = new AMJsonNumericArgumentAction(aJsonSignal, action);
-        tmpNum->setIndex(aJsonSignal->index);
+    case IntArgument:
+        tmpNum = new AMJsonNumericArgumentAction(aJsonProtocol, action);
+        tmpNum->setIndex(index);
         ret =  (AMJsonAction *) tmpNum;
         break;
 
