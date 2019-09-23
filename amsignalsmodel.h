@@ -37,6 +37,8 @@ public:
 
     AMJsonProtocol * getProtocol(QString aName);
 
+    QList<QString> * getItsCANProtocolsNames(void);
+
     CanManager * getItsCanManager(void);
 
     void storeCollectedAction(AMJsonAction * anAction);
@@ -46,6 +48,8 @@ public:
 private:
 
     QMap<QString,AMJsonProtocol*> jsonProtocols;
+
+    QList<QString> canProtocolNames;
 
     QList<AMJsonEnablerAction *> jsonEnablerActions;
 

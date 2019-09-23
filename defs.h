@@ -5,6 +5,8 @@
 
 #include "candbsignal.h"
 
+typedef quint32 CanStdId_t;
+
 #if 0
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else
@@ -45,15 +47,6 @@ typedef enum FORCE_INVISIBILITY
     FORCE_INVISIBILITY = 1
 } FORCE_INVISIBILITY_t;
 
-typedef enum can_id_e {
-can_id_undefined = -1,
-can_id_master = 0,
-can_id_tsr   =  1,
-can_id_s_adas = 2,
-can_id_cq_system_info = 3,
-can_id_cq_time_info = 4,
-} can_id_t;
-
 typedef enum canrxmsg_type_e
 {
     msg_simple = 0,
@@ -61,46 +54,24 @@ typedef enum canrxmsg_type_e
 }
 canrxmsg_type_t;
 
-typedef struct can_id_values_table_row_s
+typedef struct can_msg_types_table_row_s
 {
-  can_id_t mnemonic;
-#ifndef WIN32
-  quint32 value;
-#else
-   long value;
-#endif
+  CanStdId_t std_id;
   canrxmsg_type_t type;
-  Signal * sg_array;
-  const size_t sg_array_size;
-} can_id_values_table_row_t;
+} can_msg_types_table_row_t;
 
 
 
-static const can_id_values_table_row_t can_id_values_table[] =
+static const can_msg_types_table_row_t can_msg_types_table[] =
 {
-  {can_id_master, 0x700, msg_simple, SignalsOfAfterMarket_AWS_0x700, SignalsOfAfterMarket_AWS_0x700_size},
-  {can_id_tsr,    0x727, msg_simple, SignalsOfAfterMarket_TSR_0x727, SignalsOfAfterMarket_TSR_0x727_size},
-  {can_id_s_adas, 0x7ac, msg_smart,  SignalsOfSmartADAS_S_ADAS_0x7ac, SignalsOfSmartADAS_S_ADAS_0x7ac_size},
-  {can_id_cq_system_info,0x410, msg_simple, SignalsOfSeeQInfo_SN_System_0x410, SignalsOfSeeQInfo_SN_System_0x410_size},
-  {can_id_cq_time_info,0x411, msg_simple, SignalsOfSeeQInfo_Time_Info_0x411, SignalsOfSeeQInfo_Time_Info_0x411_size},
+    {0x7ac, msg_smart},
 };
 
-//WARNING: on dbc realization the VT must be encapsulated in its protocol.
-typedef struct vt_name2hex_s
-{
-  const char* name;
-  Value * vt_array;
-  const size_t vt_array_size;
-} vt_name2hex_t;
+const size_t can_msg_types_table_size =  sizeof(can_msg_types_table)/sizeof(can_msg_types_table_row_t);
 
-static const vt_name2hex_t vt_name2hex_table[] =
-{
-    {"Vision_only_Sign_Type",ValuesOfVisionOnlySignType,ValuesOfVisionOnlySignType_size},
-};
 
-static const size_t vt_name2hex_table_size = sizeof(vt_name2hex_table)/sizeof(vt_name2hex_t);
 
-#define CAN_MESSAGES_TYPES_NUM (sizeof(can_id_values_table)/sizeof(can_id_values_table_row_t))
+#define CAN_MESSAGES_TYPES_NUM can_msg_types_table_size
 #define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
 
 typedef enum visual_item_unit_e

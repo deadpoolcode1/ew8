@@ -34,6 +34,7 @@ public:
     void read_frame(void);
     void write_frame(struct can_frame * frame_ptr);
     IAlertDisplay * getItsDisplay(void);
+    ICanRxMsgFactory * getItsCanRxMsgFactory(void);
 
 
 public slots:
@@ -43,12 +44,6 @@ private:
     //inner functions:
     void init(void);
     void parse_frame(struct can_frame * frame);
-     void parse_frame1(struct can_frame * frame);
-
-
-    struct can_frame prev_frame[CAN_MESSAGES_TYPES_NUM];
-    bool is_a_first_frame [CAN_MESSAGES_TYPES_NUM];
-
     void init_frame(struct can_frame * frame);
 
 #ifndef WIN32
@@ -63,7 +58,7 @@ private:
 #endif
 
     IAlertDisplay * itsDisplay;
-    ICanRxMsgFactory * iCanRxMsgFactory;
+    ICanRxMsgFactory * itsCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
 
 };

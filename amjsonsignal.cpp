@@ -179,7 +179,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
      return name;
  }
 
-Signal * AMJsonSignal::getCanDbSignal()
+ Signal * AMJsonSignal::getCanDbSignal(void)
  {
     return itsCanDbSignal;
  }

@@ -20,6 +20,7 @@
 #include "canmanager.h"
 
 #include "amjsonactionfactory.h"
+#include "icanrxmsgfactory.h"
 
 
 class CanIntArgumentsAccumulator;
@@ -29,7 +30,7 @@ AMSignalsModel::AMSignalsModel(CanManager * aCanManager)
 {
     itsCanManager =  aCanManager;
     itsAMJsonActionFactory = new AMJsonActionFactory();
-
+    CanRxMsg::initCanRxMsgsPool(aCanManager->getItsCanRxMsgFactory(), this);
     jsonInitProtocolsAndSignalsVectors();
 }
 
@@ -51,7 +52,6 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
-
     QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
     QJsonArray jsonArray = jsonObject["Protocols"].toArray();
 
@@ -60,6 +60,17 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         AMJsonProtocol *amjp = new AMJsonProtocol(this, protocol_obj["protocol"]);
 
+        CanDBSignal candb;
+
+        bool status = true;
+
+        if (amjp->getType() == AMJsonProtocol::CAN)
+        {
+          status = candb.processDBCFile(amjp);
+        }
+
+        if (status)
+        {
         amjp->collectValueTables(protocol_obj["value_tables"]);
 
         // //////////////////////////////////////
@@ -85,8 +96,19 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         }
 
+        if(amjp->getType() == AMJsonProtocol::CAN)
+        {
+          canProtocolNames.append(amjp->getName());
+        }
+
         //insert protocol into Protocols collector.
         jsonProtocols.insert(amjp->getName(),amjp);
+
+        }
+        else {
+            qDebug("Skip CAN Protocol:%s", qPrintable(amjp->getName()));
+            //TODO clean the allocated memory
+        }
 
     }
 
@@ -111,6 +133,11 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
             jsonGraphicItemActions.remove(argument->getActionName());
         }
     }
+}
+
+QList<QString> * AMSignalsModel::getItsCANProtocolsNames(void)
+{
+  return &canProtocolNames;
 }
 
 void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)

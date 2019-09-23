@@ -30,13 +30,13 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
         //TODO convert to qint32 using table
         QString strValue = row_obj["value"].toString();
 
-        qint32 intValue = -1;
+        double triggerValue = -1;
 
         for(size_t i = 0; i< name2hex->vt_array_size; i++)
         {
             if(0 == strValue.compare(name2hex->vt_array[i].name))
             {
-                intValue = name2hex->vt_array[i].value;
+                triggerValue = name2hex->vt_array[i].value;
                 i = name2hex->vt_array_size;
             }
         }
@@ -63,14 +63,14 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
         //Assign forced args
 
-        itsValueTable.insert(intValue,anAction);
+        itsValueTable.insert(triggerValue,anAction);
 
         itsProtocol->itsModel->storeCollectedAction(anAction);
     }
 
 }
 
-QHash<qint32,AMJsonAction *> * AmJsonActionsMultiplexor::getItsValueTable()
+QHash<double, AMJsonAction *> * AmJsonActionsMultiplexor::getItsValueTable()
 {
     return &itsValueTable;
 }

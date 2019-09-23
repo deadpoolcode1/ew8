@@ -18,8 +18,14 @@ class CanRxMsg;
 
 SimpleCanRxMsg::SimpleCanRxMsg()
 {
-   setCanID(can_id_undefined);
+   itsMsgType = msg_simple;
 }
+
+void SimpleCanRxMsg::process(struct can_frame * frame)
+{
+       canRxJsonSignalsParseAndProcess(frame);
+}
+
 
 void SimpleCanRxMsg::ack(CanManager *)
 {

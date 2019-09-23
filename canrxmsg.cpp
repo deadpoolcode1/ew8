@@ -3,20 +3,22 @@
 #include "defs.h"
 #include "canrxmsg.h"
 
-CanRxMsg * CanRxMsg::CanRxMsgsPool[];
-size_t CanRxMsg::canRxMsgNumOfObjects = 0;
+QMap <quint32, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
+AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
 
-CanRxMsg * CanRxMsg::createInstance(can_id_t cid, AMSignalsModel * model)
+CanRxMsg * CanRxMsg::createInstance(quint32 StdId)
 {
-    CanRxMsg * ret = getMsgByCanId(cid);
+    CanRxMsg * ret = getMsgByCanId(StdId);
     //TODO review the check location
     if(nullptr == ret) //create new unstance
     {
       //TODO use factory and init with id
-        ret = iCanRxMsgFactory->createCanRxMsgInstance(cid, model);
-
-
+        ret = iCanRxMsgFactory->createCanRxMsgInstance(StdId, itsAMSignalsModel);
+        if(nullptr != ret)
+        {
+            CanRxMsgsPool.insert(StdId, ret);
+        }
     }
     return ret;
 }
@@ -27,97 +29,89 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     initCanJsonSignalsListInProcessOrder();
 }
 
-void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel)
+Signal * CanRxMsg::getCANSignalByName(QString name)
 {
-    CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
+    Signal * ret = nullptr;
 
-    for(size_t i=0;i<CAN_MESSAGES_TYPES_NUM;i++)
+    foreach (Signal * cansig, * canSignalsArray)
     {
-        if(canRxMsgNumOfObjects < CAN_MESSAGES_TYPES_NUM)
+        if (cansig->name == name)
         {
-            CanRxMsgsPool[canRxMsgNumOfObjects] = createInstance(can_id_values_table[i].mnemonic, amSignalsModel);
-            if(nullptr != CanRxMsgsPool[canRxMsgNumOfObjects])
-            {
-                canRxMsgNumOfObjects++;
-            }
+            ret = cansig;
         }
     }
 
+    return ret;
+
+}
+
+void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel)
+{
+
+    CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
+    CanRxMsg::itsAMSignalsModel = amSignalsModel;
+
+    qDebug("CanRxMsgsPool is ready for usage");
+}
+
+void CanRxMsg::completeInitCanRxMsgsPool(void)
+{
+    foreach (CanRxMsg * msg, CanRxMsgsPool.values())
+    {
+        if (msg->itsJsonProtocol)
+        {
+            msg->initCanJsonSignalsListInProcessOrder();
+        }
+    }
 }
 
 CanRxMsg::CanRxMsg()
 {
-    setCanID(can_id_undefined);
-    is_a_first_frame = true;
-
     itsJsonProtocol = nullptr;
 }
 
-void CanRxMsg::setCanID(can_id_t canID)
+void CanRxMsg::applyCanDBSignalsArray(QList<Signal *> * signalsList)
 {
-    cid = canID;
+    //canSignalsArray =  new QList<Signal *>();
 
-    if(can_id_undefined == canID)
-    {
-       canSignalsArray = nullptr;
-       canSignalsArray_size = 0;
-    }
-    else
-    {
-        //NOTE use table
-        for (size_t i = 0; i< CAN_MESSAGES_TYPES_NUM; i++)
-        {
-            if(canID == can_id_values_table[i].mnemonic)
-            {
-                canSignalsArray = can_id_values_table[i].sg_array;
-                canSignalsArray_size = can_id_values_table[i].sg_array_size;
-            }
-        }
-    }
+    canSignalsArray = signalsList;
+
+    qDebug ("Added signal list to the message");
 }
 
-can_id_t CanRxMsg::getCanID(void)
-{
-    return cid;
-}
-
-CanRxMsg * CanRxMsg::getMsgByCanId(can_id_t cid)
+CanRxMsg * CanRxMsg::getMsgByCanId(quint32 StdId)
 {
     CanRxMsg * ret = nullptr;
-    for (size_t i=0; i < canRxMsgNumOfObjects; i++)
-    {
-        if (cid == CanRxMsgsPool[i]->cid)
-        {
-            ret = CanRxMsgsPool[i];
-            i = canRxMsgNumOfObjects;
-        }
-    }
+
+    ret = CanRxMsgsPool.value(StdId, nullptr);
+
     return ret;
 }
 
 void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 {
 
-    QList<AMJsonSignal*> signalsToAppendList;
-
-    for (size_t i = 0; i < canSignalsArray_size; i++)
+    if (itsJsonProtocol)
     {
 
-        //JSON Driven Alerts Triggering:
+        QList<AMJsonSignal*> signalsToAppendList;
 
-
-        QString currSignalStr = canSignalsArray[i].name;
-
-        //TODO single return point
-        if (itsJsonProtocol)
+        foreach (Signal * curSignal, *canSignalsArray)
         {
+            //JSON Driven Alerts Triggering:
+
+
+            QString currSignalStr = curSignal->name;
+
+            //TODO single return point
+
 
             QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
 
             foreach (AMJsonSignal * jsonsig, signalsList)
             {
 
-                jsonsig->setItsCanDbSignal(canSignalsArray+i);
+                jsonsig->setItsCanDbSignal(curSignal);
 
                 //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
@@ -143,8 +137,10 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 }
             }
         }
-    }
 
-    canJsonSignalsListInProcessOrder.append(signalsToAppendList);
+
+        canJsonSignalsListInProcessOrder.append(signalsToAppendList);
+
+    }
 }
 

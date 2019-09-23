@@ -1,0 +1,8 @@
+#ifndef _CANDBGRAMMAR_H_
+#define _CANDBGRAMMAR_H_
+
+const char * candbgrammar =
+R'"($$CANDBGRAMMAR)"';
+
+#endif
+

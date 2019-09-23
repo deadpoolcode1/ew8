@@ -8,6 +8,7 @@
 #include "canmanager.h"
 
 #include "amjsonprotocol.h"
+#include "candbsignal.h"
 
 class CanManager;
 
@@ -21,12 +22,15 @@ class CanRxMsg
 public:
 
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
-    static CanRxMsg * getMsgByCanId(can_id_t cid);
-
+    static void completeInitCanRxMsgsPool(void);
+    static CanRxMsg * createInstance(quint32 StdId);
+    static CanRxMsg * getMsgByCanId(quint32 std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
-    void setCanID(can_id_t canID);
+    void applyCanDBSignalsArray(QList<Signal *> * canDBSignals);
     void setItsJsonProtocol(AMJsonProtocol * aJsonProtocol);
+
+    Signal * getCANSignalByName(QString name);
 
     //NOTE: depends on JSON and DBC already parsed
     void initCanJsonSignalsListInProcessOrder(void);
@@ -35,24 +39,28 @@ public:
     virtual void ack(CanManager * canMngr) = 0;
 
 private:
-  static CanRxMsg * CanRxMsgsPool[CAN_MESSAGES_TYPES_NUM];
-  static size_t canRxMsgNumOfObjects;
-  static CanRxMsg * createInstance(can_id_t cid, AMSignalsModel * model);
+  //Uses StdId as the key
+  static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
   static ICanRxMsgFactory * iCanRxMsgFactory;
-  can_id_t cid;
+  static AMSignalsModel * itsAMSignalsModel;
+
 
 protected:
   CanRxMsg();
 
-  can_id_t getCanID(void);
+  quint32 getCanID(void);
 
   AMJsonProtocol * itsJsonProtocol;
 
-  struct can_frame prev_frame; //NOTE: is not initialized till first frame is received.
-  bool is_a_first_frame;
+#if 0
+  //WARNING: not in use
+  quint32 StdID;
+#endif
 
-  Signal * canSignalsArray;
-  size_t canSignalsArray_size;
+  canrxmsg_type_t itsMsgType;
+
+  //WARNING: Used to initialize canJsonSignalsListInProcessOrder
+  QList<Signal *> * canSignalsArray;
 
   QList<AMJsonSignal *> canJsonSignalsListInProcessOrder;
 };

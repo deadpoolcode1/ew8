@@ -61,7 +61,7 @@ public:
     QList<qint32> * trueValues;//actual, when is not boolean
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
-    AMJsonAction * getItsAction(){return itsValueTable ? nullptr : itsAction;}
+    AMJsonAction * getItsAction(void){return itsValueTable ? nullptr : itsAction;}
 
 
     bool extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active);
@@ -74,7 +74,7 @@ private:
 
   AMJsonAction * itsAction;
 
-  QHash<qint32,AMJsonAction *> * itsValueTable;
+  QHash<double,AMJsonAction *> * itsValueTable;
   AMJsonAction * activatedAction;
 
   void setActivatedAction(AMJsonAction * anAction){activatedAction = anAction;}

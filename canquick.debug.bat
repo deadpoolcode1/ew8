@@ -1,4 +1,4 @@
-PATH=%PATH%;C:\Qt\Qt5.10.1\5.10.1\mingw53_32\bin;C:\Program Files (x86)\qrencode-win32\Lib
+PATH=%PATH%;C:\Qt\5.12.4\mingw73_32\bin;C:\Program Files (x86)\qrencode-win32\Lib
 
 .\debug\canquick.exe
 

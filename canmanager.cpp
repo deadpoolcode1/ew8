@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "defs.h"
 
+#include "candbsignal.h"
+
 #ifndef WIN32
 #include <unistd.h>
 #include <can_netlink.h>
@@ -50,22 +52,23 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QThread * parent) : QThread(pa
     return itsDisplay;
  }
 
+ ICanRxMsgFactory * CanManager::getItsCanRxMsgFactory(void)
+ {
+     return itsCanRxMsgFactory;
+ }
+
 
 void CanManager::init(void)
 {
     size_t i = 0;
 
-    iCanRxMsgFactory = new CanRxMsgFactory();
+    itsCanRxMsgFactory = new CanRxMsgFactory();
 
     amSignalsModel = new AMSignalsModel(this);
 
-    CanRxMsg::initCanRxMsgsPool(iCanRxMsgFactory, amSignalsModel);
+    CanRxMsg::completeInitCanRxMsgsPool();
 
-    for(i = 0; i < CAN_MESSAGES_TYPES_NUM;i++)
-    {
-        init_frame(&(prev_frame[i]));
-        is_a_first_frame[i] =  true;
-    }
+
 
 #ifndef WIN32
 
@@ -78,7 +81,7 @@ void CanManager::init(void)
 
     if(can_err_status)
     {
-        printf("failed can0 stop\n");
+        qDebug("failed can0 stop");
     }
     else
     {
@@ -98,7 +101,7 @@ void CanManager::init(void)
 
 #if 0
         can_get_ctrlmode("can0",&cm);
-        printf("cm.mask:%X,cm.flag:%X\n",cm.mask,cm.flags);
+        qDebug("cm.mask:%X,cm.flag:%X\n",cm.mask,cm.flags);
 #endif
 
         can_err_status |= can_set_ctrlmode("can0", &cm);
@@ -106,7 +109,7 @@ void CanManager::init(void)
 
         if(can_err_status)
         {
-            printf("can parameters configuration failed\n");
+            qDebug("can parameters configuration failed");
         }
         else
         {
@@ -114,14 +117,14 @@ void CanManager::init(void)
 
             if(can_err_status)
             {
-                printf("failed can0 start\n");
+                qDebug("failed can0 start");
             }
         }
     }
 
     if(!can_err_status)
     {
-      printf("Can interface configuration succeed\n");
+      qDebug("Can interface configuration succeed\n");
     }
 
 
@@ -129,8 +132,11 @@ void CanManager::init(void)
     //CAN Socket configuration:
     for (i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
     {
+#if 0
+        //TODO move after the parsing
         rfilter[i].can_id = can_id_values_table[i].value;
         rfilter[i].can_mask = CAN_SFF_MASK;
+#endif
     }
 
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -178,16 +184,6 @@ void CanManager::init(void)
 
       //TODO add filter,sampling point and normal mode
 
-#endif
-
-#if 0
-      signalsModel = AMSignalsModel::getInstance();
-
-      signalsModel->jsonGetGraphicItemEnum("ALERT_BLINKERS");
-
-      AMJsonProtocol * amjp = signalsModel->getProtocol("Aftermarket");
-
-      qDebug("JSON: I am protocol and my name is: %s", qPrintable(amjp->getName()));
 #endif
 }
 
@@ -306,27 +302,11 @@ void CanManager::process()
 
 void CanManager::parse_frame(struct can_frame * frame)
 {
-    can_id_t received_id = can_id_undefined;
-
-        for (size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
-        {
-             if(can_id_values_table[i].value == frame->can_id)
-             {
-                 received_id = can_id_values_table[i].mnemonic;
-
-                 i = CAN_MESSAGES_TYPES_NUM;
-             }
-        }
-
-
-        CanRxMsg * curr = CanRxMsg::getMsgByCanId(received_id);
+        CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
 
         if(nullptr != curr)
         {
             curr->process(frame);
             curr->ack(this);
-        }
-
-        //TODO move also to the OOP pattern
-
+        }       
 }

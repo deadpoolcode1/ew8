@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+#include "peglib.h"
+using namespace peg;
+
 #ifndef WIN32
 #include <linux/types.h>
 #include <net/if.h>
@@ -11,6 +14,10 @@
 #else
 #include "canlib.h"
 #endif
+
+#include "defs.h"
+
+class AMJsonProtocol;
 
 typedef enum SignalValueType_e
 {
@@ -30,7 +37,7 @@ typedef enum ext_sgval_type_s
 
 typedef struct Signal_s
 {
-    const char* name;
+    QString name;
     unsigned int startByte;
     unsigned int startBit;
     unsigned int numOfBits;
@@ -45,10 +52,19 @@ Signal;
 
 typedef struct Value_s
 {
-    const char* name;
-    unsigned int value;
+    QString name;
+    double value;
 }
 Value;
+
+//WARNING: on dbc realization the VT must be encapsulated in its protocol.
+typedef struct vt_name2hex_s
+{
+  QString name;
+  Value * vt_array;
+  const size_t vt_array_size;
+} vt_name2hex_t;
+
 
 
 extern Signal SignalsOfAfterMarket_AWS_0x700[];
@@ -73,6 +89,14 @@ extern size_t  SignalsOfSeeQInfo_Time_Info_0x411_size;
 extern Signal SignalsOfSeeQInfo_App_Info_0x412[];
 extern size_t  SignalsOfSeeQInfo_App_Info_0x412_size;
 
+
+static const vt_name2hex_t vt_name2hex_table[] =
+{
+    {"Vision_only_Sign_Type",ValuesOfVisionOnlySignType,ValuesOfVisionOnlySignType_size},
+};
+
+static const size_t vt_name2hex_table_size = sizeof(vt_name2hex_table)/sizeof(vt_name2hex_t);
+
 typedef struct sg_var_s
 {
     ext_sgval_type_t sg_type;
@@ -85,6 +109,32 @@ typedef struct sg_var_s
     } sg_val;
 }
 sg_var_t;
+
+class CanDBSignal {
+public:
+
+    CanDBSignal();
+
+    bool processDBCFile(AMJsonProtocol * prot);
+
+private:
+
+     bool parseDBCFileString(QString extractedFile);
+     bool readDBCFile(QString protocolName, QString & extractedFile);
+     void init_parser(void);
+
+     AMJsonProtocol * curParsedProtocol;
+
+     parser * pParser;
+
+     QList<QString> * phrases;
+     QList<QString> * c_identifiers;
+     QList<QString> *  signs;
+     QList<QString> * ecu_tokens;
+     QList<qint64> * numbers;//TODO think about floats implementation
+     QList<Signal *> * cansignals;
+     QList<Value> * vtRows;
+};
 
 Signal * extractSignalPtr(const char * name, quint32 msgId);
 

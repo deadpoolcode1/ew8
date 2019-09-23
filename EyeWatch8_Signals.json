@@ -45,7 +45,7 @@
         }
         ,
         {
-            "protocol": "Aftermarket_TSR",
+            "protocol": "AfterMarket_TSR",
             "signals":[
 
                 {"name":"Vision_only_Sign_Type_D1", "action": "Vision_only_Sign_Type",  "isValueTable": true},
@@ -105,7 +105,7 @@
         }
         ,
         {
-            "protocol": "Aftermarket",
+            "protocol": "AfterMarket",
             "signals": [
 
 

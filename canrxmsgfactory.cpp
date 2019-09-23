@@ -4,54 +4,42 @@
 #include "defs.h"
 #include "canrxmsg.h"
 #include "smartcanrxmsg.h"
-#include "awscanrxmsg.h"
-#include "tsrcanrxmsg.h"
-#include "seeqsysinfocanrxmsg.h"
-#include "seeqtimeinfocanrxmsg.h"
-
+#include "simplecanrxmsg.h"
 #include "canrxmsgfactory.h"
 #include "icanrxmsgfactory.h"
 
-CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(can_id_t cid, AMSignalsModel * model)
+CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId, AMSignalsModel * model)
 {
     CanRxMsg * ret = nullptr;
 
-    switch (cid)
-    {
-    case can_id_master:
+    canrxmsg_type_t type = msg_simple;
 
-        ret =  new AwsCanRxMsg();
+    for(size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+    {
+        if(can_msg_types_table[i].std_id == StdId)
+        {
+            type = can_msg_types_table[i].type;
+            i = CAN_MESSAGES_TYPES_NUM;
+        }
+    }
+
+    switch (type)
+    {
+    case msg_simple:
+
+        ret =  new SimpleCanRxMsg();
         ret->setItsJsonProtocol(model->getProtocol("Aftermarket"));
 
         break;
 
-    case can_id_tsr:
 
-        ret = new TsrCanRxMsg();
-        ret->setItsJsonProtocol(model->getProtocol("Aftermarket_TSR"));
-
-        break;
-
-    case can_id_s_adas:
+    case msg_smart:
 
         ret = new SmartCanRxMsg();
         ret->setItsJsonProtocol(model->getProtocol("SmartADAS"));
 
         break;
 
-    case can_id_cq_system_info:
-
-        ret = new SeeQSysInfoCanRxMsg();
-        ret->setItsJsonProtocol(model->getProtocol("SeeQInfo"));
-
-        break;
-
-    case can_id_cq_time_info:
-
-        ret = new SeeQTimeInfoCanRxMsg();
-        ret->setItsJsonProtocol(model->getProtocol("SeeQInfo"));
-
-        break;
 
     default:
 

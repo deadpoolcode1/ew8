@@ -11,15 +11,15 @@ class CanRxMsg;
 class SimpleCanRxMsg : public CanRxMsg
 {
 public:
+    SimpleCanRxMsg();
 
-    virtual void process(struct can_frame * frame) = 0;
+    void process(struct can_frame * frame);
     void ack(CanManager *);
 
     void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
 
-
 protected:
-     SimpleCanRxMsg();
+
 };
 
 #endif // SIMPLECANRXMSG_H

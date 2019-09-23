@@ -23,7 +23,7 @@ public:
 
     AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, const vt_name2hex_t * name2hex, QString type, QObject * parent = nullptr);
 
-    QHash<qint32,AMJsonAction *> * getItsValueTable();
+    QHash<double,AMJsonAction *> * getItsValueTable();
 
     qint32 getItsValuesType(void);
 
@@ -31,7 +31,7 @@ private:
     const vt_name2hex_t * name2hex;
     action_type_e  type;
     QJsonArray itsRawRows;
-    QHash<qint32,AMJsonAction *> itsValueTable;
+    QHash<double,AMJsonAction *> itsValueTable;
     void initByType(QString aType);
 
     AMJsonProtocol * itsProtocol;

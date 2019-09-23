@@ -1,9 +1,14 @@
 qmlscripts.files = *.qml
 qmlimages.files = resources/*
 signalcfgs.files = *.json
-dbcfiles.files = *.dbc
+dbcfiles.files = DBC/*.dbc
 
 win32: batches.files = *.bat
+
+GRAMMARFILE = candbgrammar.peg
+
+CANDBGRAMMAR = $$cat($${GRAMMARFILE},blob)
+QMAKE_SUBSTITUTES += candbgrammar.h.in
 
 QT += quick
 
@@ -31,19 +36,14 @@ SOURCES += \
     canrxmsg.cpp \
     simplecanrxmsg.cpp \
     smartcanrxmsg.cpp \
-    awscanrxmsg.cpp \
-    tsrcanrxmsg.cpp \
     canrxmsgfactory.cpp \
     smartitem.cpp \
     displaysignalizer.cpp \
-    candbsignal.cpp \
     qquickqrcode.cpp \
     amsignalsmodel.cpp \
     amjsonprotocol.cpp \
     amjsonsignal.cpp \
     canstringargumentsaccumulator.cpp \
-    seeqsysinfocanrxmsg.cpp \
-    seeqtimeinfocanrxmsg.cpp \
     canintargumentsaccumulator.cpp \
     canargumentsaccumulator.cpp \
     amjsonconfigreader.cpp \
@@ -55,7 +55,8 @@ SOURCES += \
     amjsonstringargumentaction.cpp \
     amjsonnumericargumentaction.cpp \
     amjsonactionfactory.cpp \
-    amjsonactionsmultiplexor.cpp
+    amjsonactionsmultiplexor.cpp \
+    candbsignal.cpp
 
 
 
@@ -135,9 +136,11 @@ DISTFILES += \
     resources/Statuses/ts@2x.png \
     resources/TSRAlerts/sli@2x.png \
     resources/SmartAlerts/animal.svg \
-    resources/SmartAlerts/slippery.svg
+    resources/SmartAlerts/slippery.svg \
+    candbgrammar.peg
 
 HEADERS += \
+    peglib.h \
     canmanager.h \
     ialertdisplay.h \
     icanrxmsgfactory.h \
@@ -151,8 +154,6 @@ HEADERS += \
     canrxmsg.h \
     simplecanrxmsg.h \
     smartcanrxmsg.h \
-    awscanrxmsg.h \
-    tsrcanrxmsg.h \
     canrxmsgfactory.h \
     smartitem.h \
     displaysignalizer.h \
@@ -162,8 +163,6 @@ HEADERS += \
     amjsonprotocol.h \
     amjsonsignal.h \
     canstringargumentsaccumulator.h \
-    seeqsysinfocanrxmsg.h \
-    seeqtimeinfocanrxmsg.h \
     canintargumentsaccumulator.h \
     canargumentsaccumulator.h \
     amjsonconfigreader.h \
@@ -177,7 +176,8 @@ HEADERS += \
     iamjsonactionfactory.h \
     amjsonactionfactory.h \
     amjsonactionsmultiplexor.h \
-    actiontype.h
+    actiontype.h \
+    candbgrammar.h.in
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
