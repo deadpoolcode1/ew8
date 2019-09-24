@@ -58,45 +58,6 @@ typedef struct Value_s
 Value;
 
 //WARNING: on dbc realization the VT must be encapsulated in its protocol.
-typedef struct vt_name2hex_s
-{
-  QString name;
-  Value * vt_array;
-  const size_t vt_array_size;
-} vt_name2hex_t;
-
-
-
-extern Signal SignalsOfAfterMarket_AWS_0x700[];
-extern size_t SignalsOfAfterMarket_AWS_0x700_size;
-
-extern Signal SignalsOfAfterMarket_TSR_0x727[];
-extern size_t SignalsOfAfterMarket_TSR_0x727_size;
-
-extern  Value ValuesOfVisionOnlySignType[];
-extern  size_t ValuesOfVisionOnlySignType_size;
-
-
-extern Signal SignalsOfSmartADAS_S_ADAS_0x7ac[];
-extern size_t SignalsOfSmartADAS_S_ADAS_0x7ac_size;
-
-extern Signal SignalsOfSeeQInfo_SN_System_0x410[];
-extern size_t  SignalsOfSeeQInfo_SN_System_0x410_size;
-
-extern Signal SignalsOfSeeQInfo_Time_Info_0x411[];
-extern size_t  SignalsOfSeeQInfo_Time_Info_0x411_size;
-
-extern Signal SignalsOfSeeQInfo_App_Info_0x412[];
-extern size_t  SignalsOfSeeQInfo_App_Info_0x412_size;
-
-
-static const vt_name2hex_t vt_name2hex_table[] =
-{
-    {"Vision_only_Sign_Type",ValuesOfVisionOnlySignType,ValuesOfVisionOnlySignType_size},
-};
-
-static const size_t vt_name2hex_table_size = sizeof(vt_name2hex_table)/sizeof(vt_name2hex_t);
-
 typedef struct sg_var_s
 {
     ext_sgval_type_t sg_type;

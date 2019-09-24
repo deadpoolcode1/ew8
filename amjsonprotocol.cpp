@@ -80,20 +80,7 @@ void AMJsonProtocol::collectValueTables(QJsonValue protocolValueTables)
           vt_type = vt_obj["type"].toString();
           vt_rows = vt_obj["rows"].toArray();
 
-          const vt_name2hex_t * name2hex;
-
-          //TODO find the pointer
-          for(size_t i = 0; i < vt_name2hex_table_size; i++)
-          {
-              if(0 == vt_name.compare(vt_name2hex_table[i].name))
-              {
-                  name2hex = &vt_name2hex_table[i];
-                  i = vt_name2hex_table_size;
-              }
-          }
-
-
-          AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows,name2hex,vt_type);
+          AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows, vt_type);
 
           addMultiplexor(vt_name,aMultiplexor);
      }
