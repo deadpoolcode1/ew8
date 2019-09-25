@@ -36,6 +36,8 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
             extractedString.replace("\r\n","\n");
 
+            extractedString.replace("\\\"","'");
+
             dbcFile.close();
         }
 
@@ -358,7 +360,7 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       if(status)
       {
          curParsedProtocol =  prot;
-#if 0
+#if 1
          status = parseDBCFileString(dbcString);
 #else
          parseDBCFileString(dbcString);
