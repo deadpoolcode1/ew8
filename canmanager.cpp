@@ -130,13 +130,17 @@ void CanManager::init(void)
 
 
     //CAN Socket configuration:
-    for (i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+
+    const QList<CanStdId_t> rfilterList = CanRxMsg::getMsgsWhiteList();
+
+    size_t rfilterSize = rfilterList.size();
+
+    rfilter = new struct can_filter[rfilterSize];
+
+    for (size_t i = 0; i < rfilterSize; i++)
     {
-#if 0
-        //TODO move after the parsing
-        rfilter[i].can_id = can_id_values_table[i].value;
-        rfilter[i].can_mask = CAN_SFF_MASK;
-#endif
+           rfilter[i].can_id = rfilterList.at(i);
+           rfilter[i].can_mask = CAN_SFF_MASK;
     }
 
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -160,7 +164,7 @@ void CanManager::init(void)
     }
 
 
-    setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
+    setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, rfilterList.size());
 
     strcpy(ifr.ifr_name, "can0" );
     ioctl(socknum, SIOCGIFINDEX, &ifr);

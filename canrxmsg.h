@@ -38,9 +38,12 @@ public:
     virtual void process(struct can_frame * frame) = 0;
     virtual void ack(CanManager * canMngr) = 0;
 
+    static  const QList<CanStdId_t> & getMsgsWhiteList(void);
+
 private:
   //Uses StdId as the key
   static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
+  static QList<CanStdId_t> msgsWhiteList;
   static ICanRxMsgFactory * iCanRxMsgFactory;
   static AMSignalsModel * itsAMSignalsModel;
 

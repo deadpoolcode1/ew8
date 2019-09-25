@@ -51,7 +51,7 @@ private:
     int32_t socknum;
     struct sockaddr_can addr;
     struct ifreq ifr;
-    struct can_filter rfilter[CAN_MESSAGES_TYPES_NUM];
+    struct can_filter * rfilter;
 #else
     canHandle  hnd;
     canStatus  stat;

@@ -6,6 +6,7 @@
 QMap <quint32, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
+QList<CanStdId_t> CanRxMsg::msgsWhiteList;
 
 CanRxMsg * CanRxMsg::createInstance(quint32 StdId)
 {
@@ -54,13 +55,30 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignal
     qDebug("CanRxMsgsPool is ready for usage");
 }
 
-void CanRxMsg::completeInitCanRxMsgsPool(void)
+const QList<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
 {
-    foreach (CanRxMsg * msg, CanRxMsgsPool.values())
+    return msgsWhiteList;
+}
+
+void CanRxMsg::completeInitCanRxMsgsPool()
+{
+
+    QMap<CanStdId_t, CanRxMsg *>::iterator i;
+
+    for  (i = CanRxMsgsPool.begin(); i != CanRxMsgsPool.end(); i++)
     {
+
+        CanRxMsg * msg = i.value();
+        CanStdId_t id = i.key();
+
         if (msg->itsJsonProtocol)
         {
             msg->initCanJsonSignalsListInProcessOrder();
+
+            if(!(msg->canJsonSignalsListInProcessOrder.isEmpty()))
+            {
+                msgsWhiteList.append(id);
+            }
         }
     }
 }
