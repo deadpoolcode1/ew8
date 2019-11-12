@@ -1,8 +1,11 @@
 import MyQMLenums 0.1
-import com.mobileye.QRCode 0.1
+import builtin.mobileye.QRCode 0.1
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+
+import QtQml.Models 2.3
+
 
 ApplicationWindow {
 
@@ -22,11 +25,6 @@ ApplicationWindow {
 
     color: "black"
 
-    Component.onCompleted: {
-        // page.showMaximized();
-    }
-
-
 
     Rectangle {
 
@@ -40,7 +38,7 @@ ApplicationWindow {
 
         visible: true
 
-        Image {
+        Rectangle {
             id: status_panel
 
              objectName: "status_panel_root"
@@ -49,21 +47,20 @@ ApplicationWindow {
             height: general_panel.height/7
             anchors.top: general_panel.top
 
-            fillMode: Image.Stretch
-
-            source:"../images/Containers/top-bar-frame@2x.png";
+            //fillMode: Image.Stretch
+            //source:"../images/Containers/top-bar-frame@2x.png";
 
             visible: true
+            color: parent.color
 
             Image{
 
-            height: status_panel.height*8/10
+            height: status_panel.height
             x: status_panel.x + status_panel.width/2 - width/2
 
             fillMode: Image.PreserveAspectFit
 
             source:"../images/Containers/logo@2x.png";
-
             }
 
             //Lefter from logo:
@@ -78,13 +75,13 @@ ApplicationWindow {
                 function setVisibleSlot() {visible = true}
                 function setInvisibleSlot() {visible = false}
 
-                height: status_panel.height*8/10
-                x: status_panel.x + status_panel.width/10
+                height: status_panel.height
+                x: status_panel.x + status_panel.width*2/10
                 fillMode: Image.PreserveAspectFit
 
                 visible: false
 
-                source:"../images/Statuses/ts@2x.png";
+                source:"../images/Statuses/blinkers@2x.png";
 
             }
 
@@ -123,7 +120,7 @@ ApplicationWindow {
 
                     visible: false;
                     height: status_panel.height*8/10
-                    x: status_panel.x + (status_panel.width*2/10)
+                    x: status_panel.x + (status_panel.width/10)
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/Statuses/ihc@2x.png";
                     rotation: 0;
@@ -146,7 +143,7 @@ ApplicationWindow {
 
                     visible: false;
                     height: status_panel.height*8/10
-                    x: status_panel.x + (status_panel.width*2/10)
+                    x: status_panel.x + (status_panel.width/10)
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/Statuses/ihc_low@lincz.png";
                     rotation: 0;
@@ -160,41 +157,26 @@ ApplicationWindow {
 
         }
 
-        Rectangle {
+      HalfCircleTray {
             id: left_panel
+
+            side: "left"
 
             objectName: "left_panel_root"
 
 
-            color: "transparent"
-
-            width: 50
+            //color: "transparent"
             anchors.top: status_panel.bottom
             anchors.left: parent.left
-            anchors.bottom: parent.bottom
+            //anchors.bottom: parent.bottom
 
             visible: true
 
-            Column {
-                spacing:5
-                id: groupTSRSide
-                objectName: "TSR_SIDE_QtQG"
-                property bool mutexGroup: false
-
-                function setVisibleSlot() {setVisible(true)}
-                function setInvisibleSlot() {setVisible(false)}
-
-                function setVisible(isVisible)
-                {
-                    visible = isVisible
-                }
-
-                property int layer_pri: 0
 
 
-                visible: false;
 
-                Repeater{
+
+                Repeater {
 
                     id: alert_sli_side
 
@@ -202,6 +184,8 @@ ApplicationWindow {
 
                 TSR {
                     //general features
+
+
 
                     objectName: "SLI_SIDE_"+(index+1)+"0"
                     property int layer_pri: 0
@@ -230,20 +214,14 @@ ApplicationWindow {
                         anchors.verticalCenter : parent.verticalCenter
                     }
                 }
-
                 }
 
-                Image {
 
-                    function setVisibleSlot() {setVisible(true)}
-                    function setInvisibleSlot() {setVisible(false)}
 
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
 
-                    visible: false
+
+
+                TSR {
 
                     id: alert_motorway_side;
                     objectName: "ALERT_MOTORWAY_SIDE"
@@ -254,18 +232,11 @@ ApplicationWindow {
                     source:"../images/EWAlerts/motorway.svg";
                     rotation: 0;
                 }
-                Image {
 
-                    function setVisibleSlot() {setVisible(true)}
-                    function setInvisibleSlot() {setVisible(false)}
 
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
 
-                    visible: false
 
+                TSR {
                     id: alert_playground_side;
                     objectName: "ALERT_PLAYGROUND_SIDE"
                     property int layer_pri: 0
@@ -277,8 +248,9 @@ ApplicationWindow {
                     rotation: 0;
                 }
 
-                TSR {
 
+
+                TSR {
                     //general features
                     id: alert_no_pass_side;
                     objectName: "ALERT_NO_PASS_SIDE"
@@ -289,25 +261,20 @@ ApplicationWindow {
                     is_main: false
                     its_pair_alert: alert_no_pass_main
                     source:"../images/EWAlerts/no_pass.svg";
-
                 }
 
-                Image {
 
-                    function setVisibleSlot() {setVisible(true)}
-                    function setInvisibleSlot() {setVisible(false)}
 
-                    function setVisible(isVisible)
-                    {
-                        visible = isVisible
-                    }
+                TSR {
 
-                    visible: false
+
 
                     id: alert_end_all_restr_side;
                     objectName: "ALERT_END_ALL_RESTR_SIDE"
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_END_ALL_RESTR"
+
+                   is_main: false
 
                     x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
@@ -315,32 +282,22 @@ ApplicationWindow {
                     rotation: 0;
                 }
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            }
-
-
-
-
 
         }
 
 
-        Rectangle {
+        HalfCircleTray {
             id: right_panel
+
+            side: "right"
 
             objectName: "right_panel_root"
 
-            color: "transparent"
-
-            width: 50
             anchors.top: status_panel.bottom
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            //anchors.bottom: parent.bottom
 
             visible: true
-
-
-            Column
-            {
 
                 SmartItem {
 
@@ -388,7 +345,7 @@ ApplicationWindow {
 
                 }
 
-            }
+
 
         }
 
@@ -396,12 +353,14 @@ ApplicationWindow {
 
         Rectangle {
 
-            anchors.left: left_panel.right
-            anchors.right: right_panel.left
+            anchors.left: general_panel.left
+            anchors.right: general_panel.right
+            anchors.leftMargin: left_panel.width/2
+            anchors.rightMargin: right_panel.width/2
             anchors.top: status_panel.bottom
-            anchors.bottom: parent.bottom
+            anchors.bottom: general_panel.bottom
 
-
+            height: general_panel.height - status_panel.height
 
             id: main_panel
 
@@ -455,7 +414,7 @@ ApplicationWindow {
                     visible: false;
                     x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/pcw-green@2x.png";
+                    source:"../images/EWAlerts/PCW@2x.png";
                     rotation: 0;
 
                 }
@@ -467,6 +426,8 @@ ApplicationWindow {
                     id: group2
                     objectName: "FCW_QtQG"
                     property bool mutexGroup: false
+
+                    anchors.fill: parent
 
                     property int canEntityType: Alert.QtQG
 
@@ -529,7 +490,7 @@ ApplicationWindow {
                         x: 0; y: 20; width: 210; height: 140;
                         //x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/pdz@lincz.png";
+                        source:"../images/EWAlerts/PDZ@2x.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -642,7 +603,6 @@ ApplicationWindow {
 
                         function setVisible(isVisible)
                         {
-                            //blinkTimer_fcw.setRunning(isVisible)
                             visible = isVisible
                         }
 
@@ -653,13 +613,12 @@ ApplicationWindow {
                         opacity: 1.0
 
                         visible: false;
-                        x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
+                        x: 0; y: 20; width: 210; height: 140;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/fcw@lincz300x300.png";
+                        source:"../images/EWAlerts/FCW@2x.png";
                         rotation: 0;
 
                         SequentialAnimation {
-
                                 running: alert_fcw.visible
                                 loops: Animation.Infinite
 
@@ -674,7 +633,6 @@ ApplicationWindow {
                                 easing.type: Easing.InOutExpo;
                                 }
                         }
-
                     }
 
 
@@ -793,7 +751,11 @@ ApplicationWindow {
                         objectName: "LANES_QtQG"
                         property bool mutexGroup: false
 
-                        anchors.fill: parent
+                        height:main_panel.height*3/5
+
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
 
                         function setVisibleSlot() {visible = true}
                         function setInvisibleSlot() {visible = false}
@@ -803,13 +765,27 @@ ApplicationWindow {
 
                         visible: false;
 
+                        Image{
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+
+
+                            fillMode: Image.PreserveAspectFit;
+                            source:"../images/Containers/Road@2x.png";
+
+                            visible: true
+                        }
+
 
                         Item {
                             id: groupLanes_left
                             objectName: "LANES_LEFT_QtQG"
                             property bool mutexGroup: false
 
-                            anchors.fill: parent
+                            //anchors.fill: parent
+
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
@@ -832,12 +808,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneL_off@lincz.png";
+                                source:"../images/EWAlerts/Lane_L_off@2x.png";
                                 rotation: 0;
 
 
@@ -858,12 +834,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneL_monitor@lincz.png";
+                                source:"../images/EWAlerts/Lane_L_on@2x.png";
                                 rotation: 0;
 
 
@@ -885,12 +861,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneL_alert@2x.png";
+                                source:"../images/EWAlerts/Lane_L_alert@2x.png";
                                 rotation: 0;
 
 
@@ -916,7 +892,10 @@ ApplicationWindow {
                             objectName: "LANES_RIGHT_QtQG"
                             property bool mutexGroup: false
 
-                            anchors.fill: parent
+                            //anchors.fill: parent
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
@@ -939,12 +918,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneR_off@2x.png";
+                                source:"../images/EWAlerts/Lane_R_off@2x.png";
                                 rotation: 0;
 
 
@@ -965,12 +944,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneR_monitor@lincz.png";
+                                source:"../images/EWAlerts/Lane_R_on@2x.png";
                                 rotation: 0;
 
 
@@ -992,12 +971,12 @@ ApplicationWindow {
 
                                 visible:false
 
-                                height: parent.height;
+                                //height: parent.height;
                                 anchors.bottom: parent.bottom
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/laneR_alert@lincz.png";
+                                source:"../images/EWAlerts/Lane_R_alert@2x.png";
                                 rotation: 0;
 
 
@@ -1048,147 +1027,27 @@ ApplicationWindow {
 
                         ////////////////////////////////
                         //Atomic items:
-                        Item {
-
-                            function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
+                        HMW
+                        {
                             id: alert_hmw_alert;
-                            objectName: "ALERT_HMW_ALERT"
+                            objectName: "HMW_ALERT_ALERT"
                             property int layer_pri: 0
                             property string canEntityType: "ALERT_HMW_ALERT"
-                            property int canEntityArg: 0x00
-
-                            visible: false;
-
-                            y: 20
-
-                            x: main_panel.width/8;
-
-                            width: main_panel.width*3/4;
-
-                            height: main_panel.height*4/5
-
-                            Image{
-
-                                visible: true
-                                width: main_panel.width*3/4;
-                                fillMode: Image.PreserveAspectFit;
-                                source: "../images/EWAlerts/car-red@lincz.png";
-                                rotation: 0;
-
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.top : parent.top
-
-                            }
-
-                            Image{
-
-                                visible: true
-                                width: main_panel.width*3/4;
-                                fillMode: Image.PreserveAspectFit;
-                                source: "../images/EWAlerts/hmw-lines@2x.png";
-                                rotation: 0;
-
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-
-                                visible: true
-
-                                width: main_panel.width*3/4;
-
-                                text: (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
-                                font.family: "Arial"
-                                font.pointSize: 45
-                                font.bold: true
-                                color: "red"
-                                opacity: 1
-                                horizontalAlignment: Text.AlignHCenter
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.bottom : parent.bottom
-                            }
-
-
+                            vehicle_source: "../images/EWAlerts/Vehicle@2x.png";
+                            strips_source:"../images/EWAlerts/Strips_red@2x.png";
+                            text_color: "red"
                         }
-                        Item {
 
-                            function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
-                            function setInvisibleSlot() {setVisible(false)}
-
-                            function setVisible(isVisible)
-                            {
-                                visible = isVisible
-                            }
-
+                        HMW
+                        {
                             id: alert_hmw_monitor;
                             objectName: "HMW_MONITOR_ALERT"
                             property int layer_pri: 0
                             property string canEntityType: "ALERT_HMW_MONITOR"
-                            property int canEntityArg: 0x00
-
-                            visible: false;
-
-                            y: 20
-
-                            x: main_panel.width/8;
-
-                            width: main_panel.width*3/4;
-
-                            height: main_panel.height*4/5
-
-                            Image{
-
-                                visible: true
-                                width: main_panel.width*3/4;
-                                fillMode: Image.PreserveAspectFit;
-                                source: "../images/EWAlerts/car@2x.png";
-                                rotation: 0;
-
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.top : parent.top
-
-                            }
-
-                            Image{
-
-                                visible: true
-                                width: main_panel.width*3/4;
-                                fillMode: Image.PreserveAspectFit;
-                                source: "../images/EWAlerts/hmw-lines-green@lincz.png";
-                                rotation: 0;
-
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-
-                                visible: true
-
-                                width: main_panel.width*3/4;
-
-                                text: (parent.canEntityArg == 0x00 ? "  " : (parent.canEntityArg/10).toFixed(1))
-                                font.family: "Arial"
-                                font.pointSize: 45
-                                font.bold: true
-                                color: "#00ff00"
-                                opacity: 1
-                                horizontalAlignment: Text.AlignHCenter
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.bottom : parent.bottom
-                            }
-
-
+                            vehicle_source: "../images/EWAlerts/Vehicle_green@2x.png";
+                            strips_source:"../images/EWAlerts/Strips@2x.png";
+                            text_color: "#00ff00"
                         }
-
                     }
 
 

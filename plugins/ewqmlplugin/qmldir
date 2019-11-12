@@ -1,0 +1,4 @@
+module com.mobileye
+classname QQuickHalfCircleTray
+plugin ewqmlplugin
+typeinfo plugins.qmltypes

@@ -101,42 +101,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    resources/EWAlerts/blinkers.png \
-    resources/EWAlerts/fcw.png \
-    resources/EWAlerts/fla_armed.png \
-    resources/EWAlerts/ldwoff.png \
-    resources/EWAlerts/ldwon.png \
-    resources/EWAlerts/lldw.png \
-    resources/EWAlerts/pcw.png \
-    resources/EWAlerts/pdz.png \
-    resources/EWAlerts/rldw.png \
-    resources/EWAlerts/sli.png \
-    resources/EWAlerts/fla_armed_low.png \
-    resources/EWAlerts/forward.svg \
-    resources/EWAlerts/hmw_green.png \
-    resources/EWAlerts/hmw_red.png \
-    resources/EWAlerts/end_all_restr.svg \
-    resources/EWAlerts/motorway.svg \
-    resources/EWAlerts/no_pass.svg \
-    resources/EWAlerts/playground.svg \
-    TSR.qml \
-    SmartItem.qml \
-    resources/Containers/Artboard 40@2x.png \
-    resources/Containers/example@2x.png \
-    resources/Containers/Left-frame@2x.png \
-    resources/Containers/logo@2x.png \
-    resources/Containers/right-frame@2x.png \
-    resources/Containers/top-bar-frame@2x.png \
-    resources/SmartAlerts/bww@2x.png \
-    resources/SmartAlerts/coffee@2x.png \
-    resources/Statuses/gps@2x.png \
-    resources/Statuses/ihc@2x.png \
-    resources/Statuses/ihc_low@2x.png \
-    resources/Statuses/OTA@2x.png \
-    resources/Statuses/ts@2x.png \
-    resources/TSRAlerts/sli@2x.png \
-    resources/SmartAlerts/animal.svg \
-    resources/SmartAlerts/slippery.svg \
     candbgrammar.peg
 
 HEADERS += \

@@ -15,7 +15,7 @@ class QPainter;
 QString QQuickQRCode::sn = "";
 
 void QQuickQRCode::declareQML() {
-                qmlRegisterType<QQuickQRCode>("com.mobileye.QRCode",0, 1, "QRCode");
+                qmlRegisterType<QQuickQRCode>("builtin.mobileye.QRCode",0, 1, "QRCode");
             }
 
 QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPaintedItem(parentQQuickItem)
