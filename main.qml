@@ -18,13 +18,7 @@ ApplicationWindow {
     width: 320
     height: 240
 
-    //width: 800
-    //height: 640
-
     visible: true
-
-    color: "black"
-
 
     Rectangle {
 
@@ -38,7 +32,9 @@ ApplicationWindow {
 
         visible: true
 
-        Rectangle {
+        //Image
+        Rectangle
+        {
             id: status_panel
 
              objectName: "status_panel_root"
@@ -47,11 +43,14 @@ ApplicationWindow {
             height: general_panel.height/7
             anchors.top: general_panel.top
 
-            //fillMode: Image.Stretch
-            //source:"../images/Containers/top-bar-frame@2x.png";
+
+            //fillMode: Image.Stretch;
+            //source: "../images/Containers/top-bar-frame@2x.png";
+            color: parent.color;
+
 
             visible: true
-            color: parent.color
+
 
             Image{
 
@@ -180,6 +179,8 @@ ApplicationWindow {
 
                     id: alert_sli_side
 
+                    visible: false
+
                     model:14
 
                 TSR {
@@ -209,6 +210,7 @@ ApplicationWindow {
                         font.pointSize: parent.is_main ? 40 : 10
                         font.bold: true
                         color: "black"
+                        visible: parent.visible
                         opacity: 1
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter : parent.verticalCenter
@@ -227,7 +229,6 @@ ApplicationWindow {
                     objectName: "ALERT_MOTORWAY_SIDE"
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_MOTORWAY"
-                    x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/EWAlerts/motorway.svg";
                     rotation: 0;
@@ -241,8 +242,6 @@ ApplicationWindow {
                     objectName: "ALERT_PLAYGROUND_SIDE"
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_PLAYGROUND"
-
-                    x: left_panel.width/8; width: left_panel.width*3/4;
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/EWAlerts/playground.svg";
                     rotation: 0;
@@ -266,17 +265,12 @@ ApplicationWindow {
 
 
                 TSR {
-
-
-
                     id: alert_end_all_restr_side;
                     objectName: "ALERT_END_ALL_RESTR_SIDE"
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_END_ALL_RESTR"
-
-                   is_main: false
-
-                    x: left_panel.width/8; width: left_panel.width*3/4;
+                    is_main: false
+                    //its_pair_alert: alert_end_all_restr_main
                     fillMode: Image.PreserveAspectFit;
                     source:"../images/EWAlerts/end_all_restr.svg";
                     rotation: 0;

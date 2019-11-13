@@ -18,8 +18,8 @@ Image {
         }
         else // on side panel
         {
-            x = left_panel.width/8;
-            width = left_panel.width*3/4;
+            //x = left_panel.width/8;
+            //width = left_panel.width*3/4;
         }
 
 

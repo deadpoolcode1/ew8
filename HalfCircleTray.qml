@@ -18,7 +18,7 @@ QQuickHalfCircleTray{
     property string src_left: "../images/Containers/Circle_L@brd.png";
     property string src_right: "../images/Containers/Circle_R@brd.png";
 
-    property string side;
+    //property string side;
 
     Image{
         objectName: "background"
