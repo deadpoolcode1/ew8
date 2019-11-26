@@ -74,12 +74,12 @@ private:
 
   AMJsonAction * itsAction;
 
-  QHash<double,AMJsonAction *> * itsValueTable;
-  AMJsonAction * activatedAction;
+  QHash<double, IAMJsonProcessable *> * itsValueTable;
+  IAMJsonProcessable * activatedAction;
 
-  void setActivatedAction(AMJsonAction * anAction){activatedAction = anAction;}
+  void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  AMJsonAction * getActivatedAction(void){return activatedAction;}
+  IAMJsonProcessable * getActivatedAction(void){return activatedAction;}
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 

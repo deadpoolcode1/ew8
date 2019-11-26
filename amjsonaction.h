@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include "actiontype.h"
+#include "iamjsonprocessable.h"
 
 class AMJsonProtocol;
 
-class AMJsonAction : public QObject
+class AMJsonAction : public QObject, public IAMJsonProcessable
 {
     Q_OBJECT
 

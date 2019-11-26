@@ -32,6 +32,7 @@ public:
     //TODO: For code reliability, verify that is not connected more than once!
     //NOTE: graphicItem signal appears at most once for one DISPLAY_GRAPHIC_ITEM.
     void connect2Arguments(AMJsonArgumentAction * argumentSignal);
+    void setCalledWithFixedArgument(bool isArgOfStringType);
 
 
 public slots:

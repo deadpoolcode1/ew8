@@ -8,6 +8,7 @@
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
 #include "iamjsonactionfactory.h"
+#include "iamjsonprocessable.h"
 
 class AMJsonAction;
 class AMJsonSignal;
@@ -23,14 +24,14 @@ public:
 
     AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, QString type, QObject * parent = nullptr);
 
-    QHash<double,AMJsonAction *> * getItsValueTable();
+    QHash<double,IAMJsonProcessable *> * getItsValueTable();
 
     qint32 getItsValuesType(void);
 
 private:
     action_type_e  type;
     QJsonArray itsRawRows;
-    QHash<double,AMJsonAction *> itsValueTable;
+    QHash<double, IAMJsonProcessable *> itsValueTable;
     void initByType(QString aType);
 
     AMJsonProtocol * itsProtocol;

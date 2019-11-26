@@ -175,23 +175,22 @@ ApplicationWindow {
 
 
 
-                Repeater {
-
-                    id: alert_sli_side
-
-                    visible: false
-
-                    model:14
 
                 TSR {
                     //general features
 
+                    id: alert_sli_side
 
+                    function setVisibleSlot(arg) {
+                        console.log("SLI = "+arg);
+                        canEntityArg = arg;
+                        setVisible(true);
+                    }
 
-                    objectName: "SLI_SIDE_"+(index+1)+"0"
+                    objectName: "SLI_SIDE"
                     property int layer_pri: 0
-                    canEntityType: "ALERT_SLI_"+(index+1)+"0"
-                    canEntityArg: (index+1)*10
+                    canEntityType: "ALERT_SLI"
+                    canEntityArg: 0
                     //special features
                     is_main: false
                     its_pair_alert: alert_sli_main
@@ -216,7 +215,7 @@ ApplicationWindow {
                         anchors.verticalCenter : parent.verticalCenter
                     }
                 }
-                }
+
 
 
 
@@ -630,19 +629,17 @@ ApplicationWindow {
                     }
 
 
-                    Repeater{
 
-                        id: alert_sli_main
-
-                        model:14
 
                         TSR {
 
+                             id: alert_sli_main
+
                             //general features
-                            objectName: "ALERT_SLI_MAIN_"+(index+1)+"0"
+                            objectName: "ALERT_SLI_MAIN"
                             property int layer_pri: 1
-                            canEntityType: "ALERT_SLI_"+(index+1)+"0"
-                            canEntityArg: (index+1)*10
+                            canEntityType: "ALERT_SLI"
+                            canEntityArg: 0
 
                             //special features
                             is_main: true
@@ -660,7 +657,7 @@ ApplicationWindow {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.verticalCenter : parent.verticalCenter
                             }
-                        }
+
                     }
 
                     TSR {

@@ -2,7 +2,7 @@ import QtQuick 2.9
 
 Image {
 
-    function setVisibleSlot() {setVisible(true);}
+    function setVisibleSlot(arg) {canEntityArg = arg; setVisible(true);}
     function setInvisibleSlot() {setVisible(false)}
 
     function setVisible(isVisible)

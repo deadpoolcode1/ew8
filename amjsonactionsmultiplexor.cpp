@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include "amjsonaction.h"
 #include "amjsonactionfactory.h"
+#include "amjsonfixedargumentsactioninvoker.h"
 #include "defs.h"
 
 AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
@@ -40,34 +41,69 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
             QString strAction = row_obj["action"].toString();
 
-#if 0
-            if(row_obj["arg"].isArray())
-            {
-                QJsonArray args_arr = row_obj["arg"].toArray();
-            }
-            else
-            {
-                row_obj["arg"].toString();
-            }
-#endif
-            //TODO verify the type is GraphicItem or Enabler
+
 
             AMJsonAction * anAction = itsActionFactory->createAMJsonActionInstance(itsProtocol, type, strAction, 0);
 
+            IAMJsonProcessable * anActionTableItem =  anAction;
 
             //TODO verify is not NULL
 
-            //Assign forced args
 
-            itsValueTable.insert(triggerValue,anAction);
+            if(GraphicItem == type)
+            {
+
+                QJsonValue arg_val = row_obj["arg"];
+
+                if(!(arg_val.isUndefined()))
+                {
+
+                    if(arg_val.isString())
+                    {
+                        QString arg = arg_val.toString();
+                        anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arg);
+                    }
+                    else
+                    {
+
+                        QList<qint32> arglist;
+
+                        if(arg_val.isArray())
+                        {
+                            QJsonArray args_arr = arg_val.toArray();
+
+                            foreach(const QJsonValue & arg_item, args_arr)
+                            {
+                                if(arg_item.isDouble())
+                                {
+                                    arglist.append(arg_item.toInt());
+                                }
+                            }
+
+
+                        }
+                        else if(arg_val.isDouble())
+                        {
+                            arglist.append(arg_val.toInt());
+                        }
+
+                        if(!(arglist.isEmpty()))
+                        {
+                            anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arglist);
+                        }
+                    }
+                }
+            }
+
+            itsValueTable.insert(triggerValue,anActionTableItem);
 
             itsProtocol->itsModel->storeCollectedAction(anAction);
+
         }
     }
-
 }
 
-QHash<double, AMJsonAction *> * AmJsonActionsMultiplexor::getItsValueTable()
+QHash<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::getItsValueTable()
 {
     return &itsValueTable;
 }

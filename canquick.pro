@@ -56,7 +56,8 @@ SOURCES += \
     amjsonnumericargumentaction.cpp \
     amjsonactionfactory.cpp \
     amjsonactionsmultiplexor.cpp \
-    candbsignal.cpp
+    candbsignal.cpp \
+    amjsonfixedargumentsactioninvoker.cpp
 
 
 
@@ -141,7 +142,9 @@ HEADERS += \
     amjsonactionfactory.h \
     amjsonactionsmultiplexor.h \
     actiontype.h \
-    candbgrammar.h.in
+    candbgrammar.h.in \
+    amjsonfixedargumentsactioninvoker.h \
+    iamjsonprocessable.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
@@ -154,11 +157,7 @@ win32: LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
 win32: INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 
-linux: LIBS += -L'/home/mobileye/nochum/poky-sdk/2.5.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/lib/' -lsocketcan -lqrencode -lpthread
-
-# WARNING: INCLUDEPATH @ linux is buggy  -- qtcreator does not see the headers for auto completion
-#linux: INCLUDEPATH += -I'/opt/poky-atmel/2.5.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/include/'
-linux: QMAKE_CXXFLAGS += -I'/home/mobileye/nochum/poky-sdk/2.5.2/sysroots/cortexa5hf-neon-poky-linux-gnueabi/usr/include/'
+linux: LIBS += -lsocketcan -lqrencode
 
 #Specific preprocessor definitions:
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED

@@ -195,9 +195,9 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
      {
        if(itsValueTable != nullptr)
        {
-           AMJsonAction * toActivate = itsValueTable->value(extractedCANsignal.toInt());
+           IAMJsonProcessable * toActivate = itsValueTable->value(extractedCANsignal.toInt());
 
-           AMJsonAction * toDeactivate = getActivatedAction();
+           IAMJsonProcessable * toDeactivate = getActivatedAction();
 
            if(toActivate != toDeactivate)//WARNING: without args only
            {
@@ -292,7 +292,7 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
          }
          else
          {
-             foreach (AMJsonAction * anAction, *itsValueTable)
+             foreach (IAMJsonProcessable * anAction, *itsValueTable)
              {
                  emit ((AMJsonEnablerAction *)anAction)-> enableDisableConnected(false);
              }
@@ -314,7 +314,7 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
          }
          else
          {
-             AMJsonAction * activeAction = getActivatedAction();
+             IAMJsonProcessable * activeAction = getActivatedAction();
 
              if(nullptr != activeAction)
              {

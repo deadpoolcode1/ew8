@@ -206,4 +206,10 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
 
 }
 
+void AMJsonGraphicItemAction::setCalledWithFixedArgument(bool anIsArgOfStringType)
+{
+   hasArguments = true;
+   isArgOfStringType = anIsArgOfStringType;
+}
+
 
