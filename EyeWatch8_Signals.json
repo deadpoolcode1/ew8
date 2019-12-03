@@ -94,6 +94,12 @@
         ,
         {
             "protocol": "AfterMarket",
+
+            "ackProtocol": "KeepAlive",
+            "ackMessages":[
+                {"name":"KeepAlive", "trigger": "AWS", "type": "RxMsg"}
+            ],
+
             "signals": [
 
 
@@ -157,9 +163,17 @@
         ,
         {
             "protocol": "SmartADAS",
+
+            "ackProtocol": "SmartADASack",
+            "ackMessages":[
+                {"name":"S_ADAS_ACK", "trigger": "S_ADAS", "type": "RxMsg"}
+            ],
+
             "signals": [
 
             ]
+
+
         }
     ]
 

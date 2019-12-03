@@ -43,7 +43,13 @@ MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(
 
 
     canmgr = new CanManager(this);
-
+#if 1
+    QObject * rootQobjectGeneralPannel = MainProcess::componentObject->findChild<QObject*>("general_panel_root");
+    if (!rootQobjectGeneralPannel)
+    {
+        // TBD display general error and go
+    }
+#else
     QObject * rootQobjectMainPannel = MainProcess::componentObject->findChild<QObject*>("main_panel_root");
     if (!rootQobjectMainPannel)
     {
@@ -68,6 +74,7 @@ MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(
     {
         // TBD display general error and go
     }
+#endif
 
 
 
@@ -75,11 +82,14 @@ MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(
     EntityType::generateTypes();
 
 // build panels trees
+#if 1
+    generalPanelTree = new RootedTree(rootQobjectGeneralPannel);
+#else
     mainPanelTree = new RootedTree(rootQobjectMainPannel);
     tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
     statusPanelTree = new RootedTree(rootQobjectStatusPannel);
     smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
-
+#endif
     connect(this,SIGNAL(started()),SLOT(process()));
 
 }
@@ -114,6 +124,14 @@ int MainProcess::launchEverything()
 //TODO extract to different thread:
 void MainProcess::updateDisplay(void)
 {
+#if 1
+    if (!generalPanelTree)
+    {
+        return;
+    }
+
+    generalPanelTree->updateVisibility();
+#else
     if (!mainPanelTree)
     {
         return;
@@ -139,7 +157,7 @@ void MainProcess::updateDisplay(void)
         return;
     }
     smartADASPanelTree->updateVisibility();
-
+#endif
 
     flag_tree_changed = false;
 }

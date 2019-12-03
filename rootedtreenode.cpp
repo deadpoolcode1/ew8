@@ -99,8 +99,15 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     }
 
 
-    QVariant vlayer = qobject->property("layer_pri");
-    layer = vlayer.toInt(); // priority
+    if(qobject->property("layer_pri").isValid())
+    {
+        QVariant vlayer = qobject->property("layer_pri");
+        layer = vlayer.toInt(); // priority
+    }
+    else
+    {
+        layer = 0;
+    }
 
 
 // esteblish link between atomic entityes (C++) and Alerts by EntityType  (map)
@@ -146,7 +153,14 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         }
         else
         {
-            mutexGroup = qobject->property("mutexGroup").toBool();  // real value for group
+            if(qobject->property("mutexGroup").isValid())
+            {
+                mutexGroup = qobject->property("mutexGroup").toBool();  // real value for group
+            }
+            else
+            {
+                mutexGroup = false; // default value?
+            }
         }
 
     }

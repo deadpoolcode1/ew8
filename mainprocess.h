@@ -41,10 +41,14 @@ private:
     CanManager * canmgr;
 
 // pointers to display static panels trees
+#if 1
+     RootedTree* generalPanelTree;
+#else
     RootedTree* mainPanelTree;
     RootedTree* tsrPanelTree;
     RootedTree* statusPanelTree;
     RootedTree* smartADASPanelTree;
+#endif
 
 // pointer to QML defining trees for all panels.
     QObject *componentObject;

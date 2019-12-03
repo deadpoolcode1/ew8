@@ -1,5 +1,5 @@
-qmlscripts.files = *.qml
-qmlimages.files = resources/*
+qmlscripts.files = qml/*.qml
+qmlimages.files = images/*
 signalcfgs.files = *.json
 dbcfiles.files = DBC/*.dbc
 

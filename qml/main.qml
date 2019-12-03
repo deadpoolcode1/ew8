@@ -24,6 +24,8 @@ ApplicationWindow {
 
         id: general_panel
 
+        objectName: "general_panel_root"
+
         color: "black"
 
         width: page.width
