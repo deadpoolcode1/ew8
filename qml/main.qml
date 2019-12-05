@@ -47,7 +47,7 @@ ApplicationWindow {
 
 
             //fillMode: Image.Stretch;
-            //source: "../images/Containers/top-bar-frame@2x.png";
+            //source: "images/Containers/top-bar-frame@2x.png";
             color: parent.color;
 
 
@@ -61,7 +61,7 @@ ApplicationWindow {
 
             fillMode: Image.PreserveAspectFit
 
-            source:"../images/Containers/logo@2x.png";
+            source:"images/Containers/logo@2x.png";
             }
 
             //Lefter from logo:
@@ -72,17 +72,15 @@ ApplicationWindow {
                 objectName: "ALERT_BLINKERS"
                 property int layer_pri: 0
                 property string canEntityType: "ALERT_BLINKERS"
-
                 function setVisibleSlot() {visible = true}
                 function setInvisibleSlot() {visible = false}
-
                 height: status_panel.height
                 x: status_panel.x + status_panel.width*2/10
                 fillMode: Image.PreserveAspectFit
 
                 visible: false
 
-                source:"../images/Statuses/blinkers@2x.png";
+                source:"images/Statuses/blinkers@2x.png";
 
             }
 
@@ -94,10 +92,12 @@ ApplicationWindow {
                 function setVisibleSlot() {setVisible(true)}
                 function setInvisibleSlot() {setVisible(false)}
 
+
                 function setVisible(isVisible)
                 {
                     visible = isVisible
                 }
+
 
                 property int layer_pri: 0
                 property int canEntityType: Alert.QtQG
@@ -106,13 +106,16 @@ ApplicationWindow {
 
                 Image {
 
+
                     function setVisibleSlot() {setVisible(true)}
                     function setInvisibleSlot() {setVisible(false)}
+
 
                     function setVisible(isVisible)
                     {
                         visible = isVisible
                     }
+
 
                     id: alert_hi_beam;
                     objectName: "ALERT_HI_BEAM"
@@ -123,19 +126,22 @@ ApplicationWindow {
                     height: status_panel.height*8/10
                     x: status_panel.x + (status_panel.width/10)
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/Statuses/ihc@2x.png";
+                    source:"images/Statuses/ihc@2x.png";
                     rotation: 0;
                 }
 
                 Image {
 
+
                     function setVisibleSlot() {setVisible(true)}
                     function setInvisibleSlot() {setVisible(false)}
+
 
                     function setVisible(isVisible)
                     {
                         visible = isVisible
                     }
+
 
                     id: alert_low_beam;
                     objectName: "ALERT_LOW_BEAM"
@@ -146,7 +152,7 @@ ApplicationWindow {
                     height: status_panel.height*8/10
                     x: status_panel.x + (status_panel.width/10)
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/Statuses/ihc_low@lincz.png";
+                    source:"images/Statuses/ihc_low@lincz.png";
                     rotation: 0;
                 }
 
@@ -197,7 +203,7 @@ ApplicationWindow {
                     is_main: false
                     its_pair_alert: alert_sli_main
 
-                    source:"../images/TSRAlerts/sli@lincz.png";
+                    source:"images/TSRAlerts/sli@lincz.png";
 
                     Component.onCompleted:
                     {
@@ -231,7 +237,7 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_MOTORWAY"
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/motorway.svg";
+                    source:"images/EWAlerts/motorway.svg";
                     rotation: 0;
                 }
 
@@ -244,7 +250,7 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_PLAYGROUND"
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/playground.svg";
+                    source:"images/EWAlerts/playground.svg";
                     rotation: 0;
                 }
 
@@ -260,7 +266,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: alert_no_pass_main
-                    source:"../images/EWAlerts/no_pass.svg";
+                    source:"images/EWAlerts/no_pass.svg";
                 }
 
 
@@ -273,7 +279,7 @@ ApplicationWindow {
                     is_main: false
                     //its_pair_alert: alert_end_all_restr_main
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/end_all_restr.svg";
+                    source:"images/EWAlerts/end_all_restr.svg";
                     rotation: 0;
                 }
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -305,7 +311,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_animal_main
-                    source:"../images/SmartAlerts/animal.svg";
+                    source:"images/SmartAlerts/animal.svg";
 
                 }
 
@@ -320,7 +326,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_slippery_main
-                    source:"../images/SmartAlerts/slippery.svg";
+                    source:"images/SmartAlerts/slippery.svg";
 
                 }
 
@@ -336,7 +342,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_sev_weather_main
-                    source:"../images/SmartAlerts/bww@2x.png";
+                    source:"images/SmartAlerts/bww@2x.png";
 
                 }
 
@@ -409,7 +415,7 @@ ApplicationWindow {
                     visible: false;
                     x: 0; y: 20; width: 210; height: 140;
                     fillMode: Image.PreserveAspectFit;
-                    source:"../images/EWAlerts/PCW@2x.png";
+                    source:"images/EWAlerts/PCW@2x.png";
                     rotation: 0;
 
                 }
@@ -485,7 +491,7 @@ ApplicationWindow {
                         x: 0; y: 20; width: 210; height: 140;
                         //x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/PDZ@2x.png";
+                        source:"images/EWAlerts/PDZ@2x.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -568,7 +574,7 @@ ApplicationWindow {
                             visible: false;
                             x: main_panel.width/8; y: 20; width: main_panel.width*3/4;
                             fillMode: Image.PreserveAspectFit;
-                            source:"../images/EWAlerts/error@lincz.png";
+                            source:"images/EWAlerts/error@lincz.png";
                             rotation: 0;
 
                             Text {
@@ -610,7 +616,7 @@ ApplicationWindow {
                         visible: false;
                         x: 0; y: 20; width: 210; height: 140;
                         fillMode: Image.PreserveAspectFit;
-                        source:"../images/EWAlerts/FCW@2x.png";
+                        source:"images/EWAlerts/FCW@2x.png";
                         rotation: 0;
 
                         SequentialAnimation {
@@ -646,7 +652,7 @@ ApplicationWindow {
                             //special features
                             is_main: true
                             its_pair_alert: alert_sli_side
-                            source:"../images/TSRAlerts/sli@lincz300x300.png";
+                            source:"images/TSRAlerts/sli@lincz300x300.png";
 
                             //TODO move text to TSR_SLI
                             Text {
@@ -673,7 +679,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: alert_no_pass_side
-                        source:"../images/EWAlerts/no_pass.svg";
+                        source:"images/EWAlerts/no_pass.svg";
 
                     }
 
@@ -688,7 +694,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_animal_side
-                        source:"../images/SmartAlerts/animal.svg";
+                        source:"images/SmartAlerts/animal.svg";
 
                     }
 
@@ -703,7 +709,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_slippery_side
-                        source:"../images/SmartAlerts/slippery.svg";
+                        source:"images/SmartAlerts/slippery.svg";
 
                     }
 
@@ -718,7 +724,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_sev_weather_side
-                        source:"../images/SmartAlerts/bww@2x.png";
+                        source:"images/SmartAlerts/bww@2x.png";
                     }
                 }
 
@@ -764,7 +770,7 @@ ApplicationWindow {
 
 
                             fillMode: Image.PreserveAspectFit;
-                            source:"../images/Containers/Road@2x.png";
+                            source:"images/Containers/Road@2x.png";
 
                             visible: true
                         }
@@ -806,7 +812,7 @@ ApplicationWindow {
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_L_off@2x.png";
+                                source:"images/EWAlerts/Lane_L_off@2x.png";
                                 rotation: 0;
 
 
@@ -832,7 +838,7 @@ ApplicationWindow {
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_L_on@2x.png";
+                                source:"images/EWAlerts/Lane_L_on@2x.png";
                                 rotation: 0;
 
 
@@ -859,7 +865,7 @@ ApplicationWindow {
                                 anchors.left: parent.left
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_L_alert@2x.png";
+                                source:"images/EWAlerts/Lane_L_alert@2x.png";
                                 rotation: 0;
 
 
@@ -916,7 +922,7 @@ ApplicationWindow {
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_R_off@2x.png";
+                                source:"images/EWAlerts/Lane_R_off@2x.png";
                                 rotation: 0;
 
 
@@ -942,7 +948,7 @@ ApplicationWindow {
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_R_on@2x.png";
+                                source:"images/EWAlerts/Lane_R_on@2x.png";
                                 rotation: 0;
 
 
@@ -969,7 +975,7 @@ ApplicationWindow {
                                 anchors.right: parent.right
 
                                 fillMode: Image.PreserveAspectFit;
-                                source:"../images/EWAlerts/Lane_R_alert@2x.png";
+                                source:"images/EWAlerts/Lane_R_alert@2x.png";
                                 rotation: 0;
 
 
@@ -1026,8 +1032,8 @@ ApplicationWindow {
                             objectName: "HMW_ALERT_ALERT"
                             property int layer_pri: 0
                             property string canEntityType: "ALERT_HMW_ALERT"
-                            vehicle_source: "../images/EWAlerts/Vehicle@2x.png";
-                            strips_source:"../images/EWAlerts/Strips_red@2x.png";
+                            vehicle_source: "images/EWAlerts/Vehicle@2x.png";
+                            strips_source:"images/EWAlerts/Strips_red@2x.png";
                             text_color: "red"
                         }
 
@@ -1037,8 +1043,8 @@ ApplicationWindow {
                             objectName: "HMW_MONITOR_ALERT"
                             property int layer_pri: 0
                             property string canEntityType: "ALERT_HMW_MONITOR"
-                            vehicle_source: "../images/EWAlerts/Vehicle_green@2x.png";
-                            strips_source:"../images/EWAlerts/Strips@2x.png";
+                            vehicle_source: "images/EWAlerts/Vehicle_green@2x.png";
+                            strips_source:"images/EWAlerts/Strips@2x.png";
                             text_color: "#00ff00"
                         }
                     }

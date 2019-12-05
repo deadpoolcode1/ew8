@@ -1,5 +1,5 @@
 qmlscripts.files = qml/*.qml
-qmlimages.files = images/*
+qmlimages.files = qml/images/*
 signalcfgs.files = *.json
 dbcfiles.files = DBC/*.dbc
 
@@ -76,9 +76,7 @@ qnx: qmlscripts.path = /tmp/$${TARGET}/qml
 else: unix:!android: qmlscripts.path = /opt/$${TARGET}/qml
 !isEmpty(qmlscripts.path): INSTALLS += qmlscripts
 
-win32: qmlimages.path = $${OUT_PWD}/images
-qnx: qmlimages.path = /tmp/$${TARGET}/images
-else: unix:!android: qmlimages.path = /opt/$${TARGET}/images
+!android: qmlimages.path = $${qmlscripts.path}/images
 !isEmpty(qmlimages.path): INSTALLS += qmlimages
 
 win32: signalcfgs.path = $${OUT_PWD}/signals
@@ -101,8 +99,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    candbgrammar.peg
+DISTFILES =
 
 HEADERS += \
     peglib.h \

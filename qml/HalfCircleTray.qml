@@ -8,6 +8,9 @@ QQuickHalfCircleTray{
 
     id: id_circle
 
+    height:background.height
+
+    visible: true
     //TODO add model, try to display in inner column
 
     width: background.width
@@ -15,16 +18,14 @@ QQuickHalfCircleTray{
     anchors.top: status_panel.bottom
     anchors.bottom: parent.bottom
 
-    property string src_left: "../images/Containers/Circle_L@brd.png";
-    property string src_right: "../images/Containers/Circle_R@brd.png";
-
-    //property string side;
+    property string src_left: "images/Containers/Circle_L@brd.png";
 
     Image{
         objectName: "background"
         id: background
         fillMode: Image.PreserveAspectFit
-        source: (side === "left")? src_left:src_right
+        source:  src_left
+        mirror: (side === "right")
         visible: true
     }
 }
