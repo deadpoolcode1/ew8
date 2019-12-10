@@ -237,6 +237,7 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_MOTORWAY"
                     fillMode: Image.PreserveAspectFit;
+                    is_main: false
                     source:"images/EWAlerts/motorway.svg";
                     rotation: 0;
                 }
@@ -250,6 +251,7 @@ ApplicationWindow {
                     property int layer_pri: 0
                     property string canEntityType: "ALERT_PLAYGROUND"
                     fillMode: Image.PreserveAspectFit;
+                    is_main: false
                     source:"images/EWAlerts/playground.svg";
                     rotation: 0;
                 }
@@ -803,7 +805,7 @@ ApplicationWindow {
 
                                 objectName: "ALERT_LDWOFF_LEFT"
                                 property int layer_pri: 0
-                                property string canEntityType: "ALERT_LDWOFF"
+                                property string canEntityType: "ALERT_LEFT_LDWOFF"
 
                                 visible:false
 
@@ -829,7 +831,7 @@ ApplicationWindow {
 
                                 objectName: "LDWON_LEFT_ALERT"
                                 property int layer_pri: 2
-                                property string canEntityType: "ALERT_LDWON"
+                                property string canEntityType: "ALERT_LEFT_LDWON"
 
                                 visible:false
 
@@ -912,8 +914,8 @@ ApplicationWindow {
                                 id: alert_ldwoff_right
 
                                 objectName: "ALERT_LDWOFF_RIGHT"
-                                property int layer_pri: 0
-                                property string canEntityType: "ALERT_LDWOFF"
+                                property int layer_pri: alert_ldwoff_left.layer_pri
+                                property string canEntityType: "ALERT_RIGHT_LDWOFF"
 
                                 visible:false
 
@@ -938,8 +940,8 @@ ApplicationWindow {
                                 id: alert_ldwon_right
 
                                 objectName: "LDWON_RIGHT_ALERT"
-                                property int layer_pri: 2
-                                property string canEntityType: "ALERT_LDWON"
+                                property int layer_pri: alert_ldwon_left.layer_pri
+                                property string canEntityType: "ALERT_RIGHT_LDWON"
 
                                 visible:false
 
@@ -965,7 +967,7 @@ ApplicationWindow {
                                 id: alert_rldw
 
                                 objectName: "RLDW_ALERT"
-                                property int layer_pri: 1
+                                property int layer_pri: alert_lldw.layer_pri
                                 property string canEntityType: "ALERT_RLDW"
 
                                 visible:false
@@ -1026,6 +1028,28 @@ ApplicationWindow {
 
                         ////////////////////////////////
                         //Atomic items:
+                        Item{
+                            id: alert_hmw_distance;
+                            objectName: "HMW_ALERT_DISTANCE"
+                            property int layer_pri: 0
+                            property string canEntityType: "ALERT_HMW_DISTANCE"
+                            function setVisibleSlot(arg){
+                                console.log("DISTANCE showed")
+
+                                alert_hmw_alert.canEntityArg = arg;
+                                alert_hmw_monitor.canEntityArg = arg;
+
+                            }
+
+                            function setInvisibleSlot(){
+
+                                alert_hmw_alert.canEntityArg = 0x0;
+                                alert_hmw_monitor.canEntityArg = 0x0;
+
+                                }
+                        }
+
+
                         HMW
                         {
                             id: alert_hmw_alert;

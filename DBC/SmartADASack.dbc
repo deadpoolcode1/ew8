@@ -1,0 +1,78 @@
+VERSION "HIPBNYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY/4/%%%/4/'%**4YYY///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ME_AWS_CANA
+VAL_TABLE_ Vt_Float_Parameter_Unit 5 "MInute" 4 "Second" 3 "Feet" 2 "Meter" 1 "MPH" 0 "KMH" ;
+VAL_TABLE_ Vt_Duration_Unit 3 "hour" 2 "minute" 1 "10_seconds" 0 "second" ;
+VAL_TABLE_ Vt_ON_OFF 1 "on" 0 "off" ;
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ reserved_1 : 0|8@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 1965 S_ADAS_ACK: 8 ME_AWS_CANA
+ SG_ reserved_4 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ reserved_6 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ reserved_0 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ reserved_1 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ reserved_3 : 29|3@1+ (1,0) [0|7] "enum" Vector__XXX
+ SG_ reserved_7 : 27|2@1+ (1,0) [0|3] "enum" Vector__XXX
+ SG_ reserved_5 : 25|2@1+ (1,0) [0|3] "enum" Vector__XXX
+ SG_ Activation_Flag : 24|1@1- (1,0) [0|1] "bool" Vector__XXX
+ SG_ reserved_2 : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ Visual_Item_ID : 8|8@1+ (1,0) [1|255] "" Vector__XXX
+ SG_ Message_serial_ID : 0|8@1+ (1,0) [1|255] "" Vector__XXX
+
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+VAL_ 1965 reserved_3 5 "MInute" 4 "Second" 3 "Feet" 2 "Meter" 1 "MPH" 0 "KMH" ;
+VAL_ 1965 reserved_7 3 "hour" 2 "minute" 1 "10_seconds" 0 "second" ;
+VAL_ 1965 reserved_5 3 "hour" 2 "minute" 1 "10_seconds" 0 "second" ;
+

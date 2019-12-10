@@ -33,19 +33,15 @@ NS_ :
 
 BS_:
 
-BU_: ME_AWS_CANA
-VAL_TABLE_ New_Value_cyclist 1 "cyclist" 0 "pedestrian" ;
+BU_:
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ reserved4 : 0|1@1+ (1,0) [0|0] "" Vector__XXX
-
-BO_ 1792 AWS: 8 ME_AWS_CANA
- SG_ cyclist : 44|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ reserved5 : 59|2@1- (1,0) [0|23] "" Vector__XXX
- SG_ reserved3 : 40|1@1- (1,0) [0|0] "" Vector__XXX
+BO_ 1792 AWS: 8 Vector__XXX
+ SG_ cyclist : 44|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ reserved5 : 59|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ LDW_Right_Lane_Not_Available : 40|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ reserved1 : 11|2@1- (1,0) [0|0] "" Vector__XXX
- SG_ TSR_warning_level : 48|3@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ TSR_warning_level : 48|3@1+ (1,0) [0|7] "" Vector__XXX
  SG_ TSR_enabbled : 47|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ PCW_PedDZ : 41|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ HW_Warning_level : 56|2@1+ (1,0) [0|2] "" Vector__XXX
@@ -54,21 +50,21 @@ BO_ 1792 AWS: 8 ME_AWS_CANA
  SG_ FCW_on : 35|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ RLDW_on : 34|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LLDW_on : 33|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ LDW_off : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LDW_Left_Lane_Not_Available : 32|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Maintenance : 38|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Fail_safe : 39|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Error_code : 25|7@1+ (1,0) [0|127] "" Vector__XXX
  SG_ Error_Active : 24|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ Headway_measurment : 17|7@1+ (1,0) [0|128] "" Vector__XXX
+ SG_ Headway_measurement : 17|7@1+ (1,0) [0|127] "" Vector__XXX
  SG_ Headway_valid : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ FLA_Armed : 15|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Hi_Low_BeamControl : 14|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Zero_speed : 13|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ time_indicator : 3|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ time_indicator : 3|2@1+ (1,0) [0|2] "" Vector__XXX
  SG_ Sound_type : 0|3@1+ (1,0) [0|7] "" Vector__XXX
- SG_ Speed_format : 46|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Speed_format : 46|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Secondary_Diagnostic : 8|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Blinker_Reminder : 43|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Reminder : 43|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Failsafe_Level : 51|2@1+ (1,0) [0|0] "" Vector__XXX
  SG_ FCW_X_Active : 53|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ PCW_X_Active : 61|3@1+ (1,0) [0|0] "" Vector__XXX
@@ -78,7 +74,7 @@ BO_ 1792 AWS: 8 ME_AWS_CANA
 
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 1792 LDW_Right_Lane_Not_Available "When low speed ,low confidence lanes or configuration off the bit is on";
 CM_ SG_ 1792 TSR_enabbled "When TSR feature is enabled the bit is on";
 CM_ SG_ 1792 HW_Warning_level "When HW configuration <= 0.6 and CIPV <= 0.6 headway warning level =2";
 CM_ SG_ 1792 HW_repeatable_enabled "When HW repeatable feature is active the bit is on";
@@ -86,12 +82,12 @@ CM_ SG_ 1792 TamperAlert "When TamperAlert feature is active the bit is on";
 CM_ SG_ 1792 FCW_on "When FCW bit is on";
 CM_ SG_ 1792 RLDW_on "When Right LDW the bit is on during the warning";
 CM_ SG_ 1792 LLDW_on "When left LDW the bit is on during the warning";
-CM_ SG_ 1792 LDW_off "When low speed ,low confidence lanes or configuration off the bit is on";
+CM_ SG_ 1792 LDW_Left_Lane_Not_Available "When low speed ,low confidence lanes or configuration off the bit is on";
 CM_ SG_ 1792 Maintenance "Indicator of internal error
 1=error
 0=no error";
 CM_ SG_ 1792 Error_Active "When error active bit is off";
-CM_ SG_ 1792 Headway_measurment "If speed >=30 and Headway valid on
+CM_ SG_ 1792 Headway_measurement "If speed >=30 and Headway valid on
 When HW measurment >2.5  then HW measurment =0";
 CM_ SG_ 1792 Headway_valid "Speed >=30 and CIPV";
 CM_ SG_ 1792 FLA_Armed "On :FLA armed and ready to work
@@ -129,6 +125,7 @@ BA_DEF_DEF_  "CANoeJitterMin" 0;
 BA_DEF_DEF_  "CANoeDrift" 0;
 BA_DEF_DEF_  "CANoeStartDelay" 0;
 VAL_ 1792 cyclist 1 "cyclist" 0 "pedestrian" ;
+VAL_ 1792 LDW_Right_Lane_Not_Available 1 "ON" 0 "OFF" ;
 VAL_ 1792 TSR_warning_level 3 "speed vehicle > road speed+30" 2 "speed vehicle > road speed+20" 1 "speed vehicle > road speed+10" 0 "speed vehicle <= road speed+10" ;
 VAL_ 1792 TSR_enabbled 1 "ON" 0 "OFF" ;
 VAL_ 1792 PCW_PedDZ 3 "PCW" 2 "Pedestrian in danger zone" 0 "No pedestrian" ;
@@ -138,12 +135,12 @@ VAL_ 1792 TamperAlert 1 "ON" 0 "OFF" ;
 VAL_ 1792 FCW_on 1 "ON" 0 "OFF" ;
 VAL_ 1792 RLDW_on 1 "ON" 0 "OFF" ;
 VAL_ 1792 LLDW_on 1 "ON" 0 "OFF" ;
-VAL_ 1792 LDW_off 1 "ON" 0 "OFF" ;
+VAL_ 1792 LDW_Left_Lane_Not_Available 1 "ON" 0 "OFF" ;
 VAL_ 1792 Maintenance 1 "ON" 0 "OFF" ;
 VAL_ 1792 Fail_safe 1 "ON" 0 "OFF" ;
 VAL_ 1792 Error_code 60 "Er-60" 50 "Er-50" 41 "Er-41" 40 "Er-40" 35 "Er-35" 34 "Er-34" 33 "Er-33" 32 "Er-32" 31 "Er-31" 30 "Er-30" 22 "Er-22" 21 "Er-21" 20 "Er-20" 10 "Er-10" ;
 VAL_ 1792 Error_Active 1 "ON" 0 "OFF" ;
-VAL_ 1792 Headway_measurment 25 "HW=2.5" 20 "HW=2.0" 18 "HW=1.8" 16 "HW=1.6" 14 "HW=1.4" 12 "HW=1.2" 10 "HW=1.0" 9 "HW=0.9" 8 "HW=0.8" 7 "HW=0.7" 6 "HW=0.6" 5 "HW=0.5" 4 "HW=0.4" 3 "HW=0.3" 2 "HW=0.2" 1 "HW=0.1" ;
+VAL_ 1792 Headway_measurement 25 "HW=2.5" 20 "HW=2.0" 18 "HW=1.8" 16 "HW=1.6" 14 "HW=1.4" 12 "HW=1.2" 10 "HW=1.0" 9 "HW=0.9" 8 "HW=0.8" 7 "HW=0.7" 6 "HW=0.6" 5 "HW=0.5" 4 "HW=0.4" 3 "HW=0.3" 2 "HW=0.2" 1 "HW=0.1" ;
 VAL_ 1792 Headway_valid 1 "ON" 0 "OFF" ;
 VAL_ 1792 FLA_Armed 1 "ON" 0 "OFF" ;
 VAL_ 1792 Hi_Low_BeamControl 1 "ON" 0 "OFF" ;
@@ -153,4 +150,5 @@ VAL_ 1792 Sound_type 7 "Pedestrian in DZ" 6 "FCW - PCW" 5 "Soft FCW - Virtual bu
 VAL_ 1792 Speed_format 0 "km/h" 1 "mp/h" ;
 VAL_ 1792 Secondary_Diagnostic 0 "No Error" 1 "General DVR Failure" 2 "DVR USD Missed" 3 "USD card is in bad format" 4 "DVR RTC is earlier than 01/09/2017" 5 "Reserved" 6 "Reserved" 7 "Reserved" ;
 VAL_ 1792 Blinker_Reminder 0 "OFF" 1 "ON" ;
-VAL_ 1792 SoundRepeat 0 "NONE SOUND, SLI SOUND, SOFT FCW, HARD FCW, PED SOUND" 1 "All other" 2 "DOUBLE DING" 3 "TRIPLE DING" ;
+VAL_ 1792 SoundRepeat 0 "NONE sound SLI sound " 1 "All other" 2 "DOUBLE DING" 3 "TRIPLE DING" ;
+

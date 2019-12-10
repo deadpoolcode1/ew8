@@ -7,7 +7,7 @@ Item{
 
     id: hmw_item
 
-    function setVisibleSlot(arg) {setVisible(true); canEntityArg = arg}
+    function setVisibleSlot() {setVisible(true)}
     function setInvisibleSlot() {setVisible(false)}
 
     function setVisible(isVisible)
