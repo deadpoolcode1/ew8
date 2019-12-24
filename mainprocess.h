@@ -8,12 +8,13 @@
 #include <QQmlApplicationEngine>
 #include "rootedtree.h"
 
-class MainProcess : public QThread, IAlertDisplay
+class MainProcess : public QObject, IAlertDisplay
 {
     Q_OBJECT
+
 public:
 
-    explicit MainProcess(QObject *aComponentObject, QThread * parent = nullptr);
+    explicit MainProcess(QObject *aComponentObject, QObject * parent = nullptr);
 
     int launchEverything(void);
 
@@ -52,6 +53,8 @@ private:
 
 // pointer to QML defining trees for all panels.
     QObject *componentObject;
+
+    QThread * itsThread;
 
     bool flag_tree_changed;
 };

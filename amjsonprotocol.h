@@ -54,6 +54,8 @@ public slots:
 
 private:
     QString name;
+    QString ackProtName;
+
     protocol_type_e type;
 
     QList<QObject *> disablers;

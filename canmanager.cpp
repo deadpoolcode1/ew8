@@ -40,11 +40,22 @@
 #include "canrxmsgfactory.h"
 #include "canrxmsg.h"
 
-CanManager::CanManager(IAlertDisplay * alertdisp, QThread * parent) : QThread(parent)
+CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
 {
     itsDisplay = alertdisp;
+
     init();
-    connect(this, SIGNAL(started()),SLOT(process()));
+
+    itsThread = new QThread(this);
+
+    this->moveToThread(itsThread);
+
+    connect(itsThread,SIGNAL(started()),this,SLOT(process()));
+}
+
+void CanManager::launch(void)
+{
+    itsThread->start();
 }
 
  IAlertDisplay * CanManager::getItsDisplay(void)
@@ -300,8 +311,8 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
 void CanManager::process()
 {
 
-        this->read_frame();
-        QTimer::singleShot(0,this,SLOT(process()));
+    this->read_frame();
+    QTimer::singleShot(0,this,SLOT(process()));
 }
 
 void CanManager::parse_frame(struct can_frame * frame)

@@ -23,9 +23,10 @@ public:
 
         //Alert Items:
         ALERT_NONE = 1,
+        ALERT_NOCOM = 2,
 
         //Smart Items:
-        SMART_BASE   = 2,
+        SMART_BASE   = 3,
         SMART_ANIMAL = SMART_BASE + 1,
         SMART_SEV_WEATHER = SMART_BASE + 2,
         SMART_SLIPPERY = SMART_BASE + 3,

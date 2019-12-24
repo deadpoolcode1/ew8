@@ -24,17 +24,18 @@ class IAlertDisplay;
 class ICanRxMsgFactory;
 class AMSignalsModel;
 
-class CanManager :  public QThread
+class CanManager :  public QObject
 {
     Q_OBJECT
 
 public:
 
-    CanManager(IAlertDisplay * alertdisp, QThread * parent = nullptr);
+    CanManager(IAlertDisplay * alertdisp, QObject * parent = nullptr);
     void read_frame(void);
     void write_frame(struct can_frame * frame_ptr);
     IAlertDisplay * getItsDisplay(void);
     ICanRxMsgFactory * getItsCanRxMsgFactory(void);
+    void launch(void);
 
 
 public slots:
@@ -60,6 +61,7 @@ private:
     IAlertDisplay * itsDisplay;
     ICanRxMsgFactory * itsCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
+    QThread * itsThread;
 
 };
 

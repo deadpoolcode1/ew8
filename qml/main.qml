@@ -372,12 +372,41 @@ ApplicationWindow {
             property bool mutexGroup: false
 
             color: "transparent"
-
             visible: true
+
+            Item {
+                id: alertNOCOM
+                objectName: "ALERT_NOCOM"
+                property bool mutexGroup: false
+
+                anchors.fill: parent
+
+                property int layer_pri: 0
+
+                property int canEntityType: Alert.ALERT_NOCOM
+
+                visible: false
+
+                function setVisibleSlot() {visible = true;}
+                function setInvisibleSlot() {visible = false;}
+
+                Text{
+                    text: "DISCONNECTED!"
+                    font.family: "Arial"
+                    font.pointSize:  20
+                    font.bold: true
+                    color: "red"
+                    opacity: 1
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter:  parent.verticalCenter
+
+                }
+
+               }
 
             //tree instance:
             Item {
-                id: group1
+                id: groupPCW
                 objectName: "PCW_QtQG"
                 property bool mutexGroup: false
 
@@ -403,7 +432,7 @@ ApplicationWindow {
 
                     id: alert_pcw
                     objectName: "PCW_ALERT"
-                    property int layer_pri: 0
+                    property int layer_pri: 1
                     property string canEntityType: "ALERT_PCW"
 
                     function setVisibleSlot() {setVisible(true)}
@@ -426,7 +455,7 @@ ApplicationWindow {
                 //Groups:
                 Item
                 {
-                    id: group2
+                    id: groupFCW
                     objectName: "FCW_QtQG"
                     property bool mutexGroup: false
 

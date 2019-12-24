@@ -30,7 +30,7 @@ MainProcess* MainProcess::getInstance(QObject * aComponentObject)
 }
 
 
-MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(parent)
+MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(parent)
 {
 
     componentObject = aComponentObject;
@@ -90,8 +90,12 @@ MainProcess::MainProcess(QObject *aComponentObject, QThread * parent) : QThread(
     statusPanelTree = new RootedTree(rootQobjectStatusPannel);
     smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
 #endif
-    connect(this,SIGNAL(started()),SLOT(process()));
 
+    itsThread = new QThread(this);
+
+    this->moveToThread(itsThread);
+
+    connect(itsThread,SIGNAL(started()),this,SLOT(process()));
 }
 
 void MainProcess::process()
@@ -113,9 +117,9 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(QVariant, QString)),
                       this, SLOT(forceItemDeactivation(QVariant, QString)));
 
-    canmgr->start();
+    canmgr->launch();
 
-    this->start();
+    itsThread->start();
 
     return 0;
 }
