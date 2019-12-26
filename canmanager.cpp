@@ -46,6 +46,14 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     init();
 
+    isInDisconnectionAlert = false;
+
+    timeoutTimer = new QTimer(this);
+    timeoutTimer->setSingleShot(true);
+    timeoutTimer->setInterval(500);
+
+    connect(timeoutTimer,SIGNAL(timeout()), this, SLOT(fireConnectionTimeout()));
+
     itsThread = new QThread(this);
 
     this->moveToThread(itsThread);
@@ -56,6 +64,13 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 void CanManager::launch(void)
 {
     itsThread->start();
+}
+
+void CanManager::fireConnectionTimeout()
+{
+    qDebug("Disconnection Alert!");
+    isInDisconnectionAlert = true;
+    itsDisplay->activate(AlertTypes::ALERT_NOCOM);
 }
 
  IAlertDisplay * CanManager::getItsDisplay(void)
@@ -204,6 +219,10 @@ void CanManager::init(void)
 
 void CanManager::read_frame(void)
 {
+
+    bool isKnownFrameReceived = false;
+
+
 #ifndef WIN32
     struct can_frame frame;
 
@@ -220,7 +239,7 @@ void CanManager::read_frame(void)
     }
     else
     {
-        parse_frame(&frame);
+        isKnownFrameReceived = parse_frame(&frame);
     }
 
 #else
@@ -244,7 +263,7 @@ void CanManager::read_frame(void)
              printf("***ERROR FRAME RECEIVED***");
            }
            else {
-             parse_frame(&frame);
+             isKnownFrameReceived = parse_frame(&frame);
            }
          }
          //Break the loop if something goes wrong
@@ -254,6 +273,27 @@ void CanManager::read_frame(void)
 
 
 #endif
+
+         if(isKnownFrameReceived)
+         {
+             if(timeoutTimer->isActive())
+             {
+                 qDebug("CAN timeout timer stopped!");
+                 timeoutTimer->stop();
+             }
+
+             if(isInDisconnectionAlert)
+             {
+                 qDebug("CAN interface reconnected.");
+                 itsDisplay->deactivate(AlertTypes::ALERT_NOCOM);
+                 isInDisconnectionAlert = false;
+             }
+         }
+         else if ((!isInDisconnectionAlert)&&(!isKnownFrameReceived)&&(!timeoutTimer->isActive()))
+         {
+             qDebug("CAN timeout timer started!");
+             timeoutTimer->start();
+         }
 }
 
 
@@ -315,13 +355,18 @@ void CanManager::process()
     QTimer::singleShot(0,this,SLOT(process()));
 }
 
-void CanManager::parse_frame(struct can_frame * frame)
+bool CanManager::parse_frame(struct can_frame * frame)
 {
+    bool status = false;
+
         CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
 
         if(nullptr != curr)
         {
+            status = true;
             curr->process(frame);
             curr->ack(this);
-        }       
+        }
+
+        return status;
 }

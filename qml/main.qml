@@ -391,6 +391,9 @@ ApplicationWindow {
                 function setInvisibleSlot() {visible = false;}
 
                 Text{
+
+                    visible: parent.visible
+
                     text: "DISCONNECTED!"
                     font.family: "Arial"
                     font.pointSize:  20
@@ -412,7 +415,7 @@ ApplicationWindow {
 
                 anchors.fill: parent
 
-                property int layer_pri: 0
+                property int layer_pri: 1
 
                 property int canEntityType: Alert.QtQG
 
@@ -432,7 +435,7 @@ ApplicationWindow {
 
                     id: alert_pcw
                     objectName: "PCW_ALERT"
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     property string canEntityType: "ALERT_PCW"
 
                     function setVisibleSlot() {setVisible(true)}

@@ -14,6 +14,7 @@
 
 
 #include <QThread>
+#include <QTimer>
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -40,11 +41,12 @@ public:
 
 public slots:
     void process();
+    void fireConnectionTimeout();
 
 private:
     //inner functions:
     void init(void);
-    void parse_frame(struct can_frame * frame);
+    bool parse_frame(struct can_frame * frame);
     void init_frame(struct can_frame * frame);
 
 #ifndef WIN32
@@ -62,6 +64,10 @@ private:
     ICanRxMsgFactory * itsCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
     QThread * itsThread;
+
+    quint32 timeoutIntervalMs;
+    QTimer * timeoutTimer;
+    bool isInDisconnectionAlert;
 
 };
 
