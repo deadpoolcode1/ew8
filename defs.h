@@ -7,6 +7,8 @@
 
 typedef quint32 CanStdId_t;
 
+#define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
+
 #if 0
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else

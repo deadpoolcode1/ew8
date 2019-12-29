@@ -38,6 +38,8 @@ public:
     ICanRxMsgFactory * getItsCanRxMsgFactory(void);
     void launch(void);
 
+    void setConnectionTimeoutMsec(quint32 aTimeout);
+
 
 public slots:
     void process();
@@ -48,6 +50,7 @@ private:
     void init(void);
     bool parse_frame(struct can_frame * frame);
     void init_frame(struct can_frame * frame);
+    void resetConnectionTimeout(void);
 
 #ifndef WIN32
     //inner variables
@@ -65,7 +68,6 @@ private:
     AMSignalsModel * amSignalsModel;
     QThread * itsThread;
 
-    quint32 timeoutIntervalMs;
     QTimer * timeoutTimer;
     bool isInDisconnectionAlert;
 

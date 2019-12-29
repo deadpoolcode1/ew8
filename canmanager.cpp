@@ -50,7 +50,7 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     timeoutTimer = new QTimer(this);
     timeoutTimer->setSingleShot(true);
-    timeoutTimer->setInterval(500);
+    timeoutTimer->setInterval(DEFAULT_EW_CAN_CONNECTION_TIMEOUT);
 
     connect(timeoutTimer,SIGNAL(timeout()), this, SLOT(fireConnectionTimeout()));
 
@@ -66,11 +66,44 @@ void CanManager::launch(void)
     itsThread->start();
 }
 
+void CanManager::setConnectionTimeoutMsec(quint32 aTimeout)
+{
+    if(timeoutTimer->isActive())
+    {
+        qDebug("Setting new connection timeout resets timeout timer");
+        timeoutTimer->stop();
+        timeoutTimer->setInterval(aTimeout);
+        timeoutTimer->start();
+    }
+    else
+    {
+        timeoutTimer->setInterval(aTimeout);
+    }
+
+}
+
 void CanManager::fireConnectionTimeout()
 {
     qDebug("Disconnection Alert!");
     isInDisconnectionAlert = true;
     itsDisplay->activate(AlertTypes::ALERT_NOCOM);
+}
+
+void CanManager::resetConnectionTimeout(void)
+{
+    if(timeoutTimer->isActive())
+    {
+        qDebug("CAN timeout timer stopped!");
+        timeoutTimer->stop();
+    }
+
+    if(isInDisconnectionAlert)
+    {
+        qDebug("CAN interface reconnected.");
+        itsDisplay->deactivate(AlertTypes::ALERT_NOCOM);
+        isInDisconnectionAlert = false;
+    }
+
 }
 
  IAlertDisplay * CanManager::getItsDisplay(void)
@@ -274,6 +307,8 @@ void CanManager::read_frame(void)
 
 #endif
 
+#if 0
+         //NOTE: Starting timeout timer on error -- wrong behaviour
          if(isKnownFrameReceived)
          {
              if(timeoutTimer->isActive())
@@ -294,6 +329,19 @@ void CanManager::read_frame(void)
              qDebug("CAN timeout timer started!");
              timeoutTimer->start();
          }
+#else
+         //NOTE: Starting timeout timer on frame received -- right behaviour
+         if(isKnownFrameReceived)
+         {
+           resetConnectionTimeout();
+         }
+
+         if((!isInDisconnectionAlert)&&!(timeoutTimer->isActive()))
+         {
+             qDebug("CAN timeout timer stopped!");
+             timeoutTimer->start();
+         }
+#endif
 }
 
 
