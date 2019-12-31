@@ -4,7 +4,9 @@ import QtQml.Models 2.3
 import com.mobileye 1.0
 
 
-QQuickHalfCircleTray{
+QQuickHalfCircleTray /*Column*/{
+
+    //property string side
 
     id: id_circle
 

@@ -13,7 +13,7 @@ AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonP
     itsArgumentAccumulator = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonNumericArgumentAction::process(QObject * sender, QVariant extractedCANsignal)
+void AMJsonNumericArgumentAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
 {
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toInt());
 }

@@ -8,6 +8,7 @@ using namespace peg;
 
 #include "candbgrammar.h"
 #include <QFile>
+#include <QDebug>
 
 #include "amjsonprotocol.h"
 
@@ -66,7 +67,10 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
        ecu_tokens  = new QList<QString>();
        numbers  = new QList<qint64>();//TODO think about floats implementation
        cansignals = new QList<Signal *>();
+#if 0
+       //NOTE: is not actually used, defined at Json
        vtRows = new QList<Value>();
+#endif
 
       //version elements:
       (* pParser)["phrase"] = [this](const SemanticValues & sv)
@@ -76,7 +80,7 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           phrases->append(str);
       };
 
-      (* pParser)["version"]   = [this](const SemanticValues & sv)
+      (* pParser)["version"]   = [this](const SemanticValues &)
       {
           if (!phrases->isEmpty())
           {
@@ -89,7 +93,7 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       };
 
 
-      (* pParser)["ECU_NAME"]   = [this](const SemanticValues & sv)
+      (* pParser)["ECU_NAME"]   = [this](const SemanticValues &)
       {
 #if USE_ECU_NAME
           QString str = QString::fromUtf8(sv.token().data(),sv.token().size());
@@ -130,26 +134,24 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
 
 
-      (* pParser)["signal"]   = [this](const SemanticValues & sv)
+      (* pParser)["signal"]   = [this](const SemanticValues &)
       {
           Signal * cansig = new Signal();
-
-          qDebug ("signal:");
 
 #ifdef USE_ECU_NAME
           qDebug ("ecu_name:%lu",qPrintable(c_identifiers->takeLast()));
 #endif
-          QString unit = phrases->takeLast(); qDebug ("unit:%s",qPrintable(unit));
-          qint64 max = numbers->takeLast(); qDebug ("max:%lu", max);
-          qint64 min = numbers->takeLast(); qDebug ("min:%lu", min);
-          qint64 offset = numbers->takeLast(); qDebug ("offset:%lu", offset);
-          qint64 factor = numbers->takeLast(); qDebug ("factor:%lu", factor);
-          QString sign = signs->takeLast(); qDebug ("sign:%s",qPrintable(sign));
+        /*QString unit =*/ phrases->takeLast();
+          qint64 max = numbers->takeLast();
+          qint64 min = numbers->takeLast();
+          qint64 offset = numbers->takeLast();
+          qint64 factor = numbers->takeLast();
+          QString sign = signs->takeLast();
 
-          qint64 byteOrder = numbers->takeLast(); qDebug ("byteOrder:%lu", byteOrder);
-          qint64 signalSize = numbers->takeLast(); qDebug ("signalSize:%lu", signalSize);
-          qint64 startBit = numbers->takeLast(); qDebug ("startBit:%lu", startBit);
-          QString name = c_identifiers->takeLast(); qDebug ("name:%s",qPrintable(name));
+        /*qint64 byteOrder =*/ numbers->takeLast();
+          qint64 signalSize = numbers->takeLast();
+          qint64 startBit = numbers->takeLast();
+          QString name = c_identifiers->takeLast();
 
           const qint8 OctetBitLen = 8;
 
@@ -174,7 +176,7 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 #endif
       };
 
-      (* pParser)["message"] = [this](const SemanticValues & sv)
+      (* pParser)["message"] = [this](const SemanticValues &)
       {
           qDebug("message:");
 
@@ -182,8 +184,8 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           qDebug ("ecu:%s",qPrintable(c_identifiers->takeLast()));
 #endif
           qDebug ("name:%s",qPrintable(c_identifiers->takeLast()));
-          qDebug ("dlc:%lu",numbers->takeLast());
-          quint64 id = numbers->takeLast(); qDebug ("id:%u", id);
+          qDebug () << "dlc:" << numbers->takeLast();
+          quint64 id = numbers->takeLast(); qDebug() << "id:" << id;
 
 
           CanRxMsg * rxmsg;
@@ -205,42 +207,46 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
       (* pParser)["number_phrase_pair"] = [this](const SemanticValues &)
       {
-          QString a_name = phrases->takeLast();
-          double a_value = (double)numbers->takeLast();
+          /*QString a_name =*/ phrases->takeLast();
+          /*double a_value = (double)*/ numbers->takeLast();
+#if 0
           Value a_row = {.name = a_name,
                          .value = a_value};
-#if 0
-          qDebug("row: %s, %lf",qPrintable(a_name), a_value);
-#endif
           vtRows->prepend(a_row);
+#endif
       };
 
       (* pParser)["val_entry"] = [this](const SemanticValues &)
       {
-          qDebug("Value Table:");
+          qDebug() << "Value Table:";
           QString name = c_identifiers->takeLast(); qDebug("name:%s",qPrintable(name));
 
+#if 0
           foreach(const Value & vt_row, * vtRows)
           {
-              qDebug("row:%lf,%s", vt_row.value, qPrintable(vt_row.name));
+              qDebug() << "row:" << vt_row.value << qPrintable(vt_row.name);
           }
           vtRows->clear();
+#endif
       };
 
 
       (* pParser)["vals"] = [this](const SemanticValues &)
       {
+
+
+          /*qint64 message_num =*/ numbers->takeLast();
+          /*QString name =*/ c_identifiers->takeLast();
+ #if 0
           qDebug("Value For Signal:");
-
-          qint64 message_num = numbers->takeLast();  qDebug("message id:%lu", message_num);
-
-          QString name = c_identifiers->takeLast(); qDebug("signal name:%s",qPrintable(name));
-
+          qDebug() << "message id:" << message_num;
+          qDebug() << "signal name:" << qPrintable(name);
           foreach(const Value & vt_row, * vtRows)
           {
-              qDebug("row:%lf,%s", vt_row.value, qPrintable(vt_row.name));
+              qDebug() << "row:" << vt_row.value << "," << qPrintable(vt_row.name);
           }
           vtRows->clear();
+#endif
       };
 
 

@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
+#include <QElapsedTimer>
 
 #include "qquickqrcode.h"
 
@@ -16,6 +17,13 @@ class QQuickQRCode;
 
 int main(int argc, char *argv[])
 {
+    QElapsedTimer timer;
+
+    timer.start();
+
+    qDebug() << "Initialization begins, time" << timer.elapsed();
+
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -31,7 +39,11 @@ int main(int argc, char *argv[])
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
+    qDebug() << "Initialization complete, time:" << timer.elapsed();
+
     mp->launchEverything();
+
+    qDebug() << "Core Application Loop begins, time" << timer.elapsed();
 
     return app.exec();
 }

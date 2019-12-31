@@ -96,10 +96,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         }
 
-        if(amjp->getType() == AMJsonProtocol::CAN)
-        {
-          canProtocolNames.append(amjp->getName());
-        }
 
         //insert protocol into Protocols collector.
         jsonProtocols.insert(amjp->getName(),amjp);
@@ -133,11 +129,6 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
             jsonGraphicItemActions.remove(argument->getActionName());
         }
     }
-}
-
-QList<QString> * AMSignalsModel::getItsCANProtocolsNames(void)
-{
-  return &canProtocolNames;
 }
 
 void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)

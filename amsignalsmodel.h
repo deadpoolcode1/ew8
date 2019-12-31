@@ -49,8 +49,6 @@ private:
 
     QMap<QString,AMJsonProtocol*> jsonProtocols;
 
-    QList<QString> canProtocolNames;
-
     QList<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
