@@ -23,32 +23,20 @@ GraphicItemsEnumMap::GraphicItemsEnumMap()
 
 DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
 {
-    DISPLAY_ITEM_ID ret = (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE;
 
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    QHash<QString, DISPLAY_ITEM_ID>::iterator it = myInstance->graphicItemsIDsMap.find(name);
-
-    if(it != myInstance->graphicItemsIDsMap.end())
-    {
-        ret = it.value();
-    }
+    DISPLAY_ITEM_ID ret = myInstance->graphicItemsIDsMap.value(name, (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE);
 
     return ret;
 }
 
 QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 {
-    QString ret = "";
+    GraphicItemsEnumMap * myInstance = getInstance();
 
-     GraphicItemsEnumMap * myInstance = getInstance();
+    QString ret = myInstance->graphicItemsNamesMap.value(id,"");
 
-    QHash<DISPLAY_ITEM_ID, QString>::iterator it = myInstance->graphicItemsNamesMap.find(id);
-
-    if(it != myInstance->graphicItemsNamesMap.end())
-    {
-        ret = it.value();
-    }
     return ret;
 }
 

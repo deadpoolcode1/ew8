@@ -119,8 +119,6 @@ void CanManager::resetConnectionTimeout(void)
 
 void CanManager::init(void)
 {
-    size_t i = 0;
-
     itsCanRxMsgFactory = new CanRxMsgFactory();
 
     amSignalsModel = new AMSignalsModel(this);
@@ -145,12 +143,7 @@ void CanManager::init(void)
     else
     {
         //set parameters:
-#if 1
         can_err_status = can_set_bitrate_samplepoint("can0", 500000, 0.875);
-#else
-        can_err_status = can_set_bitrate("can0", 500000);
-        can_err_status |= can_set_bittiming(const char *name, struct can_bittiming *bt);
-#endif
 
         struct can_ctrlmode cm =
         {

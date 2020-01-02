@@ -7,6 +7,10 @@
 
 typedef quint32 CanStdId_t;
 
+#include <QElapsedTimer>
+
+extern QElapsedTimer bootUpTimer;
+
 #define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
 
 #if 0

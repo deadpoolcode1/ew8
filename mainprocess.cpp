@@ -41,8 +41,11 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     // //////////////////////////////
 
+    qDebug() << "CanManger init begin, time:" << bootUpTimer.elapsed();
 
     canmgr = new CanManager(this);
+
+     qDebug() << "CanManger init complete, time:" << bootUpTimer.elapsed();
 #if 1
     QObject * rootQobjectGeneralPannel = MainProcess::componentObject->findChild<QObject*>("general_panel_root");
     if (!rootQobjectGeneralPannel)
@@ -96,6 +99,8 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     this->moveToThread(itsThread);
 
     connect(itsThread,SIGNAL(started()),this,SLOT(process()));
+
+     qDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
 }
 
 void MainProcess::process()
