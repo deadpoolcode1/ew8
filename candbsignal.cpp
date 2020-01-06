@@ -15,8 +15,6 @@ using namespace peg;
 class CanRxMsg;
 class AMJsonProtocol;
 
-
-
 bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 {
     bool ret = true;
@@ -343,23 +341,4 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       }
 
       return ret;
-  }
-
-  //Used by hardcoded smart messages
-  Signal * extractSignalPtr(const char * name, quint32 msgId)
-  {
-      Signal * ret = nullptr;
-
-
-      CanRxMsg * msg = CanRxMsg::getMsgByCanId(msgId);
-
-
-      if(msg)
-      {
-          ret = msg->getCANSignalByName(QString(name));
-
-      }
-
-      return ret;
-
   }

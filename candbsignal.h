@@ -97,8 +97,6 @@ private:
      QList<Value> * vtRows;
 };
 
-Signal * extractSignalPtr(const char * name, quint32 msgId);
-
 sg_var_t extractSignal(Signal * canSignal, struct can_frame *frame);
 
 

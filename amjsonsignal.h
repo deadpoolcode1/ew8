@@ -89,7 +89,7 @@ private:
 
   QList<QObject *> disablers;
 
-  Signal * itsCanDbSignal;
+  Signal itsCanDbSignal;
 };
 
 #endif // AMJSONSIGNAL_H

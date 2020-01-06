@@ -181,12 +181,25 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
  Signal * AMJsonSignal::getCanDbSignal(void)
  {
-    return itsCanDbSignal;
+    return &itsCanDbSignal;
  }
 
 void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
 {
-    itsCanDbSignal = canSignalPtr;
+#if 0
+    itsCanDbSignal = *canSignalPtr;
+#else
+    itsCanDbSignal.name = canSignalPtr->name;
+    itsCanDbSignal.startByte = canSignalPtr->startByte;
+    itsCanDbSignal.startBit = canSignalPtr->startBit;
+    itsCanDbSignal.numOfBits = canSignalPtr->numOfBits;
+    itsCanDbSignal.sign = canSignalPtr->sign;
+    itsCanDbSignal.factor =  canSignalPtr->factor;
+    itsCanDbSignal.offset = canSignalPtr->offset;
+    itsCanDbSignal.min = canSignalPtr->min;
+    itsCanDbSignal.max = canSignalPtr->max;
+    itsCanDbSignal.valueType = canSignalPtr->valueType;
+#endif
 }
 
  void AMJsonSignal::process(QVariant extractedCANsignal)
