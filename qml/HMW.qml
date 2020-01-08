@@ -1,6 +1,4 @@
 import QtQuick 2.9
-import QtQuick.Layouts 1.3
-import QtQml.Models 2.3
 
 
 Item{

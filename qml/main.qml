@@ -238,7 +238,7 @@ ApplicationWindow {
                     property string canEntityType: "ALERT_MOTORWAY"
                     fillMode: Image.PreserveAspectFit;
                     is_main: false
-                    source:"images/EWAlerts/motorway.svg";
+                    source:"images/EWAlerts/motorway.png";
                     rotation: 0;
                 }
 
@@ -252,7 +252,7 @@ ApplicationWindow {
                     property string canEntityType: "ALERT_PLAYGROUND"
                     fillMode: Image.PreserveAspectFit;
                     is_main: false
-                    source:"images/EWAlerts/playground.svg";
+                    source:"images/EWAlerts/playground.png";
                     rotation: 0;
                 }
 
@@ -268,7 +268,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: alert_no_pass_main
-                    source:"images/EWAlerts/no_pass.svg";
+                    source:"images/EWAlerts/no_pass.png";
                 }
 
 
@@ -281,7 +281,7 @@ ApplicationWindow {
                     is_main: false
                     //its_pair_alert: alert_end_all_restr_main
                     fillMode: Image.PreserveAspectFit;
-                    source:"images/EWAlerts/end_all_restr.svg";
+                    source:"images/EWAlerts/end_all_restr.png";
                     rotation: 0;
                 }
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -313,7 +313,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_animal_main
-                    source:"images/SmartAlerts/animal.svg";
+                    source:"images/SmartAlerts/animal.png";
 
                 }
 
@@ -328,7 +328,7 @@ ApplicationWindow {
                     //special features
                     is_main: false
                     its_pair_alert: smart_slippery_main
-                    source:"images/SmartAlerts/slippery.svg";
+                    source:"images/SmartAlerts/slippery.png";
 
                 }
 
@@ -713,7 +713,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: alert_no_pass_side
-                        source:"images/EWAlerts/no_pass.svg";
+                        source:"images/EWAlerts/no_pass.png";
 
                     }
 
@@ -728,7 +728,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_animal_side
-                        source:"images/SmartAlerts/animal.svg";
+                        source:"images/SmartAlerts/animal.png";
 
                     }
 
@@ -743,7 +743,7 @@ ApplicationWindow {
                         //special features
                         is_main: true
                         its_pair_alert: smart_slippery_side
-                        source:"images/SmartAlerts/slippery.svg";
+                        source:"images/SmartAlerts/slippery.png";
 
                     }
 
