@@ -10,6 +10,8 @@
 #include "amjsonprotocol.h"
 #include "candbsignal.h"
 
+#include <QDataStream>
+
 class CanManager;
 
 class IAlertDisplay;
@@ -35,10 +37,18 @@ public:
     //NOTE: depends on JSON and DBC already parsed
     void initCanJsonSignalsListInProcessOrder(void);
 
-    virtual void process(struct can_frame * frame) = 0;
-    virtual void ack(CanManager * canMngr) = 0;
+    virtual void process(struct can_frame * frame);
+    virtual void ack(CanManager * canMngr);
 
     static  const QList<CanStdId_t> & getMsgsWhiteList(void);
+    static bool saveToStorage(void);
+    static bool loadFromStorage(void);
+
+    //TODO: make readonly property
+    static bool isAlreadyLoaded;
+
+    void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
+
 
 private:
   //Uses StdId as the key
@@ -47,25 +57,31 @@ private:
   static ICanRxMsgFactory * iCanRxMsgFactory;
   static AMSignalsModel * itsAMSignalsModel;
 
+  friend class CanRxMsgFactory;
+
+
+
 
 protected:
   CanRxMsg();
 
   quint32 getCanID(void);
 
+  QString itsJsonProtocolName;
   AMJsonProtocol * itsJsonProtocol;
-
-#if 0
-  //WARNING: not in use
-  quint32 StdID;
-#endif
-
-  canrxmsg_type_t itsMsgType;
 
   //WARNING: Used to initialize canJsonSignalsListInProcessOrder
   QList<Signal *> * canSignalsArray;
 
   QList<AMJsonSignal *> canJsonSignalsListInProcessOrder;
+
+  QList<Signal> canJsonSignalsPoolIdxInProcessOrder;
+
+  friend QDataStream & operator<< (QDataStream &out, const CanRxMsg &any);
+  friend QDataStream & operator>> (QDataStream &in, CanRxMsg &any);
 };
+
+extern QDataStream & operator<< (QDataStream &out, const CanRxMsg & any);
+extern QDataStream & operator>> (QDataStream &in, CanRxMsg &any);
 
 #endif // CANRXMSG_H

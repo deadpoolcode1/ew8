@@ -34,7 +34,6 @@ SOURCES += \
     layerspriorityq.cpp \
     entitytype.cpp \
     canrxmsg.cpp \
-    simplecanrxmsg.cpp \
     smartcanrxmsg.cpp \
     canrxmsgfactory.cpp \
     smartitem.cpp \
@@ -114,7 +113,6 @@ HEADERS += \
     entitytype.h \
     alerttypes.h \
     canrxmsg.h \
-    simplecanrxmsg.h \
     smartcanrxmsg.h \
     canrxmsgfactory.h \
     smartitem.h \

@@ -9,6 +9,7 @@
 
 class AMJsonSignal;
 class AmJsonActionsMultiplexor;
+class IAMJsonEnablable;
 
 class AMJsonProtocol : public QObject
 {
@@ -20,6 +21,7 @@ public:
     {
          GPIO = 1,
          CAN = 2,
+         Disabled = 3,
     };
     Q_ENUM(protocol_type_e)
 

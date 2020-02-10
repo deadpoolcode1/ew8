@@ -22,8 +22,11 @@
         {"enum": "ALERT_MOTORWAY", "value": 44},
         {"enum": "ALERT_NO_PASS", "value": 45},
         {"enum": "ALERT_PLAYGROUND", "value": 46},
+        {"enum": "ALERT_SLI", "value": 47},
 
-        {"enum": "ALERT_SLI", "value": 47}
+        {"enum": "SMART_ANIMAL", "value": 71},
+        {"enum": "SMART_SEV_WEATHER", "value": 72},
+        {"enum": "SMART_SLIPPERY", "value": 73}
     ],
 
 
@@ -127,7 +130,7 @@
 
 
                 {"name": "Headway_valid", "action":"ALERT_HMW_DISTANCE", "type":"GraphicItem"},
-                {"name": "HW_Warning_level", "action":"ALERT_HMW_DISTANCE", "type":"Enabler", "Set":[1,2]},
+                {"name": "HW_Warning_level", "action":"Headway_valid", "type":"Enabler", "Set":[1,2]},
 
 
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_ALERT", "type":"GraphicItem", "Set": 2},
@@ -165,15 +168,32 @@
         }
         ,
         {
-            "protocol": "SmartADAS",
+            "protocol": ["SmartADAS","Disabled"],
 
             "ackProtocol": "SmartADASack",
             "ackMessages":[
-                {"name":"S_ADAS_ACK", "trigger": "S_ADAS", "type": "RxMsg"}
+                {"name": "S_ADAS_ACK", "trigger": "S_ADAS", "type": "RxMsg"}
             ],
 
             "signals": [
+                {"name": "Visual_Item_ID", "action": "Smart_Alerts_Items",  "isValueTable": true},
+                {"name": "Min_duration_display", "action": "Visual_Item_ID", "type": "MinTimer"},
+                {"name": "Max_duration_display", "action": "Visual_Item_ID", "type": "MaxTimer"},
+                {"name": "Min_duration_unit", "action": "Min_duration_display", "type": "TimerUnit"},
+                {"name": "Max_duration_unit", "action": "Max_duration_display", "type": "TimerUnit"},
+                {"name": "Float_parameter_int", "action": "Visual_Item_ID", "type": "IntArgument"},
+                {"name": "Float_parameter_frac", "action": "Visual_Item_ID", "type": "IntArgument"},
+                {"name": "Float_parameter_unit", "action": "Visual_Item_ID", "type": "IntArgument"}
 
+            ],
+            "value_tables":[
+                {"name":"Smart_Alerts_Items", "type": "GraphicItem", "rows":[
+                        {"value": 1, "action": "SMART_ANIMAL", "description": "Cloud animals warning"},
+                        {"value": 2, "action": "SMART_SEV_WEATHER", "description": "Storming weather alert"},
+                        {"value": 3, "action": "SMART_SLIPPERY", "description": "Slippery road state"}
+                    ]
+
+                }
             ]
         }
     ]

@@ -14,7 +14,6 @@ class SmartItem;
 
 SmartCanRxMsg::SmartCanRxMsg()
 {
-    itsMsgType = msg_smart;
 }
 
 

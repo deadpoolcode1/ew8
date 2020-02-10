@@ -40,7 +40,7 @@ void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 
 
     QString * result =   nullptr;
 
-    if(!isalnum(aChar))
+    if(!isprint(aChar))
     {
         aChar = 'X';
     }

@@ -10,7 +10,7 @@ class CanRxMsg;
 class ICanRxMsgFactory
 {
 public:
-    virtual CanRxMsg * createCanRxMsgInstance(CanStdId_t StdId, AMSignalsModel * model) = 0;
+    virtual CanRxMsg * createCanRxMsgInstance(CanStdId_t StdId) = 0;
 };
 
 #endif // ICANRXMSGFACTORY_H

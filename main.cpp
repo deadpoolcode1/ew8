@@ -40,11 +40,17 @@ int main(int argc, char *argv[])
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
+
+
+    CanRxMsg::saveToStorage();
+
     qDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
 
     mp->launchEverything();
 
     qDebug() << "Core Application Loop begins, time" << bootUpTimer.elapsed();
+
+
 
     return app.exec();
 }

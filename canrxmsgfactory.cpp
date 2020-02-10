@@ -4,11 +4,10 @@
 #include "defs.h"
 #include "canrxmsg.h"
 #include "smartcanrxmsg.h"
-#include "simplecanrxmsg.h"
 #include "canrxmsgfactory.h"
 #include "icanrxmsgfactory.h"
 
-CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId, AMSignalsModel * model)
+CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId)
 {
     CanRxMsg * ret = nullptr;
 
@@ -27,8 +26,7 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId, AMSignalsMo
     {
     case msg_simple:
 
-        ret =  new SimpleCanRxMsg();
-        ret->setItsJsonProtocol(model->getProtocol("Aftermarket"));
+        ret =  new CanRxMsg();
 
         break;
 
@@ -36,7 +34,6 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId, AMSignalsMo
     case msg_smart:
 
         ret = new SmartCanRxMsg();
-        ret->setItsJsonProtocol(model->getProtocol("SmartADAS"));
 
         break;
 

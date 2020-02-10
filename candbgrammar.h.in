@@ -1,8 +1,6 @@
-#ifndef _CANDBGRAMMAR_H_
-#define _CANDBGRAMMAR_H_
+#pragma once
 
-const char * candbgrammar =
-R'"($$CANDBGRAMMAR)"';
+const char candbgrammar[] =
+"R\"peg($$CANDBGRAMMAR)peg\"";
 
-#endif
 

@@ -23,6 +23,8 @@
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
+QMap<quint32,AMJsonSignal *> AMJsonSignal::AMJsonSignalsPool;
+
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
 {
@@ -124,6 +126,21 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
         //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
         init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
     }
+
+    poolIndex = AMJsonSignalsPool.size();
+    AMJsonSignalsPool.insert(poolIndex,this);
+}
+
+AMJsonSignal * AMJsonSignal::getByIndex(quint32 idx)
+{
+    AMJsonSignal * ret;
+    ret = AMJsonSignalsPool.value(idx, nullptr);
+    return ret;
+}
+
+quint32 AMJsonSignal::getItsIndex(void)
+{
+    return poolIndex;
 }
 
 void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
@@ -213,6 +230,7 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
            IAMJsonProcessable * toDeactivate = getActivatedAction();
 
            if(toActivate != toDeactivate)//WARNING: without args only
+               //TODO: if args are present compare the args
            {
 
                if(toDeactivate != nullptr){

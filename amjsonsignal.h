@@ -51,11 +51,15 @@ public:
 
     void setItsCanDbSignal(Signal * canSignalPtr);
 
-    //TODO move two following statements to private section
+    static  AMJsonSignal * getByIndex(quint32 idx);
 
-    //TODO remove
+    quint32 getItsIndex(void);
+
+
+    //TODO: remove
     QString action;
 
+    //TODO: move two following statements to private section
     bool polarity;
     action_type_e type;
     QList<qint32> * trueValues;//actual, when is not boolean
@@ -71,6 +75,12 @@ public slots:
     void enableDisableThis(bool OnOff);
 
 private:
+
+  static QMap<quint32, AMJsonSignal *> AMJsonSignalsPool;
+
+
+
+  quint32 poolIndex;
 
   AMJsonAction * itsAction;
 

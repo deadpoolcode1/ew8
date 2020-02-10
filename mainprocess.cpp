@@ -46,38 +46,13 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     canmgr = new CanManager(this);
 
      qDebug() << "CanManger init complete, time:" << bootUpTimer.elapsed();
-#if 1
+
     QObject * rootQobjectGeneralPannel = MainProcess::componentObject->findChild<QObject*>("general_panel_root");
     if (!rootQobjectGeneralPannel)
     {
         // TBD display general error and go
     }
-#else
-    QObject * rootQobjectMainPannel = MainProcess::componentObject->findChild<QObject*>("main_panel_root");
-    if (!rootQobjectMainPannel)
-    {
-        // TBD display general error and go
-    }
 
-
-    QObject * rootQobjectTsrPannel = MainProcess::componentObject->findChild<QObject*>("left_panel_root");
-    if (!rootQobjectTsrPannel)
-    {
-        // TBD display general error and go
-    }
-
-    QObject * rootQobjectStatusPannel = MainProcess::componentObject->findChild<QObject*>("status_panel_root");
-    if (!rootQobjectStatusPannel)
-    {
-        // TBD display general error and go
-    }
-
-    QObject * rootQobjectSADASPannel = MainProcess::componentObject->findChild<QObject*>("right_panel_root");
-    if (!rootQobjectSADASPannel)
-    {
-        // TBD display general error and go
-    }
-#endif
 
 
 
@@ -85,14 +60,8 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     EntityType::generateTypes();
 
 // build panels trees
-#if 1
     generalPanelTree = new RootedTree(rootQobjectGeneralPannel);
-#else
-    mainPanelTree = new RootedTree(rootQobjectMainPannel);
-    tsrPanelTree = new RootedTree(rootQobjectTsrPannel);
-    statusPanelTree = new RootedTree(rootQobjectStatusPannel);
-    smartADASPanelTree = new RootedTree(rootQobjectSADASPannel);
-#endif
+
 
     itsThread = new QThread(this);
 
@@ -133,41 +102,11 @@ int MainProcess::launchEverything()
 //TODO extract to different thread:
 void MainProcess::updateDisplay(void)
 {
-#if 1
     if (!generalPanelTree)
     {
         return;
     }
-
     generalPanelTree->updateVisibility();
-#else
-    if (!mainPanelTree)
-    {
-        return;
-    }
-
-    mainPanelTree->updateVisibility();
-
-    if (!tsrPanelTree)
-    {
-        return;
-    }
-
-    tsrPanelTree->updateVisibility();
-
-    if (!statusPanelTree)
-    {
-        return;
-    }
-    statusPanelTree->updateVisibility();
-
-    if (!smartADASPanelTree)
-    {
-        return;
-    }
-    smartADASPanelTree->updateVisibility();
-#endif
-
     flag_tree_changed = false;
 }
 

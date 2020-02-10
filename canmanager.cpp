@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "defs.h"
 
+#include <QDebug>
+
 #include "candbsignal.h"
 
 #ifndef WIN32
@@ -187,7 +189,7 @@ void CanManager::init(void)
 
     size_t rfilterSize = rfilterList.size();
 
-    rfilter = new struct can_filter[rfilterSize];
+    struct can_filter rfilter [rfilterSize];
 
     for (size_t i = 0; i < rfilterSize; i++)
     {
@@ -216,7 +218,7 @@ void CanManager::init(void)
     }
 
 
-    setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, rfilterList.size());
+    setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, rfilterSize * sizeof(struct can_filter));
 
     strcpy(ifr.ifr_name, "can0" );
     ioctl(socknum, SIOCGIFINDEX, &ifr);
@@ -369,15 +371,11 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
          qDebug("Can not write to the CAN bus socket!");
     }
 #else
-    //TODO implement for windows:
-
       stat = canOK;
-
       unsigned int flags;
-
       DWORD time;
 
-      //Waits up to 100 ms for a message
+      //NOTE: Waits up to LastArg msec for a message
          stat = canReadWait(hnd, &(frame_ptr->can_id), (frame_ptr->data), &(frame_ptr->can_dlc), &flags, &time, 10);
          if (stat == canOK){
            if (flags & canMSG_ERROR_FRAME){
@@ -404,6 +402,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
         if(nullptr != curr)
         {
+            qDebug() << "CanRxMsg no." << frame->can_id << "arrived";
             status = true;
             curr->process(frame);
             curr->ack(this);

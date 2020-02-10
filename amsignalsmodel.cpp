@@ -60,13 +60,16 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         AMJsonProtocol *amjp = new AMJsonProtocol(this, protocol_obj["protocol"]);
 
-        CanDBSignal candb;
-
         bool status = true;
 
         if (amjp->getType() == AMJsonProtocol::CAN)
         {
-          status = candb.processDBCFile(amjp);
+
+            if(!CanRxMsg::isAlreadyLoaded)
+            {
+                CanDBSignal candb;
+                status = candb.processDBCFile(amjp);
+            }
         }
 
         if (status)

@@ -8,7 +8,7 @@ class ICanRxMsgFactory;
 class CanRxMsgFactory: public ICanRxMsgFactory
 {
 public:
-    CanRxMsg * createCanRxMsgInstance(CanStdId_t StdId, AMSignalsModel * model);
+    CanRxMsg * createCanRxMsgInstance(CanStdId_t StdId);
 };
 
 #endif // CANRXMSGFACTORY_H

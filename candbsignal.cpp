@@ -15,6 +15,53 @@ using namespace peg;
 class CanRxMsg;
 class AMJsonProtocol;
 
+QDataStream & operator<< (QDataStream & out, const Signal & any)
+{
+
+    SerializedSignal_t sesig;
+
+     sesig.startByte = any.startByte;
+     sesig.startBit = any.startBit;
+     sesig.numOfBits = any.numOfBits;
+     sesig.sign = static_cast<quint8>(any.sign);
+     sesig.factor = any.factor;
+     sesig.offset = any.offset;
+     sesig.min = any.min;
+     sesig.max = any.max;
+     sesig.enumValueType = static_cast<qint8>(any.valueType);
+     sesig.AMJsonSignalIdx = any.AMJsonSignalIdx;
+
+     out.writeRawData((const char*) (& sesig),sizeof(SerializedSignal_t));
+
+     return out;
+}
+
+QDataStream & operator>> (QDataStream & in, Signal & any)
+{
+    SerializedSignal_t sesig;
+
+    in.readRawData((char*) & sesig, sizeof(SerializedSignal_t));
+
+    any.startByte = sesig.startByte;
+    any.startBit =  sesig.startBit;
+    any.numOfBits =  sesig.numOfBits;
+    any.sign = sesig.sign ? true : false;
+    any.factor = sesig.factor;
+    any.offset = sesig.offset;
+    any.min = sesig.min;
+    any.max = sesig.max;
+    any.valueType = static_cast<SignalValueType>(sesig.enumValueType);
+    any.AMJsonSignalIdx = sesig.AMJsonSignalIdx;
+
+    if (in.status() != QDataStream::Ok)
+    {
+        qDebug() << "WARNING:" << any.AMJsonSignalIdx << "signal status" << in.status();
+    }
+
+    return in;
+}
+
+
 bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 {
     bool ret = true;

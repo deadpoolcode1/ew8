@@ -2,6 +2,7 @@
 #define CANDBSIGNAL_H
 
 #include <QObject>
+#include <QDataStream>
 
 #include "peglib.h"
 using namespace peg;
@@ -47,8 +48,27 @@ typedef struct Signal_s
     double min;
     double max;
     SignalValueType valueType;
+    quint32 AMJsonSignalIdx;
 }
 Signal;
+
+typedef struct SerializedSignal_s
+{
+public:
+    quint32 startByte;
+    quint32 startBit;
+    quint32 numOfBits;
+    quint8 sign;
+    double factor;
+    double offset;
+    double min;
+    double max;
+    qint32 enumValueType;
+    quint32 AMJsonSignalIdx;
+} SerializedSignal_t;
+
+
+
 
 typedef struct Value_s
 {
@@ -70,6 +90,9 @@ typedef struct sg_var_s
     } sg_val;
 }
 sg_var_t;
+
+QDataStream & operator<< (QDataStream &out, const Signal & any);
+QDataStream & operator>> (QDataStream &in, Signal & any);
 
 class CanDBSignal {
 public:
