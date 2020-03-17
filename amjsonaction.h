@@ -26,9 +26,14 @@ private:
 
     QString action;
 
-    action_type_e type;
+
 
     AMJsonProtocol * itsProtocol;
+
+
+    quint32 poolIndex;
+    action_type_e type;
+    static QMap<quint32, AMJsonAction *> objectsPool;
 
 signals:
 

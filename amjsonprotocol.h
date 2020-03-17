@@ -66,6 +66,9 @@ private:
 
     QMap<QString, AmJsonActionsMultiplexor*> jsonMultiplexors;
 
+    quint32 poolIndex;
+    static QMap<quint32, AMJsonProtocol *> objectsPool;
+
 };
 
 #endif // AMJSONPROTOCOL_H

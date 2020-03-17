@@ -2,6 +2,7 @@ qmlscripts.files = qml/*.qml
 qmlimages.files = qml/images/*
 signalcfgs.files = *.json
 dbcfiles.files = DBC/*.dbc
+rccfiles.files = qml/*.rcc
 
 win32: batches.files = *.bat
 
@@ -58,9 +59,6 @@ SOURCES += \
     candbsignal.cpp \
     amjsonfixedargumentsactioninvoker.cpp
 
-
-
-
 RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -87,6 +85,11 @@ win32: dbcfiles.path = $${OUT_PWD}/dbc
 qnx: dbcfiles.path = /tmp/$${TARGET}/dbc
 else: unix:!android: dbcfiles.path = /opt/$${TARGET}/dbc
 !isEmpty(dbcfiles.path): INSTALLS += dbcfiles
+
+win32: rccfiles.path = $${OUT_PWD}/qml
+qnx: rccfiles.path = /tmp/$${TARGET}/qml
+else: unix:!android: rccfiles.path = /opt/$${TARGET}/qml
+!isEmpty(rccfiles.path): INSTALLS += rccfiles
 
 
 
@@ -152,7 +155,9 @@ win32: LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
 win32: INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 
-linux: LIBS += -lsocketcan -lqrencode
+linux: LIBS += -lsocketcan -lqrencode -lwebp
+
+linux: DEFINES += LOG_INIT_COMPLETE_TO_DMESG
 
 #Specific preprocessor definitions:
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED

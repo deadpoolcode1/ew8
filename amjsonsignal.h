@@ -76,11 +76,8 @@ public slots:
 
 private:
 
-  static QMap<quint32, AMJsonSignal *> AMJsonSignalsPool;
-
-
-
   quint32 poolIndex;
+  static QMap<quint32, AMJsonSignal *> objectsPool;
 
   AMJsonAction * itsAction;
 

@@ -23,7 +23,7 @@
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
-QMap<quint32,AMJsonSignal *> AMJsonSignal::AMJsonSignalsPool;
+QMap<quint32,AMJsonSignal *> AMJsonSignal::objectsPool;
 
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
@@ -127,14 +127,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
         init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
     }
 
-    poolIndex = AMJsonSignalsPool.size();
-    AMJsonSignalsPool.insert(poolIndex,this);
+    poolIndex = objectsPool.size();
+    objectsPool.insert(poolIndex,this);
 }
 
 AMJsonSignal * AMJsonSignal::getByIndex(quint32 idx)
 {
     AMJsonSignal * ret;
-    ret = AMJsonSignalsPool.value(idx, nullptr);
+    ret = objectsPool.value(idx, nullptr);
     return ret;
 }
 

@@ -11,6 +11,9 @@
 
 #include "defs.h"
 
+#include <QResource>
+#include <QFile>
+
 class AlertTypes;
 class QQuickQRCode;
 
@@ -21,6 +24,10 @@ int main(int argc, char *argv[])
     bootUpTimer.start();
 
     qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
+
+#if 0
+    qDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
+#endif
 
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -33,7 +40,29 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    QQmlComponent component(&engine, QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml")));
+    QUrl mainQmlUrl;
+
+
+    //TODO: check if main.rcc exists and register
+    if(QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
+    {
+         engine.addImportPath(":/");
+         mainQmlUrl = QUrl(QStringLiteral("qrc:/main.qml"));
+    }
+    else
+    {
+        mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml"));
+    }
+
+
+
+
+    QQmlComponent component(&engine, mainQmlUrl);
+
+
+    //Otherwize use external main.qml
+
+
     QObject * componentObject = component.create();
 
     qDebug() << "Component created, time" << bootUpTimer.elapsed();
@@ -50,6 +79,16 @@ int main(int argc, char *argv[])
 
     qDebug() << "Core Application Loop begins, time" << bootUpTimer.elapsed();
 
+#ifdef LOG_INIT_COMPLETE_TO_DMESG
+    QFile kernMsgDev("/dev/kmsg");
+
+    if(kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+    {
+       kernMsgDev.write("<2> canquick: in main loop");
+       kernMsgDev.close();
+    }
+
+#endif
 
 
     return app.exec();

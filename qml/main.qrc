@@ -1,0 +1,10 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+  <file>main.qml</file>
+  <file>HalfCircleTray.qml</file>
+  <file>HMW.qml</file>
+  <file>SmartItem.qml</file>
+  <file>TSR.qml</file>
+</qresource>
+</RCC>
