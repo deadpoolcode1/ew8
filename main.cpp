@@ -13,6 +13,8 @@
 
 #include <QResource>
 #include <QFile>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 class AlertTypes;
 class QQuickQRCode;
@@ -34,6 +36,23 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    QCommandLineParser cmdLnParser;
+
+    QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
+
+    cmdLnParser.addOption(forceParsing);
+
+    cmdLnParser.process(app);
+
+    //TODO: implement forced parsing in code
+    bool is_forced = cmdLnParser.isSet(forceParsing);
+
+    if(is_forced)
+    {
+        CanRxMsg::forceDBCParsing();
+    }
+
+
     //Usage of QML enum in C++:
     AlertTypes::declareQML();
     QQuickQRCode::declareQML();
@@ -44,7 +63,7 @@ int main(int argc, char *argv[])
 
 
     //TODO: check if main.rcc exists and register
-    if(QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
+    if(!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
     {
          engine.addImportPath(":/");
          mainQmlUrl = QUrl(QStringLiteral("qrc:/main.qml"));
@@ -53,9 +72,6 @@ int main(int argc, char *argv[])
     {
         mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml"));
     }
-
-
-
 
     QQmlComponent component(&engine, mainQmlUrl);
 

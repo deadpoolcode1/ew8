@@ -12,6 +12,7 @@ typedef quint32 CanStdId_t;
 extern QElapsedTimer bootUpTimer;
 
 #define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
+#define DEFAULT_EW_KEEP_ALIVE_TIMEOUT (200)
 
 #if 0
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
@@ -21,9 +22,8 @@ extern QElapsedTimer bootUpTimer;
 #endif
 
 #ifdef WIN32
-
 struct can_frame{
-      long can_id; 
+      long can_id;
       quint32    can_dlc;
       quint8    data[8];
 };

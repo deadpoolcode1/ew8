@@ -43,6 +43,7 @@ public:
     static  const QList<CanStdId_t> & getMsgsWhiteList(void);
     static bool saveToStorage(void);
     static bool loadFromStorage(void);
+    static void forceDBCParsing(void);
 
     //TODO: make readonly property
     static bool isAlreadyLoaded;
@@ -51,6 +52,7 @@ public:
 
 
 private:
+  static bool isDBCParsingForced;
   //Uses StdId as the key
   static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
   static QList<CanStdId_t> msgsWhiteList;

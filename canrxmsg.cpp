@@ -12,6 +12,7 @@ ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
 QList<CanStdId_t> CanRxMsg::msgsWhiteList;
 bool CanRxMsg::isAlreadyLoaded = false;
+bool CanRxMsg::isDBCParsingForced = false;
 
 QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
 {
@@ -89,68 +90,77 @@ bool CanRxMsg::saveToStorage(void)
     return status;
 }
 
+void CanRxMsg::forceDBCParsing(void)
+{
+    isDBCParsingForced = true;
+}
+
+
 bool CanRxMsg::loadFromStorage(void)
 {
     bool status = true;
 
-    QFile configDump("config.dat");
-
-    QByteArray blob;
-
-    if(!configDump.open(QFile::ReadOnly))
+    if(!isDBCParsingForced)
     {
-        qDebug("Error: Can not read config.dat!");
-        status = false;
-    }
-    else{
+        QFile configDump("config.dat");
 
-        blob = configDump.readAll();
+        QByteArray blob;
 
-        QDataStream configStream(blob);
-        configStream.setByteOrder(QDataStream::BigEndian);
-        configStream.setVersion(QDataStream::Qt_5_9);
-        configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
-
-
-        quint32 msgNum;
-
-        configStream >> msgNum;
-
-        qDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
-
-        quint32 stdId;
-
-        CanRxMsg dummybuff;
-
-        for  (size_t i=0; i < msgNum; i++)
+        if(!configDump.open(QFile::ReadOnly))
         {
+            qDebug("Error: Can not read config.dat!");
+            status = false;
+        }
+        else{
+
+            blob = configDump.readAll();
+
+            QDataStream configStream(blob);
+            configStream.setByteOrder(QDataStream::BigEndian);
+            configStream.setVersion(QDataStream::Qt_5_9);
+            configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
 
 
-            configStream >> stdId;
+            quint32 msgNum;
 
-            CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId);
+            configStream >> msgNum;
 
-            qDebug() << "StdId:" << (qint32)stdId;
+            qDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
 
-            if(rxmsg)
+            quint32 stdId;
+
+            CanRxMsg dummybuff;
+
+            for  (size_t i=0; i < msgNum; i++)
             {
-                configStream >> *rxmsg;
-                msgsWhiteList.append(stdId);
-            }
-            else
-            {
-                configStream >> dummybuff.canJsonSignalsPoolIdxInProcessOrder;
-            }
 
 
+                configStream >> stdId;
+
+                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId);
+
+                qDebug() << "StdId:" << (qint32)stdId;
+
+                if(rxmsg)
+                {
+                    configStream >> *rxmsg;
+                    msgsWhiteList.append(stdId);
+                }
+                else
+                {
+                    configStream >> dummybuff.canJsonSignalsPoolIdxInProcessOrder;
+                }
+
+
+
+            }
+
+            isAlreadyLoaded = true;
 
         }
 
-        isAlreadyLoaded = true;
-
+        configDump.close();
     }
-
-    configDump.close();
     return status;
 }
 

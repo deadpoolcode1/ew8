@@ -88,7 +88,7 @@ ApplicationWindow{
                         topPadding: 5
                         anchors.top: parent.top
                         anchors.topMargin: 0
-                        font.family: "Times New Roman"
+                        font.family: "HindSiliguri"
                         font.pixelSize: 25
                         font.bold: true
                     }
@@ -332,41 +332,83 @@ ApplicationWindow{
                 anchors.topMargin: 0
 
                 property int canEntityType: Alert.QtQG
-                property int layer_pri: 2
-                function setVisibleSlot(){visible= true;}
+                property int layer_pri: 1
+                function setVisibleSlot(){visible = true;}
                 function setInvisibleSlot(){visible = false;}
 
-                TSR{
+                SLI {
                     id: upper_tsr
                     canEntityType: "ALERT_SLI"
                     property int layer_pri: 0
                 }
             }
 
-            Rectangle {
+            IMS_SmartADAS_Restricted_Items {
                 id: right_panel
                 x: 562
                 width: 50
                 color: "#00000000"
                 anchors.right: parent.right
                 anchors.rightMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
                 anchors.top: parent.top
                 anchors.topMargin: 0
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 0
 
                 property int canEntityType: Alert.QtQG
-                property int layer_pri: 2
-                function setVisibleSlot(){visible= true;}
-                function setInvisibleSlot(){visible = false;}
+                property int layer_pri: 1
+            }
 
+            Item {
+                id: groupCIPV
+                property int layer_pri: 1
+                property int canEntityType: Alert.QtQG
+                anchors.rightMargin: 0
+                anchors.left: left_panel.right
+                anchors.right: right_panel.left
+                anchors.bottom: parent.bottom
+                anchors.top: parent.top
+                anchors.leftMargin: 0
+                function setVisibleSlot(){visible= true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                Item {
+                    id: alert_hmw_distance
+                    property int layer_pri: 0
+                    property string canEntityType: "ALERT_HMW_DISTANCE"
+                    anchors.fill: parent
+                    function setVisibleSlot(Arg){
+                        alert_hmw_monitor.canEntityArg = Arg
+                        alert_hmw_alert.canEntityArg = Arg
+                    }
+                    function setInvisibleSlot(){
+                        alert_hmw_monitor.canEntityArg = 0x00
+                        alert_hmw_alert.canEntityArg = 0x00
+                    }
+                }
+
+
+                HMW {
+                    id: alert_hmw_alert
+                    anchors.fill: parent
+                    canEntityType: "ALERT_HMW_ALERT"
+                }
+
+                HMW {
+                    id: alert_hmw_monitor
+                    anchors.fill: parent
+                    canEntityType: "ALERT_HMW_MONITOR"
+                }
             }
 
             Item {
                 id: groupGAG
                 property int canEntityType: Alert.QtQG
-                property int layer_pri: 2
+                property int layer_pri: 1
                 property bool mutexGroup: false
+                visible: true
 
                 objectName: "GAG_QtQG"
 
@@ -387,13 +429,17 @@ ApplicationWindow{
                     property int canEntityType: Alert.QtQG
                     property int layer_pri: 0
                     property bool mutexGroup: false
+                    anchors.topMargin: -5
+                    anchors.rightMargin: 32
+                    anchors.leftMargin: 32
+                    anchors.fill: parent
+                    visible: true
 
                     objectName: "LANES_QtQG"
 
                     function setVisibleSlot() {visible = true}
                     function setInvisibleSlot() {visible = false}
 
-                    anchors.fill: parent
 
 
                     Item {
@@ -401,6 +447,7 @@ ApplicationWindow{
                         property int canEntityType: Alert.QtQG
                         property int layer_pri: 0
                         property bool mutexGroup: false
+                        anchors.fill: parent
 
                         objectName: "LANES_LEFT_QtQG"
 
@@ -409,29 +456,19 @@ ApplicationWindow{
 
 
 
-                        width: 110
-                        anchors.left: parent.left
-                        anchors.leftMargin: 0
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 0
-                        anchors.top: parent.top
-                        anchors.topMargin: 0
 
                         Image {
                             id: alert_ldwoff_left
                             property string canEntityType: "ALERT_LEFT_LDWOFF"
                             property int layer_pri: 0
+                            anchors.fill: parent
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
 
 
-                            anchors.left: parent.left
-                            anchors.leftMargin: 42
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/not_detected_lines-01.png"
+                            source: "images/ldw/left_lane_yellow-01.png"
                         }
 
 
@@ -439,32 +476,26 @@ ApplicationWindow{
                             id: alert_lldw
                             property string canEntityType: "ALERT_LLDW"
                             property int layer_pri: 1
+                            anchors.fill: parent
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
 
-                            anchors.left: parent.left
-                            anchors.leftMargin: 42
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/left_ldw_left_lane-01.png"
+                            source: "images/ldw/ldw_left-01-01.png"
                         }
                         Image {
                             id: alert_ldwon_left
                             property string canEntityType: "ALERT_LEFT_LDWON"
                             property int layer_pri: 2
+                            anchors.fill: parent
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
 
 
-                            anchors.left: parent.left
-                            anchors.leftMargin: 42
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/right_ldw_right_lane-01.png"
+                            source: "images/ldw/normal_lane_left-01.png"
                         }
                     }
 
@@ -473,51 +504,25 @@ ApplicationWindow{
                         property int canEntityType: Alert.QtQG
                         property int layer_pri: 0
                         property bool mutexGroup: false
+                        anchors.fill: parent
 
                         objectName: "LANES_RIGHT_QtQG"
 
                         function setVisibleSlot() {visible = true}
                         function setInvisibleSlot() {visible = false}
 
-                        x: 9
-                        width: 110
-                        anchors.right: parent.right
-                        anchors.rightMargin: 0
-                        anchors.top: parent.top
-                        anchors.topMargin: 0
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 0
 
                         Image {
                             id: alert_ldwoff_right
                             property string canEntityType: "ALERT_RIGHT_LDWOFF"
                             property int layer_pri: 0
+                            anchors.fill: parent
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
 
-                            anchors.right: parent.right
-                            anchors.rightMargin: 42
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/not_detected_lines-01.png"
-                        }
-
-                        Image {
-                            id: alert_ldwon_right
-                            property string canEntityType: "ALERT_RIGHT_LDWON"
-                            property int layer_pri: 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 42
-
-                            function setVisibleSlot() {visible = true}
-                            function setInvisibleSlot() {visible = false}
-
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
-                            fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/left_ldw_right_lane-01.png"
+                            source: "images/ldw/right_lane-01.png"
                         }
 
 
@@ -525,69 +530,41 @@ ApplicationWindow{
                             id: alert_rldw
                             property string canEntityType: "ALERT_RLDW"
                             property int layer_pri: 1
+                            visible: true
+                            anchors.fill: parent
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
-                            anchors.right: parent.right
-                            anchors.rightMargin: 42
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/right_ldw_left_lane-01.png"
+                            source: "images/ldw/ldw_right-01.png"
                         }
+
+                        Image {
+                            id: alert_ldwon_right
+                            property string canEntityType: "ALERT_RIGHT_LDWON"
+                            property int layer_pri: 2
+                            anchors.fill: parent
+
+                            function setVisibleSlot() {visible = true}
+                            function setInvisibleSlot() {visible = false}
+
+                            fillMode: Image.PreserveAspectCrop
+                            source: "images/ldw/normal_lane_right-01.png"
+                        }
+
+
 
                     }
                 }
 
-                Item {
-                    id: groupCIPV
-                    property int layer_pri: 0
-                    property int canEntityType: Alert.QtQG
-                    function setVisibleSlot(){visible= true}
-                    function setInvisibleSlot(){visible = false}
-
-
-                    anchors.left: parent.left
-                    anchors.leftMargin: 40
-
-                    Item {
-                        id: alert_hmw_distance
-                        property int layer_pri: 0
-                        property string canEntityType: "ALERT_HMW_DISTANCE"
-                        function setVisibleSlot(Arg){
-                            alert_hmw_monitor.canEntityArg = Arg
-                            alert_hmw_alert.canEntityArg = Arg
-                        }
-                        function setInvisibleSlot(){
-                            alert_hmw_monitor.canEntityArg = 0x00
-                            alert_hmw_alert.canEntityArg = 0x00
-                        }
-                    }
-
-
-                    HMW {
-                        id: alert_hmw_alert
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 0
-                        canEntityType: "ALERT_HMW_ALERT"
-                    }
-
-                    HMW {
-                        id: alert_hmw_monitor
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 0
-                        canEntityType: "ALERT_HMW_MONITOR"
-                    }
-                }
             }
+
 
 
 
         }
 
-          Image {
+        Image {
             id: logo_panel
             visible: true
             anchors.fill: parent
@@ -597,7 +574,7 @@ ApplicationWindow{
             function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
             function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
 
-/*
+            /*
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "white" }
                 GradientStop { position: 1.0; color: "#56abf1"}
@@ -609,7 +586,7 @@ ApplicationWindow{
             antialiasing: true
             smooth: true
 
-            source: "images/bg/gradient_linear_24_a.png"
+            source: "images/bg/gradient_linear_24_16bit_2.png"
 
             Image {
                 id: grand_logo
@@ -636,3 +613,10 @@ ApplicationWindow{
 
 
 
+
+/*##^##
+Designer {
+    D{i:30;anchors_height:0;anchors_width:0}D{i:28;anchors_x:50;anchors_y:0}D{i:34;anchors_width:110}
+D{i:41;anchors_x:0;anchors_y:0}D{i:38;anchors_width:110;anchors_x:9}D{i:42;invisible:true}
+}
+##^##*/

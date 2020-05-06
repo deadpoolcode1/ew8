@@ -5,17 +5,17 @@ Item{
     id: hmw_item
     property int canEntityArg: 0x10
     property var canEntityType;
+    width: 220
+    height: 190
     function setVisibleSlot(){visible = true}
     function setInvisibleSlot(){visible = false}
 
-    width: 0
-    height: 0
 
     states: [
         State {name: "Alert"; when: canEntityType === "ALERT_HMW_ALERT"
             PropertyChanges {
                 target: strips_img;
-                source: "images/hmw/seperation_lines_red-01.png"
+                source: "images/hmw/red_road-01.png"
                 visible: true
             }
 
@@ -27,12 +27,13 @@ Item{
         State {name: "Monitor"; when: canEntityType === "ALERT_HMW_MONITOR"
             PropertyChanges {
                 target: strips_img;
-                source: "images/hmw/seperation_lines_green-01.png"
+                source: "images/hmw/green_road-01.png"
                 visible: true
             }
 
             PropertyChanges {
                 target: vehicle_img
+                anchors.topMargin: 0
                 source: "images/cars/eyewatch_car_green_hmw-01.png"
             }
         }
@@ -40,17 +41,21 @@ Item{
 
     Image {
         id: vehicle_img
-        anchors.top: strips_img.bottom
-        anchors.topMargin: -195
-        anchors.horizontalCenter: strips_img.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 0
         source: "images/cars/eyewatch_car_green_hmw-01.png"
+        visible: true
     }
 
 
     Image {
         id: strips_img;
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.horizontalCenter: parent.horizontalCenter
         visible: false;
-        source: "images/hmw/seperation_lines_green-01.png"
+        source: "images/hmw/green_road-01.png"
 
         Text {
             id: time
@@ -77,3 +82,5 @@ Item{
             }
     }
 }
+
+

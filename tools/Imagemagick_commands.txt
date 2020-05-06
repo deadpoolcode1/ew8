@@ -23,3 +23,5 @@ convert Lane_R_al@2x.png -fuzz 70% -fill none -opaque "#000000" Lane_R_alert@2x.
 convert Lane_L_on@2x.png -stroke "#000000" -strokewidth 4 -fill "#000000" -draw "path 'M 0,104 L 81,104 M 0,74 L 81,74 M 0,44 L 81,44 M 0,14 L 81,14'" Lane_L_al@2x.png
 convert Lane_L_al@2x.png -fuzz 70% -fill none -opaque "#000000" Lane_L_alert@2x.png
 rm Lane_?_al@2x.png
+
+convert sli_bg-01.png -filter spline -resize 50x -unsharp 0x1  sli_bg_small-01.png

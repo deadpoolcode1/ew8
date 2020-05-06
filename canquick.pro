@@ -1,3 +1,12 @@
+CONTRACT = 0
+IMPLEMENTATION = 0
+
+VERSION = $${CONTRACT}"."$${IMPLEMENTATION}
+message(Version $${VERSION})
+
+DEFINES += MAJOR_VERSION=$${CONTRACT}
+DEFINES += MINOR_VERSION=$${IMPLEMENTATION}
+
 qmlscripts.files = qml/*.qml
 qmlimages.files = qml/images/*
 signalcfgs.files = *.json
@@ -27,6 +36,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    keepalivemsg.cpp \
         main.cpp \
     canmanager.cpp \
     mainprocess.cpp \
@@ -104,6 +114,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES =
 
 HEADERS += \
+    keepalivemsg.h \
     peglib.h \
     canmanager.h \
     ialertdisplay.h \
@@ -165,4 +176,6 @@ DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED
 !isEmpty(target.path): DEFINES += "BASE_TARGET_DIR=\'\"$${target.path}/../\"\'"
 else: DEFINES += "BASE_TARGET_DIR=\'\"\"\'"
 
-win32: QMAKE_POST_LINK += $(MAKE) install
+
+
+

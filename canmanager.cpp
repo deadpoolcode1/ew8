@@ -41,6 +41,7 @@
 #include "icanrxmsgfactory.h"
 #include "canrxmsgfactory.h"
 #include "canrxmsg.h"
+#include "keepalivemsg.h"
 
 CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
 {
@@ -53,6 +54,8 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
     timeoutTimer = new QTimer(this);
     timeoutTimer->setSingleShot(true);
     timeoutTimer->setInterval(DEFAULT_EW_CAN_CONNECTION_TIMEOUT);
+
+    KeepAliveMsg::create(this);
 
     connect(timeoutTimer,SIGNAL(timeout()), this, SLOT(fireConnectionTimeout()));
 
@@ -267,7 +270,7 @@ void CanManager::read_frame(void)
     }
     else
     {
-        isKnownFrameReceived = parse_frame(&frame);
+            isKnownFrameReceived = parse_frame(&frame);
     }
 
 #else
@@ -302,30 +305,8 @@ void CanManager::read_frame(void)
 
 #endif
 
-#if 0
-         //NOTE: Starting timeout timer on error -- wrong behaviour
-         if(isKnownFrameReceived)
-         {
-             if(timeoutTimer->isActive())
-             {
-                 qDebug("CAN timeout timer stopped!");
-                 timeoutTimer->stop();
-             }
 
-             if(isInDisconnectionAlert)
-             {
-                 qDebug("CAN interface reconnected.");
-                 itsDisplay->deactivate(AlertTypes::ALERT_NOCOM);
-                 isInDisconnectionAlert = false;
-             }
-         }
-         else if ((!isInDisconnectionAlert)&&(!isKnownFrameReceived)&&(!timeoutTimer->isActive()))
-         {
-             qDebug("CAN timeout timer started!");
-             timeoutTimer->start();
-         }
-#else
-         //NOTE: Starting timeout timer on frame received -- right behaviour
+         //NOTE: Starting timeout timer on frame received
          if(isKnownFrameReceived)
          {
            resetConnectionTimeout();
@@ -333,10 +314,8 @@ void CanManager::read_frame(void)
 
          if((!isInDisconnectionAlert)&&!(timeoutTimer->isActive()))
          {
-             qDebug("CAN timeout timer stopped!");
              timeoutTimer->start();
          }
-#endif
 }
 
 
@@ -398,15 +377,15 @@ bool CanManager::parse_frame(struct can_frame * frame)
 {
     bool status = false;
 
-        CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
+          CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
 
-        if(nullptr != curr)
-        {
-            qDebug() << "CanRxMsg no." << frame->can_id << "arrived";
-            status = true;
-            curr->process(frame);
-            curr->ack(this);
-        }
+          if(nullptr != curr)
+          {
+              qDebug() << "CanRxMsg no." << frame->can_id << "arrived";
+              status = true;
+              curr->process(frame);
+              curr->ack(this);
+          }
 
         return status;
 }
