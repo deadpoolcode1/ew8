@@ -68,16 +68,16 @@ typedef struct can_msg_types_table_row_s
 
 
 
-static const can_msg_types_table_row_t can_msg_types_table[] =
+static const can_msg_types_table_row_t hardcoded_can_msg_types_table[] =
 {
-    {0x7ac, msg_smart},
+   // {0x7ac, msg_smart},
 };
 
-const size_t can_msg_types_table_size =  sizeof(can_msg_types_table)/sizeof(can_msg_types_table_row_t);
+const size_t hardcoded_can_msg_types_table_size =  sizeof(hardcoded_can_msg_types_table)/sizeof(can_msg_types_table_row_t);
 
 
 
-#define CAN_MESSAGES_TYPES_NUM can_msg_types_table_size
+#define HARDCODED_CAN_MESSAGES_TYPES_NUM can_msg_types_table_size
 #define MAX_SMART_ITEMS_NUM    (0xFF - 0x0)
 
 typedef enum visual_item_unit_e

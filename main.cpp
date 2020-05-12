@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
     mp->launchEverything();
 
-    qDebug() << "Core Application Loop begins, time" << bootUpTimer.elapsed();
+    qDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
     QFile kernMsgDev("/dev/kmsg");

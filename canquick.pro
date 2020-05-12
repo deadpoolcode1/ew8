@@ -45,9 +45,7 @@ SOURCES += \
     layerspriorityq.cpp \
     entitytype.cpp \
     canrxmsg.cpp \
-    smartcanrxmsg.cpp \
     canrxmsgfactory.cpp \
-    smartitem.cpp \
     displaysignalizer.cpp \
     qquickqrcode.cpp \
     amsignalsmodel.cpp \
@@ -127,9 +125,7 @@ HEADERS += \
     entitytype.h \
     alerttypes.h \
     canrxmsg.h \
-    smartcanrxmsg.h \
     canrxmsgfactory.h \
-    smartitem.h \
     displaysignalizer.h \
     candbsignal.h \
     qquickqrcode.h \

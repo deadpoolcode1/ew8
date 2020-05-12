@@ -3,6 +3,9 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
+
+import MyQMLenums 0.1
+
 Rectangle {
 	id: ims_smartadas_restricted
 	property int layer_pri: 1

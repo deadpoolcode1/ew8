@@ -3,17 +3,23 @@
 //NOTE: add all types of CanRxMsg:
 #include "defs.h"
 #include "canrxmsg.h"
-#include "smartcanrxmsg.h"
 #include "canrxmsgfactory.h"
 #include "icanrxmsgfactory.h"
 
+#if (HARDCODED_CAN_MESSAGES_TYPES_NUM == 0)
+CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t)
+#else
 CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId)
+#endif
 {
     CanRxMsg * ret = nullptr;
 
+#if (HARDCODED_CAN_MESSAGES_TYPES_NUM == 0)
+    ret =  new CanRxMsg();
+#else
     canrxmsg_type_t type = msg_simple;
 
-    for(size_t i = 0; i < CAN_MESSAGES_TYPES_NUM; i++)
+    for(size_t i = 0; i < HARDCODED_CAN_MESSAGES_TYPES_NUM; i++)
     {
         if(can_msg_types_table[i].std_id == StdId)
         {
@@ -31,6 +37,7 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId)
         break;
 
 
+    //NOTE: hardcoded messages mechanism
     case msg_smart:
 
         ret = new SmartCanRxMsg();
@@ -44,6 +51,7 @@ CanRxMsg * CanRxMsgFactory::createCanRxMsgInstance(CanStdId_t StdId)
 
         break;
     }
+#endif
 
     return ret;
 }

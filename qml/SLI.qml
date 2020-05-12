@@ -29,6 +29,7 @@ SideIcon {
         opacity: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter : parent.verticalCenter
+        onTextChanged: {sign.visible = false; sign.visible = true;}
     }
 
     source: "images/sli_signs/sli_bg-01.png"
