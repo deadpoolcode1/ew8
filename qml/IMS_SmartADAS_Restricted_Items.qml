@@ -64,7 +64,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_wtr
-            property string canEntityType: "SMART_WEA_WTR"
+            property string canEntityType: "SMART_WEA_HYDRO"
             property int layer_pri: 5
             source: "images/sadas/w_hydro-01.png"
         }
@@ -87,7 +87,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_ra
-            property string canEntityType: "SMART_WEA_RA"
+            property string canEntityType: "SMART_WEA_HAIL"
             property int layer_pri: 7
             source: "images/sadas/w_rain-01.png"
         }

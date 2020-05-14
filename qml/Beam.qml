@@ -22,14 +22,14 @@ Image {
 
     states: [
         State {
-            name: "Hi"; when: hi
+            name: "Hi"; when: is_hi
             PropertyChanges {
                 target: beam
-                source: "images/status_bar/eyewatch_statusbar_ihc-01.png"
+                source: "images/status_bar/ihc_white-01.png"
             }
         },
         State {
-            name: "Low"; when: !hi
+            name: "Low"; when: !is_hi
             PropertyChanges {
                 target: beam
                 source: "images/status_bar/eyewatch_statusbar_ihc-01.png"

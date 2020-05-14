@@ -42,6 +42,7 @@
 #include "canrxmsgfactory.h"
 #include "canrxmsg.h"
 #include "keepalivemsg.h"
+#include "versionmsg.h"
 
 CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
 {
@@ -68,6 +69,7 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
 void CanManager::launch(void)
 {
+    VersionMsg::singleShot(this);
     itsThread->start();
 }
 

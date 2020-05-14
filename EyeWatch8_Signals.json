@@ -24,14 +24,16 @@
         {"enum": "ALERT_PLAYGROUND", "value": 46},
         {"enum": "ALERT_SLI", "value": 47},
 
+        {"enum": "INFO_VEH_SPEED", "value": 60},
+
         {"enum": "SMART_CROWDED", "value": 101},
         {"enum": "SMART_PED_HWY", "value": 102},
         {"enum": "SMART_CYC_HWY", "value": 103},
         {"enum": "SMART_WEA_ROAD", "value": 104},
-        {"enum": "SMART_WEA_WTR", "value": 105},
+        {"enum": "SMART_WEA_HYDRO", "value": 105},
         {"enum": "SMART_WEA_FG", "value": 106},
         {"enum": "SMART_WEA_WND", "value": 107},
-        {"enum": "SMART_WEA_RA", "value": 108},
+        {"enum": "SMART_WEA_HAIL", "value": 108},
         {"enum": "SMART_WEA_TSTM", "value": 109},
         {"enum": "SMART_FATIGUE", "value": 110},
         {"enum": "SMART_BUMPERS", "value": 111},
@@ -177,6 +179,14 @@
         }
         ,
         {
+            "protocol": "CarInfo_protocol",
+            "signals":[
+                {"name": "Speed_avaliable", "action":"INFO_VEH_SPEED", "type":"GraphicItem"},
+                {"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0}
+            ]
+        }
+        ,
+        {
             "protocol": "IMS_SmartADAS_Restricted",
             "signals":[
                 {"name":"FirstIcon", "action": "FirstIcon_Type",  "isValueTable": true}
@@ -187,10 +197,10 @@
                         {"value":  2, "action": "SMART_PED_HWY", "description": "Pedestrian on the highway"},
                         {"value":  3, "action": "SMART_CYC_HWY", "description": "Cyclist on highway"},
                         {"value":  4, "action": "SMART_WEA_ROAD", "description": "Weather condition: Road"},
-                        {"value":  5, "action": "SMART_WEA_WTR", "description": "Weather condition: Hydro"},
+                        {"value":  5, "action": "SMART_WEA_HYDRO", "description": "Weather condition: Hydroplanning"},
                         {"value":  6, "action": "SMART_WEA_FG", "description": "Weather condition: Fog"},
                         {"value":  7, "action": "SMART_WEA_WND", "description": "Weather condition: Wind"},
-                        {"value":  8, "action": "SMART_WEA_RA", "description": "Weather condition: Rain"},
+                        {"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"},
                         {"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"},
                         {"value": 10, "action": "SMART_FATIGUE", "description": "Fatigue detection"},
                         {"value": 11, "action": "SMART_BUMPERS", "description": "Portholes/Bumpers"},

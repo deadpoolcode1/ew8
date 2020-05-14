@@ -1,11 +1,11 @@
-CONTRACT = 0
-IMPLEMENTATION = 0
+MAJOR_VERSION = 0
+MINOR_VERSION = 0
 
-VERSION = $${CONTRACT}"."$${IMPLEMENTATION}
+VERSION = $${MAJOR_VERSION}"."$${MINOR_VERSION}
 message(Version $${VERSION})
 
-DEFINES += MAJOR_VERSION=$${CONTRACT}
-DEFINES += MINOR_VERSION=$${IMPLEMENTATION}
+DEFINES += MAJOR_VERSION=$${MAJOR_VERSION}
+DEFINES += MINOR_VERSION=$${MINOR_VERSION}
 
 qmlscripts.files = qml/*.qml
 qmlimages.files = qml/images/*
@@ -37,6 +37,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     keepalivemsg.cpp \
+    versionmsg.cpp \
         main.cpp \
     canmanager.cpp \
     mainprocess.cpp \
@@ -113,6 +114,7 @@ DISTFILES =
 
 HEADERS += \
     keepalivemsg.h \
+    versionmsg.h \
     peglib.h \
     canmanager.h \
     ialertdisplay.h \

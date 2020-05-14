@@ -36,8 +36,8 @@ ApplicationWindow{
             height: 50
             color: "#1f2630"
 
-            //property int canEntityType: Alert.QtQG
-            //property int layer_pri: 1
+            property int canEntityType: Alert.QtQG
+            property int layer_pri: 1
             //function setVisibleSlot(){visible= true; console.log("STATUS")}
             //function setInvisibleSlot(){visible = false; console.log("STATUS OFF")}
 
@@ -79,13 +79,18 @@ ApplicationWindow{
                     anchors.bottomMargin: 5
                     anchors.top: parent.top
                     anchors.topMargin: 5
+                    property string canEntityType: "INFO_VEH_SPEED"
+                    property int canEntityArg: 0x0
+                    property int layer_pri: 1
+                    function setVisibleSlot(arg) {canEntityArg = arg; visible = true}
+                    function setInvisibleSlot() {visible = false}
 
                     Text {
                         id: speed_value
                         x: 0
                         color: "#f1e1ff"
-                        text: qsTr("40")
-                        topPadding: 5
+                        text: speed.canEntityArg.toFixed(0)
+                        topPadding: 0
                         anchors.top: parent.top
                         anchors.topMargin: 0
                         font.family: "HindSiliguri"
@@ -99,9 +104,9 @@ ApplicationWindow{
                         y: -25
                         color: "#3d667c"
                         text: qsTr("kmp")
-                        topPadding: 5
+                        topPadding: 0
                         anchors.bottom: speed_value.bottom
-                        anchors.bottomMargin: 0
+                        anchors.bottomMargin: -5
                         anchors.horizontalCenter: parent.horizontalCenter
                         font.bold: true
                         font.pixelSize: 8
@@ -109,33 +114,34 @@ ApplicationWindow{
 
                 }
 
-                GroupBeam {
+                Rectangle {
                     id: groupBeam
                     property string canEntityType: Alert.QtQG
                     property int layer_pri: 0
                     property bool mutexGroup: true
-                    is_hi: true
+                    width: Math.max(alert_hi_beam.width,alert_low_beam.width)
+                    color: "#00000000"
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 0
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    function setVisibleSlot() {visible = true}
+                    function setInvisibleSlot() {visible = false}
 
-                    Item {
+                    visible: true
+
+                    Beam {
                         id: alert_hi_beam
+                        is_hi: true
                         property string canEntityType: "ALERT_HI_BEAM"
                         property int layer_pri: 0
-                        function setVisibleSlot() {
-                            parent.is_hi = true;
-                        }
-
-                        function setInvisibleSlot() {}
                     }
 
-                    Item {
+                    Beam {
                         id: alert_low_beam
+                        is_hi: false
                         property string canEntityType: "ALERT_LOW_BEAM"
                         property int layer_pri: 1
-                        function setVisibleSlot() {
-                            parent.is_hi = false;
-                        }
-
-                        function setInvisibleSlot() {}
                     }
                 }
 
@@ -148,7 +154,7 @@ ApplicationWindow{
 
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/eyewatch_statusbar_left_brn_white-01.png"
+                    source: "images/status_bar/blinker_reminder_white-01.png"
                 }
 
                 Image {
