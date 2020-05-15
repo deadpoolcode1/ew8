@@ -157,12 +157,14 @@ ApplicationWindow{
                     source: "images/status_bar/blinker_reminder_white-01.png"
                 }
 
+                /*
                 Image {
                     id: vsn
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
                     source: "images/status_bar/eyewatch_statusbar_low_vision_white-01.png"
                 }
+                */
 
             }
 
@@ -179,6 +181,7 @@ ApplicationWindow{
                 anchors.right: parent.right
                 anchors.rightMargin: 20
 
+                /*
                 Image {
                     id: green_user
                     anchors.verticalCenter: parent.verticalCenter
@@ -202,7 +205,7 @@ ApplicationWindow{
                     anchors.verticalCenter: parent.verticalCenter
                     source: "images/status_bar/eyewatch_statusbar_gsm-01.png"
                 }
-
+                */
 
             }
 
@@ -347,11 +350,27 @@ ApplicationWindow{
                     canEntityType: "ALERT_SLI"
                     property int layer_pri: 0
                 }
+
+               DummyItem{
+                    canEntityType: "ALERT_END_ALL_RESTR"
+                    property int layer_pri: 1
+               }
+               DummyItem{
+                    canEntityType: "ALERT_MOTORWAY"
+                    property int layer_pri: 1
+               }
+               DummyItem{
+                    canEntityType: "ALERT_PLAYGROUND"
+                    property int layer_pri: 1
+               }
+               DummyItem{
+                    canEntityType: "ALERT_NO_PASS"
+                    property int layer_pri: 1
+               }
             }
 
             IMS_SmartADAS_Restricted_Items {
                 id: right_panel
-                x: 562
                 width: 50
                 color: "#00000000"
                 anchors.right: parent.right
@@ -478,16 +497,10 @@ ApplicationWindow{
                         }
 
 
-                        Image {
+                        BlinkingLine {
                             id: alert_lldw
                             property string canEntityType: "ALERT_LLDW"
                             property int layer_pri: 1
-                            anchors.fill: parent
-
-                            function setVisibleSlot() {visible = true}
-                            function setInvisibleSlot() {visible = false}
-
-                            fillMode: Image.PreserveAspectCrop
                             source: "images/ldw/ldw_left-01-01.png"
                         }
                         Image {
@@ -532,16 +545,10 @@ ApplicationWindow{
                         }
 
 
-                        Image {
+                        BlinkingLine {
                             id: alert_rldw
                             property string canEntityType: "ALERT_RLDW"
                             property int layer_pri: 1
-                            visible: true
-                            anchors.fill: parent
-
-                            function setVisibleSlot() {visible = true}
-                            function setInvisibleSlot() {visible = false}
-                            fillMode: Image.PreserveAspectCrop
                             source: "images/ldw/ldw_right-01.png"
                         }
 
