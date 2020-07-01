@@ -342,7 +342,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">canquick (on Remote Device)</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">RemoteLinuxRunConfiguration:canquick</value>
-    <value type="QString" key="Qt4ProjectManager.MaemoRunConfiguration.Arguments"></value>
+    <value type="QString" key="Qt4ProjectManager.MaemoRunConfiguration.Arguments">-f</value>
     <value type="QString" key="Qt4ProjectManager.MaemoRunConfiguration.TargetName">canquick</value>
     <value type="int" key="RemoteLinux.EnvironmentAspect.Version">1</value>
     <value type="QString" key="RemoteLinux.RunConfig.AlternateRemoteExecutable"></value>

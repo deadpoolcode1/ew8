@@ -9,13 +9,16 @@
 KeepAliveMsg * KeepAliveMsg::instance = nullptr;
 
 KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
-{
-    triggerTimer = new QTimer(aCanManager);
+{  
+    triggerTimerThread = new QThread();
+    triggerTimer = new QTimer();
+
+
 
     system_type = stypeInvalid;
     if ("linux" == QSysInfo::kernelType()) {system_type = stypeLinux;}
 
-    sessionId = random()%0xffff;
+    sessionId = rand()%0xffff;
     errorId = 0x00;
     isValid = true;
 
@@ -27,10 +30,13 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
 
     triggerTimer->setSingleShot(false);
     triggerTimer->setInterval(DEFAULT_EW_KEEP_ALIVE_TIMEOUT);
+    triggerTimer->setTimerType(Qt::PreciseTimer);
 
+    connect(triggerTimerThread,SIGNAL(started()),triggerTimer,SLOT(start()));
     connect(triggerTimer,SIGNAL(timeout()), this, SLOT(triggerTimeout()));
 
-    triggerTimer->start();
+    triggerTimer->moveToThread(triggerTimerThread);
+    triggerTimerThread->start();
 }
 
 void KeepAliveMsg::create(CanManager *aCanManager)

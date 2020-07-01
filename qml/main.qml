@@ -18,14 +18,15 @@ ApplicationWindow{
 
     visible: true
 
-    Image {
+    Rectangle {
         id: general_panel
         property int canEntityType: Alert.QtQG
         property int layer_pri: 0
         visible: true
+        color: "#000000"
 
         anchors.fill: parent
-        source: "images/bg/eyewatch_car_lighter_bg-01.png"
+        //source: "images/bg/eyewatch_car_lighter_bg-01.png"
         objectName: "general_panel_root"
 
         width: 320
@@ -34,10 +35,11 @@ ApplicationWindow{
         Rectangle {
             id: status_panel
             height: 50
-            color: "#1f2630"
+            color: "#00000000"
+            z: 1
 
             property int canEntityType: Alert.QtQG
-            property int layer_pri: 1
+            property int layer_pri: 2
             //function setVisibleSlot(){visible= true; console.log("STATUS")}
             //function setInvisibleSlot(){visible = false; console.log("STATUS OFF")}
 
@@ -51,18 +53,23 @@ ApplicationWindow{
 
             Image {
                 id: logo
+                anchors.top: parent.top
+                anchors.topMargin: 0
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                anchors.verticalCenter: parent.verticalCenter
                 clip: true
                 visible: true
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectFit
-                source: "images/status_bar/eyewatch_statusbar_small_logo-01.png"
+                source: "images/logo/thumbnails.png"
             }
 
             Row {
                 id: left_row
                 anchors.right: logo.left
-                anchors.rightMargin: 15
+                anchors.rightMargin: -105
                 spacing: 10
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
@@ -81,7 +88,7 @@ ApplicationWindow{
                     anchors.topMargin: 5
                     property string canEntityType: "INFO_VEH_SPEED"
                     property int canEntityArg: 0x0
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     function setVisibleSlot(arg) {canEntityArg = arg; visible = true}
                     function setInvisibleSlot() {visible = false}
 
@@ -172,7 +179,7 @@ ApplicationWindow{
                 id: right_row
                 layoutDirection: Qt.RightToLeft
                 anchors.left: logo.right
-                anchors.leftMargin: 15
+                anchors.leftMargin: -105
                 spacing: 10
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
@@ -214,7 +221,7 @@ ApplicationWindow{
         Rectangle {
             id: main_panel
             property int canEntityType: Alert.QtQG
-            property int layer_pri: 1
+            property int layer_pri: 2
             function setVisibleSlot(){visible= true; console.log("MAIN PANEL")}
             function setInvisibleSlot(){visible = false; console.log("MAIN PANEL OFF")}
 
@@ -266,72 +273,11 @@ ApplicationWindow{
 
             }
 
-            Item {
-                id: groupFCW
-                objectName: "FCW_QtQG"
-                property bool mutexGroup: false
-                property int canEntityType: Alert.QtQG
-                property int layer_pri: 0
-
-                function setVisibleSlot() {visible = true}
-                function setInvisibleSlot() {visible = false}
-
-                width: 200
-                height: 200
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Image {
-                    id: alert_fcw
-                    property string canEntityType: "ALERT_FCW"
-                    property int layer_pri: 0
-
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
-
-                    width: 100
-                    height: 100
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    source: "images/cars/eyewatch_car_red_hmw-01.png"
-                }
-
-                Image {
-                    id: alert_pcw
-                    property string canEntityType: "ALERT_PCW"
-                    property int layer_pri: 1
-
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
-
-
-                    width: 100
-                    height: 100
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    source: "images/green_pedestrian/green_pedestrian-01.png"
-                }
-
-                Image {
-                    id: alert_pdz
-                    property string canEntityType: "ALERT_PDZ"
-                    property int layer_pri: 1
-
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
-
-                    width: 100
-                    height: 100
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    source: "images/green_pedestrian/green_pedestrian-01.png"
-                }
-            }
-
             Rectangle {
                 id: left_panel
                 width: 50
                 color: "#00000000"
+                z: 7
                 visible: true
                 anchors.left: parent.left
                 anchors.leftMargin: 0
@@ -345,34 +291,45 @@ ApplicationWindow{
                 function setVisibleSlot(){visible = true;}
                 function setInvisibleSlot(){visible = false;}
 
+
                 SLI {
                     id: upper_tsr
                     canEntityType: "ALERT_SLI"
                     property int layer_pri: 0
                 }
 
-               DummyItem{
+                TSR{
+                    id: alert_no_pass
+                    canEntityType: "ALERT_NO_PASS"
+                    property int layer_pri: 0
+                    source: "images/tsr/left_nopass_red.png"
+                }
+
+                DummyItem{
                     canEntityType: "ALERT_END_ALL_RESTR"
                     property int layer_pri: 1
-               }
-               DummyItem{
+                }
+
+                TSR{
+                    id: alert_motorway
                     canEntityType: "ALERT_MOTORWAY"
-                    property int layer_pri: 1
-               }
-               DummyItem{
+                    property int layer_pri: 0
+                    source: "images/tsr/left_highway_beg.png"
+                }
+
+                TSR{
+                    id: alert_playground
                     canEntityType: "ALERT_PLAYGROUND"
-                    property int layer_pri: 1
-               }
-               DummyItem{
-                    canEntityType: "ALERT_NO_PASS"
-                    property int layer_pri: 1
-               }
+                    property int layer_pri: 0
+                    source: "images/tsr/left_motorway_beg.png"
+                }
             }
 
             IMS_SmartADAS_Restricted_Items {
                 id: right_panel
                 width: 50
                 color: "#00000000"
+                z: 6
                 anchors.right: parent.right
                 anchors.rightMargin: 0
                 anchors.top: parent.top
@@ -382,6 +339,19 @@ ApplicationWindow{
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
+            }
+
+            Image {
+                id: vehicle_img
+                x: 95
+                y: -5
+                z: 5
+                anchors.horizontalCenter: groupCIPV.horizontalCenter
+                anchors.top: groupCIPV.top
+                anchors.topMargin: alert_hmw_general.car_margin
+                source: "images/cars/eyewatch_car_red_hmw-01.png"
+                visible: alert_hmw_general.visible&&(!alert_pdz.visible)
+                scale: alert_hmw_general.car_scale
             }
 
             Item {
@@ -394,42 +364,85 @@ ApplicationWindow{
                 anchors.bottom: parent.bottom
                 anchors.top: parent.top
                 anchors.leftMargin: 0
-                function setVisibleSlot(){visible= true}
+                function setVisibleSlot(){visible = true}
                 function setInvisibleSlot(){visible = false}
 
 
 
                 Item {
-                    id: alert_hmw_distance
-                    property int layer_pri: 0
-                    property string canEntityType: "ALERT_HMW_DISTANCE"
-                    anchors.fill: parent
-                    function setVisibleSlot(Arg){
-                        alert_hmw_monitor.canEntityArg = Arg
-                        alert_hmw_alert.canEntityArg = Arg
-                    }
-                    function setInvisibleSlot(){
-                        alert_hmw_monitor.canEntityArg = 0x00
-                        alert_hmw_alert.canEntityArg = 0x00
-                    }
-                }
+                    id: groupPdzHmwDistance
+                    property int canEntityType: Alert.QtQG
+                    property int layer_pri: 1
+                    property bool mutexGroup: false
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    z: 1
+                    visible: true
+                    //anchors.fill: parent
 
+                    objectName: "GAG_QtQG"
+
+                    function setVisibleSlot() {visible = true}
+                    function setInvisibleSlot() {visible = false}
+
+
+                    AnimatedImage {
+                        id: alert_pdz
+                        playing: visible
+                        property string canEntityType: "ALERT_PDZ"
+                        property int layer_pri: 0
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+
+                        z: 1
+                        source: "images/pdz/main_ped_yellow_old.png"
+
+
+
+                        function setVisibleSlot() {visible = true}
+                        function setInvisibleSlot() {visible = false}
+
+                    }
+
+                    Item {
+                        id: alert_hmw_distance
+                        property int layer_pri: 1
+                        property string canEntityType: "ALERT_HMW_DISTANCE"
+
+                        anchors.fill: parent
+                        function setVisibleSlot(Arg){
+                            alert_hmw_general.canEntityArg = Arg
+                        }
+                        function setInvisibleSlot(){
+                            alert_hmw_general.canEntityArg = 0x00
+                        }
+                    }
+
+                }
 
                 HMW {
-                    id: alert_hmw_alert
+                    id: alert_hmw_general
+                    property int layer_pri: 1
                     anchors.fill: parent
-                    canEntityType: "ALERT_HMW_ALERT"
+                    playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
+                    alert: false
                 }
 
-                HMW {
-                    id: alert_hmw_monitor
-                    anchors.fill: parent
-                    canEntityType: "ALERT_HMW_MONITOR"
-                }
+
+
+
+            }
+
+            GreyCar {
+                id: greyCar
             }
 
             Item {
                 id: groupGAG
+                z: 4
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
                 property bool mutexGroup: false
@@ -499,9 +512,12 @@ ApplicationWindow{
 
                         BlinkingLine {
                             id: alert_lldw
+                            playing: !alert_pdz.visible
                             property string canEntityType: "ALERT_LLDW"
                             property int layer_pri: 1
                             source: "images/ldw/ldw_left-01-01.png"
+
+                            onVisibleChanged: {if(visible) greyCar.moveLeft(); else greyCar.moveLeftReset();}
                         }
                         Image {
                             id: alert_ldwon_left
@@ -547,9 +563,11 @@ ApplicationWindow{
 
                         BlinkingLine {
                             id: alert_rldw
+                            playing: !alert_pdz.visible
                             property string canEntityType: "ALERT_RLDW"
                             property int layer_pri: 1
                             source: "images/ldw/ldw_right-01.png"
+                            onVisibleChanged: {if(visible) greyCar.moveRight(); else greyCar.moveRightReset();}
                         }
 
                         Image {
@@ -568,9 +586,14 @@ ApplicationWindow{
 
 
                     }
+
                 }
 
+
             }
+
+
+
 
 
 
@@ -584,6 +607,7 @@ ApplicationWindow{
 
             property int canEntityType: Alert.QtQG
             property int layer_pri: 0
+            z: 11
             function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
             function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
 
@@ -615,6 +639,54 @@ ApplicationWindow{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 source: "images/logo/eyewatch_logo_transparent-01.png"
+            }
+        }
+
+        Item {
+            id: groupFCW
+            objectName: "FCW_QtQG"
+            property bool mutexGroup: false
+            property int canEntityType: Alert.QtQG
+            property int layer_pri: 1
+            z: 10
+            anchors.fill: parent
+
+
+            function setVisibleSlot() {visible = true}
+            function setInvisibleSlot() {visible = false}
+
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            AnimatedImage {
+                id: alert_fcw
+                property string canEntityType: "ALERT_FCW"
+                property int layer_pri: 1
+                anchors.fill: parent
+
+                function setVisibleSlot() {visible = true}
+                function setInvisibleSlot() {visible = false}
+                visible: true
+                playing: visible
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: "images/fcw/main_FCW_big.gif"
+            }
+
+            AnimatedImage {
+                id: alert_pcw
+                property string canEntityType: "ALERT_PCW"
+                property int layer_pri: 0
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 0
+                anchors.fill: parent
+
+                function setVisibleSlot() {visible = true}
+                function setInvisibleSlot() {visible = false}
+
+                visible: true
+                playing: visible
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: "images/pcw/main_PCW_big.gif"
             }
         }
 

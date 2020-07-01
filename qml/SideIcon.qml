@@ -35,7 +35,6 @@ AnimatedImage {
 
     }
 
-    source: "images/sli_signs/sli_bg-01.png"
 
 
     scale: 1

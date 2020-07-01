@@ -33,8 +33,6 @@ void VersionMsg::singleShot(CanManager *aCanManager)
     if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
     {
       QTextStream buildIdStream(&buildIdFile);
-
-      buildIdFile.write("<2> canquick: in main loop");
       buildId = buildIdStream.readLine();
       buildIdFile.close();
     }

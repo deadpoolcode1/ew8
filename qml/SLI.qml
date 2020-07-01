@@ -32,7 +32,7 @@ SideIcon {
         onTextChanged: {sign.visible = false; sign.visible = true;}
     }
 
-    source: "images/sli_signs/sli_bg-01.png"
+    source: "images/sli/sli_bg-01.png"
 
    }
 

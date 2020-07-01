@@ -27,6 +27,7 @@ public slots:
 private:
     CanManager * itsCanManager;
     explicit KeepAliveMsg(CanManager * aCanManager);
+    QThread * triggerTimerThread;
     QTimer * triggerTimer;
     static KeepAliveMsg * instance;
     QElapsedTimer uptimeReference;
