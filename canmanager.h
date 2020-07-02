@@ -19,11 +19,14 @@
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
 #include "amsignalsmodel.h"
+#include "medisconnectionreport.h"
 
 
 class IAlertDisplay;
 class ICanRxMsgFactory;
 class AMSignalsModel;
+class MeDisconnectionReport;
+
 
 class CanManager :  public QObject
 {
@@ -38,19 +41,17 @@ public:
     ICanRxMsgFactory * getItsCanRxMsgFactory(void);
     void launch(void);
 
-    void setConnectionTimeoutMsec(quint32 aTimeout);
-
+signals:
+    void resetConnectionTimeout(void);
 
 public slots:
     void process();
-    void fireConnectionTimeout();
 
 private:
     //inner functions:
     void init(void);
     bool parse_frame(struct can_frame * frame);
-    void init_frame(struct can_frame * frame);
-    void resetConnectionTimeout(void);
+
 
 #ifndef WIN32
     //inner variables
@@ -67,10 +68,7 @@ private:
     ICanRxMsgFactory * itsCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
     QThread * itsThread;
-
-    QTimer * timeoutTimer;
-    bool isInDisconnectionAlert;
-
+    MeDisconnectionReport * itsDisconnectionReport;
 };
 
 #endif // CANMANAGER_H

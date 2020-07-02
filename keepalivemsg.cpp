@@ -35,6 +35,7 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
     connect(triggerTimerThread,SIGNAL(started()),triggerTimer,SLOT(start()));
     connect(triggerTimer,SIGNAL(timeout()), this, SLOT(triggerTimeout()));
 
+    this->moveToThread(triggerTimerThread);
     triggerTimer->moveToThread(triggerTimerThread);
     triggerTimerThread->start();
 }

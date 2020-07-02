@@ -66,7 +66,8 @@ SOURCES += \
     amjsonactionfactory.cpp \
     amjsonactionsmultiplexor.cpp \
     candbsignal.cpp \
-    amjsonfixedargumentsactioninvoker.cpp
+    amjsonfixedargumentsactioninvoker.cpp \
+    medisconnectionreport.cpp
 
 RESOURCES += qml.qrc
 
@@ -151,7 +152,8 @@ HEADERS += \
     actiontype.h \
     candbgrammar.h.in \
     amjsonfixedargumentsactioninvoker.h \
-    iamjsonprocessable.h
+    iamjsonprocessable.h \
+    medisconnectionreport.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32

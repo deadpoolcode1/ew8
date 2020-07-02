@@ -1,4 +1,3 @@
-#include "canmanager.h"
 #include <string.h>
 #include <stdio.h>
 #include "defs.h"
@@ -43,6 +42,9 @@
 #include "canrxmsg.h"
 #include "keepalivemsg.h"
 #include "versionmsg.h"
+#include "medisconnectionreport.h"
+
+#include "canmanager.h"
 
 CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
 {
@@ -50,19 +52,19 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     init();
 
-    isInDisconnectionAlert = false;
-
-    timeoutTimer = new QTimer(this);
-    timeoutTimer->setSingleShot(true);
-    timeoutTimer->setInterval(DEFAULT_EW_CAN_CONNECTION_TIMEOUT);
-
     KeepAliveMsg::create(this);
 
-    connect(timeoutTimer,SIGNAL(timeout()), this, SLOT(fireConnectionTimeout()));
+
+    itsDisconnectionReport = new MeDisconnectionReport(alertdisp);
+
+
+
 
     itsThread = new QThread(this);
 
     this->moveToThread(itsThread);
+
+    connect(this, SIGNAL(resetConnectionTimeout()), itsDisconnectionReport, SLOT(resetConnectionTimeout()));
 
     connect(itsThread,SIGNAL(started()),this,SLOT(process()));
 }
@@ -70,48 +72,12 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 void CanManager::launch(void)
 {
     VersionMsg::singleShot(this);
+    itsDisconnectionReport->launch();
     itsThread->start();
-}
-
-void CanManager::setConnectionTimeoutMsec(quint32 aTimeout)
-{
-    if(timeoutTimer->isActive())
-    {
-        qDebug("Setting new connection timeout resets timeout timer");
-        timeoutTimer->stop();
-        timeoutTimer->setInterval(aTimeout);
-        timeoutTimer->start();
-    }
-    else
-    {
-        timeoutTimer->setInterval(aTimeout);
-    }
 
 }
 
-void CanManager::fireConnectionTimeout()
-{
-    qDebug("Disconnection Alert!");
-    isInDisconnectionAlert = true;
-    itsDisplay->activate(AlertTypes::ALERT_NOCOM);
-}
 
-void CanManager::resetConnectionTimeout(void)
-{
-    if(timeoutTimer->isActive())
-    {
-        qDebug("CAN timeout timer stopped!");
-        timeoutTimer->stop();
-    }
-
-    if(isInDisconnectionAlert)
-    {
-        qDebug("CAN interface reconnected.");
-        itsDisplay->deactivate(AlertTypes::ALERT_NOCOM);
-        isInDisconnectionAlert = false;
-    }
-
-}
 
  IAlertDisplay * CanManager::getItsDisplay(void)
  {
@@ -204,9 +170,11 @@ void CanManager::init(void)
 
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
+#if 0
     qint32 status = 0;
 
     qint32 flags = fcntl(socknum, F_GETFL);
+
 
     if(-1 != flags)
     {
@@ -221,6 +189,7 @@ void CanManager::init(void)
     {
         qDebug("Unsuccess on NONBLOCKINK CAN socket configure");
     }
+#endif
 
 
     setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, rfilterSize * sizeof(struct can_filter));
@@ -308,37 +277,10 @@ void CanManager::read_frame(void)
 #endif
 
 
-         //NOTE: Starting timeout timer on frame received
          if(isKnownFrameReceived)
          {
-           resetConnectionTimeout();
+           emit resetConnectionTimeout();
          }
-
-         if((!isInDisconnectionAlert)&&!(timeoutTimer->isActive()))
-         {
-             timeoutTimer->start();
-         }
-}
-
-
-
-void CanManager::init_frame(struct can_frame * frame)
-{
-      frame->can_id =  0x0;
-      frame->can_dlc = 0x0;
-#ifndef WIN32
-      frame->__pad =   0x0;
-      frame->__res0 =  0x0;
-      frame->__res1 =  0x0;
-#endif
-      frame->data[0] = 0x0;
-      frame->data[1] = 0x0;
-      frame->data[2] = 0x0;
-      frame->data[3] = 0x0;
-      frame->data[4] = 0x0;
-      frame->data[5] = 0x0;
-      frame->data[6] = 0x0;
-      frame->data[7] = 0x0;
 }
 
 void CanManager::write_frame(struct can_frame * frame_ptr)
@@ -370,9 +312,13 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
 
 void CanManager::process()
 {
-
+while(true)
+{
     this->read_frame();
+}
+#if 0
     QTimer::singleShot(0,this,SLOT(process()));
+#endif
 }
 
 bool CanManager::parse_frame(struct can_frame * frame)
@@ -383,7 +329,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
           if(nullptr != curr)
           {
-              qDebug() << "CanRxMsg no." << frame->can_id << "arrived";
+              qDebug() << "CanRxMsg no." << frame->can_id << "arrived at:" << bootUpTimer.elapsed();
               status = true;
               curr->process(frame);
               curr->ack(this);
