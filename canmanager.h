@@ -39,6 +39,14 @@ public:
     void write_frame(struct can_frame * frame_ptr);
     IAlertDisplay * getItsDisplay(void);
     ICanRxMsgFactory * getItsCanRxMsgFactory(void);
+
+    //WARNING: hardcoded!
+    //TODO: find what cat be moved to the config files
+    void sendVolumeUp(void);
+    void sendVolumeDown(void);
+    void sendVolumeMute(void);
+    void sendVolumeGet(void);
+
     void launch(void);
 
 signals:

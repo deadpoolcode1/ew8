@@ -10,9 +10,14 @@
 QMap <quint32, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
+MeDisconnectionReport * CanRxMsg::itsDisconnectionReport = nullptr;
 QList<CanStdId_t> CanRxMsg::msgsWhiteList;
 bool CanRxMsg::isAlreadyLoaded = false;
 bool CanRxMsg::isDBCParsingForced = false;
+
+bool CanRxMsg::isRequestSent = false;
+bool CanRxMsg::isRequestIdLSBByteReceived = false;
+quint16 CanRxMsg::requestId = 0x0;
 
 QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
 {
@@ -90,6 +95,12 @@ bool CanRxMsg::saveToStorage(void)
     return status;
 }
 
+
+void CanRxMsg::setItsDisconnectionReport(MeDisconnectionReport *aDisconnectionReport)
+{
+    itsDisconnectionReport = aDisconnectionReport;
+}
+
 void CanRxMsg::forceDBCParsing(void)
 {
     isDBCParsingForced = true;
@@ -163,6 +174,39 @@ bool CanRxMsg::loadFromStorage(void)
     }
     return status;
 }
+
+void CanRxMsg::expectRequestId(quint16 aRequestId)
+{
+    requestId = aRequestId;
+    isRequestSent = true;
+    isRequestIdLSBByteReceived = false;
+    itsDisconnectionReport->startRequestTimeoutTimer();
+}
+
+void CanRxMsg::receiveRequestIdByteLSB(quint8 aByte)
+{
+    isRequestIdLSBByteReceived = isRequestSent &&
+            ((quint16)aByte == (requestId & (quint16)0xff));
+}
+
+void CanRxMsg::receiveRequestIdByteMSB(quint8 aByte)
+{
+    if(isRequestIdLSBByteReceived && ((quint16)aByte == ((requestId >> 010) & (quint16)0xff)))
+    {
+        isRequestSent = false;
+        itsDisconnectionReport->stopRequestTimeoutTimer();
+    }
+
+}
+
+void CanRxMsg::discardRequestId(void)
+{
+    isRequestIdLSBByteReceived = false;
+    isRequestSent = false;
+}
+
+
+
 
 
 CanRxMsg * CanRxMsg::createInstance(quint32 StdId)
@@ -276,10 +320,16 @@ CanRxMsg * CanRxMsg::getMsgByCanId(quint32 StdId)
 void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 {
 
+
+
+
     if (itsJsonProtocol)
     {
 
+        AMJsonSignal* signalsRequestIdArr[2];
+        quint8 requestidcount = 0;
         QList<AMJsonSignal*> signalsToAppendList;
+
 
         foreach (Signal * curSignal, *canSignalsArray)
         {
@@ -301,12 +351,28 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
                 {
+                case RequestId:
+                    if(jsonsig->index == 0)
+                    {
+                        signalsRequestIdArr[0] = jsonsig;
+                        requestidcount++;
+                    }
+
+                    if(jsonsig->index == 1)
+                    {
+                        signalsRequestIdArr[1] = jsonsig;
+                        requestidcount++;
+                    }
+
+                    break;
+
                 case Enabler:
 
                     canJsonSignalsListInProcessOrder.prepend(jsonsig);
 
                     break;
 
+                //TODO verify if arguments are parsed for enabled item only?
                 case StringArgument:
                 case IntArgument:
 
@@ -323,6 +389,12 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
             }
         }
 
+
+        if(requestidcount == 2)
+        {
+            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[1]);
+            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[0]);
+        }
 
         canJsonSignalsListInProcessOrder.append(signalsToAppendList);
 
@@ -357,9 +429,11 @@ void CanRxMsg::ack(CanManager *)
 void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 {
     QList<Signal>::iterator it;
+    bool discardMsgOnRequestIdFail = false;
+    bool discardMsg = false;
 
     //WARNING: Did not use foreach to show, the sequence is important
-    for (it = canJsonSignalsPoolIdxInProcessOrder.begin(); it != canJsonSignalsPoolIdxInProcessOrder.end(); it++)
+    for (it = canJsonSignalsPoolIdxInProcessOrder.begin(); (!discardMsg && it != canJsonSignalsPoolIdxInProcessOrder.end()); it++)
     {
 
 
@@ -397,11 +471,30 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
             }
 
-            jsonsig->process(arg);
+            //WARNING: unusual process
+            if(jsonsig->type == RequestId)
+            {
+                 discardMsgOnRequestIdFail = true;
+            }
+            else if(discardMsgOnRequestIdFail)
+            {
+                //Check the requestId
+                if(isRequestIdLSBByteReceived && !isRequestSent)
+                {
+                    discardMsgOnRequestIdFail = false;
+                }
+                else
+                {
+                   isRequestIdLSBByteReceived = false;
+                   discardMsg = true;
+                }
+            }
 
+            if(!discardMsg)
+            {
+                jsonsig->process(arg);
+            }
         }
-
-
     }
 
 }

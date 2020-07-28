@@ -18,6 +18,7 @@ class IAlertDisplay;
 class ICanRxMsgFactory;
 
 class AMJsonProtocol;
+class MeDisconnectionReport;
 
 class CanRxMsg
 {
@@ -25,6 +26,8 @@ public:
 
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static void completeInitCanRxMsgsPool(void);
+    static void setItsDisconnectionReport(MeDisconnectionReport * aDisconnectionReport);
+
     static CanRxMsg * createInstance(quint32 StdId);
     static CanRxMsg * getMsgByCanId(quint32 std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
@@ -44,20 +47,27 @@ public:
     static bool saveToStorage(void);
     static bool loadFromStorage(void);
     static void forceDBCParsing(void);
+    static void expectRequestId(quint16 requestId);
+    static void receiveRequestIdByteLSB(quint8 aByte);
+    static void receiveRequestIdByteMSB(quint8 aByte);
+    static void discardRequestId(void);
 
     //TODO: make readonly property
     static bool isAlreadyLoaded;
 
     void canRxJsonSignalsParseAndProcess(struct can_frame * frame);
 
-
 private:
+  static bool isRequestSent;
+  static quint16 requestId;
+  static bool isRequestIdLSBByteReceived;
   static bool isDBCParsingForced;
   //Uses StdId as the key
   static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
   static QList<CanStdId_t> msgsWhiteList;
   static ICanRxMsgFactory * iCanRxMsgFactory;
   static AMSignalsModel * itsAMSignalsModel;
+  static MeDisconnectionReport * itsDisconnectionReport;
 
   friend class CanRxMsgFactory;
 

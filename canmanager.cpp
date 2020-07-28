@@ -35,6 +35,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QTimer>
+#include <QDateTime>
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -57,7 +58,7 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     itsDisconnectionReport = new MeDisconnectionReport(alertdisp);
 
-
+    CanRxMsg::setItsDisconnectionReport(itsDisconnectionReport);
 
 
     itsThread = new QThread(this);
@@ -77,6 +78,83 @@ void CanManager::launch(void)
 
 }
 
+//TODO: unite volume functions
+void CanManager::sendVolumeDown(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x0);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+void CanManager::sendVolumeUp(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x1);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+
+void CanManager::sendVolumeGet(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x2);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+void CanManager::sendVolumeMute(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x3);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
 
 
  IAlertDisplay * CanManager::getItsDisplay(void)
@@ -241,6 +319,19 @@ void CanManager::read_frame(void)
     }
     else
     {
+#if 1
+        qDebug() << "can0:" << (void*) (quint32) frame.can_id << ":" <<
+                   (void*) (quint32) frame.data[0] <<
+                   (void*) (quint32) frame.data[1] <<
+                   (void*) (quint32) frame.data[2] <<
+                   (void*) (quint32) frame.data[3] <<
+                   (void*) (quint32) frame.data[4] <<
+                   (void*) (quint32) frame.data[5] <<
+                   (void*) (quint32) frame.data[6] <<
+                   (void*) (quint32) frame.data[7] <<
+                   "ts:" << QDateTime::currentMSecsSinceEpoch();
+#endif
+
             isKnownFrameReceived = parse_frame(&frame);
     }
 
@@ -329,10 +420,12 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
           if(nullptr != curr)
           {
-              qDebug() << "CanRxMsg no." << frame->can_id << "arrived at:" << bootUpTimer.elapsed();
               status = true;
               curr->process(frame);
               curr->ack(this);
+#if 0
+              qDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
+#endif
           }
 
         return status;

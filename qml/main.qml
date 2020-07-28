@@ -11,6 +11,7 @@ import builtin.mobileye.QRCode 0.1
 ApplicationWindow{
     id: page
     signal itemSelfDeactivated(var canEntityType, string _objectName)
+    signal volumeKeySend(int qtKey);//Qt.Key
 
     width: 320
     height: 240
@@ -103,6 +104,8 @@ ApplicationWindow{
                         font.family: "HindSiliguri"
                         font.pixelSize: 25
                         font.bold: true
+
+                        onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
                     }
 
                     Text {
@@ -387,9 +390,8 @@ ApplicationWindow{
                     function setInvisibleSlot() {visible = false}
 
 
-                    AnimatedImage {
+                    Image {
                         id: alert_pdz
-                        playing: visible
                         property string canEntityType: "ALERT_PDZ"
                         property int layer_pri: 0
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -680,7 +682,7 @@ ApplicationWindow{
                 anchors.bottomMargin: 0
                 anchors.fill: parent
 
-                function setVisibleSlot() {visible = true}
+                function setVisibleSlot() {visible = true; console.log("pdz:"+Date.now());}
                 function setInvisibleSlot() {visible = false}
 
                 visible: true
@@ -690,9 +692,174 @@ ApplicationWindow{
             }
         }
 
+        Item {
+            id: menu_listener
+            visible: true
+            focus: true
+            property int layer_pri: 2
+            property real start: 0
+
+
+            Keys.onDownPressed:
+            {
+                console.log("down pressed")
+                if(start === 0)
+                {
+                    start = Date.now()
+                }
+                console.log("down pressed at "+start)
+                event.accepted = true;
+
+                volume_done_timer.restart()
+                volume_fail_timer.restart()
+            }
+
+            Keys.onReleased: {
+                if (event.key === Qt.Key_Up) {
+                    console.log("pressed Up")
+                    volumeKeySend(Qt.Key_VolumeUp)
+                }
+                else if (event.key === Qt.Key_Down)
+                {
+                    if(Date.now() - start < 500)
+                    {
+                        console.log("pressed Down")
+                        volumeKeySend(Qt.Key_VolumeDown)
+                    }
+                    else
+                    {
+                        console.log("pressed Mute")
+                        volumeKeySend(Qt.Key_VolumeMute)
+                    }
+                    start = 0
+                }
+                else if (event.key === Qt.Key_Return)
+                {
+                    console.log("pressed Enter")
+                }
+
+                event.accepted = true;
+
+
+            }
+
+            function setVisibleSlot() {visible = true}
+            function setInvisibleSlot() {visible = false}
+        }
+
+        Rectangle {
+            id: volume_menu
+            color: "#191414"
+
+            property int canEntityType: Alert.QtQG
+            property int layer_pri: 0
+            z: 13
+            function setVisibleSlot(){visible= true}
+            function setInvisibleSlot(){visible = false}
+            visible: false
+
+
+
+            anchors.fill: parent
+
+            Rectangle{
+                id: volume_reqfail
+                property int canEntityType: Alert.ALERT_REQFAIL
+                objectName: "REQFAIL_VOLUME"
+                property int layer_pri: 0
+                color: "orange"
+
+                width: 100
+                height: 100
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                function setVisibleSlot(arg){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+                Timer {
+                    id: volume_reqfail_timer
+                    running: volume_reqfail.visible
+                    interval: 300
+                    onTriggered: {
+                        itemSelfDeactivated(Alert.ALERT_REQFAIL ,"REQFAIL_VOLUME")
+                    }
+                }
+            }
+
+
+
+
+            Rectangle{
+                id: volume_fail
+                property string canEntityType: "VOLUME_FAIL"
+                objectName: "FAIL_VOLUME"
+                property int layer_pri: 0
+                color: "red"
+
+                width: 100
+                height: 100
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                function setVisibleSlot(arg){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+                Timer {
+                    id: volume_fail_timer
+                    running: volume_fail.visible
+                    interval: 500
+                    onTriggered: {
+                        itemSelfDeactivated("VOLUME_FAIL","FAIL_VOLUME")
+                    }
+                }
+            }
+
+
+            Item {
+                id: volume_done
+                property string canEntityType: "VOLUME_DONE"
+                objectName: "DONE_VOLUME"
+                property int canEntityArg: 0x0
+                property int layer_pri: 1
+
+                function setVisibleSlot(arg){visible= true; canEntityArg = arg;}
+                function setInvisibleSlot(){visible = false}
+
+                width: 100
+                height: 100
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+
+                Text {
+                    id: volume_value
+                    color: "white"
+                    text: volume_done.canEntityArg.toFixed(0)
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    topPadding: 0
+                    font.family: "HindSiliguri"
+                    font.pixelSize: 50
+                    font.bold: true
+                }
+
+                Timer {
+                    id: volume_done_timer
+                    running: volume_done.visible
+                    interval: 1000
+                    onTriggered: {
+                        itemSelfDeactivated("VOLUME_DONE","DONE_VOLUME")
+                    }
+                }
+            }
+        }
+
+        Test{
+            id: test_group
+        }
 
     }
-
 }
 
 

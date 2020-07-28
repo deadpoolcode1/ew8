@@ -1,5 +1,5 @@
 MAJOR_VERSION = 0
-MINOR_VERSION = 1
+MINOR_VERSION = 2
 
 VERSION = $${MAJOR_VERSION}"."$${MINOR_VERSION}
 message(Version $${VERSION})
@@ -67,7 +67,8 @@ SOURCES += \
     amjsonactionsmultiplexor.cpp \
     candbsignal.cpp \
     amjsonfixedargumentsactioninvoker.cpp \
-    medisconnectionreport.cpp
+    medisconnectionreport.cpp \
+    amjsonrequestidaction.cpp
 
 RESOURCES += qml.qrc
 
@@ -153,7 +154,8 @@ HEADERS += \
     candbgrammar.h.in \
     amjsonfixedargumentsactioninvoker.h \
     iamjsonprocessable.h \
-    medisconnectionreport.h
+    medisconnectionreport.h \
+    amjsonrequestidaction.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32

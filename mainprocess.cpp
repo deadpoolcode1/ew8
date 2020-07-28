@@ -91,6 +91,10 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(QVariant, QString)),
                       this, SLOT(forceItemDeactivation(QVariant, QString)));
 
+    QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
+                      this, SLOT(volumeKeySent(qint32)));
+
+
     canmgr->launch();
 
     itsThread->start();
@@ -208,6 +212,38 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
     }
     return;
 
+}
+
+void MainProcess::volumeKeySent(qint32 qtKey)
+{
+
+  qDebug("volumeKeySent");
+  switch(qtKey)
+  {
+  case Qt::Key_Return:
+
+      canmgr->sendVolumeGet();
+      break;
+
+  case Qt::Key_VolumeMute:
+      canmgr->sendVolumeMute();
+
+      break;
+
+  case Qt::Key_VolumeDown:
+      canmgr->sendVolumeDown();
+      break;
+
+  case Qt::Key_VolumeUp:
+      canmgr->sendVolumeUp();
+      break;
+
+  default:
+
+      qDebug("Unsupported Volume key");
+
+      break;
+  }
 }
 
 void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {

@@ -4,12 +4,14 @@
 #include "amjsonenableraction.h"
 #include "amjsonnumericargumentaction.h"
 #include "amjsonstringargumentaction.h"
+#include "amjsonrequestidaction.h"
 
 #include "amjsonsignal.h"
 
 class AMJsonProtocol;
 class AMJsonStringArgumentAction;
 class AMJsonNumericArgumentAction;
+class AMJsonRequestIdAction;
 
 AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index)
 {
@@ -17,6 +19,7 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
 
     AMJsonStringArgumentAction * tmpStr;
     AMJsonNumericArgumentAction * tmpNum;
+    AMJsonRequestIdAction * tmpReq;
 
     switch(type)
     {
@@ -39,6 +42,12 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
         tmpNum = new AMJsonNumericArgumentAction(aJsonProtocol, action);
         tmpNum->setIndex(index);
         ret =  (AMJsonAction *) tmpNum;
+        break;
+
+    case RequestId:
+        tmpReq = new AMJsonRequestIdAction(aJsonProtocol, action);
+        tmpReq->setIndex(index);
+        ret =  (AMJsonAction *) tmpReq;
         break;
 
     default:

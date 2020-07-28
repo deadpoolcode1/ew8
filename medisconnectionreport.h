@@ -13,18 +13,21 @@ public:
     void launch(void);
 
 signals:
-    void timeoutStop(void);
-    void timeoutStart(void);
+    void startRequestTimeoutTimer();
+    void stopRequestTimeoutTimer();
 
 public slots:
     void resetConnectionTimeout(void);
     void fireConnectionTimeout(void);
+    void fireRequestTimeout(void);
 
 private:
  bool isInDisconnectionAlert;
  QThread * itsThread;
- QTimer * timeoutTimer;
+ QTimer * connectionTimeoutTimer;
+ QTimer * requestTimeoutTimer;
  IAlertDisplay * itsDisplay;
+ //TODO set
 };
 
 #endif // MEDISCONNECTIONREPORT_H

@@ -1,0 +1,74 @@
+VERSION "HIPBNYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY/4/%%%/4/'%**4YYY///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ME_AWS_CANA
+VAL_TABLE_ Vt_RGB 3 "blue" 2 "green" 1 "red" 0 "off" ;
+VAL_TABLE_ Vt_ON_OFF 1 "on" 0 "off" ;
+
+
+BO_ 1964 TestRequest: 8 ME_AWS_CANA
+ SG_ reserved_7 : 56|8@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_6 : 48|8@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_5 : 40|8@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_4 : 32|8@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_3 : 24|8@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_2 : 17|7@1+ (1,0) [127|127] "" Vector__XXX
+ SG_ TestSampleSound : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ reserved_1 : 11|5@1+ (1,0) [31|31] "" Vector__XXX
+ SG_ TvTable : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ TestRGB : 8|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ reserved_0 : 1|7@1+ (1,0) [127|127] "" Vector__XXX
+ SG_ GetVersion : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+
+
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+VAL_ 1964 TvTable 1 "on" 0 "off" ;
+VAL_ 1964 TestRGB 3 "blue" 2 "green" 1 "red" 0 "off" ;
+VAL_ 1964 GetVersion 1 "on" 0 "off" ;
+

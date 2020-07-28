@@ -16,7 +16,7 @@ Item {
     SideIcon
     {
         id: sign
-        x_start_from: 80
+        x_start_from: -120
     }
 }
 

@@ -13,6 +13,7 @@ enum action_type_e \
     Enabler = 1, \
     StringArgument = 2, \
     IntArgument = 3, \
+    RequestId = 4, \
 };
 #else
  #error Choose other macro name.

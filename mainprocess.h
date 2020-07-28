@@ -31,6 +31,8 @@ public slots:
 
     void forceItemDeactivation(QVariant _alertType, QString _objName);
 
+    void volumeKeySent(qint32);
+
     void process();
 
 private:

@@ -3,6 +3,9 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include "amjsonconfigreader.h"
+#include <QJsonObject>
+#include <QJsonArray>
 
 //NOTE: Next header is used for random()
 //TODO: replace with QRandomGenerator, when passing to qt 5.12
@@ -11,6 +14,9 @@ void VersionMsg::singleShot(CanManager *aCanManager)
 {
     //NOTE: Engine version:
     struct can_frame frame_to_send;
+
+    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
+    QJsonArray jsonArray = jsonObject["MediaVersion"].toArray();
 
     frame_to_send.can_id = 0x7d0;
     frame_to_send.can_dlc = 8;
@@ -21,6 +27,13 @@ void VersionMsg::singleShot(CanManager *aCanManager)
     //NOTE: Config version (Get from Json):
     frame_to_send.data[2] = (quint8)(0xff);
     frame_to_send.data[3] = (quint8)(0xff);
+
+    if(!jsonArray.isEmpty())
+    {
+        frame_to_send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
+        frame_to_send.data[3] = (quint8)jsonArray.at(1).toInt(0xff);
+    }
+
     //NOTE: System build version:
 
     bool success = false;

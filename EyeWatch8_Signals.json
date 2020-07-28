@@ -39,6 +39,12 @@
         {"enum": "SMART_FATIGUE", "value": 110},
         {"enum": "SMART_BUMPERS", "value": 111},
         {"enum": "SMART_HARSH_DZ", "value": 112}
+        ,{"enum": "VOLUME_FAIL", "value": 200}
+        ,{"enum": "VOLUME_DONE", "value": 201}
+        ,{"enum": "RGB_RED", "value": 301}
+        ,{"enum": "RGB_GREEN", "value": 302}
+        ,{"enum": "RGB_BLUE", "value": 303}
+        ,{"enum": "TV_PATTERN", "value": 304}
     ],
 
 
@@ -207,6 +213,33 @@
                         {"value": 11, "action": "SMART_BUMPERS", "description": "Portholes/Bumpers"},
                         {"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
                    ]
+                }
+            ]
+        }
+        ,
+        {
+            "protocol": "VolumeControl",
+            "signals":[
+                {"name":"Request_Id_0", "action": "VolumeRequest",  "type": "RequestId", "index": 0}
+                ,{"name":"Request_Id_1", "action": "VolumeRequest",  "type": "RequestId", "index": 1}
+                ,{"name":"Reply_status", "action": "VOLUME_FAIL",  "type":"GraphicItem", "Set":[0,2]}
+                ,{"name":"Reply_status", "action": "VOLUME_DONE",  "type":"GraphicItem", "Set": 1}
+                ,{"name":"New_general_volume_value", "action": "VOLUME_DONE",  "type":"IntArgument", "index": 0}
+            ]
+        }
+        ,
+        {
+            "protocol": "EW8TestProtocol",
+            "signals":[
+                {"name":"TvTable", "action": "TV_PATTERN",  "type": "GraphicItem"}
+                ,{"name":"TestRGB", "action": "Vt_RGB",  "isValueTable": true}
+            ],
+            "value_tables":[
+                {"name":"Vt_RGB", "type": "GraphicItem", "rows":[
+                        {"value":  1, "action": "RGB_RED", "description": "RGB LCD test: Full screen red"}
+                        ,{"value":  2, "action": "RGB_GREEN", "description": "RGB LCD test: Full screen green"}
+                        ,{"value":  3, "action": "RGB_BLUE", "description": "RGB LCD test: Full screen blue"}
+                    ]
                 }
             ]
         }

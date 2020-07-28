@@ -12,10 +12,15 @@ AnimatedImage {
     property int x_start_from
 
 
-    SequentialAnimation
+    SequentialAnimation{
+         running: sign.visible
+    ParallelAnimation
     {
 
-        running: sign.visible
+
+        PauseAnimation {
+            duration: 30
+        }
         NumberAnimation {
             target: sign
             property: "anchors.horizontalCenterOffset"
@@ -27,11 +32,13 @@ AnimatedImage {
         NumberAnimation {
             target: sign
             property: "scale"
-            from: 1
+            from: 2
             to: 0.7
-            duration: 1000
+            duration: 500
             easing.type: Easing.InOutQuad
         }
+
+    }
 
     }
 
