@@ -153,14 +153,41 @@ ApplicationWindow{
                     property int layer_pri: 0
                     width: 25
                     height: 18
-                    function setVisibleSlot() {opacity = 1.0}
-                    function setInvisibleSlot() {opacity = 0.0}
+                    function setVisibleSlot() {opacity = 1.0; is_blinking = true}
+                    function setInvisibleSlot() {opacity = 0.0; is_blinking = false}
+
+                    property bool is_blinking: false
 
                     visible: true
 
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
                     source: "images/status_bar/blinker_reminder_blue-01.png"
+
+                    SequentialAnimation {
+                        id: blinkers_animat
+                        loops: Animation.Infinite
+                        running: alert_blinkers.is_blinking
+                        NumberAnimation {
+                            target:  alert_blinkers
+                            property: "opacity"
+                            from: 1.0
+                            to: 0.0
+                            duration: 300
+                            easing.type: Easing.InOutQuad
+                        }
+                        NumberAnimation {
+                            target: alert_blinkers
+                            property: "opacity"
+                            from: 0.0
+                            to: 1.0
+                            duration: 200
+                            easing.type: Easing.InOutQuad
+                        }
+
+                    }
+
+
                 }
 
 
