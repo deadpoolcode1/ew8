@@ -26,6 +26,7 @@
         {"enum": "ALERT_SLI", "value": 47},
 
         {"enum": "INFO_VEH_SPEED", "value": 60},
+        {"enum": "INFO_FAILSAFE", "value": 61},
 
         {"enum": "SMART_CROWDED", "value": 101},
         {"enum": "SMART_PED_HWY", "value": 102},
@@ -104,6 +105,40 @@
                         {"value": 64, "action": "ALERT_END_ALL_RESTR", "description": "regular gen end all restrict"},
 
                         {"value": 65, "action": "ALERT_END_ALL_RESTR", "description": "electric gen end all restriction"},
+
+
+                        {"value": 100, "action": "ALERT_SLI", "arg": 5, "description": "standard regular 5 kph"},
+                        {"value": 101, "action": "ALERT_SLI", "arg": 15, "description": "standard regular 15 kph"},
+                        {"value": 102, "action": "ALERT_SLI", "arg": 25, "description": "standard regular 25 kph"},
+                        {"value": 103, "action": "ALERT_SLI", "arg": 35, "description": "standard regular 35 kph"},
+                        {"value": 104, "action": "ALERT_SLI", "arg": 45, "description": "standard regular 45 kph"},
+                        {"value": 105, "action": "ALERT_SLI", "arg": 55, "description": "standard regular 55 kph"},
+                        {"value": 106, "action": "ALERT_SLI", "arg": 65, "description": "standard regular 65 kph"},
+                        {"value": 107, "action": "ALERT_SLI", "arg": 75, "description": "standard regular 75 kph"},
+                        {"value": 108, "action": "ALERT_SLI", "arg": 85, "description": "standard regular 85 kph"},
+                        {"value": 109, "action": "ALERT_SLI", "arg": 95, "description": "standard regular 95 kph"},
+                        {"value": 110, "action": "ALERT_SLI", "arg": 105, "description": "standard regular 105 kph"},
+                        {"value": 111, "action": "ALERT_SLI", "arg": 115, "description": "standard regular 115 kph"},
+                        {"value": 112, "action": "ALERT_SLI", "arg": 125, "description": "standard regular 125 kph"},
+                        {"value": 113, "action": "ALERT_SLI", "arg": 135, "description": "standard regular 135 kph"},
+                        {"value": 114, "action": "ALERT_SLI", "arg": 145, "description": "Standard regular 145 kph"},
+
+                        {"value": 115, "action": "ALERT_SLI", "arg": 5, "description": "standard electronic 5 kph"},
+                        {"value": 116, "action": "ALERT_SLI", "arg": 15, "description": "standard electronic 15 kph"},
+                        {"value": 117, "action": "ALERT_SLI", "arg": 25, "description": "standard electronic 25 kph"},
+                        {"value": 118, "action": "ALERT_SLI", "arg": 35, "description": "standard electronic 35 kph"},
+                        {"value": 119, "action": "ALERT_SLI", "arg": 45, "description": "standard electronic 45 kph"},
+                        {"value": 120, "action": "ALERT_SLI", "arg": 55, "description": "standard electronic 55 kph"},
+                        {"value": 121, "action": "ALERT_SLI", "arg": 65, "description": "standard electronic 65 kph"},
+                        {"value": 122, "action": "ALERT_SLI", "arg": 75, "description": "standard electronic 75 kph"},
+                        {"value": 123, "action": "ALERT_SLI", "arg": 85, "description": "standard electronic 85 kph"},
+                        {"value": 124, "action": "ALERT_SLI", "arg": 95, "description": "standard electronic 95 kph"},
+                        {"value": 125, "action": "ALERT_SLI", "arg": 105, "description": "standard electronic 105 kph"},
+                        {"value": 126, "action": "ALERT_SLI", "arg": 115, "description": "standard electronic 115 kph"},
+                        {"value": 127, "action": "ALERT_SLI", "arg": 125, "description": "standard electronic 125 kph"},
+                        {"value": 128, "action": "ALERT_SLI", "arg": 135, "description": "standard electronic 135 kph"},
+                        {"value": 129, "action": "ALERT_SLI", "arg": 145, "description": "Standard electronic 145 kph"},
+
                         {"value": 172, "action": "ALERT_MOTORWAY", "description": "standard regular end of MotorWay"},
 
                         {"value": 175, "action": "ALERT_PLAYGROUND", "description": "regular Playground area begin"},
@@ -118,14 +153,9 @@
         ,
         {
             "protocol": "AfterMarket",
-
-            "ackProtocol": "KeepAlive",
-            "ackMessages":[
-                {"name":"KeepAlive", "trigger": "AWS", "type": "RxMsg"}
-            ],
-
             "signals": [
                 {"name": "FCW_on", "action": "ALERT_FCW","type": "GraphicItem"},
+                {"name": "Fail_safe", "action": "INFO_FAILSAFE","type": "GraphicItem"},
                 {"name": "LDW_Left_Lane_Not_Available", "action": "ALERT_LEFT_LDWOFF","type": "GraphicItem"},
                 {"name": "LDW_Right_Lane_Not_Available", "action": "ALERT_RIGHT_LDWOFF","type": "GraphicItem"},
                 {"name": "LDW_Left_Lane_Not_Available", "action": ["ALERT_LEFT_LDWON", "inverted"], "type": "GraphicItem"},
@@ -136,15 +166,11 @@
                 {"name": "time_indicator", "action": "Hi_Low_BeamControl", "type": "Enabler", "Set": [1,2]},
                 {"name": "FLA_Armed", "action": "Hi_Low_BeamControl", "type": "Enabler"},
                 {"name": "Hi_Low_BeamControl", "action": "ALERT_HI_BEAM","type": "GraphicItem"},
-                {"name": "Hi_Low_BeamControl", "action": ["ALERT_LOW_BEAM","inverted"],"type": "GraphicItem"},
                 {"name": "Error_Active", "action": ["ALERT_ERROR", "inverted"], "type": "GraphicItem"},
                 {"name": "Error_code", "action": "ALERT_ERROR", "type": "IntArgument", "index": 0},
 
-
-                {"name": "TSR_enabbled", "action": "AfterMarket_TSR", "type": "Enabler"},
-
-                {"name": "PCW_PedDZ", "action":"ALERT_PCW", "type":"GraphicItem", "Set": 2},
-                {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem", "Set": 1},
+                {"name": "PCW_PedDZ", "action":"ALERT_PCW", "type":"GraphicItem", "Set": 1},
+                {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem", "Set": 2},
 
 
                 {"name": "Headway_valid", "action":"ALERT_HMW_DISTANCE", "type":"GraphicItem"},

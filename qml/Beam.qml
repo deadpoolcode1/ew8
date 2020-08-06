@@ -4,22 +4,23 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
 
-//Custom modules:
-import MyQMLenums 0.1
-import builtin.mobileye.QRCode 0.1
-
 Image {
     id: beam
-    function setVisibleSlot() {visible = true}
-    function setInvisibleSlot() {visible = false}
-    
+    visible: true
+    function setVisibleSlot() {beam.opacity = 1.0}
+    function setInvisibleSlot() {beam.opacity = 0.0}
+
     anchors.verticalCenter: parent.verticalCenter
     fillMode: Image.PreserveAspectFit
+
     source: "images/status_bar/eyewatch_statusbar_ihc-01.png"
     property bool is_hi: true
+    width: 15
+    height: 18
+    opacity: 1.0
 
 
-
+/*
     states: [
         State {
             name: "Hi"; when: is_hi
@@ -36,4 +37,5 @@ Image {
             }
         }
     ]
+   */
 }

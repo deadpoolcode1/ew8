@@ -10,21 +10,22 @@ import builtin.mobileye.QRCode 0.1
 
 AnimatedImage {
     id: greyCar
+    width: 156
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.horizontalCenterOffset: 0
-    fillMode: Image.PreserveAspectCrop
+    fillMode: Image.PreserveAspectFit
     visible: groupGAG.visible || groupCIPV.visible
     playing: visible
     z: 5
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 0
-    source: "images/cars/eyewatch_dark_car_ldw-01.png"
+    source: "images/cars/main_veh_grey.png"
 
     
-    function moveLeft(){console.log("moveLeft"); move.from = 0; move.to = -70; move.start()}
-    function moveRight(){console.log("moveRight"); move.from = 0; move.to = 70; move.start()}
-    function moveLeftReset(){console.log("moveLeftReset"); move.from = -70; move.to = 0; move.start() }
-    function moveRightReset(){console.log("moveRightReset");  move.from = 70; move.to = 0; move.start() }
+    function moveLeft(){console.log("moveLeft"); move.from = 0; move.to = -70; move.duration = 200; move.start()}
+    function moveRight(){console.log("moveRight"); move.from = 0; move.to = 70; move.duration = 200; move.start()}
+    function moveLeftReset(){console.log("moveLeftReset"); move.from = -70; move.to = 0; move.duration = 600; move.start() }
+    function moveRightReset(){console.log("moveRightReset");  move.from = 70; move.to = 0; move.duration = 600; move.start() }
     
     NumberAnimation {
         id: move
@@ -32,6 +33,7 @@ AnimatedImage {
         property: "anchors.horizontalCenterOffset"
         from: 0
         to: 70
+        duration: 200
         easing.type: Easing.InOutQuad
     }    
 }

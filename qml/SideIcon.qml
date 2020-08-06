@@ -9,7 +9,9 @@ AnimatedImage {
     anchors.verticalCenter: parent.verticalCenter
     visible: true
 
-    property int x_start_from
+    property int y_start_from
+
+    z: 4
 
 
     SequentialAnimation{
@@ -23,20 +25,21 @@ AnimatedImage {
         }
         NumberAnimation {
             target: sign
-            property: "anchors.horizontalCenterOffset"
-            from: x_start_from
+            property: "anchors.verticalCenterOffset"
+            from: y_start_from
             to: 0
-            duration: 200
+            duration: 1500
             easing.type: Easing.InOutQuad
         }
         NumberAnimation {
             target: sign
             property: "scale"
-            from: 2
-            to: 0.7
-            duration: 500
+            from: 1
+            to: 0.6
+            duration: 1000
             easing.type: Easing.InOutQuad
         }
+
 
     }
 

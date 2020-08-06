@@ -54,127 +54,125 @@ ApplicationWindow{
 
             Image {
                 id: logo
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 clip: true
                 visible: true
-                fillMode: Image.PreserveAspectFit
-                source: "images/logo/thumbnails.png"
+                fillMode: Image.PreserveAspectCrop
+                source: "images/logo/ME_logo_small.png"
+            }
+
+            Rectangle {
+                id: speed
+                width: 42//speed_value.width
+                color: "#00000000"
+                anchors.horizontalCenterOffset: 26
+                anchors.horizontalCenter: parent.left
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 5
+                anchors.top: parent.top
+
+                anchors.topMargin: 5
+                property string canEntityType: "INFO_VEH_SPEED"
+                property int canEntityArg: 0
+                property int layer_pri: 0
+                x: -1
+                y: 5
+                function setVisibleSlot(arg) {canEntityArg = arg; opacity = 1.0}
+                function setInvisibleSlot() {opacity = 0.0}
+                visible: true
+
+                Text {
+                    id: speed_value
+                    x: 0
+                    color: "#f1e1ff"
+                    text: speed.canEntityArg.toFixed(0)
+                    topPadding: 0
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.family: "HindSiliguri"
+                    font.pixelSize: 20
+                    font.bold: true
+
+                    onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
+                }
+
+                Text {
+                    id: speed_units
+                    color: "#e1f1ff"
+                    text: qsTr("Km/h")
+                    anchors.horizontalCenterOffset: 0
+                    font.pixelSize: 9
+                    font.capitalization: Font.MixedCase
+                    topPadding: 0
+                    anchors.bottom: speed_value.bottom
+                    anchors.bottomMargin: -5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.family: "HindSiliguri"
+                    font.bold: true
+                }
+
             }
 
             Row {
                 id: left_row
+                layoutDirection: Qt.RightToLeft
                 anchors.right: logo.left
-                anchors.rightMargin: -105
+                anchors.rightMargin: 10
                 spacing: 10
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
                 anchors.top: parent.top
                 anchors.topMargin: 0
                 anchors.left: parent.left
-                anchors.leftMargin: 20
+                anchors.leftMargin: 52
 
-                Rectangle {
-                    id: speed
-                    width: speed_value.width
-                    color: "#00000000"
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 5
-                    anchors.top: parent.top
-                    anchors.topMargin: 5
-                    property string canEntityType: "INFO_VEH_SPEED"
-                    property int canEntityArg: 0x0
+
+                Image {
+                    id: vsn
+                    width: 15
+                    height: 18
+                    opacity: 1
+                    anchors.verticalCenter: parent.verticalCenter
+                    fillMode: Image.PreserveAspectFit
+                    source: "images/status_bar/status_low_vis.png"
+
+                    property string canEntityType: "INFO_FAILSAFE"
                     property int layer_pri: 0
-                    function setVisibleSlot(arg) {canEntityArg = arg; visible = true}
-                    function setInvisibleSlot() {visible = false}
 
-                    Text {
-                        id: speed_value
-                        x: 0
-                        color: "#f1e1ff"
-                        text: speed.canEntityArg.toFixed(0)
-                        topPadding: 0
-                        anchors.top: parent.top
-                        anchors.topMargin: 0
-                        font.family: "HindSiliguri"
-                        font.pixelSize: 25
-                        font.bold: true
-
-                        onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
-                    }
-
-                    Text {
-                        id: speed_units
-                        x: 0
-                        y: -25
-                        color: "#3d667c"
-                        text: qsTr("kmp")
-                        topPadding: 0
-                        anchors.bottom: speed_value.bottom
-                        anchors.bottomMargin: -5
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.bold: true
-                        font.pixelSize: 8
-                    }
-
+                    function setVisibleSlot() {opacity = 1.0}
+                    function setInvisibleSlot() {opacity = 0.0}
                 }
 
-                Rectangle {
-                    id: groupBeam
-                    property string canEntityType: Alert.QtQG
-                    property int layer_pri: 0
-                    property bool mutexGroup: true
-                    width: Math.max(alert_hi_beam.width,alert_low_beam.width)
-                    color: "#00000000"
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 0
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
 
-                    visible: true
-
-                    Beam {
-                        id: alert_hi_beam
-                        is_hi: true
-                        property string canEntityType: "ALERT_HI_BEAM"
-                        property int layer_pri: 0
-                    }
-
-                    Beam {
-                        id: alert_low_beam
-                        is_hi: false
-                        property string canEntityType: "ALERT_LOW_BEAM"
-                        property int layer_pri: 1
-                    }
-                }
 
                 Image {
                     id: alert_blinkers
                     property string canEntityType: "ALERT_BLINKERS"
                     property int layer_pri: 0
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
+                    width: 25
+                    height: 18
+                    function setVisibleSlot() {opacity = 1.0}
+                    function setInvisibleSlot() {opacity = 0.0}
+
+                    visible: true
 
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/blinker_reminder_white-01.png"
+                    source: "images/status_bar/blinker_reminder_blue-01.png"
                 }
 
-                /*
-                Image {
-                    id: vsn
-                    anchors.verticalCenter: parent.verticalCenter
-                    fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/eyewatch_statusbar_low_vision_white-01.png"
+
+                Beam {
+                    id: alert_hi_beam
+                    property string canEntityType: "ALERT_HI_BEAM"
+                    property int layer_pri: 0
                 }
-                */
+
+
+
+
 
             }
 
@@ -182,7 +180,7 @@ ApplicationWindow{
                 id: right_row
                 layoutDirection: Qt.RightToLeft
                 anchors.left: logo.right
-                anchors.leftMargin: -105
+                anchors.leftMargin: 10
                 spacing: 10
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
@@ -191,33 +189,40 @@ ApplicationWindow{
                 anchors.right: parent.right
                 anchors.rightMargin: 20
 
-                /*
+
                 Image {
                     id: green_user
                     anchors.verticalCenter: parent.verticalCenter
                     source: "images/status_bar/eyewatch_statusbar_user_green-01.png"
-                }
-
-                Image {
-                    id: player
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/eyewatch_statusbar_dvr-01.png"
-                }
-
-                Image {
-                    id: gps
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/eyewatch_statusbar_gps-01.png"
+                    opacity: 0
                 }
 
                 Image {
                     id: gsm
+                    width: 18
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/eyewatch_statusbar_gsm-01.png"
+                    source: "images/status_bar/status_no_GSM.png"
+                     opacity: 0
                 }
-                */
+
+                Image {
+                    id: gps
+                    width: 18
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "images/status_bar/status_no_GPS.png"
+                    opacity: 0
+                }
+
+                Image {
+                    id: ota
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "images/status_bar/status_OTA.png"
+                    opacity: 0
+                }
+
 
             }
+
 
         }
 
@@ -249,10 +254,10 @@ ApplicationWindow{
                 visible: false
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                //source: "qrc:/qtquickplugin/images/template_image.png"
+                //source: "images/error/red_alert-01.png"
                 property string canEntityType: "ALERT_ERROR"
                 property int canEntityArg: 0x00
-                property int layer_pri: 1
+                property int layer_pri: 0
 
                 function setVisibleSlot(Arg){
                     visible= true;
@@ -276,69 +281,33 @@ ApplicationWindow{
 
             }
 
-            Rectangle {
+            IMS_TSR_Items {
                 id: left_panel
                 width: 50
                 color: "#00000000"
-                z: 7
-                visible: true
-                anchors.left: parent.left
-                anchors.leftMargin: 0
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
+                anchors.bottomMargin: 15
                 anchors.top: parent.top
                 anchors.topMargin: 0
+                anchors.leftMargin: 0
+                z: 6
+                anchors.left: parent.left
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
-                function setVisibleSlot(){visible = true;}
-                function setInvisibleSlot(){visible = false;}
-
-
-                SLI {
-                    id: upper_tsr
-                    canEntityType: "ALERT_SLI"
-                    property int layer_pri: 0
-                }
-
-                TSR{
-                    id: alert_no_pass
-                    canEntityType: "ALERT_NO_PASS"
-                    property int layer_pri: 0
-                    source: "images/tsr/left_nopass_red.png"
-                }
-
-                DummyItem{
-                    canEntityType: "ALERT_END_ALL_RESTR"
-                    property int layer_pri: 1
-                }
-
-                TSR{
-                    id: alert_motorway
-                    canEntityType: "ALERT_MOTORWAY"
-                    property int layer_pri: 0
-                    source: "images/tsr/left_highway_beg.png"
-                }
-
-                TSR{
-                    id: alert_playground
-                    canEntityType: "ALERT_PLAYGROUND"
-                    property int layer_pri: 0
-                    source: "images/tsr/left_motorway_beg.png"
-                }
             }
 
             IMS_SmartADAS_Restricted_Items {
                 id: right_panel
                 width: 50
                 color: "#00000000"
+                anchors.top: parent.top
+                anchors.topMargin: 0
                 z: 6
                 anchors.right: parent.right
                 anchors.rightMargin: 0
-                anchors.top: parent.top
-                anchors.topMargin: 0
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
+                anchors.bottomMargin: 15
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
@@ -348,10 +317,12 @@ ApplicationWindow{
                 id: vehicle_img
                 x: 95
                 y: -5
+                width: 80
+                height: 61
+                anchors.topMargin: alert_hmw_general.car_margin
                 z: 5
                 anchors.horizontalCenter: groupCIPV.horizontalCenter
                 anchors.top: groupCIPV.top
-                anchors.topMargin: alert_hmw_general.car_margin
                 source: "images/cars/eyewatch_car_red_hmw-01.png"
                 visible: alert_hmw_general.visible&&(!alert_pdz.visible)
                 scale: alert_hmw_general.car_scale
@@ -430,7 +401,7 @@ ApplicationWindow{
                     property int layer_pri: 1
                     anchors.fill: parent
                     playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
-                    alert: false
+                    alert: true
                 }
 
 
@@ -440,6 +411,7 @@ ApplicationWindow{
 
             GreyCar {
                 id: greyCar
+                anchors.horizontalCenterOffset: -4
             }
 
             Item {
@@ -602,13 +574,14 @@ ApplicationWindow{
 
         }
 
-        Image {
-            id: logo_panel
+        Rectangle {
+            id: discon_panel
             visible: true
             anchors.fill: parent
 
             property int canEntityType: Alert.QtQG
             property int layer_pri: 0
+            color: "#00000000"
             z: 11
             function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
             function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
@@ -625,23 +598,39 @@ ApplicationWindow{
             antialiasing: true
             smooth: true
 
-            source: "images/bg/gradient_linear_24_16bit_2.png"
+            //source: "images/bg/gradient_linear_24_16bit_2.png"
 
             Image {
-                id: grand_logo
+                id: discon_alert
                 property int canEntityType: Alert.ALERT_NOCOM
 
                 property int layer_pri: 0
-                function setVisibleSlot(){visible= true; console.log("LOGO")}
-                function setInvisibleSlot(){visible = false; console.log("LOGO OFF")}
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
 
 
 
                 visible: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                source: "images/logo/eyewatch_logo_transparent-01.png"
+                source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: discon_label
+                    color: "#111abc"
+                    text: qsTr("Disconnected")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
             }
+
+
+
+
         }
 
         Item {

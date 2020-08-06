@@ -6,14 +6,105 @@ Item{
     property int canEntityArg: 0x10
     property alias playing: strips_img.playing
     property double car_scale: 1
-    property int car_margin: -2
+    property int car_margin: 50
     property bool alert
     width: 220
     height: 190
+    property string timeText: (hmw_item.canEntityArg == 0x00 ? "  " : (hmw_item.canEntityArg/10).toFixed(1))
 
     function setVisibleSlot(){visible = true}
     function setInvisibleSlot(){visible = false}
 
+
+    AnimatedImage {
+        id: strips_img;
+        x: 32
+        y: -34
+        z: -5
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: false;
+
+
+        source: "images/hmw/green_road-01.png"
+    }
+
+    Text {
+        id: units
+        x: -14
+        y: -58
+        color: "#f1e1ff"
+        text: hmw_item.canEntityArg == 0x00? "   ":"sec"
+        font.pixelSize: 20
+        lineHeight: 1
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignTop
+        font.bold: true
+        font.family: "HindSiliguri"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 29
+        visible: strips_img.visible
+    }
+
+    Item{
+        id: time
+        anchors.horizontalCenter: strips_img.horizontalCenter
+        anchors.bottom: units.top
+        anchors.bottomMargin: -13
+        width: timeInt.width+(timePoint.width-12)+timeFrac.width
+        property int fontPixelSize: 36
+
+        Text {
+            id: timeInt
+            color: "#f1e1ff"
+            text: timeText.slice(0,-2)
+            anchors.bottomMargin: 0
+            font.weight: Font.Black
+            font.letterSpacing: -2
+
+            font.bold: true
+            font.pixelSize: parent.fontPixelSize
+            font.family: "HindSiliguri"
+            anchors.bottom: parent.bottom
+            visible: strips_img.visible
+        }
+
+        Text {
+            id: timePoint
+            color: "#f1e1ff"
+            text: timeText.charAt(timeText.length - 2)
+            anchors.left: timeInt.right
+            anchors.leftMargin: -6
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            font.weight: Font.Black
+            font.letterSpacing: -2
+            font.bold: true
+            font.pixelSize: parent.fontPixelSize
+            font.family: "HindSiliguri"
+            visible: strips_img.visible
+        }
+
+        Text {
+            id: timeFrac
+            color: "#f1e1ff"
+            text: timeText.charAt(timeText.length - 1)
+            anchors.left: timePoint.right
+            anchors.leftMargin: -6
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            font.weight: Font.Black
+            font.letterSpacing: -2
+            font.bold: true
+            font.pixelSize: parent.fontPixelSize
+            font.family: "HindSiliguri"
+
+            visible: strips_img.visible
+        }
+
+    }
 
     Item{
         property string canEntityType: "ALERT_HMW_ALERT"
@@ -37,9 +128,11 @@ Item{
         function setInvisibleSlot(){visible = false}
     }
 
+
+
     transitions: Transition {
-            NumberAnimation { properties: "car_margin,car_scale"; easing.type: Easing.InOutQuad }
-        }
+        NumberAnimation { properties: "car_margin,car_scale"; easing.type: Easing.InOutQuad }
+    }
 
     states: [
         State {name: "Alert"; when: alert
@@ -51,15 +144,15 @@ Item{
         },
         State {name: "Monitor"; when: !alert
             PropertyChanges {
-                target: strips_img;
+                target: strips_img
                 source: "images/hmw/main_HMW_greencarpet.gif"
                 visible: true
             }
 
             PropertyChanges {
                 target: hmw_item
-                car_margin: -5
-                car_scale: 0.7
+                car_margin: -7
+                car_scale: 0.625
             }
         }
     ]
@@ -67,41 +160,6 @@ Item{
 
 
 
-    AnimatedImage {
-        id: strips_img;
-        z: -5
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-        anchors.horizontalCenter: parent.horizontalCenter
-        visible: false;
-
-
-        source: "images/hmw/green_road-01.png"
-
-        Text {
-            id: time
-            color: "#f1e1ff"
-            text: (hmw_item.canEntityArg == 0x00 ? "  " : (hmw_item.canEntityArg/10).toFixed(1))
-            font.bold: true
-            font.pixelSize: 40
-            font.family: "Helvetica"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: units.top
-            anchors.bottomMargin: 0
-        }
-
-            Text {
-                id: units
-                color: "#f1e1ff"
-                text: hmw_item.canEntityArg == 0x00? "   ":"sec"
-                anchors.verticalCenterOffset: 65
-                anchors.verticalCenter: parent.verticalCenter
-                font.bold: true
-                font.pixelSize: 10
-                font.family: "Helvetica"
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-    }
 }
 
 

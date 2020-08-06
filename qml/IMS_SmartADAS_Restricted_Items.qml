@@ -9,8 +9,10 @@ import MyQMLenums 0.1
 Rectangle {
 	id: ims_smartadas_restricted
 	property int layer_pri: 1
-	function setVisibleSlot(){visible= true; console.log("IMS_SmartADAS_Restricted PANEL")}
-	function setInvisibleSlot(){visible = false; console.log("IMS_SmartADAS_Restricted PANEL OFF")}
+    width: 80
+    height: 175
+    function setVisibleSlot(){visible = true; console.log("IMS_SmartADAS_Restricted PANEL")}
+    function setInvisibleSlot(){visible = false; console.log("IMS_SmartADAS_Restricted PANEL OFF")}
 
 	//color: "#00000000"
 	//anchors.fill:parent
@@ -26,19 +28,22 @@ Rectangle {
 		function setVisibleSlot() {visible = true}
 		function setInvisibleSlot() {visible = false}
 
-        width: 80
-        height: 80
 
 		anchors.right: parent.right
 		anchors.rightMargin: 0
 		anchors.top: parent.top
-		anchors.topMargin: 0
+        anchors.topMargin: -10
 
       SADAS {
             id: smart_crowded
             property string canEntityType: "SMART_CROWDED"
             property int layer_pri: 1
             source: "images/sadas/crowded-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
 		}
 
       SADAS {
@@ -46,6 +51,11 @@ Rectangle {
             property string canEntityType: "SMART_PED_HWY"
             property int layer_pri: 2
             source: "images/sadas/ped_highway-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -53,6 +63,11 @@ Rectangle {
             property string canEntityType: "SMART_CYC_HWY"
             property int layer_pri: 3
             source: "images/sadas/cyc_highway-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -60,6 +75,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_ROAD"
             property int layer_pri: 5
             source: "images/sadas/w_road.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -67,6 +87,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_HYDRO"
             property int layer_pri: 5
             source: "images/sadas/w_hydro-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
 
@@ -75,6 +100,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_FG"
             property int layer_pri: 6
             source: "images/sadas/w_fog-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
 
@@ -83,6 +113,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_WND"
             property int layer_pri: 7
             source: "images/sadas/w_wind-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -90,6 +125,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_HAIL"
             property int layer_pri: 7
             source: "images/sadas/w_rain-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -97,6 +137,11 @@ Rectangle {
             property string canEntityType: "SMART_WEA_TSTM"
             property int layer_pri: 7
             source: "images/sadas/w_lightening-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -104,6 +149,11 @@ Rectangle {
             property string canEntityType: "SMART_FATIGUE"
             property int layer_pri: 8
             source: "images/sadas/fatigue.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -111,6 +161,11 @@ Rectangle {
             property string canEntityType: "SMART_BUMPERS"
             property int layer_pri: 8
             source: "images/sadas/bumpers-01.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
       SADAS {
@@ -118,6 +173,11 @@ Rectangle {
             property string canEntityType: "SMART_HARSH_DZ"
             property int layer_pri: 4
             source: "images/sadas/harsh_dz.png"
+
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
         }
 
 
@@ -132,12 +192,13 @@ Rectangle {
 
         visible: true
 
-        width: 80
-        height: 80
 		anchors.right: parent.right
 		anchors.rightMargin: 0
 		anchors.bottom: parent.bottom
 		anchors.bottomMargin: 0
+
+        function setVisibleSlot() {visible = true}
+        function setInvisibleSlot() {visible = false}
 
 	}
 }

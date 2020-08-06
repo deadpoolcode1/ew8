@@ -4,8 +4,8 @@ Item {
 
     id: container
     property var canEntityType;
-    width: 80
-    height: 80
+    width: 110
+    height: 110
     visible: true
 
     property alias source: sign.source
@@ -16,7 +16,7 @@ Item {
     SideIcon
     {
         id: sign
-        x_start_from: 120
+        y_start_from: -47
     }
 }
 
