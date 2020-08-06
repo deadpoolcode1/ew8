@@ -21,11 +21,12 @@ AnimatedImage {
     anchors.bottomMargin: 0
     source: "images/cars/main_veh_grey.png"
 
+
     
-    function moveLeft(){console.log("moveLeft"); move.from = 0; move.to = -70; move.duration = 200; move.start()}
-    function moveRight(){console.log("moveRight"); move.from = 0; move.to = 70; move.duration = 200; move.start()}
-    function moveLeftReset(){console.log("moveLeftReset"); move.from = -70; move.to = 0; move.duration = 600; move.start() }
-    function moveRightReset(){console.log("moveRightReset");  move.from = 70; move.to = 0; move.duration = 600; move.start() }
+    function moveLeft(){console.log("moveLeft"); move.from = 0; move.to = -70; move.duration = 200; move.restart()}
+    function moveRight(){console.log("moveRight"); move.from = 0; move.to = 70; move.duration = 200; move.restart()}
+    function moveLeftReset(){console.log("moveLeftReset"); move.from = -70; move.to = 0; move.duration = 600; move.restart() }
+    function moveRightReset(){console.log("moveRightReset");  move.from = 70; move.to = 0; move.duration = 600; move.restart() }
     
     NumberAnimation {
         id: move

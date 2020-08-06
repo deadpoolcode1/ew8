@@ -83,7 +83,7 @@ Rectangle {
         id: alert_motorway
         canEntityType: "ALERT_MOTORWAY"
         property int layer_pri: 0
-        source: "images/tsr/left_highway_beg.png"
+        source: "images/tsr/left_motorway_beg.png"
 
         anchors.left: parent.left
         anchors.rightMargin: 0
@@ -91,6 +91,18 @@ Rectangle {
         anchors.bottomMargin: 0
     }
     
+    TSR{
+        id: alert_expressway
+        canEntityType: "ALERT_EXPRESSWAY"
+        property int layer_pri: 0
+        source: "images/tsr/left_highway_beg.png"
+
+        anchors.left: parent.left
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
     TSR{
         id: alert_playground
         canEntityType: "ALERT_PLAYGROUND"
