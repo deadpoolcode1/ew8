@@ -10,16 +10,17 @@ import builtin.mobileye.QRCode 0.1
 
 AnimatedImage {
     id: greyCar
-    width: 156
+    width: 133
+    height: 51
+
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.horizontalCenterOffset: 0
-    fillMode: Image.PreserveAspectFit
+    fillMode: Image.PreserveAspectCrop
     visible: groupGAG.visible || groupCIPV.visible
     playing: visible
     z: 5
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: 0
-    source: "images/cars/main_veh_grey.png"
+    source: "images/cars/grey_car_bright.png"
 
 
     

@@ -13,6 +13,8 @@ ApplicationWindow{
     signal itemSelfDeactivated(var canEntityType, string _objectName)
     signal volumeKeySend(int qtKey);//Qt.Key
 
+    property bool isInEdition: false
+
     width: 320
     height: 240
     objectName: "AppWindow"
@@ -54,12 +56,14 @@ ApplicationWindow{
 
             Image {
                 id: logo
+                width: 48
+                height: 32
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 clip: true
                 visible: true
                 fillMode: Image.PreserveAspectCrop
-                source: "images/logo/ME_logo_small.png"
+                source: "images/logo/ME_logo_white.png"
             }
 
             Rectangle {
@@ -81,6 +85,7 @@ ApplicationWindow{
                 function setVisibleSlot(arg) {canEntityArg = arg; opacity = 1.0}
                 function setInvisibleSlot() {opacity = 0.0}
                 visible: true
+                opacity: isInEdition? 1.0:0.0
 
                 Text {
                     id: speed_value
@@ -102,12 +107,12 @@ ApplicationWindow{
                     id: speed_units
                     color: "#e1f1ff"
                     text: qsTr("Km/h")
+                    anchors.bottom: speed_value.bottom
+                    anchors.bottomMargin: -5
                     anchors.horizontalCenterOffset: 0
                     font.pixelSize: 9
                     font.capitalization: Font.MixedCase
                     topPadding: 0
-                    anchors.bottom: speed_value.bottom
-                    anchors.bottomMargin: -5
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.family: "HindSiliguri"
                     font.bold: true
@@ -128,12 +133,11 @@ ApplicationWindow{
                 anchors.left: parent.left
                 anchors.leftMargin: 52
 
-
                 Image {
                     id: vsn
                     width: 15
                     height: 18
-                    opacity: 1
+                    opacity: isInEdition? 1.0:0.0
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
                     source: "images/status_bar/status_low_vis.png"
@@ -142,7 +146,7 @@ ApplicationWindow{
                     property int layer_pri: 0
 
                     function setVisibleSlot() {opacity = 1.0}
-                    function setInvisibleSlot() {opacity = 0.0}
+                    function setInvisibleSlot() {opacity = 0.0}  
                 }
 
 
@@ -156,6 +160,7 @@ ApplicationWindow{
                     function setVisibleSlot() {opacity = 1.0; is_blinking = true}
                     function setInvisibleSlot() {opacity = 0.0; is_blinking = false}
 
+                    opacity: isInEdition? 1.0:0.0
                     property bool is_blinking: false
 
                     visible: true
@@ -195,6 +200,7 @@ ApplicationWindow{
                     id: alert_hi_beam
                     property string canEntityType: "ALERT_HI_BEAM"
                     property int layer_pri: 0
+                    opacity: isInEdition? 1.0:0.0
                 }
 
 
@@ -259,7 +265,7 @@ ApplicationWindow{
             property int layer_pri: 2
             function setVisibleSlot(){visible= true; console.log("MAIN PANEL")}
             function setInvisibleSlot(){visible = false; console.log("MAIN PANEL OFF")}
-
+            visible: isInEdition
 
             y: 50
             color: "#00000000"
@@ -271,7 +277,7 @@ ApplicationWindow{
             anchors.leftMargin: 0
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            visible: true
+
 
             //TODO: replace with Image
             Rectangle {
@@ -438,7 +444,10 @@ ApplicationWindow{
 
             GreyCar {
                 id: greyCar
-                anchors.horizontalCenterOffset: -4
+                width: 133
+                height: 51
+                anchors.bottomMargin: -24
+                anchors.horizontalCenterOffset: 0
             }
 
             Item {
@@ -603,7 +612,7 @@ ApplicationWindow{
 
         Rectangle {
             id: discon_panel
-            visible: true
+            visible: false
             anchors.fill: parent
 
             property int canEntityType: Alert.QtQG
@@ -612,15 +621,6 @@ ApplicationWindow{
             z: 11
             function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
             function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
-
-            /*
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "white" }
-                GradientStop { position: 1.0; color: "#56abf1"}
-
-            }
-*/
-
 
             antialiasing: true
             smooth: true
@@ -668,6 +668,7 @@ ApplicationWindow{
             property int layer_pri: 1
             z: 10
             anchors.fill: parent
+            visible: false
 
 
             function setVisibleSlot() {visible = true}
@@ -684,7 +685,7 @@ ApplicationWindow{
 
                 function setVisibleSlot() {visible = true}
                 function setInvisibleSlot() {visible = false}
-                visible: true
+                visible: false
                 playing: visible
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "images/fcw/main_FCW_big.gif"
@@ -701,7 +702,7 @@ ApplicationWindow{
                 function setVisibleSlot() {visible = true; console.log("pdz:"+Date.now());}
                 function setInvisibleSlot() {visible = false}
 
-                visible: true
+                visible: false
                 playing: visible
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "images/pcw/main_PCW_big.gif"
