@@ -449,27 +449,8 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
         {
             Signal tmp = *it;
 
-            sg_var_t sgvar = extractSignal(&tmp, frame);
+            arg = extractSignal(&tmp, frame);
 
-            //TODO: convert to QVariant(?)
-            switch(sgvar.sg_type)
-            {
-            case EXT_SG_VAL_TYPE_INTEGER:
-                arg = QVariant(sgvar.sg_val._int);
-                break;
-            case EXT_SG_VAL_TYPE_BOOL:
-                arg = QVariant(sgvar.sg_val._bool);
-                break;
-
-            case EXT_SG_VAL_TYPE_DOUBLE:
-                arg = QVariant(sgvar.sg_val._double);
-                break;
-
-            default:
-
-                qDebug ("Extracted signal type broken");
-
-            }
 
             //WARNING: unusual process
             if(jsonsig->type == RequestId)
@@ -490,7 +471,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
                 }
             }
 
-            if(!discardMsg)
+            if(!discardMsg&&!(arg.isNull()))
             {
                 jsonsig->process(arg);
             }

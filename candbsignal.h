@@ -28,14 +28,6 @@ typedef enum SignalValueType_e
 }
 SignalValueType;
 
-typedef enum ext_sgval_type_s
-{
-    EXT_SG_VAL_TYPE_BROKEN = -1,
-    EXT_SG_VAL_TYPE_INTEGER = 0,
-    EXT_SG_VAL_TYPE_BOOL = 1,
-    EXT_SG_VAL_TYPE_DOUBLE = 2
-} ext_sgval_type_t;
-
 typedef struct Signal_s
 {
     QString name;
@@ -77,19 +69,7 @@ typedef struct Value_s
 }
 Value;
 
-//WARNING: on dbc realization the VT must be encapsulated in its protocol.
-typedef struct sg_var_s
-{
-    ext_sgval_type_t sg_type;
-    union sg_var_u
-    {
-        double _double;
-        qint32 _int;
-        bool _bool;
-        quint64 container;
-    } sg_val;
-}
-sg_var_t;
+
 
 QDataStream & operator<< (QDataStream &out, const Signal & any);
 QDataStream & operator>> (QDataStream &in, Signal & any);
@@ -120,7 +100,7 @@ private:
      QList<Value> * vtRows;
 };
 
-sg_var_t extractSignal(Signal * canSignal, struct can_frame *frame);
+QVariant extractSignal(Signal * canSignal, struct can_frame *frame);
 
 
 #endif //CANDBSIGNAL_H

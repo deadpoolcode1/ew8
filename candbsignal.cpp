@@ -337,15 +337,10 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
   }
 
 
-  sg_var_t extractSignal(Signal * canSignal, struct can_frame *frame)
+  QVariant extractSignal(Signal * canSignal, struct can_frame *frame)
   {
 
-     sg_var_t ret;
-
-
-
-     ret.sg_type =  EXT_SG_VAL_TYPE_BROKEN;
-     ret.sg_val._double = 0;
+     QVariant ret;
 
      if(canSignal)
      {
@@ -358,31 +353,28 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
          switch(canSignal->valueType)
          {
          case SIGNAL_VALUE_TYPE_DOUBLE:
-             ret.sg_val._double = (double)raw_val;
-             ret.sg_type = EXT_SG_VAL_TYPE_DOUBLE;
+             ret = QVariant((double)raw_val);
              break;
 
          case SIGNAL_VALUE_TYPE_FLOAT:
-             ret.sg_val._double = (double)raw_val;
-             ret.sg_type = EXT_SG_VAL_TYPE_DOUBLE;
+             ret = QVariant((double)raw_val);
              break;
 
          case SIGNAL_VALUE_TYPE_INTEGER:
 
              if(1 == canSignal->numOfBits || (canSignal->min == 0 && canSignal->max == 1))
              {
-                 ret.sg_val._bool = (bool)raw_val;
-                 ret.sg_type = EXT_SG_VAL_TYPE_BOOL;
+                 ret = QVariant((bool)raw_val);
              }
              else
              {
-                  ret.sg_val._int = (qint32)raw_val;
-                 ret.sg_type = EXT_SG_VAL_TYPE_INTEGER;
+                  ret = QVariant((qint32)raw_val);
              }
              break;
 
          default:
              qDebug("Illegal signal value type");
+             ret = QVariant::fromValue((QObject * const) nullptr);
          }
 
       }
