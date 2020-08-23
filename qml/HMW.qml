@@ -138,14 +138,27 @@ Item{
         State {name: "Alert"; when: alert
             PropertyChanges {
                 target: strips_img;
-                source: "images/hmw/main_HMW_redcarpet.gif"
+                source: "images/hmw/HMW-red-new-1.gif"
                 visible: true
+            }
+        },
+        State {name: "Yellow";
+            PropertyChanges {
+                target: strips_img
+                source: "images/hmw/HMW-yellow-new-2.gif"
+                visible: true
+            }
+
+            PropertyChanges {
+                target: hmw_item
+                car_margin: -3
+                car_scale: 0.8
             }
         },
         State {name: "Monitor"; when: !alert
             PropertyChanges {
                 target: strips_img
-                source: "images/hmw/main_HMW_greencarpet.gif"
+                source: "images/hmw/HMW-green-new-2.gif"
                 visible: true
             }
 
