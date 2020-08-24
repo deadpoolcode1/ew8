@@ -16,6 +16,8 @@ class IAlertDisplay
     virtual void activate(DISPLAY_ITEM_ID at, QString stringArg) = 0;
     virtual void deactivate(DISPLAY_ITEM_ID at) = 0;
 
+    virtual void forceUpdate(void) = 0;
+
     QMutex mutex;
 };
 

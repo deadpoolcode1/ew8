@@ -1,6 +1,8 @@
 #include <QThread>
 #include <QMutex>
 #include <QTimer>
+#include <QDebug>
+#include <QDateTime>
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -35,6 +37,8 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     componentObject = aComponentObject;
 
+    isDataComplete = false;
+
     flag_tree_changed = false;
 
     //Init QtQuick Objects:
@@ -65,23 +69,47 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     itsThread = new QThread(this);
 
+    updateDisplayTimeWindow = new QTimer();
+
+    updateDisplayTimeWindow->setInterval(30);
+
+    updateDisplayTimeWindow->setSingleShot(true);
+
     this->moveToThread(itsThread);
 
+    updateDisplayTimeWindow->moveToThread(itsThread);
+
     connect(itsThread,SIGNAL(started()),this,SLOT(process()));
+
+    connect (this,SIGNAL(startUpdateDisplayWindow()), updateDisplayTimeWindow, SLOT(start()));
+
+    connect(updateDisplayTimeWindow,SIGNAL(timeout()),this,SLOT(process()));
 
      qDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
 }
 
 void MainProcess::process()
 {
-    if (flag_tree_changed)
+
+    if (isDataComplete && flag_tree_changed)
     {
-        mutex.lock();
-        updateDisplay();
-        flag_tree_changed = false;
-        mutex.unlock();
+        if(Q_LIKELY(!updateDisplayTimeWindow->isActive()))
+        {
+            flag_tree_changed = false;
+            isDataComplete = false;
+            startUpdateDisplayWindow();
+            mutex.lock();
+            qDebug()<< "updateStart:" << QDateTime::currentMSecsSinceEpoch();
+            updateDisplay();
+            qDebug()<< "updateEnd:" << QDateTime::currentMSecsSinceEpoch();
+            mutex.unlock();
+
+        }
     }
-    QTimer::singleShot(10,this,SLOT(process()));
+#if 0
+    //TODO Set as update time window
+    QTimer::singleShot(30,this,SLOT(process()));
+#endif
 }
 
 int MainProcess::launchEverything()
@@ -106,12 +134,12 @@ int MainProcess::launchEverything()
 //TODO extract to different thread:
 void MainProcess::updateDisplay(void)
 {
-    if (!generalPanelTree)
+    if (generalPanelTree)
     {
-        return;
+        flag_tree_changed = false;
+        generalPanelTree->updateVisibility();
+
     }
-    generalPanelTree->updateVisibility();
-    flag_tree_changed = false;
 }
 
 void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
@@ -135,6 +163,8 @@ void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 v
     }
 #if 1
     qDebug("function:%s alert: %d\n", __func__, alert);
+    qDebug()<< " activated at:" << QDateTime::currentMSecsSinceEpoch();
+
 #endif
 
     RootedTreeNode* nodeCGRT = nullptr;
@@ -167,10 +197,22 @@ void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 v
             }
             nodeCGRT->activate();
             flag_tree_changed = true;
+#if 0
+            process();
+#endif
         }
     }
 
     return;
+}
+
+void MainProcess::forceUpdate(void)
+{
+    isDataComplete = true;
+    if(flag_tree_changed)
+    {
+        process();
+    }
 }
 
 void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
@@ -182,6 +224,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
     }
 
     qDebug("function:%s alert: %d\n", __func__, alert);
+    qDebug()<< "deactivated at:" << QDateTime::currentMSecsSinceEpoch();
 
     RootedTreeNode* nodeCGRT = nullptr;
 
@@ -208,8 +251,12 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
             nodeCGRT->deactivate();
             //TODO only when a semaphore is changed
             flag_tree_changed = true;
+#if 0
+            process();
+#endif
         }
     }
+
     return;
 
 }

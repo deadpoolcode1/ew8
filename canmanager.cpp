@@ -423,6 +423,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
               status = true;
               curr->process(frame);
               curr->ack(this);
+              itsDisplay->forceUpdate();
 #if 0
               qDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
 #endif

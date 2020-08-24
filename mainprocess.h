@@ -24,8 +24,12 @@ public:
     virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
     virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
     virtual void deactivate(DISPLAY_ITEM_ID at);
+    virtual void forceUpdate(void);
 
     static MainProcess* getInstance(QObject * aComponentObject);
+
+signals:
+    void startUpdateDisplayWindow();
 
 public slots:
 
@@ -37,6 +41,8 @@ public slots:
 
 private:
     void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
+
+    bool isDataComplete;
 
     static MainProcess* instance;
 
@@ -55,6 +61,8 @@ private:
 
 // pointer to QML defining trees for all panels.
     QObject *componentObject;
+
+    QTimer * updateDisplayTimeWindow;
 
     QThread * itsThread;
 

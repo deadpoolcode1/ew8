@@ -408,7 +408,7 @@ ApplicationWindow{
 
 
 
-                        function setVisibleSlot() {visible = true}
+                        function setVisibleSlot() {visible = true;  console.log("pdz:"+Date.now());}
                         function setInvisibleSlot() {visible = false}
 
                     }
@@ -683,7 +683,7 @@ ApplicationWindow{
                 property int layer_pri: 1
                 anchors.fill: parent
 
-                function setVisibleSlot() {visible = true}
+                function setVisibleSlot() {visible = true;  console.log("fcw:"+Date.now());}
                 function setInvisibleSlot() {visible = false}
                 visible: false
                 playing: visible
@@ -699,7 +699,7 @@ ApplicationWindow{
                 anchors.bottomMargin: 0
                 anchors.fill: parent
 
-                function setVisibleSlot() {visible = true; console.log("pdz:"+Date.now());}
+                function setVisibleSlot() {visible = true; console.log("pcw:"+Date.now());}
                 function setInvisibleSlot() {visible = false}
 
                 visible: false

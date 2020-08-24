@@ -53,6 +53,7 @@ void MeDisconnectionReport::fireRequestTimeout(void)
     qDebug() << "RIT: Request Id timeout";
 #if 1
     itsDisplay->activate(AlertTypes::ALERT_REQFAIL);
+    itsDisplay->forceUpdate();
 #endif
 }
 
@@ -60,6 +61,7 @@ void MeDisconnectionReport::fireConnectionTimeout(void)
 {
     isInDisconnectionAlert = true;
     itsDisplay->activate(AlertTypes::ALERT_NOCOM);
+    itsDisplay->forceUpdate();
 }
 
 void MeDisconnectionReport::resetConnectionTimeout(void)
@@ -67,6 +69,7 @@ void MeDisconnectionReport::resetConnectionTimeout(void)
     if(isInDisconnectionAlert)
     {
         itsDisplay->deactivate(AlertTypes::ALERT_NOCOM);
+        itsDisplay->forceUpdate();
         isInDisconnectionAlert = false;
     }
 
