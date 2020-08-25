@@ -1,3 +1,5 @@
+#include "watchdogdevice.h"
+
 #include "keepalivemsg.h"
 #include "defs.h"
 #include <QDebug>
@@ -37,6 +39,9 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
 
     this->moveToThread(triggerTimerThread);
     triggerTimer->moveToThread(triggerTimerThread);
+
+    wdt = new WatchDogDevice();
+
     triggerTimerThread->start();
 }
 
@@ -70,6 +75,8 @@ void KeepAliveMsg::triggerTimeout(void)
     }
 
     frame_to_send.data[7] = (isValid? (quint8)(0x80 | errorId) : (quint8)(0x7f & errorId));
+
+    wdt->toggle();
 
     itsCanManager->write_frame(&frame_to_send);
 }

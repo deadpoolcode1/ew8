@@ -4,6 +4,7 @@
 #include "canmanager.h"
 
 class CanManager;
+class WatchDogDevice;
 
 class KeepAliveMsg:  public QObject
 {
@@ -36,6 +37,10 @@ private:
     struct can_frame frame_to_send;
     bool isValid;
     quint8 errorId;
+
+    WatchDogDevice * wdt;
+
+
 };
 
 #endif // KEEPALIVEMSG_H
