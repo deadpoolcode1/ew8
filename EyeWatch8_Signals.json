@@ -46,7 +46,8 @@
         ,{"enum": "RGB_RED", "value": 301}
         ,{"enum": "RGB_GREEN", "value": 302}
         ,{"enum": "RGB_BLUE", "value": 303}
-        ,{"enum": "TV_PATTERN", "value": 304}
+        ,{"enum": "RGB_WHITE", "value": 304}
+        ,{"enum": "TV_PATTERN", "value": 305}
     ],
 
 
@@ -259,14 +260,15 @@
         {
             "protocol": "EW8TestProtocol",
             "signals":[
-                {"name":"TvTable", "action": "TV_PATTERN",  "type": "GraphicItem"}
-                ,{"name":"TestRGB", "action": "Vt_RGB",  "isValueTable": true}
+                {"name":"TestDisplay", "action": "Vt_TestDisplay",  "isValueTable": true}
             ],
             "value_tables":[
-                {"name":"Vt_RGB", "type": "GraphicItem", "rows":[
+                {"name":"Vt_TestDisplay", "type": "GraphicItem", "rows":[
                         {"value":  1, "action": "RGB_RED", "description": "RGB LCD test: Full screen red"}
                         ,{"value":  2, "action": "RGB_GREEN", "description": "RGB LCD test: Full screen green"}
                         ,{"value":  3, "action": "RGB_BLUE", "description": "RGB LCD test: Full screen blue"}
+                        ,{"value":  4, "action": "RGB_WHITE", "description": "RGB LCD test: Full screen white"}
+                        ,{"value":  5, "action": "TV_PATTERN", "description": "RGB LCD test: TV PAE table"}
                     ]
                 }
             ]

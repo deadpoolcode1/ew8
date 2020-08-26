@@ -34,7 +34,6 @@ NS_ :
 BS_:
 
 BU_: ME_AWS_CANA
-VAL_TABLE_ Vt_RGB 3 "blue" 2 "green" 1 "red" 0 "off" ;
 VAL_TABLE_ Vt_ON_OFF 1 "on" 0 "off" ;
 
 
@@ -47,8 +46,7 @@ BO_ 1964 TestRequest: 8 ME_AWS_CANA
  SG_ reserved_2 : 17|7@1+ (1,0) [127|127] "" Vector__XXX
  SG_ TestSampleSound : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ reserved_1 : 11|5@1+ (1,0) [31|31] "" Vector__XXX
- SG_ TvTable : 10|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ TestRGB : 8|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ TestDisplay : 8|3@1+ (1,0) [0|5] "" Vector__XXX
  SG_ reserved_0 : 1|7@1+ (1,0) [127|127] "" Vector__XXX
  SG_ GetVersion : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
@@ -68,7 +66,6 @@ BA_DEF_DEF_  "CANoeJitterMax" 0;
 BA_DEF_DEF_  "CANoeJitterMin" 0;
 BA_DEF_DEF_  "CANoeDrift" 0;
 BA_DEF_DEF_  "CANoeStartDelay" 0;
-VAL_ 1964 TvTable 1 "on" 0 "off" ;
-VAL_ 1964 TestRGB 3 "blue" 2 "green" 1 "red" 0 "off" ;
+VAL_ 1964 TestDisplay 5 "tv_test" 4 "white" 3 "blue" 2 "green" 1 "red" 0 "off" ;
 VAL_ 1964 GetVersion 1 "on" 0 "off" ;
 

@@ -72,6 +72,23 @@ Item {
         anchors.fill: parent
         
     }
+
+    Rectangle
+    {
+        id: rgb_white
+        property string canEntityType: "RGB_WHITE"
+        color: "WHITE"
+
+        property int layer_pri: 0
+        function setVisibleSlot(){visible= true;}
+        function setInvisibleSlot(){visible = false;}
+
+
+
+        visible: true
+        anchors.fill: parent
+
+    }
     
     
     
