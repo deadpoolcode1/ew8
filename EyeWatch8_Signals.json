@@ -65,11 +65,19 @@
 
                 {"name":"Vision_only_Sign_Type_D1", "action": "Vision_only_Sign_Type",  "isValueTable": true},
 
+                {"name":"Vision_only_supp_Sign_Type_D1", "action": "Vision_only_Sign_Type_D1",  "type": "Enabler", "Set": 0},
+
                 {"name":"Vision_only_Sign_Type_D2", "action": "Vision_only_Sign_Type",  "isValueTable": true},
+
+                {"name":"Vision_only_supp_Sign_Type_D2", "action": "Vision_only_Sign_Type_D2",  "type": "Enabler", "Set": 0},
 
                 {"name":"Vision_only_Sign_Type_D3", "action": "Vision_only_Sign_Type",  "isValueTable": true},
 
+                {"name":"Vision_only_supp_Sign_Type_D3", "action": "Vision_only_Sign_Type_D3",  "type": "Enabler", "Set": 0},
+
                 {"name":"Vision_only_Sign_Type_D4", "action": "Vision_only_Sign_Type",  "isValueTable": true}
+
+                ,{"name":"Vision_only_supp_Sign_Type_D4", "action": "Vision_only_Sign_Type_D4",  "type": "Enabler", "Set": 0}
 
             ],
             "value_tables":[
