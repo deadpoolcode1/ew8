@@ -753,6 +753,8 @@ ApplicationWindow{
                 else if (event.key === Qt.Key_Return)
                 {
                     console.log("pressed Enter")
+                    //NOTE: menu key verification
+                    volumeKeySend(Qt.Key_Return)
                 }
 
                 event.accepted = true;

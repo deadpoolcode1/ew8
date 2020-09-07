@@ -300,8 +300,9 @@ void CanManager::init(void)
 void CanManager::read_frame(void)
 {
 
+#if 0
     bool isKnownFrameReceived = false;
-
+#endif
 
 #ifndef WIN32
     struct can_frame frame;
@@ -332,7 +333,10 @@ void CanManager::read_frame(void)
                    "ts:" << QDateTime::currentMSecsSinceEpoch();
 #endif
 
-            isKnownFrameReceived = parse_frame(&frame);
+#if 0
+            isKnownFrameReceived =
+#endif
+            parse_frame(&frame);
     }
 
 #else
@@ -368,10 +372,13 @@ void CanManager::read_frame(void)
 #endif
 
 
+//NOTE: For disconnection timer reset keepAlive msg only used
+#if 0
          if(isKnownFrameReceived)
          {
            emit resetConnectionTimeout();
          }
+#endif
 }
 
 void CanManager::write_frame(struct can_frame * frame_ptr)
@@ -416,10 +423,17 @@ bool CanManager::parse_frame(struct can_frame * frame)
 {
     bool status = false;
 
+          if(CanRxMsg::isKeepAliveMsg(frame->can_id))
+          {
+             emit resetConnectionTimeout();
+          }
+
           CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
 
           if(nullptr != curr)
           {
+
+
               status = true;
               curr->process(frame);
               curr->ack(this);

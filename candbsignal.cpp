@@ -228,7 +228,9 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 #ifdef USE_ECU_NAME
           qDebug ("ecu:%s",qPrintable(c_identifiers->takeLast()));
 #endif
-          qDebug ("name:%s",qPrintable(c_identifiers->takeLast()));
+          QString name = c_identifiers->takeLast();
+          qDebug ("name:%s",qPrintable(name));
+
           qDebug () << "dlc:" << numbers->takeLast();
           quint64 id = numbers->takeLast(); qDebug() << "id:" << id;
 
@@ -238,7 +240,7 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           //WARNING: VECTOR__INDEPENDENT_SIG_MSG id is not supported
           if (id <= 0xFFFFFFFF)
           {
-              rxmsg = CanRxMsg::createInstance((quint32)id);
+              rxmsg = CanRxMsg::createInstance((quint32)id, name);
               rxmsg->applyCanDBSignalsArray(cansignals);
 
               rxmsg->setItsJsonProtocol(curParsedProtocol);

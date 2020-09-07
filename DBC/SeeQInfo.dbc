@@ -36,35 +36,25 @@ BS_:
 BU_:
 
 
-BO_ 1040 SN_System: 8 Vector__XXX
- SG_ Reserved410 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ ManufacturerCode1 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ ManufacturerCode0 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeQSerialNumber4 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeQSerialNumber3 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeQSerialNumber2 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeQSerialNumber1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeQSerialNumber0 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+BO_ 1040 SN_System_Part1: 8 Vector__XXX
+ SG_ ManufacturerCode0 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product2 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product1 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product0 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateYear1 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateYear0 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateWeek1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateWeek0 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 1041 Time_Info: 8 Vector__XXX
- SG_ Reserved411 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProduct2 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProduct1 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProduct0 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProductionDateYear1 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProductionDateYear0 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProductionDateWeek1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ SeeqProductionDateWeek0 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1042 App_Info: 8 Vector__XXX
- SG_ Reserved_412_2 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ Reserved_412_1 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_brain_v_major : 0|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_brain_v_minor : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_MEST_v_major : 16|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_MEST_v_minor : 24|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_MEST_v_subMinor : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ FW_MEST_v_patchNumber : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+BO_ 1041 SN_System_Part2: 8 Vector__XXX
+ SG_ SerialNumber4 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber3 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber2 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber1 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber0 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Reserved411_2 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Reserved411_1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ManufacturerCode1 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 
 

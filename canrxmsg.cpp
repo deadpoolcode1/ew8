@@ -18,6 +18,21 @@ bool CanRxMsg::isDBCParsingForced = false;
 bool CanRxMsg::isRequestSent = false;
 bool CanRxMsg::isRequestIdLSBByteReceived = false;
 quint16 CanRxMsg::requestId = 0x0;
+QString CanRxMsg::keepAliveMsgName;
+CanStdId_t CanRxMsg::keepAliveMsgId = 0x0;
+
+
+void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName)
+{
+  if(keepAliveMsgName.isEmpty())
+  {
+    keepAliveMsgName = aKeepAliveMsgName;
+  }
+  else
+  {
+    qDebug() << "Abmiguous keep alive message definition. Must  be only one";
+  }
+}
 
 QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
 {
@@ -34,6 +49,8 @@ QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
 QDataStream & operator>> (QDataStream &in, CanRxMsg &any)
 {
     quint32 listsize;
+
+
     in >> listsize;
     for(quint32 i = 0; i < listsize; i++)
     {
@@ -63,6 +80,9 @@ bool CanRxMsg::saveToStorage(void)
             configStream.setVersion(QDataStream::Qt_5_9);
             configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
 
+
+            quint32 keepAliveOutput = (quint32) keepAliveMsgId;
+            configStream << keepAliveOutput;
 #if 0
             configStream << CanRxMsgsPool.size();
 #else
@@ -132,6 +152,12 @@ bool CanRxMsg::loadFromStorage(void)
             configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
 
 
+            quint32 keepAliveInput;
+            configStream >> keepAliveInput;
+
+            keepAliveMsgId = (CanStdId_t)keepAliveInput;
+
+
             quint32 msgNum;
 
             configStream >> msgNum;
@@ -148,7 +174,7 @@ bool CanRxMsg::loadFromStorage(void)
 
                 configStream >> stdId;
 
-                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId);
+                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, QString(""));
 
                 qDebug() << "StdId:" << (qint32)stdId;
 
@@ -209,7 +235,7 @@ void CanRxMsg::discardRequestId(void)
 
 
 
-CanRxMsg * CanRxMsg::createInstance(quint32 StdId)
+CanRxMsg * CanRxMsg::createInstance(quint32 StdId, QString aName = "")
 {
     CanRxMsg * ret = getMsgByCanId(StdId);
     //TODO review the check location
@@ -219,6 +245,7 @@ CanRxMsg * CanRxMsg::createInstance(quint32 StdId)
         ret = iCanRxMsgFactory->createCanRxMsgInstance(StdId);
         if(nullptr != ret)
         {
+            ret->itsName = aName;
             CanRxMsgsPool.insert(StdId, ret);
         }
     }
@@ -277,19 +304,20 @@ void CanRxMsg::completeInitCanRxMsgsPool()
             CanRxMsg * msg = i.value();
             CanStdId_t id = i.key();
 
-#if 1
+            if(keepAliveMsgName != "" && msg->itsName == keepAliveMsgName)
+            {
+               keepAliveMsgId = id;
+            }
+
             if (msg->itsJsonProtocol)
             {
                 msg->initCanJsonSignalsListInProcessOrder();
-#endif
 
                 if(!(msg->canJsonSignalsListInProcessOrder.isEmpty()))
                 {
                     msgsWhiteList.append(id);
                 }
-#if 1
             }
-#endif
         }
     }
 }

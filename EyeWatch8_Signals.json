@@ -48,6 +48,9 @@
         ,{"enum": "RGB_BLUE", "value": 303}
         ,{"enum": "RGB_WHITE", "value": 304}
         ,{"enum": "TV_PATTERN", "value": 305}
+        ,{"enum": "OM_NORMAL", "value": 401}
+        ,{"enum": "OM_OTA", "value": 402}
+        ,{"enum": "OM_SAFE", "value": 403}
     ],
 
 
@@ -277,6 +280,23 @@
                         ,{"value":  3, "action": "RGB_BLUE", "description": "RGB LCD test: Full screen blue"}
                         ,{"value":  4, "action": "RGB_WHITE", "description": "RGB LCD test: Full screen white"}
                         ,{"value":  5, "action": "TV_PATTERN", "description": "RGB LCD test: TV PAE table"}
+                    ]
+                }
+            ]
+        }
+        ,
+        {
+            "protocol": "IMS_KeepAlive",
+            "keepAlive": "IMS_KeepAlive",
+            "signals":[
+                {"name":"Validity", "action": ["RunningMode", "inverted"], "type": "Enabler"},
+                {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
+            ],
+            "value_tables":[
+                {"name":"Vt_OperationMode", "type": "GraphicItem", "rows":[
+                        {"value":  0, "action": "OM_NORMAL", "description": "AWS operational mode: Normal mode"}
+                        ,{"value":  1, "action": "OM_OTA", "description": "AWS operational mode: OTA mode"}
+                        ,{"value":  2, "action": "OM_SAFE", "description": "AWS operational mode: Safe mode"}
                     ]
                 }
             ]

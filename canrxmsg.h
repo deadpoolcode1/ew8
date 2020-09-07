@@ -27,8 +27,9 @@ public:
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static void completeInitCanRxMsgsPool(void);
     static void setItsDisconnectionReport(MeDisconnectionReport * aDisconnectionReport);
+    static void setKeepAliveMsg(QString keepAliveMsgName);
 
-    static CanRxMsg * createInstance(quint32 StdId);
+    static CanRxMsg * createInstance(quint32 StdId, QString itsName);
     static CanRxMsg * getMsgByCanId(quint32 std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
@@ -52,6 +53,8 @@ public:
     static void receiveRequestIdByteMSB(quint8 aByte);
     static void discardRequestId(void);
 
+    static bool isKeepAliveMsg(CanStdId_t canId){return (canId == keepAliveMsgId);};
+
     //TODO: make readonly property
     static bool isAlreadyLoaded;
 
@@ -69,6 +72,8 @@ private:
   static AMSignalsModel * itsAMSignalsModel;
   static MeDisconnectionReport * itsDisconnectionReport;
 
+
+
   friend class CanRxMsgFactory;
 
 
@@ -77,9 +82,13 @@ private:
 protected:
   CanRxMsg();
 
+  static QString keepAliveMsgName;
+  static CanStdId_t keepAliveMsgId;
+
   quint32 getCanID(void);
 
   QString itsJsonProtocolName;
+  QString itsName;//NOTE: Used during Jason Parsing
   AMJsonProtocol * itsJsonProtocol;
 
   //WARNING: Used to initialize canJsonSignalsListInProcessOrder

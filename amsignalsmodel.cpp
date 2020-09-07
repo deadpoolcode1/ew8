@@ -74,6 +74,16 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         if (status)
         {
+
+        //TODO find if exist
+        QString keepAliveMsgName = "";
+
+        if(protocol_obj.find("keepAlive") != protocol_obj.end())//TODO check necessity of the check
+        {
+            keepAliveMsgName = protocol_obj["keepAlive"].toString("");
+            CanRxMsg::setKeepAliveMsg(keepAliveMsgName);
+        }
+
         amjp->collectValueTables(protocol_obj["value_tables"]);
 
         // //////////////////////////////////////
