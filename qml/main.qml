@@ -35,6 +35,11 @@ ApplicationWindow{
         width: 320
         height: 240
 
+        DummyItem{
+           property int layer_pri: 5
+           canEntityType: "OM_NORMAL"
+        }
+
         Rectangle {
             id: status_panel
             height: 50
@@ -610,56 +615,6 @@ ApplicationWindow{
 
         }
 
-        Rectangle {
-            id: discon_panel
-            visible: false
-            anchors.fill: parent
-
-            property int canEntityType: Alert.QtQG
-            property int layer_pri: 0
-            color: "#00000000"
-            z: 11
-            function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
-            function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
-
-            antialiasing: true
-            smooth: true
-
-            //source: "images/bg/gradient_linear_24_16bit_2.png"
-
-            Image {
-                id: discon_alert
-                property int canEntityType: Alert.ALERT_NOCOM
-
-                property int layer_pri: 0
-                width: 150
-                height: 150
-                function setVisibleSlot(){visible = true}
-                function setInvisibleSlot(){visible = false}
-
-
-
-                visible: true
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                source: "images/error/red_alert-01.png"
-
-                Text {
-                    id: discon_label
-                    color: "#111abc"
-                    text: qsTr("Disconnected")
-                    font.bold: true
-                    anchors.top: parent.bottom
-                    anchors.topMargin: -20
-                    font.pixelSize: 20
-                }
-            }
-
-
-
-
-        }
-
         Item {
             id: groupFCW
             objectName: "FCW_QtQG"
@@ -708,6 +663,177 @@ ApplicationWindow{
                 source: "images/pcw/main_PCW_big.gif"
             }
         }
+
+
+        Rectangle {
+            id: discon_panel
+            visible: false
+            anchors.fill: parent
+
+            property int canEntityType: Alert.QtQG
+            property int layer_pri: 0
+            color: "#00000000"
+            z: 11
+            function setVisibleSlot(){visible= true; console.log("LOGO BACKGROUND")}
+            function setInvisibleSlot(){visible = false; console.log("LOGO BACKGROUND OFF")}
+
+            antialiasing: true
+            smooth: true
+
+            //source: "images/bg/gradient_linear_24_16bit_2.png"
+
+            Item {
+                id: om_powerof
+                property string canEntityType: "OM_POWEROFF"
+
+                property int layer_pri: 1
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                visible: false
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                //source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: om_pwroff_label
+                    color: "#111abc"
+                    text: qsTr("Power off")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
+            }
+
+            Item {
+                id: om_mute
+                property string canEntityType: "OM_MUTE"
+
+                property int layer_pri: 1
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                visible: false
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                //source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: om_mute_label
+                    color: "#111abc"
+                    text: qsTr("Mute")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
+            }
+
+
+
+            Item {
+                id: om_keeppwr
+                property string canEntityType: "OM_KEEPPWR"
+
+                property int layer_pri: 1
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                visible: false
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                //source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: om_keeppwr_label
+                    color: "#111abc"
+                    text: qsTr("Keep Power On")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
+            }
+
+
+
+
+            Item {
+                id: om_pilot
+                property string canEntityType: "OM_PILOT"
+
+                property int layer_pri: 1
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                visible: false
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                //source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: om_pilot_label
+                    color: "#111abc"
+                    text: qsTr("Pilot mode")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
+            }
+
+
+
+            Image {
+                id: discon_alert
+                property int canEntityType: Alert.ALERT_NOCOM
+
+                property int layer_pri: 0
+                width: 150
+                height: 150
+                function setVisibleSlot(){visible = true}
+                function setInvisibleSlot(){visible = false}
+
+
+
+                visible: true
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                source: "images/error/red_alert-01.png"
+
+                Text {
+                    id: discon_label
+                    color: "#111abc"
+                    text: qsTr("Disconnected")
+                    font.bold: true
+                    anchors.top: parent.bottom
+                    anchors.topMargin: -20
+                    font.pixelSize: 20
+                }
+            }
+
+
+
+
+        }
+
 
         Item {
             id: menu_listener

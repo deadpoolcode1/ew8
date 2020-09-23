@@ -48,9 +48,11 @@
         ,{"enum": "RGB_BLUE", "value": 303}
         ,{"enum": "RGB_WHITE", "value": 304}
         ,{"enum": "TV_PATTERN", "value": 305}
-        ,{"enum": "OM_NORMAL", "value": 401}
-        ,{"enum": "OM_OTA", "value": 402}
-        ,{"enum": "OM_SAFE", "value": 403}
+        ,{"enum": "OM_POWEROFF", "value": 401}
+        ,{"enum": "OM_NORMAL", "value": 402}
+        ,{"enum": "OM_MUTE", "value": 403}
+        ,{"enum": "OM_KEEPPWR", "value": 404}
+        ,{"enum": "OM_PILOT", "value": 405}
     ],
 
 
@@ -286,17 +288,19 @@
         }
         ,
         {
-            "protocol": "IMS_KeepAlive",
-            "keepAlive": "IMS_KeepAlive",
+            "protocol": "IMS_Status_Protocol_System",
+            "keepAlive": "IMS_Status_Protocol_System",
             "signals":[
-                {"name":"Validity", "action": ["RunningMode", "inverted"], "type": "Enabler"},
+                {"name":"Validity", "action": ["", "inverted"], "type": "Validator"},
                 {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
             ],
             "value_tables":[
                 {"name":"Vt_OperationMode", "type": "GraphicItem", "rows":[
-                        {"value":  0, "action": "OM_NORMAL", "description": "AWS operational mode: Normal mode"}
-                        ,{"value":  1, "action": "OM_OTA", "description": "AWS operational mode: OTA mode"}
-                        ,{"value":  2, "action": "OM_SAFE", "description": "AWS operational mode: Safe mode"}
+                        {"value":  0, "action": "OM_POWEROFF", "description": "AWS operational mode: Poweroff"}
+                        ,{"value":  1, "action": "OM_NORMAL", "description": "AWS operational mode: Normal mode"}
+                        ,{"value":  2, "action": "OM_MUTE", "description": "AWS operational mode: Mute"}
+                        ,{"value":  3, "action": "OM_KEEPPWR", "description": "AWS operational mode: Keep power on"}
+                        ,{"value":  4, "action": "OM_PILOT", "description": "AWS operational mode: Pilot mode"}
                     ]
                 }
             ]

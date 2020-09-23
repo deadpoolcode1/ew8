@@ -14,6 +14,8 @@ extern QElapsedTimer bootUpTimer;
 #define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
 #define DEFAULT_EW_KEEP_ALIVE_TIMEOUT (200)
 
+#define DYNAMIC_DISPLAY_ITEM_ID
+
 #if 0
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else

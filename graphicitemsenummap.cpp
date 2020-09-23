@@ -46,13 +46,22 @@ void GraphicItemsEnumMap::init(void)
 
     QJsonArray jsonArray = jsonObject["GraphicItem"].toArray();
 
+    DISPLAY_ITEM_ID id;
+
+#ifdef DYNAMIC_DISPLAY_ITEM_ID
+    id =  ((DISPLAY_ITEM_ID)AlertTypes::ALERT_END_OF_TYPE);
+#endif
 
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
 
         QString name = obj["enum"].toString();
-
-        DISPLAY_ITEM_ID id = obj["value"].toInt();
+#ifdef DYNAMIC_DISPLAY_ITEM_ID
+        id++;
+#else
+        id = obj["value"].toInt();
+#endif
+        //TODO verify NAME and ID are unique
 
         qDebug("JSON: %s",  qPrintable(name));
         qDebug("JSON: %d",  id);

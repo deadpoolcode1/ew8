@@ -354,6 +354,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
     if (itsJsonProtocol)
     {
 
+        AMJsonSignal* signalValidator = nullptr;
         AMJsonSignal* signalsRequestIdArr[2];
         quint8 requestidcount = 0;
         QList<AMJsonSignal*> signalsToAppendList;
@@ -379,6 +380,10 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
                 {
+                case Validator:
+                    signalValidator = jsonsig;
+                    break;
+
                 case RequestId:
                     if(jsonsig->index == 0)
                     {
@@ -417,11 +422,15 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
             }
         }
 
-
         if(requestidcount == 2)
         {
             canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[1]);
             canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[0]);
+        }
+
+        if(signalValidator != nullptr)
+        {
+            canJsonSignalsListInProcessOrder.prepend(signalValidator);
         }
 
         canJsonSignalsListInProcessOrder.append(signalsToAppendList);
@@ -479,29 +488,42 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
             arg = extractSignal(&tmp, frame);
 
-
-            //WARNING: unusual process
-            if(jsonsig->type == RequestId)
+            if(jsonsig->type == Validator)
             {
-                 discardMsgOnRequestIdFail = true;
-            }
-            else if(discardMsgOnRequestIdFail)
-            {
-                //Check the requestId
-                if(isRequestIdLSBByteReceived && !isRequestSent)
-                {
-                    discardMsgOnRequestIdFail = false;
-                }
+                bool isValidData;
+                if(jsonsig->extractSetUnsetAction(arg, &isValidData))
+                {discardMsg = !isValidData;}
                 else
-                {
-                   isRequestIdLSBByteReceived = false;
-                   discardMsg = true;
-                }
-            }
+                {discardMsg = true;}
 
-            if(!discardMsg&&!(arg.isNull()))
+            }
+            else
             {
-                jsonsig->process(arg);
+
+
+                //WARNING: unusual process
+                if(jsonsig->type == RequestId)
+                {
+                    discardMsgOnRequestIdFail = true;
+                }
+                else if(discardMsgOnRequestIdFail)
+                {
+                    //Check the requestId
+                    if(isRequestIdLSBByteReceived && !isRequestSent)
+                    {
+                        discardMsgOnRequestIdFail = false;
+                    }
+                    else
+                    {
+                        isRequestIdLSBByteReceived = false;
+                        discardMsg = true;
+                    }
+                }
+
+                if(!discardMsg&&!(arg.isNull()))
+                {
+                    jsonsig->process(arg);
+                }
             }
         }
     }
