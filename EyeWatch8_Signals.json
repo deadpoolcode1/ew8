@@ -197,7 +197,8 @@
                 {"name": "HW_Warning_level", "action":"ALERT_HMW_MONITOR", "type":"GraphicItem","Set": 1},
 
 
-                {"name": "Headway_measurement", "action":"ALERT_HMW_DISTANCE", "type":"IntArgument","index": 0}
+                {"name": "Headway_measurement", "action":"ALERT_HMW_DISTANCE", "type":"IntArgument","index": 0},
+                {"name": "Speed_format", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 1}
             ]
         }
         ,

@@ -142,18 +142,18 @@ void MainProcess::updateDisplay(void)
     }
 }
 
-void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, quint8 unit)
 {
      activate(alert, false, "", valueInt, valueFrac, unit);
 }
 
 void MainProcess::activate(DISPLAY_ITEM_ID alert, QString arg)
 {
-    activate(alert, true, arg, 0, 0, viu_None);
+    activate(alert, true, arg, 0, 0, 0);
 }
 
 
-void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
+void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)

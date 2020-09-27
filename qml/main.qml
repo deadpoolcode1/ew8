@@ -87,7 +87,15 @@ ApplicationWindow{
                 property int layer_pri: 0
                 x: -1
                 y: 5
-                function setVisibleSlot(arg) {canEntityArg = arg; opacity = 1.0}
+
+                property bool is_mph: false
+                property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
+
+                function setVisibleSlot(arg, is_mph_arg) {
+                    is_mph = (is_mph_arg === 1);
+                    canEntityArg = is_mph? (arg * 0.621371):arg;
+                    opacity = 1.0
+                }
                 function setInvisibleSlot() {opacity = 0.0}
                 visible: true
                 opacity: isInEdition? 1.0:0.0
@@ -96,7 +104,7 @@ ApplicationWindow{
                     id: speed_value
                     x: 0
                     color: "#f1e1ff"
-                    text: speed.canEntityArg.toFixed(0)
+                    text: speed.canEntityArg
                     topPadding: 0
                     anchors.top: parent.top
                     anchors.topMargin: 0
@@ -111,7 +119,7 @@ ApplicationWindow{
                 Text {
                     id: speed_units
                     color: "#e1f1ff"
-                    text: qsTr("Km/h")
+                    text: speed.unit_str
                     anchors.bottom: speed_value.bottom
                     anchors.bottomMargin: -5
                     anchors.horizontalCenterOffset: 0

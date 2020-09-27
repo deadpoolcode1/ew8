@@ -37,7 +37,7 @@ public:
     void deactivateItemInMutexGroup();
     void handleMutexGroup();
 
-    void setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
+    void setCanEntityArgs(quint8 valueInt, quint8 valueFrac, quint8 unit);
     void setCanEntityArg(QString stringArg);
 
 
@@ -71,7 +71,7 @@ private:
     //Invoke arguments:
     quint8 valueInt;
     quint8 valueFrac;
-    visual_item_unit_t unit;
+    quint8 unit;
     QString stringArg;
 };
 

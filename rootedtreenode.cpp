@@ -17,7 +17,7 @@ RootedTreeNode::RootedTreeNode(QObject * qobject)
 
     valueInt = 0;
     valueFrac = 0;
-    unit = viu_None;
+    unit = 0;
     stringArg = "";
 
     convertfromQObject(qobject);
@@ -222,7 +222,7 @@ void RootedTreeNode::setCanEntityArg(QString stringArg)
     this->stringArg = stringArg;
 }
 
- void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit)
+ void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, quint8 unit)
  {
      this->valueInt = valueInt;
      this->valueFrac = valueFrac;

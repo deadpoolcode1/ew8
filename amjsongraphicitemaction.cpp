@@ -89,7 +89,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
         {
             if(!isArgOfStringType)
             {
-                itsDisplay->activate(itsGraphicItemID,argInt,argFrac,(visual_item_unit_t) argUnits);
+                itsDisplay->activate(itsGraphicItemID, argInt, argFrac, argUnits);
             }
             else
             {

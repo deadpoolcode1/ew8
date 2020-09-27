@@ -21,7 +21,7 @@ public:
     void updateDisplay(void);
 
     //alerts display:
-    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
+    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, quint8 unit);
     virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
     virtual void deactivate(DISPLAY_ITEM_ID at);
     virtual void forceUpdate(void);
@@ -40,7 +40,7 @@ public slots:
     void process();
 
 private:
-    void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, visual_item_unit_t unit);
+    void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
 
     bool isDataComplete;
 
