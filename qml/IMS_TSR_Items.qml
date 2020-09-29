@@ -14,14 +14,13 @@ Rectangle {
     height: 175
 
     visible: true
-    
+
     property int canEntityType: Alert.QtQG
     property int layer_pri: 1
 
     function setVisibleSlot(){visible = true;}
     function setInvisibleSlot(){visible = false;}
-    
-    
+
     SLI {
         id: upper_tsr
         canEntityType: "ALERT_SLI"
@@ -64,7 +63,7 @@ Rectangle {
         }
 
 
-    
+
     TSR{
         id: alert_no_pass
         canEntityType: "ALERT_NO_PASS"
@@ -76,9 +75,19 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
     }
-    
 
-    
+    TSR{
+        id: alert_no_pass_end
+        canEntityType: "ALERT_NO_PASS_END"
+        property int layer_pri: 0
+        source: "images/tsr/left_nopass_end.png"
+
+        anchors.left: parent.left
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
     TSR{
         id: alert_motorway
         canEntityType: "ALERT_MOTORWAY"
@@ -90,7 +99,19 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
     }
-    
+
+    TSR{
+        id: alert_motorway_end
+        canEntityType: "ALERT_MOTORWAY_END"
+        property int layer_pri: 0
+        source: "images/tsr/left_motorway_end.png"
+
+        anchors.left: parent.left
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
     TSR{
         id: alert_expressway
         canEntityType: "ALERT_EXPRESSWAY"
@@ -104,10 +125,34 @@ Rectangle {
     }
 
     TSR{
+        id: alert_expressway_end
+        canEntityType: "ALERT_EXPRESSWAY_END"
+        property int layer_pri: 0
+        source: "images/tsr/2-01_end_expr_way.png"
+
+        anchors.left: parent.left
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
+    TSR{
         id: alert_playground
         canEntityType: "ALERT_PLAYGROUND"
         property int layer_pri: 0
         source: "images/tsr/left_playgrond_blue.png"
+
+        anchors.left: parent.left
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
+    TSR{
+        id: alert_playground_end
+        canEntityType: "ALERT_PLAYGROUND_END"
+        property int layer_pri: 0
+        source: "images/tsr/3-01-playgroung_end.png"
 
         anchors.left: parent.left
         anchors.rightMargin: 0

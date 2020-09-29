@@ -26,6 +26,11 @@
         {"enum": "ALERT_SLI", "value": 47},
         {"enum": "ALERT_EXPRESSWAY", "value": 48},
 
+        {"enum": "ALERT_MOTORWAY_END", "value": 49},
+        {"enum": "ALERT_NO_PASS_END", "value": 50},
+        {"enum": "ALERT_PLAYGROUND_END", "value": 51},
+        {"enum": "ALERT_EXPRESSWAY_END", "value": 52},
+
         {"enum": "INFO_VEH_SPEED", "value": 60},
         {"enum": "INFO_FAILSAFE", "value": 61},
 
@@ -155,11 +160,15 @@
                         {"value": 129, "action": "ALERT_SLI", "arg": 145, "description": "Standard electronic 145 kph"},
 
                         {"value": 171, "action": "ALERT_MOTORWAY", "description": "standard regular begin of MotorWay"},
+                        {"value": 172, "action": "ALERT_MOTORWAY_END", "description": "standard regular end of MotorWay"},
                         {"value": 173, "action": "ALERT_EXPRESSWAY", "description": "standard regular begin of ExpressWay"},
+                        {"value": 174, "action": "ALERT_EXPRESSWAY_END", "description": "standard regular end of ExpressWay"},
 
                         {"value": 175, "action": "ALERT_PLAYGROUND", "description": "regular Playground area begin"},
+                        {"value": 176, "action": "ALERT_PLAYGROUND_END", "description": "regular Playground area end"},
 
-                        {"value": 200, "action": "ALERT_NO_PASS", "description": "regular no passing start"}
+                        {"value": 200, "action": "ALERT_NO_PASS", "description": "regular no passing start"},
+                        {"value": 201, "action": "ALERT_NO_PASS_END", "description": "regular no passing end"}
 
                     ]
 
