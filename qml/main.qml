@@ -254,11 +254,15 @@ ApplicationWindow{
                 }
 
                 Image {
-                    id: gps
+                    id: om_mute
                     width: 18
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/status_no_GPS.png"
-                    opacity: 0
+
+                    property string canEntityType: "OM_MUTE"
+
+                    function setVisibleSlot() {opacity = 1.0}
+                    function setInvisibleSlot() {opacity = 0.0}  
+                    source: "images/Volume_Control_shortcut/mute.png"
                 }
 
                 Image {
@@ -721,36 +725,6 @@ ApplicationWindow{
                     font.pixelSize: 20
                 }
             }
-
-            Item {
-                id: om_mute
-                property string canEntityType: "OM_MUTE"
-
-                property int layer_pri: 1
-                width: 150
-                height: 150
-                function setVisibleSlot(){visible = true}
-                function setInvisibleSlot(){visible = false}
-
-
-
-                visible: false
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                //source: "images/error/red_alert-01.png"
-
-                Text {
-                    id: om_mute_label
-                    color: "#111abc"
-                    text: qsTr("Mute")
-                    font.bold: true
-                    anchors.top: parent.bottom
-                    anchors.topMargin: -20
-                    font.pixelSize: 20
-                }
-            }
-
-
 
             Item {
                 id: om_keeppwr
