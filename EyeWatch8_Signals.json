@@ -191,6 +191,8 @@
                 {"name": "time_indicator", "action": "Hi_Low_BeamControl", "type": "Enabler", "Set": [1,2]},
                 {"name": "FLA_Armed", "action": "Hi_Low_BeamControl", "type": "Enabler"},
                 {"name": "Hi_Low_BeamControl", "action": "ALERT_HI_BEAM","type": "GraphicItem"},
+                {"name": "Hi_Low_BeamControl", "action": ["ALERT_LOW_BEAM", "inverted"],"type": "GraphicItem"},
+
                 {"name": "Error_Active", "action": ["ALERT_ERROR", "inverted"], "type": "GraphicItem"},
                 {"name": "Error_code", "action": "ALERT_ERROR", "type": "IntArgument", "index": 0},
 

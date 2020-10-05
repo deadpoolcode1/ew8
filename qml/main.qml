@@ -212,11 +212,11 @@ ApplicationWindow{
 
 
                 Beam {
-                    id: alert_hi_beam
-                    property string canEntityType: "ALERT_HI_BEAM"
+                    id: alert_hi_low_beam
                     property int layer_pri: 0
                     opacity: isInEdition? 1.0:0.0
                 }
+
 
 
 

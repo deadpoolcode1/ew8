@@ -20,22 +20,35 @@ Image {
     opacity: 1.0
 
 
-/*
     states: [
-        State {
-            name: "Hi"; when: is_hi
-            PropertyChanges {
-                target: beam
-                source: "images/status_bar/ihc_white-01.png"
-            }
-        },
         State {
             name: "Low"; when: !is_hi
             PropertyChanges {
                 target: beam
-                source: "images/status_bar/eyewatch_statusbar_ihc-01.png"
+                source: "images/status_bar/IHC_low.png"
             }
         }
     ]
-   */
+
+    Item{
+        property string canEntityType: "ALERT_HI_BEAM"
+        property int layer_pri: 1
+        id: alert_hmw_alert
+        function setVisibleSlot(){
+            visible=true
+            is_hi = true
+        }
+        function setInvisibleSlot(){visible = false}
+    }
+
+    Item{
+        property string canEntityType: "ALERT_LOW_BEAM"
+        property int layer_pri: 1
+        id: alert_hmw_monitor
+        function setVisibleSlot(){
+            visible=true
+            is_hi = false
+        }
+        function setInvisibleSlot(){visible = false}
+    }
 }
