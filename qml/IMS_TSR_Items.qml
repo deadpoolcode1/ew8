@@ -17,6 +17,8 @@ Rectangle {
 
     property int canEntityType: Alert.QtQG
     property int layer_pri: 1
+    property alias overSpeeding: upper_tsr.overSpeeding
+    property alias speedLimit: upper_tsr.canEntityArg
 
     function setVisibleSlot(){visible = true;}
     function setInvisibleSlot(){visible = false;}

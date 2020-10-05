@@ -20,7 +20,7 @@ GRAMMARFILE = candbgrammar.peg
 CANDBGRAMMAR = $$cat($${GRAMMARFILE},blob)
 QMAKE_SUBSTITUTES += candbgrammar.h.in
 
-QT += quick
+QT += quick widgets
 
 CONFIG += c++11
 
@@ -113,7 +113,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES =
+DISTFILES = \
+    qml/VolumeIndicator.qml
 
 HEADERS += \
     keepalivemsg.h \

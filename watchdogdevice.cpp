@@ -3,8 +3,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#ifndef WIN32
 #include <sys/ioctl.h>
 #include <linux/watchdog.h>
+#endif
 #include <signal.h>
 #include <QDebug>
 

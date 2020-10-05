@@ -360,7 +360,10 @@ void CanManager::read_frame(void)
              printf("***ERROR FRAME RECEIVED***");
            }
            else {
-             isKnownFrameReceived = parse_frame(&frame);
+#if 0
+            isKnownFrameReceived =
+#endif
+            parse_frame(&frame);
            }
          }
          //Break the loop if something goes wrong

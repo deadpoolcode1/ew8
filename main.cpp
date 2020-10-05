@@ -1,4 +1,5 @@
 #include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
@@ -15,6 +16,8 @@
 #include <QFile>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+
+#include <QSplashScreen>
 
 class AlertTypes;
 class QQuickQRCode;
@@ -34,7 +37,13 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QGuiApplication app(argc, argv);
+
+
+    QApplication app(argc, argv);
+
+    QPixmap pixmap("/opt/canquick/qml/images/logo/ME_logo_app_splash.png");
+    QSplashScreen splash(pixmap);
+    splash.show();
 
     QCommandLineParser cmdLnParser;
 

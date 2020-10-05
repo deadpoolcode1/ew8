@@ -1,5 +1,5 @@
 import QtQuick 2.9
-//import QtQuick.Window 2.2
+import QtQuick.Window 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
@@ -7,6 +7,7 @@ import QtQml.Models 2.3
 //Custom modules:
 import MyQMLenums 0.1
 import builtin.mobileye.QRCode 0.1
+
 
 ApplicationWindow{
     id: page
@@ -84,6 +85,7 @@ ApplicationWindow{
                 anchors.topMargin: 5
                 property string canEntityType: "INFO_VEH_SPEED"
                 property int canEntityArg: 0
+                property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
                 property int layer_pri: 0
                 x: -1
                 y: 5
@@ -93,7 +95,7 @@ ApplicationWindow{
 
                 function setVisibleSlot(arg, is_mph_arg) {
                     is_mph = (is_mph_arg === 1);
-                    canEntityArg = is_mph? (arg * 0.621371):arg;
+                    canEntityArg = arg;
                     opacity = 1.0
                 }
                 function setInvisibleSlot() {opacity = 0.0}
@@ -104,7 +106,7 @@ ApplicationWindow{
                     id: speed_value
                     x: 0
                     color: "#f1e1ff"
-                    text: speed.canEntityArg
+                    text: speed.displaySpeed
                     topPadding: 0
                     anchors.top: parent.top
                     anchors.topMargin: 0
@@ -180,7 +182,7 @@ ApplicationWindow{
 
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/blinker_reminder_blue-01.png"
+                    source: "images/status_bar/status_blinker_yellow.png"
 
                     SequentialAnimation {
                         id: blinkers_animat
@@ -191,7 +193,7 @@ ApplicationWindow{
                             property: "opacity"
                             from: 1.0
                             to: 0.0
-                            duration: 300
+                            duration: 500
                             easing.type: Easing.InOutQuad
                         }
                         NumberAnimation {
@@ -199,7 +201,7 @@ ApplicationWindow{
                             property: "opacity"
                             from: 0.0
                             to: 1.0
-                            duration: 200
+                            duration: 500
                             easing.type: Easing.InOutQuad
                         }
 
@@ -338,6 +340,8 @@ ApplicationWindow{
                 anchors.leftMargin: 0
                 z: 6
                 anchors.left: parent.left
+
+                overSpeeding: speed.opacity == 1.0 && speed.canEntityArg > speedLimit
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
@@ -906,7 +910,7 @@ ApplicationWindow{
 
             property int canEntityType: Alert.QtQG
             property int layer_pri: 0
-            z: 13
+            z: 14
             function setVisibleSlot(){visible= true}
             function setInvisibleSlot(){visible = false}
             visible: false
@@ -915,12 +919,13 @@ ApplicationWindow{
 
             anchors.fill: parent
 
-            Rectangle{
+                Image {
                 id: volume_reqfail
                 property int canEntityType: Alert.ALERT_REQFAIL
                 objectName: "REQFAIL_VOLUME"
                 property int layer_pri: 0
-                color: "orange"
+                //color: "orange"
+                source: "images/Volume_Control_shortcut/red alert.png"
 
                 width: 100
                 height: 100
@@ -943,12 +948,13 @@ ApplicationWindow{
 
 
 
-            Rectangle{
+            Image {
                 id: volume_fail
                 property string canEntityType: "VOLUME_FAIL"
                 objectName: "FAIL_VOLUME"
                 property int layer_pri: 0
-                color: "red"
+                //color: "red"
+                source: "images/Volume_Control_shortcut/red alert.png"
 
                 width: 100
                 height: 100
@@ -969,42 +975,8 @@ ApplicationWindow{
             }
 
 
-            Item {
+            VolumeIndicator {
                 id: volume_done
-                property string canEntityType: "VOLUME_DONE"
-                objectName: "DONE_VOLUME"
-                property int canEntityArg: 0x0
-                property int layer_pri: 1
-
-                function setVisibleSlot(arg){visible= true; canEntityArg = arg;}
-                function setInvisibleSlot(){visible = false}
-
-                width: 100
-                height: 100
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-
-
-                Text {
-                    id: volume_value
-                    color: "white"
-                    text: volume_done.canEntityArg.toFixed(0)
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    topPadding: 0
-                    font.family: "HindSiliguri"
-                    font.pixelSize: 50
-                    font.bold: true
-                }
-
-                Timer {
-                    id: volume_done_timer
-                    running: volume_done.visible
-                    interval: 1000
-                    onTriggered: {
-                        itemSelfDeactivated("VOLUME_DONE","DONE_VOLUME")
-                    }
-                }
             }
         }
 
