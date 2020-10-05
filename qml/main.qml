@@ -632,7 +632,7 @@ ApplicationWindow{
             objectName: "FCW_QtQG"
             property bool mutexGroup: false
             property int canEntityType: Alert.QtQG
-            property int layer_pri: 1
+            property int layer_pri: 2 //Decreased from 1 to prevent reinit of SLI and TSR -- TBD add setSuppressed() signal
             z: 10
             anchors.fill: parent
             visible: false
