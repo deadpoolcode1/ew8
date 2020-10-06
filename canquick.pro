@@ -20,7 +20,7 @@ GRAMMARFILE = candbgrammar.peg
 CANDBGRAMMAR = $$cat($${GRAMMARFILE},blob)
 QMAKE_SUBSTITUTES += candbgrammar.h.in
 
-QT += quick widgets
+QT += quick
 
 CONFIG += c++11
 

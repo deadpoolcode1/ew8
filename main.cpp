@@ -1,5 +1,4 @@
 #include <QGuiApplication>
-#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
@@ -14,10 +13,10 @@
 
 #include <QResource>
 #include <QFile>
+#include <QDir>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
-#include <QSplashScreen>
 
 class AlertTypes;
 class QQuickQRCode;
@@ -37,21 +36,28 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+    QCoreApplication coreApp(argc,argv);
+
+    QGuiApplication * app;
 
 
-    QApplication app(argc, argv);
-
+#if 0
     QPixmap pixmap("/opt/canquick/qml/images/logo/ME_logo_app_splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
+#endif
 
     QCommandLineParser cmdLnParser;
 
     QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
 
+    QCommandLineOption splashPid(QStringList() << "s" << "splash-screen-pid", "Wait for splash screen process to finish or kill it","splash_pid");
+
     cmdLnParser.addOption(forceParsing);
 
-    cmdLnParser.process(app);
+    cmdLnParser.addOption(splashPid);
+
+    cmdLnParser.process(coreApp);
 
     //TODO: implement forced parsing in code
     bool is_forced = cmdLnParser.isSet(forceParsing);
@@ -84,21 +90,43 @@ int main(int argc, char *argv[])
 
     QQmlComponent component(&engine, mainQmlUrl);
 
+    bool is_splashed = cmdLnParser.isSet(splashPid);
 
-    //Otherwize use external main.qml
+    QString splash_pid;
 
+    if(is_splashed)
+    {
+        splash_pid = cmdLnParser.value(splashPid);
+        qDebug() << "Splash pid:" << splash_pid;
+    }
+
+    if(is_splashed)
+    {
+#ifndef WIN32
+        QDir proc("/proc");
+
+        while(proc.exists(splash_pid))
+        {
+            QThread::msleep(100);
+        }
+#endif
+    }
+
+    app = new QGuiApplication(argc, argv);
 
     QObject * componentObject = component.create();
 
     qDebug() << "Component created, time" << bootUpTimer.elapsed();
 
+
+
     MainProcess* mp = MainProcess::getInstance(componentObject);
-
-
 
     CanRxMsg::saveToStorage();
 
     qDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
+
+
 
     mp->launchEverything();
 
@@ -116,5 +144,5 @@ int main(int argc, char *argv[])
 #endif
 
 
-    return app.exec();
+    return app->exec();
 }
