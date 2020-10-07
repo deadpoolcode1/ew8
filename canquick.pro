@@ -1,5 +1,5 @@
 MAJOR_VERSION = 0
-MINOR_VERSION = 2
+MINOR_VERSION = 3
 
 VERSION = $${MAJOR_VERSION}"."$${MINOR_VERSION}
 message(Version $${VERSION})
@@ -171,7 +171,7 @@ win32: LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
 win32: INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 
-linux: LIBS += -lsocketcan -lqrencode -lwebp
+linux: LIBS += -lsocketcan -lqrencode -lwebp -ldrm
 
 linux: DEFINES += LOG_INIT_COMPLETE_TO_DMESG
 

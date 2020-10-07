@@ -263,6 +263,7 @@ ApplicationWindow{
                     function setVisibleSlot() {opacity = 1.0}
                     function setInvisibleSlot() {opacity = 0.0}  
                     source: "images/Volume_Control_shortcut/mute.png"
+                    opacity: isInEdition? 1.0 : 0.0
                 }
 
                 Image {
