@@ -164,8 +164,8 @@ Item{
 
             PropertyChanges {
                 target: hmw_item
-                car_margin: -7
-                car_scale: 0.625
+                car_margin: 25
+                car_scale: 0.75
             }
         }
     ]
