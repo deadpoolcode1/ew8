@@ -8,16 +8,14 @@ AnimatedImage {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
     visible: true
-    property alias enterRunning: enter_animat.running
 
     property int y_start_from
-
-    enterRunning: visible
 
     z: 4
 
 
     SequentialAnimation{
+        running: sign.visible
         id: enter_animat
     ParallelAnimation
     {

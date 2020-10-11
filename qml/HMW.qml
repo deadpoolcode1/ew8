@@ -131,7 +131,7 @@ Item{
 
 
     transitions: Transition {
-        NumberAnimation { properties: "car_margin,car_scale"; easing.type: Easing.InOutQuad }
+        NumberAnimation { properties: "car_margin,car_scale"; easing.type: Easing.InOutQuad ; duration: 700 }
     }
 
     states: [

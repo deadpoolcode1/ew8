@@ -346,7 +346,9 @@ ApplicationWindow{
                 z: 6
                 anchors.left: parent.left
 
-                overSpeeding: speed.opacity == 1.0 && speed.canEntityArg > speedLimit
+                //NOTE: SLI units are always same as units of SpeedFormat(e.g. UK has EU shape with Mph)
+                property int overSpeedingGap: 10
+                overSpeeding: speed.opacity == 1.0 && (speed.displaySpeed) >= speedLimit + overSpeedingGap
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
@@ -700,7 +702,7 @@ ApplicationWindow{
             //source: "images/bg/gradient_linear_24_16bit_2.png"
 
             Item {
-                id: om_powerof
+                id: om_poweroff
                 property string canEntityType: "OM_POWEROFF"
 
                 property int layer_pri: 1
