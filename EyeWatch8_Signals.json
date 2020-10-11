@@ -33,6 +33,7 @@
 
         {"enum": "INFO_VEH_SPEED", "value": 60},
         {"enum": "INFO_FAILSAFE", "value": 61},
+        {"enum": "SHAPE_USA", "value": 62},
 
         {"enum": "SMART_CROWDED", "value": 101},
         {"enum": "SMART_PED_HWY", "value": 102},
@@ -209,7 +210,8 @@
 
 
                 {"name": "Headway_measurement", "action":"ALERT_HMW_DISTANCE", "type":"IntArgument","index": 0},
-                {"name": "Speed_format", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 1}
+                {"name": "Speed_format", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 1},
+                {"name": "reserved2", "action": "SHAPE_USA", "type":"GraphicItem", "Set": 1}
             ]
         }
         ,

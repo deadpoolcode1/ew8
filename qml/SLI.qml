@@ -15,6 +15,7 @@ property alias source: sign.source
 function setVisibleSlot(arg) {canEntityArg = arg; sign.visible = true}
 function setInvisibleSlot() {sign.visible = false}
 
+
 NumberAnimation on z {
     running: sign.visible
     from: 5
@@ -33,6 +34,7 @@ SideIcon {
     y_start_from: 47
 
     Text {
+        id: splim
         text: canEntityArg.toString()
         font.pixelSize: 40
         fontSizeMode: Text.FixedSize
@@ -74,6 +76,20 @@ SideIcon {
     source: "images/sli/white_circular_sign-01.png"
 
    }
+   states: [
+       State {
+           name: "Usa"; when: usaShape
+           PropertyChanges {
+               target: sign
+               source: "images/sli/left_SLI_rect.png"
+           }
+
+           PropertyChanges {
+               target: splim
+               anchors.verticalCenterOffset: 23
+           }
+       }
+   ]
 
 }
 

@@ -41,6 +41,15 @@ ApplicationWindow{
            canEntityType: "OM_NORMAL"
         }
 
+        Item {
+            id: shape
+            property string canEntityType: "SHAPE_USA"
+            property int layer_pri: 2
+            function setVisibleSlot() {left_panel.usaShapeSLI = true}
+            function setInvisibleSlot() {left_panel.usaShapeSLI = false}
+            visible: false
+        }
+
         Rectangle {
             id: status_panel
             height: 50
