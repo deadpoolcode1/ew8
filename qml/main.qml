@@ -125,7 +125,7 @@ ApplicationWindow{
                     anchors.bottom: speed_value.bottom
                     anchors.bottomMargin: -9
                     anchors.horizontalCenterOffset: 0
-                    font.pixelSize: 11
+                    font.pixelSize: 12
                     font.capitalization: Font.MixedCase
                     topPadding: 0
                     anchors.horizontalCenter: parent.horizontalCenter
