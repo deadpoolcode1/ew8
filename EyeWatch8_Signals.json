@@ -1,5 +1,5 @@
 {
-    "MediaVersion":[0,3],
+    "MediaVersion":[0,4],
     "NOTE":"every unique integer value can be used",
     "GraphicItem": [
         {"enum": "ALERT_LEFT_LDWOFF", "value": 25},
