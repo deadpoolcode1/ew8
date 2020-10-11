@@ -105,7 +105,7 @@ Rectangle {
         id: alert_motorway_end
         canEntityType: "ALERT_MOTORWAY_END"
         property int layer_pri: 0
-        source: "images/tsr/left_motorway_end.png"
+        source: "images/tsr/Left_TSR_motorway_end.png"
 
         anchors.left: parent.left
         anchors.rightMargin: 0

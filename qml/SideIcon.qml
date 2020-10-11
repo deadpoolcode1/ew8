@@ -9,6 +9,9 @@ AnimatedImage {
     anchors.verticalCenter: parent.verticalCenter
     visible: true
 
+    width: 146
+    height: 146
+
     property int y_start_from
 
     z: 4
