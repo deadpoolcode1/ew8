@@ -15,8 +15,6 @@ Image {
 
     source: "images/status_bar/eyewatch_statusbar_ihc-01.png"
     property bool is_hi: true
-    width: 15
-    height: 18
     opacity: 1.0
 
 

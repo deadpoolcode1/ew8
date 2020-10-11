@@ -76,13 +76,13 @@ ApplicationWindow{
                 id: speed
                 width: 42//speed_value.width
                 color: "#00000000"
-                anchors.horizontalCenterOffset: 26
+                anchors.horizontalCenterOffset: 30
                 anchors.horizontalCenter: parent.left
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 5
+                anchors.bottomMargin: 4
                 anchors.top: parent.top
 
-                anchors.topMargin: 5
+                anchors.topMargin: 4
                 property string canEntityType: "INFO_VEH_SPEED"
                 property int canEntityArg: 0
                 property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
@@ -112,7 +112,7 @@ ApplicationWindow{
                     anchors.topMargin: 0
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.family: "HindSiliguri"
-                    font.pixelSize: 20
+                    font.pixelSize: 24
                     font.bold: true
 
                     onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
@@ -123,9 +123,9 @@ ApplicationWindow{
                     color: "#e1f1ff"
                     text: speed.unit_str
                     anchors.bottom: speed_value.bottom
-                    anchors.bottomMargin: -5
+                    anchors.bottomMargin: -9
                     anchors.horizontalCenterOffset: 0
-                    font.pixelSize: 9
+                    font.pixelSize: 11
                     font.capitalization: Font.MixedCase
                     topPadding: 0
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -140,18 +140,18 @@ ApplicationWindow{
                 layoutDirection: Qt.RightToLeft
                 anchors.right: logo.left
                 anchors.rightMargin: 10
-                spacing: 10
+                spacing: 4
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
                 anchors.top: parent.top
                 anchors.topMargin: 0
                 anchors.left: parent.left
-                anchors.leftMargin: 52
+                anchors.leftMargin: 60
 
                 Image {
                     id: vsn
-                    width: 15
-                    height: 18
+                    width: 20
+                    height: 20
                     opacity: isInEdition? 1.0:0.0
                     anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
@@ -170,8 +170,8 @@ ApplicationWindow{
                     id: alert_blinkers
                     property string canEntityType: "ALERT_BLINKERS"
                     property int layer_pri: 0
-                    width: 25
-                    height: 18
+                    width: 30
+                    height: 20
                     function setVisibleSlot() {opacity = 1.0; is_blinking = true}
                     function setInvisibleSlot() {opacity = 0.0; is_blinking = false}
 
@@ -214,6 +214,8 @@ ApplicationWindow{
                 Beam {
                     id: alert_hi_low_beam
                     property int layer_pri: 0
+                    width: 20
+                    height: 20
                     opacity: isInEdition? 1.0:0.0
                 }
 
@@ -229,7 +231,7 @@ ApplicationWindow{
                 layoutDirection: Qt.RightToLeft
                 anchors.left: logo.right
                 anchors.leftMargin: 10
-                spacing: 10
+                spacing: 4
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 0
                 anchors.top: parent.top
@@ -255,7 +257,8 @@ ApplicationWindow{
 
                 Image {
                     id: om_mute
-                    width: 18
+                    width: 20
+                    height: 20
                     anchors.verticalCenter: parent.verticalCenter
 
                     property string canEntityType: "OM_MUTE"
