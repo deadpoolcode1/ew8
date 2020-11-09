@@ -9,14 +9,12 @@ import builtin.mobileye.QRCode 0.1
 
 Rectangle {
     id: left_panel
-    width: 80
-    height: 175
 
     visible: true
 
     property int canEntityType: Alert.QtQG
     property int layer_pri: 1
-    property alias overSpeeding: upper_tsr.overSpeeding
+    property bool overSpeeding
     property alias speedLimit: upper_tsr.canEntityArg
     property alias usaShapeSLI: upper_tsr.usaShape
 
@@ -28,30 +26,35 @@ Rectangle {
         canEntityType: "ALERT_SLI"
         property int layer_pri: 0
 
+        overSpeeding: parent.overSpeeding && isInSlot
+
         anchors.top: parent.top
-        anchors.topMargin: -10
+        anchors.topMargin: 0
         anchors.left: parent.left
         anchors.leftMargin: 0
     }
 
+
     Item {
-        id: groupBottomTSR
+        id: groupBottom
         objectName: "BOTTOM_QtQG"
         property bool mutexGroup: true
         property int layer_pri: 0
-        z: 4
+
+        property bool isInSlot:  true
 
         property int canEntityType: Alert.QtQG
 
         visible: true
 
+        z: 4
 
         anchors.left: parent.left
         anchors.rightMargin: 0
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
 
-        function setVisibleSlot() {visible = true}
+        function setVisibleSlot() {visible = true; }
         function setInvisibleSlot() {visible = false}
 
         DummyItem{
@@ -66,100 +69,61 @@ Rectangle {
 
 
 
-    TSR{
-        id: alert_no_pass
-        canEntityType: "ALERT_NO_PASS"
-        property int layer_pri: 0
-        source: "images/tsr/left_nopass_red.png"
+        TSR{
+            id: alert_no_pass
+            property string canEntityType: "ALERT_NO_PASS"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_nopass_red.png"
+        }
 
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
+        TSR{
+            id: alert_no_pass_end
+            canEntityType: "ALERT_NO_PASS_END"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_nopass_end.png"
+        }
+
+        TSR{
+            id: alert_motorway
+            canEntityType: "ALERT_MOTORWAY"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_motorway_beg.png"
+        }
+
+        TSR{
+            id: alert_motorway_end
+            canEntityType: "ALERT_MOTORWAY_END"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_motorway_end.png"
+        }
+
+        TSR{
+            id: alert_expressway
+            canEntityType: "ALERT_EXPRESSWAY"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_expressway_beg.png"
+        }
+
+        TSR{
+            id: alert_expressway_end
+            canEntityType: "ALERT_EXPRESSWAY_END"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_expressway_end.png"
+        }
+
+        TSR{
+            id: alert_playground
+            canEntityType: "ALERT_PLAYGROUND"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_playgrond_blue.png"
+
+        }
+
+        TSR{
+            id: alert_playground_end
+            canEntityType: "ALERT_PLAYGROUND_END"
+            property int layer_pri: 0
+            source: "images/left-panel/TSR/left_playgrond_blue_end.png"
+        }
     }
-
-    TSR{
-        id: alert_no_pass_end
-        canEntityType: "ALERT_NO_PASS_END"
-        property int layer_pri: 0
-        source: "images/tsr/left_nopass_end.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_motorway
-        canEntityType: "ALERT_MOTORWAY"
-        property int layer_pri: 0
-        source: "images/tsr/left_motorway_beg.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_motorway_end
-        canEntityType: "ALERT_MOTORWAY_END"
-        property int layer_pri: 0
-        source: "images/tsr/Left_TSR_motorway_end.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_expressway
-        canEntityType: "ALERT_EXPRESSWAY"
-        property int layer_pri: 0
-        source: "images/tsr/left_highway_beg.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_expressway_end
-        canEntityType: "ALERT_EXPRESSWAY_END"
-        property int layer_pri: 0
-        source: "images/tsr/2-01_end_expr_way.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_playground
-        canEntityType: "ALERT_PLAYGROUND"
-        property int layer_pri: 0
-        source: "images/tsr/left_playgrond_blue.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-
-    TSR{
-        id: alert_playground_end
-        canEntityType: "ALERT_PLAYGROUND_END"
-        property int layer_pri: 0
-        source: "images/tsr/3-01-playgroung_end.png"
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-    }
-}
 }

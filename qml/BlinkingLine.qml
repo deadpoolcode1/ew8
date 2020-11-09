@@ -14,7 +14,7 @@ Image {
             property: "opacity"
             from: 1
             to: 0
-            duration: 300
+            duration: 404
             easing.type: Easing.InOutQuad
         }
         NumberAnimation {
@@ -22,9 +22,11 @@ Image {
             property: "opacity"
             from: 0
             to: 1
-            duration: 200
+            duration: 404
             easing.type: Easing.InOutQuad
         }
+
+        onStopped: {line.opacity =  1.0}
     }
 
     function setVisibleSlot() {visible = true}

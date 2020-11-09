@@ -1,5 +1,5 @@
 {
-    "MediaVersion":[0,4],
+    "MediaVersion":[0,5],
     "NOTE":"every unique integer value can be used",
     "GraphicItem": [
         {"enum": "ALERT_LEFT_LDWOFF", "value": 25},
@@ -160,10 +160,11 @@
                         {"value": 128, "action": "ALERT_SLI", "arg": 135, "description": "standard electronic 135 kph"},
                         {"value": 129, "action": "ALERT_SLI", "arg": 145, "description": "Standard electronic 145 kph"},
 
-                        {"value": 171, "action": "ALERT_MOTORWAY", "description": "standard regular begin of MotorWay"},
-                        {"value": 172, "action": "ALERT_MOTORWAY_END", "description": "standard regular end of MotorWay"},
-                        {"value": 173, "action": "ALERT_EXPRESSWAY", "description": "standard regular begin of ExpressWay"},
-                        {"value": 174, "action": "ALERT_EXPRESSWAY_END", "description": "standard regular end of ExpressWay"},
+
+                        {"value": 171, "action": "ALERT_EXPRESSWAY", "description": "standard regular begin of ExpressWay"},
+                        {"value": 172, "action": "ALERT_EXPRESSWAY_END", "description": "standard regular end of ExpressWay"},
+                        {"value": 173, "action": "ALERT_MOTORWAY", "description": "standard regular begin of MotorWay"},
+                        {"value": 174, "action": "ALERT_MOTORWAY_END", "description": "standard regular end of MotorWay"},
 
                         {"value": 175, "action": "ALERT_PLAYGROUND", "description": "regular Playground area begin"},
                         {"value": 176, "action": "ALERT_PLAYGROUND_END", "description": "regular Playground area end"},

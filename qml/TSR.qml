@@ -4,8 +4,6 @@ Item {
 
     id: container
     property var canEntityType;
-    width: 110
-    height: 110
     visible: true
 
     property alias source: sign.source
@@ -13,10 +11,14 @@ Item {
     function setVisibleSlot() {sign.visible = true;}
     function setInvisibleSlot() {sign.visible = false;}
 
+    property bool isInSlot: !visible || sign.isInSlot
+
+    z: 4
+
     SideIcon
     {
         id: sign
-        y_start_from: -47
+        quadrant: 3
     }
 }
 

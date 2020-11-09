@@ -10,10 +10,7 @@ Image {
     function setVisibleSlot() {beam.opacity = 1.0}
     function setInvisibleSlot() {beam.opacity = 0.0}
 
-    anchors.verticalCenter: parent.verticalCenter
-    fillMode: Image.PreserveAspectFit
-
-    source: "images/status_bar/eyewatch_statusbar_ihc-01.png"
+    source: "images/status-bar/status_IHC_high.png"
     property bool is_hi: true
     opacity: 1.0
 
@@ -23,7 +20,7 @@ Image {
             name: "Low"; when: !is_hi
             PropertyChanges {
                 target: beam
-                source: "images/status_bar/IHC_low.png"
+                source: "images/status-bar/status_IHC_low.png"
             }
         }
     ]

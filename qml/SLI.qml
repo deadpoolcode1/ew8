@@ -2,36 +2,43 @@ import QtQuick 2.9
 
 Item {
 id: container
-property int canEntityArg: 0x10
+property int canEntityArg: 30
 property var canEntityType;
 property bool overSpeeding: false
 property bool usaShape: false
-width: 110
-height: 110
 visible: true
 
 property alias source: sign.source
 
-function setVisibleSlot(arg) {canEntityArg = arg; sign.visible = true}
+ property alias isInSlot: sign.isInSlot
+
+function setVisibleSlot(arg) {canEntityArg = arg;  sign.visible = true;}
 function setInvisibleSlot() {sign.visible = false}
 
+//  source: "images/shadow-test/s4.png"
 
-NumberAnimation on z {
+SequentialAnimation on z {
+
     running: sign.visible
-    from: 5
-    to: 3
-    duration: 1500
-    easing.type: Easing.InOutQuad
+
+    PropertyAction{
+        value: 5
+    }
+
+    PauseAnimation {
+        duration: 1200
+    }
+
+    PropertyAction{
+        value: 3
+    }
 }
 
 SideIcon {
 
-    width: 146
-    height: 146
-
     id: sign
 
-    y_start_from: 47
+    quadrant: 2
 
     Text {
         id: splim
@@ -53,6 +60,8 @@ SideIcon {
         id:over_speeding_animat
         loops: Animation.Infinite
         running: overSpeeding
+
+
         NumberAnimation {
             target: sign
             property: "opacity"
@@ -61,27 +70,38 @@ SideIcon {
             duration: 300
             easing.type: Easing.InOutQuad
         }
+
+        PauseAnimation {
+            duration: 500
+        }
+
         NumberAnimation {
             target: sign
             property: "opacity"
             from: 0
             to: 1
-            duration: 200
+            duration: 300
             easing.type: Easing.InOutQuad
+        }
+
+        PauseAnimation {
+            duration: 500
         }
 
         onStopped: {sign.opacity =  1.0}
     }
 
-    source: "images/sli/white_circular_sign-01.png"
+    source: "images/left-panel/SLI/left_SLI_circ.png"
 
    }
+   
+   //circular
    states: [
        State {
            name: "Usa"; when: usaShape
            PropertyChanges {
                target: sign
-               source: "images/sli/left_SLI_rect.png"
+               source: "images/left-panel/SLI/left_SLI_rect.png"
            }
 
            PropertyChanges {
@@ -90,7 +110,6 @@ SideIcon {
            }
        }
    ]
-
 }
 
 

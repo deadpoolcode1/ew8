@@ -27,18 +27,18 @@ ApplicationWindow{
         property int canEntityType: Alert.QtQG
         property int layer_pri: 0
         visible: true
+
         color: "#000000"
 
         anchors.fill: parent
-        //source: "images/bg/eyewatch_car_lighter_bg-01.png"
         objectName: "general_panel_root"
 
         width: 320
         height: 240
 
         DummyItem{
-           property int layer_pri: 5
-           canEntityType: "OM_NORMAL"
+            property int layer_pri: 5
+            canEntityType: "OM_NORMAL"
         }
 
         Item {
@@ -52,8 +52,9 @@ ApplicationWindow{
 
         Rectangle {
             id: status_panel
-            height: 50
+            height: 43
             color: "#00000000"
+            border.color: "#00000000"
             z: 1
 
             property int canEntityType: Alert.QtQG
@@ -62,136 +63,126 @@ ApplicationWindow{
             //function setInvisibleSlot(){visible = false; console.log("STATUS OFF")}
 
             anchors.right: parent.right
-            anchors.rightMargin: 0
+            anchors.rightMargin: 8
             anchors.left: parent.left
-            anchors.leftMargin: 0
+            anchors.leftMargin: 8
             anchors.top: parent.top
-            anchors.topMargin: 0
+            anchors.topMargin: 8
             visible: true
 
             Image {
                 id: logo
-                width: 48
-                height: 32
-                anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 0
                 clip: true
                 visible: true
                 fillMode: Image.PreserveAspectCrop
-                source: "images/logo/ME_logo_white.png"
+                //source: "images/logo/logo.png"
+                source: "images/logo/ME_status_logo.png"
             }
 
-            Rectangle {
-                id: speed
-                width: 42//speed_value.width
-                color: "#00000000"
-                anchors.horizontalCenterOffset: 30
-                anchors.horizontalCenter: parent.left
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 4
-                anchors.top: parent.top
-
-                anchors.topMargin: 4
-                property string canEntityType: "INFO_VEH_SPEED"
-                property int canEntityArg: 0
-                property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
-                property int layer_pri: 0
-                x: -1
-                y: 5
-
-                property bool is_mph: false
-                property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
-
-                function setVisibleSlot(arg, is_mph_arg) {
-                    is_mph = (is_mph_arg === 1);
-                    canEntityArg = arg;
-                    opacity = 1.0
-                }
-                function setInvisibleSlot() {opacity = 0.0}
-                visible: true
-                opacity: isInEdition? 1.0:0.0
-
-                Text {
-                    id: speed_value
-                    x: 0
-                    color: "#f1e1ff"
-                    text: speed.displaySpeed
-                    topPadding: 0
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.family: "HindSiliguri"
-                    font.pixelSize: 24
-                    font.bold: true
-
-                    onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
-                }
-
-                Text {
-                    id: speed_units
-                    color: "#e1f1ff"
-                    text: speed.unit_str
-                    anchors.bottom: speed_value.bottom
-                    anchors.bottomMargin: -9
-                    anchors.horizontalCenterOffset: 0
-                    font.pixelSize: 12
-                    font.capitalization: Font.MixedCase
-                    topPadding: 0
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.family: "HindSiliguri"
-                    font.bold: true
-                }
-
-            }
 
             Row {
                 id: left_row
-                layoutDirection: Qt.RightToLeft
-                anchors.right: logo.left
-                anchors.rightMargin: 10
-                spacing: 4
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.top: parent.top
-                anchors.topMargin: 0
+                y: -2
+                height: 42
                 anchors.left: parent.left
-                anchors.leftMargin: 60
+                anchors.leftMargin: 0
+                anchors.right: logo.left
+                anchors.rightMargin: 8
+                layoutDirection: Qt.LeftToRight
+                spacing: 8
 
-                Image {
-                    id: vsn
-                    width: 20
-                    height: 20
+                Rectangle {
+                    id: speed
+                    width: 42
+                    height: 35//speed_value.width
+                    color: "#00000000"
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+
+                    property string canEntityType: "INFO_VEH_SPEED"
+                    property int canEntityArg: 255
+                    property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
+
+                    property bool is_mph: false
+                    property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
+
+                    function setVisibleSlot(arg, is_mph_arg) {
+                        is_mph = (is_mph_arg === 1);
+                        canEntityArg = arg;
+                        opacity = 1.0
+                    }
+                    function setInvisibleSlot() {opacity = 0.0}
+                    visible: true
                     opacity: isInEdition? 1.0:0.0
-                    anchors.verticalCenter: parent.verticalCenter
-                    fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/status_low_vis.png"
 
-                    property string canEntityType: "INFO_FAILSAFE"
-                    property int layer_pri: 0
+                    Text {
+                        id: speed_value
+                        x: 0
+                        color: "#e1f1ff"
+                        text: speed.displaySpeed
+                        font.letterSpacing: -2.2
+                        leftPadding: -2
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        topPadding: -4
+                        font.family: "HindSiliguri"
+                        font.pixelSize: 24
+                        font.bold: true
 
-                    function setVisibleSlot() {opacity = 1.0}
-                    function setInvisibleSlot() {opacity = 0.0}  
+                        onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
+                    }
+
+                    Text {
+                        id: speed_units
+                        color: "#e1f1ff"
+                        text: speed.unit_str
+                        anchors.bottom: speed_value.bottom
+                        anchors.bottomMargin: -11
+                        anchors.horizontalCenterOffset: 0
+                        font.pixelSize: 14
+                        font.capitalization: Font.MixedCase
+                        topPadding: 0
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.family: "HindSiliguri"
+                        font.bold: true
+                    }
+
                 }
 
 
+
+
+                Beam {
+                    id: alert_hi_low_beam
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    opacity: isInEdition? 1.0:0.0
+                }
+
+                Rectangle{
+                    id: left_row_slot3
+                    width: 42
+                    height: 35//speed_value.width
+                    color: "#00000000"
+                    anchors.top: parent.top
 
                 Image {
                     id: alert_blinkers
                     property string canEntityType: "ALERT_BLINKERS"
                     property int layer_pri: 0
-                    width: 30
-                    height: 20
-                    function setVisibleSlot() {opacity = 1.0; is_blinking = true}
-                    function setInvisibleSlot() {opacity = 0.0; is_blinking = false}
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    function setVisibleSlot() {visible = true; is_blinking = true}
+                    function setInvisibleSlot() {visible = false; is_blinking = false}
 
-                    opacity: isInEdition? 1.0:0.0
+                    visible: isInEdition
                     property bool is_blinking: false
 
-                    visible: true
 
-                    anchors.verticalCenter: parent.verticalCenter
                     fillMode: Image.PreserveAspectFit
-                    source: "images/status_bar/status_blinker_yellow.png"
+                    source: "images/status-bar/status_blinker_yellow.png"
 
                     SequentialAnimation {
                         id: blinkers_animat
@@ -202,7 +193,7 @@ ApplicationWindow{
                             property: "opacity"
                             from: 1.0
                             to: 0.0
-                            duration: 500
+                            duration: 404
                             easing.type: Easing.InOutQuad
                         }
                         NumberAnimation {
@@ -210,7 +201,7 @@ ApplicationWindow{
                             property: "opacity"
                             from: 0.0
                             to: 1.0
-                            duration: 500
+                            duration: 404
                             easing.type: Easing.InOutQuad
                         }
 
@@ -220,70 +211,87 @@ ApplicationWindow{
                 }
 
 
-                Beam {
-                    id: alert_hi_low_beam
-                    property int layer_pri: 0
-                    width: 20
-                    height: 20
-                    opacity: isInEdition? 1.0:0.0
+
+
+
+
+
+
+
+                Image {
+                    id: vsn
+                    visible: isInEdition
+                    fillMode: Image.PreserveAspectFit
+                    source: "images/status-bar/status_low_vis.png"
+
+                    property string canEntityType: "INFO_FAILSAFE"
+                    property int layer_pri: 1
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+
+                    function setVisibleSlot() {visible = true}
+                    function setInvisibleSlot() {visible = false}
                 }
-
-
-
-
-
-
             }
+            }
+
 
             Row {
                 id: right_row
+                height: 42
                 layoutDirection: Qt.RightToLeft
                 anchors.left: logo.right
-                anchors.leftMargin: 10
-                spacing: 4
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.top: parent.top
-                anchors.topMargin: 0
+                anchors.leftMargin: 8
+                spacing: 7
                 anchors.right: parent.right
-                anchors.rightMargin: 20
+                anchors.rightMargin: 0
 
 
                 Image {
                     id: green_user
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/eyewatch_statusbar_user_green-01.png"
-                    opacity: 0
-                }
-
-                Image {
-                    id: gsm
-                    width: 18
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/status_no_GSM.png"
-                     opacity: 0
-                }
-
-                Image {
-                    id: om_mute
-                    width: 20
-                    height: 20
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    property string canEntityType: "OM_MUTE"
-
-                    function setVisibleSlot() {opacity = 1.0}
-                    function setInvisibleSlot() {opacity = 0.0}  
-                    source: "images/Volume_Control_shortcut/mute.png"
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    source: "images/status-bar/status_Signed_in.png"
                     opacity: isInEdition? 1.0 : 0.0
                 }
 
                 Image {
                     id: ota
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "images/status_bar/status_OTA.png"
-                    opacity: 0
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    source: "images/status-bar/status_OTA.png"
+                    opacity: isInEdition? 1.0 : 0.0
                 }
+
+                Image {
+                    id: no_gps
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    source: "images/status-bar/status_no_GPS.png"
+                    opacity: isInEdition? 1.0 : 0.0
+                }
+
+                Image {
+                    id: status_error
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    source: "images/status-bar/status_error.png"
+                    opacity: isInEdition? 1.0 : 0.0
+                }
+
+                Image {
+                    id: om_mute
+
+                    property string canEntityType: "OM_MUTE"
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+
+                    function setVisibleSlot() {opacity = 1.0}
+                    function setInvisibleSlot() {opacity = 0.0}
+                    source: "images/status-bar/status_mute.png"
+                    opacity: isInEdition? 1.0 : 0.0
+                }
+
 
 
             }
@@ -300,7 +308,7 @@ ApplicationWindow{
             visible: isInEdition
 
             y: 50
-            color: "#00000000"
+            color: parent.color
             anchors.top: status_panel.bottom
             anchors.topMargin: 0
             anchors.right: parent.right
@@ -351,9 +359,9 @@ ApplicationWindow{
                 width: 50
                 color: "#00000000"
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 15
+                anchors.bottomMargin: 12
                 anchors.top: parent.top
-                anchors.topMargin: 0
+                anchors.topMargin: 12
                 anchors.leftMargin: 0
                 z: 6
                 anchors.left: parent.left
@@ -371,19 +379,19 @@ ApplicationWindow{
                 width: 50
                 color: "#00000000"
                 anchors.top: parent.top
-                anchors.topMargin: 0
+                anchors.topMargin: 12
                 z: 6
                 anchors.right: parent.right
                 anchors.rightMargin: 0
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 15
+                anchors.bottomMargin: 12
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
             }
 
             Image {
-                id: vehicle_img
+                id: forward_vehicle
                 x: 95
                 y: -5
                 width: 80
@@ -393,7 +401,7 @@ ApplicationWindow{
                 anchors.horizontalCenter: groupCIPV.horizontalCenter
                 anchors.top: groupCIPV.top
                 source: "images/cars/eyewatch_car_red_hmw-01.png"
-                visible: alert_hmw_general.visible&&(!alert_pdz.visible)
+                visible: alert_hmw_general.visible //&&(!alert_pdz.visible)
                 scale: alert_hmw_general.car_scale
             }
 
@@ -410,80 +418,88 @@ ApplicationWindow{
                 function setVisibleSlot(){visible = true}
                 function setInvisibleSlot(){visible = false}
 
+                Image {
+                    id: alert_pdz
+                    property string canEntityType: "ALERT_PDZ"
+                    property int layer_pri: 0
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    anchors.top: parent.top
+                    anchors.topMargin: -8
+
+                    z: 1
+                    source: "images/pdz/main_ped_yellow_old.png"
+
+
+
+                    function setVisibleSlot() {visible = true;  console.log("pdz:"+Date.now());}
+                    function setInvisibleSlot() {visible = false}
+
+                    SequentialAnimation on opacity{
+                        loops: Animation.Infinite
+                        running: alert_pdz.visible
+
+
+                        NumberAnimation{
+                            from: 1
+                            to: 0
+                            duration: 300
+                            easing.type: Easing.InOutQuad
+                        }
+
+
+                        PauseAnimation {
+                            duration: 500
+                        }
+
+
+                        NumberAnimation {
+                            from: 0
+                            to: 1
+                            duration: 300
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        PauseAnimation {
+                            duration: 500
+                        }
+
+                        onStopped: {opacity =  1.0}
+                    }
+
+                }
 
 
                 Item {
-                    id: groupPdzHmwDistance
-                    property int canEntityType: Alert.QtQG
-                    property int layer_pri: 1
-                    property bool mutexGroup: false
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    z: 1
-                    visible: true
-                    //anchors.fill: parent
+                    id: alert_hmw_distance
+                    property int layer_pri: 0
+                    property string canEntityType: "ALERT_HMW_DISTANCE"
 
-                    objectName: "GAG_QtQG"
-
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
-
-
-                    Image {
-                        id: alert_pdz
-                        property string canEntityType: "ALERT_PDZ"
-                        property int layer_pri: 0
-                        anchors.horizontalCenter: parent.horizontalCenter
-
-                        anchors.top: parent.top
-                        anchors.topMargin: 0
-
-                        z: 1
-                        source: "images/pdz/main_ped_yellow_old.png"
-
-
-
-                        function setVisibleSlot() {visible = true;  console.log("pdz:"+Date.now());}
-                        function setInvisibleSlot() {visible = false}
-
+                    anchors.fill: parent
+                    function setVisibleSlot(Arg){
+                        alert_hmw_general.canEntityArg = Arg
                     }
-
-                    Item {
-                        id: alert_hmw_distance
-                        property int layer_pri: 1
-                        property string canEntityType: "ALERT_HMW_DISTANCE"
-
-                        anchors.fill: parent
-                        function setVisibleSlot(Arg){
-                            alert_hmw_general.canEntityArg = Arg
-                        }
-                        function setInvisibleSlot(){
-                            alert_hmw_general.canEntityArg = 0x00
-                        }
+                    function setInvisibleSlot(){
+                        alert_hmw_general.canEntityArg = 0x00
                     }
-
                 }
 
                 HMW {
                     id: alert_hmw_general
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     anchors.fill: parent
                     playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
                     alert: true
                 }
-
-
-
-
             }
 
-            GreyCar {
-                id: greyCar
-                width: 133
-                height: 51
-                anchors.bottomMargin: -24
-                anchors.horizontalCenterOffset: 0
+            HostCar {
+                id: hostCar
+                width: 160
+                fillMode: Image.PreserveAspectFit
+                anchors.bottomMargin: -5
+                is_left: alert_lldw.visible
+                is_right: alert_rldw.visible
             }
 
             Item {
@@ -562,8 +578,6 @@ ApplicationWindow{
                             property string canEntityType: "ALERT_LLDW"
                             property int layer_pri: 1
                             source: "images/ldw/ldw_left-01-01.png"
-
-                            onVisibleChanged: {if(visible) greyCar.moveLeft(); else greyCar.moveLeftReset();}
                         }
                         Image {
                             id: alert_ldwon_left
@@ -613,7 +627,6 @@ ApplicationWindow{
                             property string canEntityType: "ALERT_RLDW"
                             property int layer_pri: 1
                             source: "images/ldw/ldw_right-01.png"
-                            onVisibleChanged: {if(visible) greyCar.moveRight(); else greyCar.moveRightReset();}
                         }
 
                         Image {
@@ -711,7 +724,6 @@ ApplicationWindow{
             antialiasing: true
             smooth: true
 
-            //source: "images/bg/gradient_linear_24_16bit_2.png"
 
             Item {
                 id: om_poweroff
@@ -908,7 +920,7 @@ ApplicationWindow{
 
             anchors.fill: parent
 
-                Image {
+            Image {
                 id: volume_reqfail
                 property int canEntityType: Alert.ALERT_REQFAIL
                 objectName: "REQFAIL_VOLUME"

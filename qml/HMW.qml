@@ -6,7 +6,7 @@ Item{
     property int canEntityArg: 0x10
     property alias playing: strips_img.playing
     property double car_scale: 1
-    property int car_margin: 50
+    property int car_margin: 47
     property bool alert
     width: 220
     height: 190
@@ -15,12 +15,11 @@ Item{
     function setVisibleSlot(){visible = true}
     function setInvisibleSlot(){visible = false}
 
+    property color text_color: "#e1f1ff"
+
 
     AnimatedImage {
         id: strips_img;
-        x: 32
-        y: -34
-        z: -5
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
@@ -32,9 +31,7 @@ Item{
 
     Text {
         id: units
-        x: -14
-        y: -58
-        color: "#f1e1ff"
+        color: text_color
         text: hmw_item.canEntityArg == 0x00? "   ":"sec"
         font.pixelSize: 20
         lineHeight: 1
@@ -44,9 +41,10 @@ Item{
         font.family: "HindSiliguri"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 29
+        anchors.bottomMargin: 38
         visible: strips_img.visible
     }
+
 
     Item{
         id: time
@@ -58,7 +56,7 @@ Item{
 
         Text {
             id: timeInt
-            color: "#f1e1ff"
+            color: text_color
             text: timeText.slice(0,-2)
             anchors.bottomMargin: 0
             font.weight: Font.Black
@@ -73,7 +71,7 @@ Item{
 
         Text {
             id: timePoint
-            color: "#f1e1ff"
+            color: text_color
             text: timeText.charAt(timeText.length - 2)
             anchors.left: timeInt.right
             anchors.leftMargin: -6
@@ -89,7 +87,7 @@ Item{
 
         Text {
             id: timeFrac
-            color: "#f1e1ff"
+            color: text_color
             text: timeText.charAt(timeText.length - 1)
             anchors.left: timePoint.right
             anchors.leftMargin: -6
@@ -151,20 +149,21 @@ Item{
 
             PropertyChanges {
                 target: hmw_item
-                car_margin: -3
+                car_margin: 43
                 car_scale: 0.8
             }
         },
         State {name: "Monitor"; when: !alert
             PropertyChanges {
                 target: strips_img
+                anchors.horizontalCenterOffset: 0
                 source: "images/hmw/HMW-green-new-2.gif"
                 visible: true
             }
 
             PropertyChanges {
                 target: hmw_item
-                car_margin: 25
+                car_margin: 40
                 car_scale: 0.75
             }
         }

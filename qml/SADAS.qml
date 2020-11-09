@@ -4,8 +4,6 @@ Item {
 
     id: container
     property var canEntityType;
-    width: 110
-    height: 110
     visible: true
     //z: sign.z
 
@@ -17,7 +15,7 @@ Item {
     SideIcon
     {
         id: sign
-        y_start_from: 47
+        quadrant: 1
     }
 }
 
