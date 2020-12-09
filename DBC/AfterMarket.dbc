@@ -33,14 +33,21 @@ NS_ :
 
 BS_:
 
-BU_:
+BU_: ME_AWS_CANA
+VAL_TABLE_ SLIAlert 1 "ON" 0 "OFF" ;
+VAL_TABLE_ TSR_shape 1 "rectangle" 0 "Circle" ;
+VAL_TABLE_ TrafficLightWarning 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "Description for the value '0x1'" 0 "Description for the value '0x0'" ;
+VAL_TABLE_ SpeedDisplayEnabled 1 "ON" 0 "OFF" ;
 
 
 BO_ 1792 AWS: 8 Vector__XXX
+ SG_ SLI_Alert : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ TSR_Shape : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ TrafficLightWarning : 59|2@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ SpeedIndication : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ShowTamperAlert : 37|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cyclist : 44|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ reserved5 : 59|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ LDW_Right_Lane_Not_Available : 40|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ reserved1 : 11|2@1- (1,0) [0|0] "" Vector__XXX
  SG_ TSR_warning_level : 48|3@1+ (1,0) [0|7] "" Vector__XXX
  SG_ TSR_enabbled : 47|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ PCW_PedDZ : 41|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -70,10 +77,16 @@ BO_ 1792 AWS: 8 Vector__XXX
  SG_ PCW_X_Active : 61|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ SoundSuppressed : 7|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ SoundRepeat : 5|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ reserved2 : 36|2@1+ (1,0) [0|0] "" Vector__XXX
 
 
 
+CM_ SG_ 1792 SLI_Alert "When TSR feature is enabled the bit is on";
+CM_ SG_ 1792 TSR_Shape "When TSR feature is enabled the bit is on";
+CM_ SG_ 1792 TrafficLightWarning "0     Day
+1     Dusk
+2     Night
+3     not in use";
+CM_ SG_ 1792 ShowTamperAlert "When need to display the tamper alert icon EW8 is active the bit is on";
 CM_ SG_ 1792 LDW_Right_Lane_Not_Available "When low speed ,low confidence lanes or configuration off the bit is on";
 CM_ SG_ 1792 TSR_enabbled "When TSR feature is enabled the bit is on";
 CM_ SG_ 1792 HW_Warning_level "When HW configuration <= 0.6 and CIPV <= 0.6 headway warning level =2";
@@ -124,6 +137,11 @@ BA_DEF_DEF_  "CANoeJitterMax" 0;
 BA_DEF_DEF_  "CANoeJitterMin" 0;
 BA_DEF_DEF_  "CANoeDrift" 0;
 BA_DEF_DEF_  "CANoeStartDelay" 0;
+VAL_ 1792 SLI_Alert 1 "ON" 0 "OFF" ;
+VAL_ 1792 TSR_Shape 1 "rectangle" 0 "Circle" ;
+VAL_ 1792 TrafficLightWarning 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "Description for the value '0x1'" 0 "Description for the value '0x0'" ;
+VAL_ 1792 SpeedIndication 1 "ON" 0 "OFF" ;
+VAL_ 1792 ShowTamperAlert 1 "ON" 0 "OFF" ;
 VAL_ 1792 cyclist 1 "cyclist" 0 "pedestrian" ;
 VAL_ 1792 LDW_Right_Lane_Not_Available 1 "ON" 0 "OFF" ;
 VAL_ 1792 TSR_warning_level 3 "speed vehicle > road speed+30" 2 "speed vehicle > road speed+20" 1 "speed vehicle > road speed+10" 0 "speed vehicle <= road speed+10" ;

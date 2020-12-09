@@ -16,6 +16,7 @@ ApplicationWindow{
 
     property bool isInEdition: false
 
+
     width: 320
     height: 240
     objectName: "AppWindow"
@@ -26,6 +27,7 @@ ApplicationWindow{
         id: general_panel
         property int canEntityType: Alert.QtQG
         property int layer_pri: 0
+        y: 0
         visible: true
 
         color: "#000000"
@@ -49,6 +51,26 @@ ApplicationWindow{
             function setInvisibleSlot() {left_panel.usaShapeSLI = false}
             visible: false
         }
+
+        Item {
+            id: show_speed
+            property string canEntityType: "INFO_SPEED_SHOW"
+            property int layer_pri: 2
+            function setVisibleSlot() {visible = true}
+            function setInvisibleSlot() {visible = false}
+            visible: false
+        }
+
+        Item {
+            id: show_sli_overspeed
+            property string canEntityType: "ALERT_SLI_SHOW"
+            property int layer_pri: 2
+            function setVisibleSlot() {visible = true}
+            function setInvisibleSlot() {visible = false}
+            visible: false
+        }
+
+
 
         Rectangle {
             id: status_panel
@@ -108,15 +130,16 @@ ApplicationWindow{
 
                     property bool is_mph: false
                     property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
+                    property bool speed_available: true
 
                     function setVisibleSlot(arg, is_mph_arg) {
                         is_mph = (is_mph_arg === 1);
                         canEntityArg = arg;
-                        opacity = 1.0
+                        speed_available = true;
                     }
-                    function setInvisibleSlot() {opacity = 0.0}
+                    function setInvisibleSlot() {speed_available = true;}
                     visible: true
-                    opacity: isInEdition? 1.0:0.0
+                    opacity: isInEdition || (speed_available && show_speed.visible)? 1.0:0.0
 
                     Text {
                         id: speed_value
@@ -367,8 +390,7 @@ ApplicationWindow{
                 anchors.left: parent.left
 
                 //NOTE: SLI units are always same as units of SpeedFormat(e.g. UK has EU shape with Mph)
-                property int overSpeedingGap: 10
-                overSpeeding: speed.opacity == 1.0 && (speed.displaySpeed) >= speedLimit + overSpeedingGap
+                overSpeeding: show_sli_overspeed.visible
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
@@ -392,8 +414,6 @@ ApplicationWindow{
 
             Image {
                 id: forward_vehicle
-                x: 95
-                y: -5
                 width: 80
                 height: 61
                 anchors.topMargin: alert_hmw_general.car_margin
