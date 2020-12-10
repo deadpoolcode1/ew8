@@ -153,6 +153,7 @@ HEADERS += \
     amjsonactionsmultiplexor.h \
     actiontype.h \
     candbgrammar.h.in \
+    candbgrammar.peg \
     amjsonfixedargumentsactioninvoker.h \
     iamjsonprocessable.h \
     medisconnectionreport.h \

@@ -16,7 +16,7 @@ version                 <- < 'VERSION' s* phrase s* > endl
 ns                      <- < 'NS_' s* ':' s* endl symbol_name* > endl
 bs                      <- < 'BS_' s* ':' s* endl symbol_name* > endl
 bu                      <- < 'BU_' s* ':' s* endl symbol_name* > endl
-bu_sl                   <- < 'BU_' s* ':' s* NAME (s* NAME)* > endl
+bu_sl                   <- < 'BU_' s* ':' (s* NAME)* > endl
 val_table               <- val_entry* endl
 message                 <- 'BO_' s* number s* NAME ':' s number s ECU_NAME _ signal* (trailing_space / _ )
 bo_tx_bu                <- < 'BO_TX_BU_' s* number s* ':' s* ECU_NAME (',' ECU_NAME)* ';' > endl
