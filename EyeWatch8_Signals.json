@@ -281,11 +281,14 @@
         {
             "protocol": "VolumeControl",
             "signals":[
+
                 {"name":"Request_Id_0", "action": "VolumeRequest",  "type": "RequestId", "index": 0}
                 ,{"name":"Request_Id_1", "action": "VolumeRequest",  "type": "RequestId", "index": 1}
-                ,{"name":"Reply_status", "action": "VOLUME_FAIL",  "type":"GraphicItem", "Set":[0,2]}
-                ,{"name":"Reply_status", "action": "VOLUME_DONE",  "type":"GraphicItem", "Set": 1}
+                ,{"name":"Reply_status", "action": "VOLUME_FAIL",  "type":"GraphicItem", "Set": 0}
+                ,{"name":"Reply_status", "action": "VOLUME_DONE",  "type":"GraphicItem", "Set": [1, 2]}
                 ,{"name":"New_general_volume_value", "action": "VOLUME_DONE",  "type":"IntArgument", "index": 0}
+                ,{"name":"General_volume_minimum", "action": "VOLUME_DONE",  "type":"IntArgument", "index": 1}
+                ,{"name":"General_volume_maximum", "action": "VOLUME_DONE",  "type":"IntArgument", "index": 2}
             ]
         }
         ,

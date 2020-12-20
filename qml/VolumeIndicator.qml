@@ -12,31 +12,16 @@ Image {
     id: volume_done
     property string canEntityType: "VOLUME_DONE"
     objectName: "DONE_VOLUME"
+    //TODO check the values integrity
     property int canEntityArg: 0x0
+    property int canEntityArg1: 0x0
+    property int canEntityArg2: 0x5
     property int layer_pri: 1
     
-    source: "images/Volume_Control_shortcut/mute.png"
+    source: "images/master-volume/m_mute.png"
     
-    function setVisibleSlot(arg){visible= true; canEntityArg = arg;}
+    function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2;}
     function setInvisibleSlot(){visible = false}
-    
-    width: 100
-    height: 100
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.horizontalCenter: parent.horizontalCenter
-    
-    
-    Text {
-        id: volume_value
-        x: 15
-        color: "white"
-        text: volume_done.canEntityArg > 0 ? volume_done.canEntityArg.toFixed(0):""
-        anchors.verticalCenter: parent.verticalCenter
-        topPadding: 0
-        font.family: "HindSiliguri"
-        font.pixelSize: 50
-        font.bold: true
-    }
     
     Timer {
         id: volume_done_timer
@@ -53,7 +38,7 @@ Image {
 
             PropertyChanges {
                 target: volume_done
-                source: "images/Volume_Control_shortcut/volume_low.png"
+                source: "images/master-volume/m_vol_low.png"
             }
         },
         State {
@@ -62,7 +47,7 @@ Image {
 
             PropertyChanges {
                 target: volume_done
-                source: "images/Volume_Control_shortcut/volume_high.png"
+                source: "images/master-volume/m_vol_high.png"
             }
         }
     ]

@@ -194,7 +194,7 @@ ApplicationWindow{
                 Image {
                     id: alert_blinkers
                     property string canEntityType: "ALERT_BLINKERS"
-                    property int layer_pri: 0
+                    property int layer_pri: 1
                     anchors.top: parent.top
                     anchors.topMargin: 0
                     function setVisibleSlot() {visible = true; is_blinking = true}
@@ -248,7 +248,7 @@ ApplicationWindow{
                     source: "images/status-bar/status_low_vis.png"
 
                     property string canEntityType: "INFO_FAILSAFE"
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                     anchors.top: parent.top
                     anchors.topMargin: 0
 
@@ -925,80 +925,9 @@ ApplicationWindow{
             function setInvisibleSlot() {visible = false}
         }
 
-        Rectangle {
+        VolumeMenu {
             id: volume_menu
-            color: "#191414"
-
-            property int canEntityType: Alert.QtQG
-            property int layer_pri: 0
-            z: 14
-            function setVisibleSlot(){visible= true}
-            function setInvisibleSlot(){visible = false}
             visible: false
-
-
-
-            anchors.fill: parent
-
-            Image {
-                id: volume_reqfail
-                property int canEntityType: Alert.ALERT_REQFAIL
-                objectName: "REQFAIL_VOLUME"
-                property int layer_pri: 0
-                //color: "orange"
-                source: "images/Volume_Control_shortcut/red alert.png"
-
-                width: 100
-                height: 100
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                function setVisibleSlot(arg){visible = true}
-                function setInvisibleSlot(){visible = false}
-
-                Timer {
-                    id: volume_reqfail_timer
-                    running: volume_reqfail.visible
-                    interval: 300
-                    onTriggered: {
-                        itemSelfDeactivated(Alert.ALERT_REQFAIL ,"REQFAIL_VOLUME")
-                    }
-                }
-            }
-
-
-
-
-            Image {
-                id: volume_fail
-                property string canEntityType: "VOLUME_FAIL"
-                objectName: "FAIL_VOLUME"
-                property int layer_pri: 0
-                //color: "red"
-                source: "images/Volume_Control_shortcut/red alert.png"
-
-                width: 100
-                height: 100
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                function setVisibleSlot(arg){visible = true}
-                function setInvisibleSlot(){visible = false}
-
-                Timer {
-                    id: volume_fail_timer
-                    running: volume_fail.visible
-                    interval: 500
-                    onTriggered: {
-                        itemSelfDeactivated("VOLUME_FAIL","FAIL_VOLUME")
-                    }
-                }
-            }
-
-
-            VolumeIndicator {
-                id: volume_done
-            }
         }
 
         Test{
