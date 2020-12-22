@@ -293,7 +293,8 @@ void MainProcess::volumeKeySent(qint32 qtKey)
   }
 }
 
-void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {
+void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName)
+{
 
 
     RootedTreeNode* nodeCGRT = nullptr;
@@ -332,7 +333,9 @@ void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName) {
         {
             if(nodeCGRT->getQmlItem() != nullptr && nodeCGRT->getQmlItem()->objectName() != nullptr
                     && nodeCGRT->getQmlItem()->objectName() == _objName)
-            nodeCGRT->deactivate();
+            {
+                nodeCGRT->deactivate();
+            }
             //TODO only when a semaphore is changed
             flag_tree_changed = true;
         }

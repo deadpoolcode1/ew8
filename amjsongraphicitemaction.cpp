@@ -34,6 +34,15 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * 
     return ret;
 }
 
+AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID)
+{
+    AMJsonGraphicItemAction * ret;
+
+    ret = itsObjects.value(aGraphicItemID, nullptr);
+
+    return ret;
+}
+
 AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
 {
    itsGraphicItemID = aGraphicItemID;
@@ -99,6 +108,12 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
         itsDisplay->mutex.unlock();
     }
 
+}
+
+void AMJsonGraphicItemAction::forceDeactivation(void)
+{
+        deactivate();
+        activators.clear();
 }
 
 void AMJsonGraphicItemAction::deactivate(void)

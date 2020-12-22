@@ -22,13 +22,14 @@ Image {
     
     function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2;}
     function setInvisibleSlot(){visible = false}
+    signal itemActionDeactivate()
     
     Timer {
         id: volume_done_timer
         running: volume_done.visible
         interval: 1000
         onTriggered: {
-            itemSelfDeactivated("VOLUME_DONE","DONE_VOLUME")
+            volume_done.itemActionDeactivate()
         }
     }
     states: [

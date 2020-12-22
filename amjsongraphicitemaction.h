@@ -24,6 +24,8 @@ public:
 
     static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, QString action);
 
+    static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
+
     void process(QObject * sender, QVariant extractedCANsignal);
 
     bool getIsActived(void);
@@ -38,6 +40,7 @@ public:
 public slots:
     void argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg);
     void argumentComplete(QString strArg);
+    void forceDeactivation(void);
 
 private:
 

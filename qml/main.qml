@@ -871,7 +871,7 @@ ApplicationWindow{
         Item {
             id: menu_listener
             visible: true
-            focus: true
+            focus: !(discon_panel.visible||alert_err.visible)
             property int layer_pri: 2
             property real start: 0
 

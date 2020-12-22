@@ -101,13 +101,14 @@ Rectangle {
 
             function setVisibleSlot(arg){visible = true}
             function setInvisibleSlot(){visible = false}
+            signal itemActionDeactivate()
 
             Timer {
                 id: volume_fail_timer
                 running: volume_fail.visible
                 interval: 500
                 onTriggered: {
-                    itemSelfDeactivated("VOLUME_FAIL","FAIL_VOLUME")
+                    volume_fail.itemActionDeactivate()
                 }
             }
         }

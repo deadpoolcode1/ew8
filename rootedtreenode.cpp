@@ -6,6 +6,7 @@
 #include "amsignalsmodel.h"
 
 #include "graphicitemsenummap.h"
+#include "amjsongraphicitemaction.h"
 
 // map initialization of EntityType should be done here for some magic reason...
 EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
@@ -134,6 +135,19 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
                 throw std::exception(/*"Object type does not exist"*/);
                 // add exception
 #endif
+            }
+
+            if (-1 != this->qmlItem->metaObject()->indexOfSignal(QMetaObject::normalizedSignature("itemActionDeactivate()")))
+            {
+
+                AMJsonGraphicItemAction * action = AMJsonGraphicItemAction::getInstanceByItemID(type);
+
+                if(action != nullptr)
+                {
+                    QObject::connect(this->qmlItem, SIGNAL(itemActionDeactivate(void)),
+                                     action, SLOT(forceDeactivation(void)));
+                    qDebug("itemActionDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
+                }
             }
 
             DISPLAY_ERRORS_t res = EntityType::linkByEntityType(type, this);
