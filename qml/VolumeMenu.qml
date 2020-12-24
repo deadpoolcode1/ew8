@@ -14,7 +14,6 @@ Rectangle {
     color: "#191414"
     
     property int canEntityType: Alert.QtQG
-    property int layer_pri: 0
     width: 320
     height: 240
     z: 14
@@ -74,13 +73,14 @@ Rectangle {
 
             function setVisibleSlot(arg){visible = true}
             function setInvisibleSlot(){visible = false}
+            signal  itemSelfDeactivate()
 
             Timer {
                 id: volume_reqfail_timer
                 running: volume_reqfail.visible
                 interval: 300
                 onTriggered: {
-                    itemSelfDeactivated(Alert.ALERT_REQFAIL ,"REQFAIL_VOLUME")
+                    volume_reqfail.itemSelfDeactivate()
                 }
             }
         }

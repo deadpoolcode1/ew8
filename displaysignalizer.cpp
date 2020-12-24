@@ -1,6 +1,11 @@
 #include "displaysignalizer.h"
 
-DisplaySignalizer::DisplaySignalizer(QQuickItem * parent) :  QQuickItem(parent)
+DisplaySignalizer::DisplaySignalizer(RootedTreeNode * aRootedTreeNode, QQuickItem * parent) :  QQuickItem(parent)
 {
+  itsRootedTreeNode = aRootedTreeNode;
+}
 
+void DisplaySignalizer::forceItemSelfDeactivation(void)
+{
+   itsRootedTreeNode->forceDeactivation();
 }

@@ -11,7 +11,6 @@ import builtin.mobileye.QRCode 0.1
 
 ApplicationWindow{
     id: page
-    signal itemSelfDeactivated(var canEntityType, string _objectName)
     signal volumeKeySend(int qtKey);//Qt.Key
 
     property bool isInEdition: false
@@ -685,7 +684,7 @@ ApplicationWindow{
             property bool mutexGroup: false
             property int canEntityType: Alert.QtQG
             property int layer_pri: 2 //Decreased from 1 to prevent reinit of SLI and TSR -- TBD add setSuppressed() signal
-            z: 10
+            z: 15
             anchors.fill: parent
             visible: false
 
@@ -871,7 +870,7 @@ ApplicationWindow{
         Item {
             id: menu_listener
             visible: true
-            focus: !(discon_panel.visible||alert_err.visible)
+            focus: !(discon_panel.visible||alert_err.visible||groupFCW.visible)
             property int layer_pri: 2
             property real start: 0
 
@@ -927,6 +926,7 @@ ApplicationWindow{
 
         VolumeMenu {
             id: volume_menu
+            property int layer_pri: 2
             visible: false
         }
 

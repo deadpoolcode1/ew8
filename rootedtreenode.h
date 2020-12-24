@@ -4,6 +4,7 @@
 #include <QObject>
 //#include <QList>
 #include "defs.h"
+#include "rootedtree.h"
 #include "displaysignalizer.h"
 
 class DisplaySignalizer;
@@ -11,13 +12,14 @@ class DisplaySignalizer;
 
 class LayersPriorityQ;  // forward declaration
 class EntityType;
+class RootedTree;
 
 class RootedTreeNode
 {
 public:
     RootedTreeNode();
 
-    RootedTreeNode(QObject * qobject);
+    RootedTreeNode(QObject * qobject, RootedTree * itsRootedTree);
 
 
     void setParent(RootedTreeNode * rtn);
@@ -44,6 +46,7 @@ public:
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
 
     DisplaySignalizer * qmlSignalizer;
+    void forceDeactivation(void);
 
 private:
 
@@ -52,6 +55,7 @@ private:
 
 
     QObject * qmlItem;
+    RootedTree * itsRootedTree;
     RootedTreeNode * parent;
     //   QList<RootedTreeNode *> children;
     LayersPriorityQ * children;

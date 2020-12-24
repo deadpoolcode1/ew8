@@ -11,7 +11,7 @@
 // map initialization of EntityType should be done here for some magic reason...
 EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
 
-RootedTreeNode::RootedTreeNode(QObject * qobject)
+RootedTreeNode::RootedTreeNode(QObject * qobject, RootedTree * aRootedTree)
 {
     activationSemaphore = 0;
     visibility = false;
@@ -20,6 +20,8 @@ RootedTreeNode::RootedTreeNode(QObject * qobject)
     valueFrac = 0;
     unit = 0;
     stringArg = "";
+
+    itsRootedTree = aRootedTree;
 
     convertfromQObject(qobject);
 }
@@ -55,7 +57,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 // esteblish link between atomic entityes (C++) and atomic entityes (Qt QObject)
     this->qmlItem = qobject;
 
-    this->qmlSignalizer = new DisplaySignalizer();
+    this->qmlSignalizer = new DisplaySignalizer(this);
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlotStr(QVariant)")))
     {
@@ -97,6 +99,13 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         QObject::connect(this->qmlSignalizer, SIGNAL(setInvisibleSignal(void)),
                          this->qmlItem, SLOT(setInvisibleSlot(void)));
         qDebug("setInvisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+    }
+
+    if (-1 != this->qmlItem->metaObject()->indexOfSignal(QMetaObject::normalizedSignature("itemSelfDeactivate()")))
+    {
+        QObject::connect(this->qmlItem, SIGNAL(itemSelfDeactivate(void)),
+                         this->qmlSignalizer, SLOT(forceItemSelfDeactivation(void)));
+        qDebug("itemSelfDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
     }
 
 
@@ -198,7 +207,7 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
    foreach(QObject * curchild, ((QQuickItem*)qobject)->childItems())
    {
 
-       curnode = new RootedTreeNode(curchild);
+       curnode = new RootedTreeNode(curchild, itsRootedTree);
        curnode->setParent(this);
        this->appendChild(curnode);
 
@@ -367,3 +376,28 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
     }
     return OK;
 }
+
+void RootedTreeNode::forceDeactivation(void)
+{
+
+
+
+        if (!getActivSem())
+        {
+            //skip: deactivated - no need for deactivation
+        }
+        else
+        {
+            if(getQmlItem() != nullptr )
+            {
+                deactivate();
+            }
+            //TODO only when a semaphore is changed
+            itsRootedTree->setChanged();
+        }
+
+    return;
+
+
+}
+

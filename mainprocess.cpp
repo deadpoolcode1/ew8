@@ -64,7 +64,7 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     EntityType::generateTypes();
 
 // build panels trees
-    generalPanelTree = new RootedTree(rootQobjectGeneralPannel);
+    generalPanelTree = new RootedTree(rootQobjectGeneralPannel, & flag_tree_changed, this);
 
 
     itsThread = new QThread(this);
@@ -116,8 +116,10 @@ int MainProcess::launchEverything()
 {
     QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
 
+#if 0
     QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(QVariant, QString)),
                       this, SLOT(forceItemDeactivation(QVariant, QString)));
+#endif
 
     QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
                       this, SLOT(volumeKeySent(qint32)));
@@ -293,60 +295,5 @@ void MainProcess::volumeKeySent(qint32 qtKey)
   }
 }
 
-void MainProcess::forceItemDeactivation(QVariant _alertType, QString _objName)
-{
-
-
-    RootedTreeNode* nodeCGRT = nullptr;
-
-    bool isInt;
-
-    DISPLAY_ITEM_ID alertType = (DISPLAY_ITEM_ID)_alertType.toInt(&isInt);
-
-    if(!isInt)
-    {
-        alertType = GraphicItemsEnumMap::getId(_alertType.toString());
-    }
-
-    qDebug("Called the C++ slot with message: %d:%s" , alertType  ,qPrintable(_objName));
-
-
-    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alertType);
-
-
-
-    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
-    {
-
-        nodeCGRT = it->second;
-
-        if (nodeCGRT == nullptr)
-        {
-            //TODO add exception
-        }
-
-        if (!(nodeCGRT->getActivSem()))
-        {
-            //skip: deactivated - no need for deactivation
-        }
-        else
-        {
-            if(nodeCGRT->getQmlItem() != nullptr && nodeCGRT->getQmlItem()->objectName() != nullptr
-                    && nodeCGRT->getQmlItem()->objectName() == _objName)
-            {
-                nodeCGRT->deactivate();
-            }
-            //TODO only when a semaphore is changed
-            flag_tree_changed = true;
-        }
-    }
-
-    //WARNING: check if a mutex is necessary TBD!
-    updateDisplay();
-
-    return;
-
-
-}
 
 
