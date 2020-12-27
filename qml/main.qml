@@ -285,12 +285,8 @@ ApplicationWindow{
                     opacity: isInEdition? 1.0 : 0.0
                 }
 
-                Image {
-                    id: no_gps
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    source: "images/status-bar/status_no_GPS.png"
-                    opacity: isInEdition? 1.0 : 0.0
+                GpsStatus {
+                    id: gps_status
                 }
 
                 Image {

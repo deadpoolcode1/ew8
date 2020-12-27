@@ -36,6 +36,8 @@
         {"enum": "SHAPE_USA", "value": 62},
         {"enum": "INFO_SPEED_SHOW", "value": 63},
         {"enum": "ALERT_SLI_SHOW", "value": 64},
+        {"enum": "INFO_NO_GPS", "value": 65},
+        {"enum": "INFO_GPS_OK", "value": 66},
 
         {"enum": "SMART_CROWDED", "value": 101},
         {"enum": "SMART_PED_HWY", "value": 102},
@@ -323,6 +325,21 @@
                         ,{"value":  2, "action": "OM_MUTE", "description": "AWS operational mode: Mute"}
                         ,{"value":  3, "action": "OM_KEEPPWR", "description": "AWS operational mode: Keep power on"}
                         ,{"value":  4, "action": "OM_PILOT", "description": "AWS operational mode: Pilot mode"}
+                    ]
+                }
+            ]
+        }
+        ,
+        {
+            "protocol": "IMS_Connectivity",
+            "signals":[
+
+                {"name":"GPSStatus", "action": "Vt_GPSstatus",  "isValueTable": true}
+            ],
+            "value_tables":[
+                {"name":"Vt_GPSstatus", "type": "GraphicItem", "rows":[
+                        {"value":  0, "action": "INFO_NO_GPS", "description": "GPS Status: No GPS"}
+                        ,{"value":  3, "action": "INFO_GPS_OK", "description": "GPS Status: GPS Ok"}
                     ]
                 }
             ]
