@@ -12,9 +12,11 @@ public:
     static void singleShot(CanManager * aCanManager);
 private:
     static void sendVersionInfo(CanManager * aCanManager);
+#ifndef WIN32
     static void sendServiceNumber(CanManager * aCanManager);
     static void enableDisableSFC(quint32 * wr_ptr, bool On);
     static quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+#endif
 };
 
 #endif // VERSIONMSG_H

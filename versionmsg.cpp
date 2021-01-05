@@ -41,7 +41,9 @@
 void VersionMsg::singleShot(CanManager *aCanManager)
 {
     sendVersionInfo(aCanManager);
+#ifndef WIN32
     sendServiceNumber(aCanManager);
+#endif
 }
 
 
@@ -111,6 +113,8 @@ void VersionMsg::sendVersionInfo(CanManager *aCanManager)
     aCanManager->write_frame(&frame_to_send);   
 }
 
+#ifndef WIN32
+
 void VersionMsg::sendServiceNumber(CanManager *aCanManager)
 {
     //NOTE: Engine version:
@@ -145,29 +149,66 @@ void VersionMsg::sendServiceNumber(CanManager *aCanManager)
     enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),true);
 
 
-    for(qint32 i = 0; i<16;i++)
+    quint32 readRegister;
+    quint32 emptyRegisters = 0;
+    quint8 byteLSB;
+    bool regIntegrity = true;
+
+    for(qint32 i = 0; i<16 && regIntegrity;i++)
     {
-        qDebug()<<"sn"<<i<<":"<<readDataSFC((quint32*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(quint32)),i);
+        readRegister = readDataSFC((quint32*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(quint32)),i);
+
+
+        byteLSB = (quint8)(readRegister & 0xff);
+
+        if(0 == readRegister)
+        {
+            emptyRegisters++;
+        }
+        else
+        {
+            quint8 byteMSB = (quint8)((readRegister >> 010)& 0xff);
+
+
+
+            regIntegrity = (byteLSB == (quint8)(~ byteMSB));
+
+            qDebug()<< "EW8 Sn:"<< i << " Num:" << hex << (quint32)byteLSB << " Control:" << hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+        }
+
+        if(i < 8)
+        {
+            frame_to_send_LSB.data[i] = byteLSB;
+        }
+        else
+        {
+            frame_to_send_MSB.data[i-8] = byteLSB;
+        }
     }
-
-
 
      enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),false);
 
-
-    //1. if all are 0x00 send the source
-
-    //2. if not verify
-
-    //3. if broken: set all to 0xFF
-
+     if(!regIntegrity | ((0 != emptyRegisters) && (16 != emptyRegisters)))
+     {
+         for(qint32 i = 0; i<16;i++)
+         {
+             if(i < 8)
+             {
+                 frame_to_send_LSB.data[i] = 0xff;
+             }
+             else
+             {
+                 frame_to_send_MSB.data[i-8] = 0xff;
+             }
+         }
+     }
 
     munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32));
 
     munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(quint32));
 
-    //aCanManager->write_frame(&frame_to_send_LSB);
-    //aCanManager->write_frame(&frame_to_send_MSB);
+    aCanManager->write_frame(&frame_to_send_LSB);
+    aCanManager->write_frame(&frame_to_send_MSB);
 }
 
 void VersionMsg::enableDisableSFC(quint32* wr_ptr, bool On)
@@ -182,6 +223,8 @@ quint32 VersionMsg::readDataSFC(quint32* rd_ptr, quint32 index)
    ret = *(rd_ptr+index);
    return ret;
 }
+
+#endif
 
 
 
