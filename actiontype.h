@@ -15,6 +15,7 @@ enum action_type_e \
     IntArgument = 3, \
     RequestId = 4, \
     Validator = 5, \
+    SystemRequest = 6, \
 };
 #else
  #error Choose other macro name.

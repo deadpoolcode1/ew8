@@ -298,6 +298,7 @@
             "protocol": "EW8TestProtocol",
             "signals":[
                 {"name":"TestDisplay", "action": "Vt_TestDisplay",  "isValueTable": true}
+                ,{"name":"GetVersion", "action": "GetVersion", "type": "SystemRequest"}
             ],
             "value_tables":[
                 {"name":"Vt_TestDisplay", "type": "GraphicItem", "rows":[

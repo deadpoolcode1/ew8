@@ -36,40 +36,75 @@
 #define	AT91C_PMC_PCR_EN (1 << 28)
 #define	AT91C_PMC_PCR_CMD (1 << 12)
 
+VersionMsg * VersionMsg::instance = nullptr;
 
 
-void VersionMsg::singleShot(CanManager *aCanManager)
+VersionMsg::VersionMsg(CanManager * aCanManager)
 {
-    sendVersionInfo(aCanManager);
+    itsCanManager = aCanManager;
+    readVersionInfo();
 #ifndef WIN32
-    sendServiceNumber(aCanManager);
+    readServiceNumber();
+#endif
+}
+
+void VersionMsg::sendAll(void)
+{
+    itsCanManager->write_frame(&version2send);
+#ifndef WIN32
+    itsCanManager->write_frame(&sn2send_LSB);
+    itsCanManager->write_frame(&sn2send_MSB);
 #endif
 }
 
 
+void VersionMsg::singleShot()
+{
+    if(nullptr != instance)
+    {
+        instance->sendAll();
+    }
+    else
+    {
+        qDebug("WARNING: Version Message is not constructed yet.");
+    }
+}
 
-void VersionMsg::sendVersionInfo(CanManager *aCanManager)
+
+void VersionMsg::create(CanManager *aCanManager)
+{
+    if(nullptr == instance)
+    {
+        instance = new VersionMsg(aCanManager);
+    }
+    else
+    {
+        qDebug("WARNING: Version Message is already constructed.");
+    }
+}
+
+
+
+void VersionMsg::readVersionInfo(void)
 {
     //NOTE: Engine version:
-    struct can_frame frame_to_send;
-
     QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
     QJsonArray jsonArray = jsonObject["MediaVersion"].toArray();
 
-    frame_to_send.can_id = 0x7d0;
-    frame_to_send.can_dlc = 8;
+    version2send.can_id = 0x7d0;
+    version2send.can_dlc = 8;
 
-    frame_to_send.data[0] = (quint8)MAJOR_VERSION;
-    frame_to_send.data[1] = (quint8)MINOR_VERSION;
+    version2send.data[0] = (quint8)MAJOR_VERSION;
+    version2send.data[1] = (quint8)MINOR_VERSION;
 
     //NOTE: Config version (Get from Json):
-    frame_to_send.data[2] = (quint8)(0xff);
-    frame_to_send.data[3] = (quint8)(0xff);
+    version2send.data[2] = (quint8)(0xff);
+    version2send.data[3] = (quint8)(0xff);
 
     if(!jsonArray.isEmpty())
     {
-        frame_to_send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
-        frame_to_send.data[3] = (quint8)jsonArray.at(1).toInt(0xff);
+        version2send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
+        version2send.data[3] = (quint8)jsonArray.at(1).toInt(0xff);
     }
 
     //NOTE: System build version:
@@ -95,41 +130,35 @@ void VersionMsg::sendVersionInfo(CanManager *aCanManager)
     else
     {
 
-        frame_to_send.data[4] = (quint8)buildId.right(2).toUInt(&success,16);
-        if(success) frame_to_send.data[5] = (quint8)buildId.mid(4,2).toUInt(&success,16);
-        if(success) frame_to_send.data[6] = (quint8)buildId.mid(2,2).toUInt(&success,16);
-        if(success) frame_to_send.data[7] = (quint8)buildId.left(2).toUInt(&success,16);
+        version2send.data[4] = (quint8)buildId.right(2).toUInt(&success,16);
+        if(success) version2send.data[5] = (quint8)buildId.mid(4,2).toUInt(&success,16);
+        if(success) version2send.data[6] = (quint8)buildId.mid(2,2).toUInt(&success,16);
+        if(success) version2send.data[7] = (quint8)buildId.left(2).toUInt(&success,16);
     }
 #endif
 
     if(!success)
     {
-        frame_to_send.data[4] = (quint8)(0xff);
-        frame_to_send.data[5] = (quint8)(0xff);
-        frame_to_send.data[6] = (quint8)(0xff);
-        frame_to_send.data[7] = (quint8)(0xff);
+        version2send.data[4] = (quint8)(0xff);
+        version2send.data[5] = (quint8)(0xff);
+        version2send.data[6] = (quint8)(0xff);
+        version2send.data[7] = (quint8)(0xff);
     }
-
-    aCanManager->write_frame(&frame_to_send);   
 }
 
 #ifndef WIN32
 
-void VersionMsg::sendServiceNumber(CanManager *aCanManager)
+void VersionMsg::readServiceNumber(void)
 {
     //NOTE: Engine version:
-    struct can_frame frame_to_send_LSB;
-    struct can_frame frame_to_send_MSB;
-
-
     QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
     QJsonArray jsonArray = jsonObject["MediaVersion"].toArray();
 
-    frame_to_send_LSB.can_id = 0x7d1;
-    frame_to_send_LSB.can_dlc = 8;
+    sn2send_LSB.can_id = 0x7d1;
+    sn2send_LSB.can_dlc = 8;
 
-    frame_to_send_MSB.can_id = 0x7d2;
-    frame_to_send_MSB.can_dlc = 8;
+    sn2send_MSB.can_id = 0x7d2;
+    sn2send_MSB.can_dlc = 8;
 
     //TODO read the SN and verify:
     qint32 mem_fd = open("/dev/mem",O_RDWR);
@@ -178,11 +207,11 @@ void VersionMsg::sendServiceNumber(CanManager *aCanManager)
 
         if(i < 8)
         {
-            frame_to_send_LSB.data[i] = byteLSB;
+            sn2send_LSB.data[i] = byteLSB;
         }
         else
         {
-            frame_to_send_MSB.data[i-8] = byteLSB;
+            sn2send_MSB.data[i-8] = byteLSB;
         }
     }
 
@@ -194,11 +223,11 @@ void VersionMsg::sendServiceNumber(CanManager *aCanManager)
          {
              if(i < 8)
              {
-                 frame_to_send_LSB.data[i] = 0xff;
+                 sn2send_LSB.data[i] = 0xff;
              }
              else
              {
-                 frame_to_send_MSB.data[i-8] = 0xff;
+                 sn2send_MSB.data[i-8] = 0xff;
              }
          }
      }
@@ -206,9 +235,6 @@ void VersionMsg::sendServiceNumber(CanManager *aCanManager)
     munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32));
 
     munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(quint32));
-
-    aCanManager->write_frame(&frame_to_send_LSB);
-    aCanManager->write_frame(&frame_to_send_MSB);
 }
 
 void VersionMsg::enableDisableSFC(quint32* wr_ptr, bool On)

@@ -9,13 +9,26 @@ class VersionMsg
 {
 public:
     //Single time fired
-    static void singleShot(CanManager * aCanManager);
+    static void create(CanManager * aCanManager);
+    static void singleShot(void);
 private:
-    static void sendVersionInfo(CanManager * aCanManager);
+
+    static VersionMsg * instance;
+
+    VersionMsg(CanManager * aCanManager);
+
+    void sendAll(void);
+
+    CanManager * itsCanManager;
+    struct can_frame version2send;
+    void readVersionInfo(void);
 #ifndef WIN32
-    static void sendServiceNumber(CanManager * aCanManager);
-    static void enableDisableSFC(quint32 * wr_ptr, bool On);
-    static quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+    void readServiceNumber(void);
+    void enableDisableSFC(quint32 * wr_ptr, bool On);
+    quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+
+    struct can_frame sn2send_LSB;
+    struct can_frame sn2send_MSB;
 #endif
 };
 

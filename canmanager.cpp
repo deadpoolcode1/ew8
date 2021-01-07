@@ -72,7 +72,8 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
 void CanManager::launch(void)
 {
-    VersionMsg::singleShot(this);
+    VersionMsg::create(this);
+    VersionMsg::singleShot();
     itsDisconnectionReport->launch();
     itsThread->start();
 

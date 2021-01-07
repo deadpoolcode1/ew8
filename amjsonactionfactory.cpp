@@ -5,12 +5,14 @@
 #include "amjsonnumericargumentaction.h"
 #include "amjsonstringargumentaction.h"
 #include "amjsonrequestidaction.h"
+#include "amjsonsystemrequestaction.h"
 
 #include "amjsonsignal.h"
 
 class AMJsonProtocol;
 class AMJsonStringArgumentAction;
 class AMJsonNumericArgumentAction;
+class   AMJsonSystemRequestAction;
 class AMJsonRequestIdAction;
 
 AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index)
@@ -20,6 +22,7 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
     AMJsonStringArgumentAction * tmpStr;
     AMJsonNumericArgumentAction * tmpNum;
     AMJsonRequestIdAction * tmpReq;
+
 
     switch(type)
     {
@@ -48,6 +51,10 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
         tmpReq = new AMJsonRequestIdAction(aJsonProtocol, action);
         tmpReq->setIndex(index);
         ret =  (AMJsonAction *) tmpReq;
+        break;
+
+    case SystemRequest:
+        ret =  new AMJsonSystemRequestAction(aJsonProtocol, action);
         break;
 
     default:

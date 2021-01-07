@@ -69,7 +69,8 @@ SOURCES += \
     amjsonfixedargumentsactioninvoker.cpp \
     medisconnectionreport.cpp \
     amjsonrequestidaction.cpp \
-    watchdogdevice.cpp
+    watchdogdevice.cpp \
+    amjsonsystemrequestaction.cpp
 
 RESOURCES += qml.qrc
 
@@ -158,7 +159,8 @@ HEADERS += \
     iamjsonprocessable.h \
     medisconnectionreport.h \
     amjsonrequestidaction.h \
-    watchdogdevice.h
+    watchdogdevice.h \
+    amjsonsystemrequestaction.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
