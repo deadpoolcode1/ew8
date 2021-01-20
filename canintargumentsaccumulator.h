@@ -2,6 +2,7 @@
 #define CANINTARGUMENTSACCUMULATOR_H
 
 #include "canargumentsaccumulator.h"
+#include "bufferedsmoother.h"
 
 #include <QObject>
 
@@ -19,14 +20,23 @@ public:
 
     void insertValueFromSignal(size_t anIndex, qint8 anArg);
 
+    void addSmoothingAlgorithm(BufferedSmoother * aSmoother);
+
 
 private:
     static const char * argumentsTypeName;
+    BufferedSmoother * smoother;
 
      explicit CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 
     quint8 intValue[3];
     bool flagValue[3];
+    bool doArgSmoothing;
+
+    //TODO replace with circular buffer
+    quint32 speedSmoothingBufferLength;
+    QList<quint8> smoothedArgBuffer;
+
 
 signals:
 

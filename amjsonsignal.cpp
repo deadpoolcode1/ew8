@@ -63,6 +63,22 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
     sigIndex = signal_obj["index"].toInt(-1);
 
+    quint32 bufferLength = 0;
+    quint32 skipSmoothingDelta = 0;
+
+    //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
+    QJsonObject::iterator smoothedQObj = signal_obj.find("smoothed");
+
+    if( smoothedQObj != signal_obj.end() && smoothedQObj.value().isArray())
+    {
+            QJsonArray sigSmoothed_Array = smoothedQObj.value().toArray();
+            bufferLength = (quint32)sigSmoothed_Array.at(0).toInt(0);
+            skipSmoothingDelta = (quint32)sigSmoothed_Array.at(1).toInt(0);
+    }
+
+
+
+
     if(polarity)
     {
         if(-1 == sigIndex)
@@ -119,6 +135,11 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
         {
             //Used properties (argument signal) : (aProtocol, sigName, sigAction, sigType, sigIndex)
              init(aProtocol, sigName, sigAction, true, sigType, sigIndex, nullptr, false);
+
+             if(bufferLength > 0)
+             {
+                setSmoothing(bufferLength, skipSmoothingDelta);
+             }
         }
     }
     else
@@ -189,6 +210,16 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
     qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
 
     //TODO use actions map
+}
+
+void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta)
+{
+    if(IntArgument == type)
+    {
+        DISPLAY_ITEM_ID action_disp_id = GraphicItemsEnumMap::getId(action);
+
+        CanIntArgumentsAccumulator::getInstance(action_disp_id)->addSmoothingAlgorithm(new BufferedSmoother(bufferLength, skipSmoothingDelta));
+    }
 }
 
  QString AMJsonSignal::getName(void)

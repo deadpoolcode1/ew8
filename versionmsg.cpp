@@ -7,7 +7,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-
+#ifndef WIN32
 //TODO remove unused:
 #include <fcntl.h>
 #include <stdint.h>
@@ -20,7 +20,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <errno.h>
-
+#endif
 
 //NOTE: Next header is used for random()
 //TODO: replace with QRandomGenerator, when passing to qt 5.12

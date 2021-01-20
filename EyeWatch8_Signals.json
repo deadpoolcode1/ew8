@@ -252,7 +252,7 @@
             "protocol": "CarInfo_protocol",
             "signals":[
                 {"name": "Speed_avaliable", "action":"INFO_VEH_SPEED", "type":"GraphicItem"},
-                {"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0}
+                {"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0, "smoothed": [20, 5]}
             ]
         }
         ,
