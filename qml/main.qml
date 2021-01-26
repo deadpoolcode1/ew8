@@ -129,14 +129,14 @@ ApplicationWindow{
 
                     property bool is_mph: false
                     property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
-                    property bool speed_available: true
+                    property bool speed_available: false
 
                     function setVisibleSlot(arg, is_mph_arg) {
                         is_mph = (is_mph_arg === 1);
                         canEntityArg = arg;
                         speed_available = true;
                     }
-                    function setInvisibleSlot() {speed_available = true;}
+                    function setInvisibleSlot() {speed_available = false;}
                     visible: true
                     opacity: isInEdition || (speed_available && show_speed.visible)? 1.0:0.0
 
