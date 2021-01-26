@@ -10,6 +10,9 @@
 
 #include "candbsignal.h"
 
+#include "bufferedsmoother.h"
+#include "timedsmoother.h"
+
 #include <qdebug.h>
 
 #include <QMetaEnum>
@@ -65,6 +68,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
     quint32 bufferLength = 0;
     quint32 skipSmoothingDelta = 0;
+    QString smoothingType;
 
     //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
     QJsonObject::iterator smoothedQObj = signal_obj.find("smoothed");
@@ -74,6 +78,8 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
             QJsonArray sigSmoothed_Array = smoothedQObj.value().toArray();
             bufferLength = (quint32)sigSmoothed_Array.at(0).toInt(0);
             skipSmoothingDelta = (quint32)sigSmoothed_Array.at(1).toInt(0);
+            smoothingType = sigSmoothed_Array.at(2).toString("items");
+            qDebug()<<"smoothing type: "<< smoothingType;
     }
 
 
@@ -138,7 +144,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
              if(bufferLength > 0)
              {
-                setSmoothing(bufferLength, skipSmoothingDelta);
+                setSmoothing(bufferLength, skipSmoothingDelta, smoothingType);
              }
         }
     }
@@ -212,13 +218,31 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
     //TODO use actions map
 }
 
-void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta)
+void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString aSmoothingType)
 {
     if(IntArgument == type)
     {
         DISPLAY_ITEM_ID action_disp_id = GraphicItemsEnumMap::getId(action);
 
-        CanIntArgumentsAccumulator::getInstance(action_disp_id)->addSmoothingAlgorithm(new BufferedSmoother(bufferLength, skipSmoothingDelta));
+        ISmoother * smoother = nullptr;
+
+        if ("items" == aSmoothingType)
+        {
+            smoother = new BufferedSmoother(bufferLength, skipSmoothingDelta);
+        }
+        else if ("msec" == aSmoothingType)
+        {
+            smoother = new TimedSmoother(bufferLength, skipSmoothingDelta);
+        }
+        else
+        {
+            qDebug()<<"WARNING: unknown smoothing argument";
+        }
+
+        if(nullptr != smoother)
+        {
+            CanIntArgumentsAccumulator::getInstance(action_disp_id)->addSmoothingAlgorithm(smoother);
+        }
     }
 }
 

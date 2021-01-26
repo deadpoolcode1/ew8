@@ -91,7 +91,7 @@ private:
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
   void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues, bool isValueTable);
-  void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta);
+  void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString smoothingType);
 
   QString name;
 

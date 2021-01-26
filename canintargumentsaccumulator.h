@@ -2,7 +2,7 @@
 #define CANINTARGUMENTSACCUMULATOR_H
 
 #include "canargumentsaccumulator.h"
-#include "bufferedsmoother.h"
+#include "ismoother.h"
 
 #include <QObject>
 
@@ -20,12 +20,12 @@ public:
 
     void insertValueFromSignal(size_t anIndex, qint8 anArg);
 
-    void addSmoothingAlgorithm(BufferedSmoother * aSmoother);
+    void addSmoothingAlgorithm(ISmoother * aSmoother);
 
 
 private:
     static const char * argumentsTypeName;
-    BufferedSmoother * smoother;
+    ISmoother * smoother;
 
      explicit CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 

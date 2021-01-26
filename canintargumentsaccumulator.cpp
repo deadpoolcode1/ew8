@@ -80,7 +80,7 @@ void CanIntArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 anA
     }
 }
 
- void CanIntArgumentsAccumulator::addSmoothingAlgorithm(BufferedSmoother * aSmoother)
+ void CanIntArgumentsAccumulator::addSmoothingAlgorithm(ISmoother * aSmoother)
  {
      smoother = aSmoother;
  }
