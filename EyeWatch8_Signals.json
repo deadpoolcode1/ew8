@@ -1,68 +1,67 @@
 {
     "MediaVersion":[0,5],
-    "NOTE":"every unique integer value can be used",
-    "GraphicItem": [
-        {"enum": "ALERT_LEFT_LDWOFF", "value": 25},
-        {"enum": "ALERT_RIGHT_LDWOFF", "value": 26},
-        {"enum": "ALERT_LEFT_LDWON", "value": 27},
-        {"enum": "ALERT_RIGHT_LDWON", "value": 28},
-        {"enum": "ALERT_FCW", "value": 29},
-        {"enum": "ALERT_PDZ", "value": 30},
-        {"enum": "ALERT_PCW", "value": 31},
-        {"enum": "ALERT_LLDW","value": 32},
-        {"enum": "ALERT_RLDW", "value": 33},
-        {"enum": "ALERT_BLINKERS", "value": 34},
-        {"enum": "ALERT_HMW_DISTANCE", "value": 36},
-        {"enum": "ALERT_HMW_ALERT", "value": 37},
-        {"enum": "ALERT_HMW_MONITOR", "value": 38},
-        {"enum": "ALERT_HI_BEAM", "value": 39},
-        {"enum": "ALERT_LOW_BEAM", "value": 40},
-        {"enum": "ALERT_ERROR", "value": 41},
-        {"enum": "INFO_QRCODE", "value": 42},
-        {"enum": "ALERT_END_ALL_RESTR", "value": 43},
-        {"enum": "ALERT_MOTORWAY", "value": 44},
-        {"enum": "ALERT_NO_PASS", "value": 45},
-        {"enum": "ALERT_PLAYGROUND", "value": 46},
-        {"enum": "ALERT_SLI", "value": 47},
-        {"enum": "ALERT_EXPRESSWAY", "value": 48},
+    "GraphicItems": [
+         "ALERT_LEFT_LDWOFF"
+        ,"ALERT_RIGHT_LDWOFF"
+        ,"ALERT_LEFT_LDWON"
+        ,"ALERT_RIGHT_LDWON"
+        ,"ALERT_FCW"
+        ,"ALERT_PDZ"
+        ,"ALERT_PCW"
+        ,"ALERT_LLDW"
+        ,"ALERT_RLDW"
+        ,"ALERT_BLINKERS"
+        ,"ALERT_HMW_DISTANCE"
+        ,"ALERT_HMW_ALERT"
+        ,"ALERT_HMW_MONITOR"
+        ,"ALERT_HI_BEAM"
+        ,"ALERT_LOW_BEAM"
+        ,"ALERT_ERROR"
+        ,"INFO_QRCODE"
+        ,"ALERT_END_ALL_RESTR"
+        ,"ALERT_MOTORWAY"
+        ,"ALERT_NO_PASS"
+        ,"ALERT_PLAYGROUND"
+        ,"ALERT_SLI"
+        ,"ALERT_EXPRESSWAY"
 
-        {"enum": "ALERT_MOTORWAY_END", "value": 49},
-        {"enum": "ALERT_NO_PASS_END", "value": 50},
-        {"enum": "ALERT_PLAYGROUND_END", "value": 51},
-        {"enum": "ALERT_EXPRESSWAY_END", "value": 52},
+        ,"ALERT_MOTORWAY_END"
+        ,"ALERT_NO_PASS_END"
+        ,"ALERT_PLAYGROUND_END"
+        ,"ALERT_EXPRESSWAY_END"
 
-        {"enum": "INFO_VEH_SPEED", "value": 60},
-        {"enum": "INFO_FAILSAFE", "value": 61},
-        {"enum": "SHAPE_USA", "value": 62},
-        {"enum": "INFO_SPEED_SHOW", "value": 63},
-        {"enum": "ALERT_SLI_SHOW", "value": 64},
-        {"enum": "INFO_NO_GPS", "value": 65},
-        {"enum": "INFO_GPS_OK", "value": 66},
+        ,"INFO_VEH_SPEED"
+        ,"INFO_FAILSAFE"
+        ,"SHAPE_USA"
+        ,"INFO_SPEED_SHOW"
+        ,"ALERT_SLI_SHOW"
+        ,"INFO_NO_GPS"
+        ,"INFO_GPS_OK"
 
-        {"enum": "SMART_CROWDED", "value": 101},
-        {"enum": "SMART_PED_HWY", "value": 102},
-        {"enum": "SMART_CYC_HWY", "value": 103},
-        {"enum": "SMART_WEA_ROAD", "value": 104},
-        {"enum": "SMART_WEA_HYDRO", "value": 105},
-        {"enum": "SMART_WEA_FG", "value": 106},
-        {"enum": "SMART_WEA_WND", "value": 107},
-        {"enum": "SMART_WEA_HAIL", "value": 108},
-        {"enum": "SMART_WEA_TSTM", "value": 109},
-        {"enum": "SMART_FATIGUE", "value": 110},
-        {"enum": "SMART_BUMPERS", "value": 111},
-        {"enum": "SMART_HARSH_DZ", "value": 112}
-        ,{"enum": "VOLUME_FAIL", "value": 200}
-        ,{"enum": "VOLUME_DONE", "value": 201}
-        ,{"enum": "RGB_RED", "value": 301}
-        ,{"enum": "RGB_GREEN", "value": 302}
-        ,{"enum": "RGB_BLUE", "value": 303}
-        ,{"enum": "RGB_WHITE", "value": 304}
-        ,{"enum": "TV_PATTERN", "value": 305}
-        ,{"enum": "OM_POWEROFF", "value": 401}
-        ,{"enum": "OM_NORMAL", "value": 402}
-        ,{"enum": "OM_MUTE", "value": 403}
-        ,{"enum": "OM_KEEPPWR", "value": 404}
-        ,{"enum": "OM_PILOT", "value": 405}
+        ,"SMART_CROWDED"
+        ,"SMART_PED_HWY"
+        ,"SMART_CYC_HWY"
+        ,"SMART_WEA_ROAD"
+        ,"SMART_WEA_HYDRO"
+        ,"SMART_WEA_FG"
+        ,"SMART_WEA_WND"
+        ,"SMART_WEA_HAIL"
+        ,"SMART_WEA_TSTM"
+        ,"SMART_FATIGUE"
+        ,"SMART_BUMPERS"
+        ,"SMART_HARSH_DZ"
+        ,"VOLUME_FAIL"
+        ,"VOLUME_DONE"
+        ,"RGB_RED"
+        ,"RGB_GREEN"
+        ,"RGB_BLUE"
+        ,"RGB_WHITE"
+        ,"TV_PATTERN"
+        ,"OM_POWEROFF"
+        ,"OM_NORMAL"
+        ,"OM_MUTE"
+        ,"OM_KEEPPWR"
+        ,"OM_PILOT"
     ],
 
 

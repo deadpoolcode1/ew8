@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
+#include <QDebug>
 
 QMutex GraphicItemsEnumMap::instanceMutex;
 
@@ -44,7 +45,7 @@ void GraphicItemsEnumMap::init(void)
 {
     QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
 
-    QJsonArray jsonArray = jsonObject["GraphicItem"].toArray();
+    QJsonArray jsonArray = jsonObject["GraphicItems"].toArray();
 
     DISPLAY_ITEM_ID id;
 
@@ -52,19 +53,18 @@ void GraphicItemsEnumMap::init(void)
     id =  ((DISPLAY_ITEM_ID)AlertTypes::ALERT_END_OF_TYPE);
 #endif
 
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
+    qDebug() << "JSON: Graphic Items enum:";
 
-        QString name = obj["enum"].toString();
-#ifdef DYNAMIC_DISPLAY_ITEM_ID
+    foreach (const QJsonValue & value, jsonArray) { 
+
+        QString name = value.toString();
+
         id++;
-#else
-        id = obj["value"].toInt();
-#endif
+
         //TODO verify NAME and ID are unique
 
-        qDebug("JSON: %s",  qPrintable(name));
-        qDebug("JSON: %d",  id);
+        qDebug() << "name: " <<  qPrintable(name) << "id:" << id;
+
 
         graphicItemsIDsMap.insert(name,id);
         graphicItemsNamesMap.insert(id, name);
