@@ -36,7 +36,7 @@ QJsonDocument AMJsonConfigReader::readJsonDocument(void)
 
     QJsonDocument ret;
 
-    QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("signals/EyeWatch8_Signals.json"));
+    QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("signals/EW8_Signals.json"));
 
     if(jsonFile.exists())
     {

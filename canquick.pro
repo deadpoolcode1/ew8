@@ -9,7 +9,8 @@ DEFINES += MINOR_VERSION=$${MINOR_VERSION}
 
 qmlscripts.files = qml/*.qml
 qmlimages.files = qml/images/*
-signalcfgs.files = *.json
+signalcfgs.files = signals/*.json
+configs.files = configs/*.json
 dbcfiles.files = DBC/*.dbc
 rccfiles.files = qml/*.rcc
 
@@ -95,6 +96,12 @@ win32: signalcfgs.path = $${OUT_PWD}/signals
 qnx: signalcfgs.path = /tmp/$${TARGET}/signals
 else: unix:!android: signalcfgs.path = /opt/$${TARGET}/signals
 !isEmpty(signalcfgs.path): INSTALLS += signalcfgs
+
+win32: configs.path = $${OUT_PWD}/configs
+qnx: configs.path = /tmp/$${TARGET}/configs
+else: unix:!android: configs.path = /opt/$${TARGET}/configs
+!isEmpty(configs.path): INSTALLS += configs
+
 
 win32: dbcfiles.path = $${OUT_PWD}/dbc
 qnx: dbcfiles.path = /tmp/$${TARGET}/dbc
