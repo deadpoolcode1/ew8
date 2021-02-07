@@ -864,11 +864,13 @@ ApplicationWindow{
 
 
         Item {
-            id: menu_listener
+            id: volume_menu_listener
             visible: true
-            focus: !(discon_panel.visible||alert_err.visible||groupFCW.visible)
+            focus: true
             property int layer_pri: 2
             property real start: 0
+
+            property bool is_volume_enabled: ! (brigtness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
 
 
             Keys.onDownPressed:
@@ -888,27 +890,48 @@ ApplicationWindow{
             Keys.onReleased: {
                 if (event.key === Qt.Key_Up) {
                     console.log("pressed Up")
-                    volumeKeySend(Qt.Key_VolumeUp)
+                    if(is_volume_enabled)
+                    {
+                      volumeKeySend(Qt.Key_VolumeUp)
+                    }
+
+                    if(brightness.visible)
+                    {
+                    }
                 }
                 else if (event.key === Qt.Key_Down)
                 {
+                    console.log("pressed Down")
                     if(Date.now() - start < 500)
                     {
-                        console.log("pressed Down")
-                        volumeKeySend(Qt.Key_VolumeDown)
+                        if(is_volume_enabled) 
+                        {
+                            volumeKeySend(Qt.Key_VolumeDown)
+                        }
                     }
                     else
                     {
+                        if(is_volume_enabled) 
+                        {
                         console.log("pressed Mute")
                         volumeKeySend(Qt.Key_VolumeMute)
+                        }
+
                     }
+
+                    if(brightness.visible)
+                    {
+                    }
+
+
                     start = 0
                 }
                 else if (event.key === Qt.Key_Return)
                 {
                     console.log("pressed Enter")
+                    brightness.visible = ! brightness.visible
                     //NOTE: menu key verification
-                    volumeKeySend(Qt.Key_Return)
+                    //volumeKeySend(Qt.Key_Return)
                 }
 
                 event.accepted = true;
@@ -925,6 +948,14 @@ ApplicationWindow{
             property int layer_pri: 2
             visible: false
         }
+
+        BrightnessMenu
+        {
+           z: 10
+           id: brightness
+           visible: false
+        }
+
 
         Test{
             id: test_group

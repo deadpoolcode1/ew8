@@ -10,23 +10,30 @@ import builtin.mobileye.QRCode 0.1
 
 
 ProgressBarMenu {
-    id: volume_menu
+    id: bar_menu
     
-    lowerLimit: volume_done.canEntityArg
-    displayedValue: volume_done.canEntityArg1
-    upperLimit: volume_done.canEntityArg2
+    lowerLimit: 1
+    displayedValue: 3
+    upperLimit: 5
 
-    function setVisibleSlot(){visible= true}
-    function setInvisibleSlot(){visible = false}
+    BrightnessIndicator {
+        id: brightness_indicator
 
-    VolumeIndicator {
-        id: volume_done
+        level: displayedValue
 
         anchors.verticalCenter: mnemonicIconSlot.verticalCenter
         anchors.left:mnemonicIconSlot.left
         anchors.leftMargin: 0
     }
-    
+
+    Timer {
+        id: hide_timer
+        running: bar_menu.visible
+        interval: 3000
+        onTriggered: {
+           bar_menu.visible = false
+        }
+    }
 }
 
 
