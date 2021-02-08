@@ -870,7 +870,7 @@ ApplicationWindow{
             property int layer_pri: 2
             property real start: 0
 
-            property bool is_volume_enabled: ! (brigtness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
+            property bool is_volume_enabled: ! (brightness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
 
 
             Keys.onDownPressed:
@@ -897,6 +897,7 @@ ApplicationWindow{
 
                     if(brightness.visible)
                     {
+                        brightness.up()
                     }
                 }
                 else if (event.key === Qt.Key_Down)
@@ -904,14 +905,14 @@ ApplicationWindow{
                     console.log("pressed Down")
                     if(Date.now() - start < 500)
                     {
-                        if(is_volume_enabled) 
+                        if(is_volume_enabled)
                         {
                             volumeKeySend(Qt.Key_VolumeDown)
                         }
                     }
                     else
                     {
-                        if(is_volume_enabled) 
+                        if(is_volume_enabled)
                         {
                         console.log("pressed Mute")
                         volumeKeySend(Qt.Key_VolumeMute)
@@ -921,6 +922,7 @@ ApplicationWindow{
 
                     if(brightness.visible)
                     {
+                        brightness.down()
                     }
 
 
@@ -945,13 +947,14 @@ ApplicationWindow{
 
         VolumeMenu {
             id: volume_menu
+            z:20
             property int layer_pri: 2
             visible: false
         }
 
         BrightnessMenu
         {
-           z: 10
+           z: 20
            id: brightness
            visible: false
         }

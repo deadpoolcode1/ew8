@@ -11,9 +11,10 @@ import builtin.mobileye.QRCode 0.1
 
 ProgressBarMenu {
     id: volume_menu
-    
-    lowerLimit: volume_done.canEntityArg
-    displayedValue: volume_done.canEntityArg1
+
+    displayedValue: volume_done.canEntityArg
+
+    lowerLimit: volume_done.canEntityArg2
     upperLimit: volume_done.canEntityArg2
 
     function setVisibleSlot(){visible= true}

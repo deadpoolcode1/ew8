@@ -12,9 +12,10 @@ import builtin.mobileye.QRCode 0.1
 Rectangle {
     id: volume_menu
     color: "#191414"
-    
-    property alias lowerLimit: min_value.value
+
     property alias displayedValue: actual_value.value
+
+    property alias lowerLimit: min_value.value
     property alias upperLimit: max_value.value
     
     property int canEntityType: Alert.QtQG

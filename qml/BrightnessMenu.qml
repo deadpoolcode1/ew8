@@ -11,10 +11,30 @@ import builtin.mobileye.QRCode 0.1
 
 ProgressBarMenu {
     id: bar_menu
-    
+
+
+    displayedValue: 5
+
     lowerLimit: 1
-    displayedValue: 3
     upperLimit: 5
+
+    function up()
+    {
+        if (displayedValue < upperLimit)
+        {
+            displayedValue++
+        }
+        hide_timer.restart()
+    }
+
+    function down()
+    {
+        if (displayedValue > lowerLimit)
+        {
+            displayedValue--
+        }
+        hide_timer.restart()
+    }
 
     BrightnessIndicator {
         id: brightness_indicator
