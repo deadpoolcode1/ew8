@@ -87,9 +87,8 @@ void VersionMsg::create(CanManager *aCanManager)
 
 void VersionMsg::readVersionInfo(void)
 {
-    //NOTE: Engine version:
-    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
-    QJsonArray jsonArray = jsonObject["MediaVersion"].toArray();
+    //NOTE: Engine version: 
+    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("MediaVersion").toArray();
 
     version2send.can_id = 0x7d0;
     version2send.can_dlc = 8;
@@ -150,10 +149,6 @@ void VersionMsg::readVersionInfo(void)
 
 void VersionMsg::readServiceNumber(void)
 {
-    //NOTE: Engine version:
-    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
-    QJsonArray jsonArray = jsonObject["MediaVersion"].toArray();
-
     sn2send_LSB.can_id = 0x7d1;
     sn2send_LSB.can_dlc = 8;
 

@@ -14,7 +14,7 @@ ProgressBarMenu {
 
     displayedValue: volume_done.canEntityArg
 
-    lowerLimit: volume_done.canEntityArg2
+    lowerLimit: volume_done.canEntityArg1
     upperLimit: volume_done.canEntityArg2
 
     function setVisibleSlot(){visible= true}

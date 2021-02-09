@@ -43,9 +43,7 @@ QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 
 void GraphicItemsEnumMap::init(void)
 {
-    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
-
-    QJsonArray jsonArray = jsonObject["GraphicItems"].toArray();
+     QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("GraphicItems").toArray();
 
     DISPLAY_ITEM_ID id;
 

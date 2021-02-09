@@ -5,21 +5,27 @@
 
 #include <QMutex>
 
-class AMJsonConfigReader: public QJsonDocument
+#include <QMap>
+
+class AMJsonConfigReader
 {
 public:
 
     static AMJsonConfigReader * getInstance(void);
 
+    QJsonValue getJsonTopEntry(QString entryKey);
+
 private:
 
     static QMutex instanceMutex;
 
-    static QJsonDocument readJsonDocument(void);
+    void readJsonDocument(QString arg);
 
     static AMJsonConfigReader * instance;
 
-    explicit AMJsonConfigReader(QJsonDocument parent);
+    QMap <QString,QJsonValue> jsonEntriesList;
+
+    explicit AMJsonConfigReader(void);
 };
 
 #endif // AMJSONCONFIGREADER_H

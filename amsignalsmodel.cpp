@@ -52,8 +52,7 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
-    QJsonObject jsonObject = AMJsonConfigReader::getInstance()->object();
-    QJsonArray jsonArray = jsonObject["Protocols"].toArray();
+    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("Protocols").toArray();
 
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject protocol_obj = value.toObject();
