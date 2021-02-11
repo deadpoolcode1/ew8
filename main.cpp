@@ -17,10 +17,13 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QScreen>
+#include "brightnesscontrol.h"
+
 
 #ifndef WIN32
 #include <sys/types.h>
 #include <signal.h>
+
 
 #if 1
 #include <stdio.h>
@@ -45,6 +48,7 @@ int main(int argc, char *argv[])
 {
     bootUpTimer.start();
 
+
     qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
@@ -67,6 +71,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc,argv);
+
+    BrightnessControl brightnessControl(&app);
+
 
     QCommandLineParser cmdLnParser;
 

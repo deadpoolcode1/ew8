@@ -22,6 +22,7 @@ CANDBGRAMMAR = $$cat($${GRAMMARFILE},blob)
 QMAKE_SUBSTITUTES += candbgrammar.h.in
 
 QT += quick
+# QT += sensors
 
 CONFIG += c++11
 
@@ -73,7 +74,8 @@ SOURCES += \
     amjsonrequestidaction.cpp \
     watchdogdevice.cpp \
     amjsonsystemrequestaction.cpp \
-    timedsmoother.cpp
+    timedsmoother.cpp \
+    brightnesscontrol.cpp
 
 RESOURCES += qml.qrc
 
@@ -172,7 +174,8 @@ HEADERS += \
     watchdogdevice.h \
     amjsonsystemrequestaction.h \
     ismoother.h \
-    timedsmoother.h
+    timedsmoother.h \
+    brightnesscontrol.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
