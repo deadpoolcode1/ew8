@@ -33,7 +33,7 @@ BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
     triggerTimer->setSingleShot(false);
     triggerTimer->setInterval(1000);
 
-    connect(triggerTimer, SIGNAL(timeout()), this, SLOT(illuminanceMeasure()));
+    connect(triggerTimer, SIGNAL(timeout()), this, SLOT(fireIlluminanceMeasure()));
 
     currentOutput = 0;
 #ifndef WIN32
@@ -166,19 +166,21 @@ void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
     qDebug()<< "Brightness control: level change notify received!" ;
     currentMenuLevel = newLevel;
     currentMenuLevelOutputs = outputLevels.value(currentMenuLevel,nullptr);
+    //Threadsafe: in slots executed in the same event loop
+    assignBrightness(measureIlluminanceLevel(), true);
     qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
              << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
 }
 
-
-void BrightnessControl::illuminanceMeasure(void)
+qint32 BrightnessControl::measureIlluminanceLevel(void)
 {
+    qint32 illuminanceLevel = lowerPointsSize;
 #ifndef WIN32
     measureFile->seek(0);
     qint32 currMeasure =  QString(measureFile->readLine()).toInt();
     qDebug()<< "Illuminance ADC (mV): " << currMeasure*scale;
 
-    qint32 illuminanceLevel = lowerPointsSize;
+
 
     for (qint32 i = 0; i < lowerPointsSize ; i ++)
     {
@@ -190,12 +192,20 @@ void BrightnessControl::illuminanceMeasure(void)
     }
 
     qDebug()<< "illuminaceLevel: " << illuminanceLevel;
+#endif
+    return illuminanceLevel;
+}
 
+
+void BrightnessControl::fireIlluminanceMeasure(void)
+{
+#ifndef WIN32
+    qint32 illuminanceLevel = measureIlluminanceLevel();
     assignBrightness(illuminanceLevel);
 #endif
 }
 
-void BrightnessControl::assignBrightness(quint32 outputLevel, bool force)
+void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightness)
 {
     qint32 targetOutput;
     if (nullptr != currentMenuLevelOutputs)
@@ -204,7 +214,7 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool force)
 
         if(targetOutput < currentOutput)
         {
-            if(force)
+            if(forceBrightness)
             {
                 currentOutput = targetOutput;
             }
@@ -217,7 +227,7 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool force)
         }
         else if(targetOutput > currentOutput)
         {
-            if(force)
+            if(forceBrightness)
             {
                 currentOutput = targetOutput;
             }

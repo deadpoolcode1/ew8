@@ -19,12 +19,17 @@ signals:
 
 
 public slots:
-    void illuminanceMeasure(void);
-    void assignBrightness(quint32 outputLevel, bool force = false);
-    void assignMappings(void);
+    void fireIlluminanceMeasure(void);
     void brightnessLevelChanged(qint32 newLevel);
 
 private:
+
+    void assignMappings(void);
+    void assignBrightness(quint32 outputLevel, bool forceBrightness = false);
+    qint32 measureIlluminanceLevel(void);
+
+
+
     QTimer * triggerTimer;
     QFile * measureFile;
     QString measureFileName;
