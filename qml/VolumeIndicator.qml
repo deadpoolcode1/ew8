@@ -19,6 +19,12 @@ Rectangle
     property int canEntityArg1: 0x0
     property int canEntityArg2: 0x5
 
+    function timersRestart()
+    {
+       volume_done_timer.restart()
+       volume_fail_timer.restart()
+    }
+
 Image {
     id: volume_reqfail
     property int canEntityType: Alert.ALERT_REQFAIL

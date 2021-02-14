@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QMap>
 #include <QFileSystemWatcher>
+#include <QSettings>
 
 class BrightnessControl : public QObject
 {
@@ -19,8 +20,9 @@ signals:
 
 public slots:
     void illuminanceMeasure(void);
-    void assignBrightness(quint32 outputLevel);
+    void assignBrightness(quint32 outputLevel, bool force = false);
     void assignMappings(void);
+    void brightnessLevelChanged(qint32 newLevel);
 
 private:
     QTimer * triggerTimer;
@@ -37,10 +39,9 @@ private:
     //COONTAINS: menuLevel,Size,PtrToValuesArray
     QMap<qint32, qint32 *> outputLevels;
     qint32 * currentMenuLevelOutputs;
+#if 0
     QFileSystemWatcher * settingsWatcher;
-
-
-
+#endif
 };
 
 #endif // BRIGHTNESSCONTROL_H

@@ -7,14 +7,27 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QSettings>
 
 BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
 {
     assignMappings();
 
+    QSettings settings;
 
+    currentMenuLevel = settings.value("Brightness/brightness",QVariant(5)).toInt();
 
+    qDebug() << "Selected Brightness Level:" << currentMenuLevel;
 
+#if 0
+    settingsWatcher = new QFileSystemWatcher(parent);
+
+    qDebug()<<"Watch the Settings file:"<< settings.fileName();
+
+    settingsWatcher->addPath(settings.fileName());
+
+    connect (settingsWatcher, SIGNAL(fileChanged(QString)),this, SLOT(settingsChanged(void)));
+#endif
 
     triggerTimer = new QTimer(this);
     triggerTimer->setSingleShot(false);
@@ -23,7 +36,6 @@ BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
     connect(triggerTimer, SIGNAL(timeout()), this, SLOT(illuminanceMeasure()));
 
     currentOutput = 0;
-    currentMenuLevel = 5;
 #ifndef WIN32
     measureFile = new QFile(measureFileName);
     measureFile->open(QFile::ReadOnly | QFile::Text);
@@ -148,6 +160,17 @@ BrightnessControl::~BrightnessControl()
     #endif
 }
 
+void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
+{
+   //TODO select the new outputs level and force illuminanceMeasure+assignBrightness(WARNING: The hand can be over the sensor)
+    qDebug()<< "Brightness control: level change notify received!" ;
+    currentMenuLevel = newLevel;
+    currentMenuLevelOutputs = outputLevels.value(currentMenuLevel,nullptr);
+    qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
+             << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
+}
+
+
 void BrightnessControl::illuminanceMeasure(void)
 {
 #ifndef WIN32
@@ -172,7 +195,7 @@ void BrightnessControl::illuminanceMeasure(void)
 #endif
 }
 
-void BrightnessControl::assignBrightness(quint32 outputLevel)
+void BrightnessControl::assignBrightness(quint32 outputLevel, bool force)
 {
     qint32 targetOutput;
     if (nullptr != currentMenuLevelOutputs)
@@ -181,14 +204,27 @@ void BrightnessControl::assignBrightness(quint32 outputLevel)
 
         if(targetOutput < currentOutput)
         {
-            currentOutput--;
-
+            if(force)
+            {
+                currentOutput = targetOutput;
+            }
+            else
+            {
+                currentOutput--;
+            }
             outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
             outputFile->flush();
         }
         else if(targetOutput > currentOutput)
         {
+            if(force)
+            {
+                currentOutput = targetOutput;
+            }
+            else
+            {
             currentOutput++;
+            }
 
             outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
             outputFile->flush();

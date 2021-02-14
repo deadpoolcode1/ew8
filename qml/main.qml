@@ -12,6 +12,7 @@ import builtin.mobileye.QRCode 0.1
 ApplicationWindow{
     id: page
     signal volumeKeySend(int qtKey);//Qt.Key
+    signal brightnessChanged(int newLevel);
 
     property bool isInEdition: false
 
@@ -883,8 +884,8 @@ ApplicationWindow{
                 console.log("down pressed at "+start)
                 event.accepted = true;
 
-                volume_done_timer.restart()
-                volume_fail_timer.restart()
+                //TODO does not work:
+                volume_menu.timers_restart()
             }
 
             Keys.onReleased: {

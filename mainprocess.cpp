@@ -112,6 +112,11 @@ void MainProcess::process()
 #endif
 }
 
+void MainProcess::setBrightnessControl(BrightnessControl *aBrightnessControl)
+{
+    theBrightnessControl =  aBrightnessControl;
+}
+
 int MainProcess::launchEverything()
 {
     QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
@@ -124,6 +129,15 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
                       this, SLOT(volumeKeySent(qint32)));
 
+    if(nullptr != theBrightnessControl)
+    {
+        QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
+                         theBrightnessControl, SLOT(brightnessLevelChanged(qint32)));
+    }
+    else
+    {
+        qDebug("Please set brightness control!");
+    }
 
     canmgr->launch();
 

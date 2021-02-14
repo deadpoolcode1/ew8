@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
 {
     bootUpTimer.start();
 
-
     qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
@@ -71,6 +70,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc,argv);
+
+    app.setOrganizationName("mobileye");
 
     BrightnessControl brightnessControl(&app);
 
@@ -138,6 +139,8 @@ int main(int argc, char *argv[])
 
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
+
+    mp->setBrightnessControl(& brightnessControl);
 
     CanRxMsg::saveToStorage();
 

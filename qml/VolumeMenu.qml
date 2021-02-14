@@ -12,6 +12,11 @@ import builtin.mobileye.QRCode 0.1
 ProgressBarMenu {
     id: volume_menu
 
+    function timersRestart()
+    {
+        volume_done.timersRestart()
+    }
+
     displayedValue: volume_done.canEntityArg
 
     lowerLimit: volume_done.canEntityArg1

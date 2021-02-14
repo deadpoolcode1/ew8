@@ -4,6 +4,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
 
+import Qt.labs.settings 1.0
+
 //Custom modules:
 import MyQMLenums 0.1
 import builtin.mobileye.QRCode 0.1
@@ -12,6 +14,13 @@ import builtin.mobileye.QRCode 0.1
 ProgressBarMenu {
     id: bar_menu
 
+    Settings
+    {
+        id: bri_setting
+
+        category: "Brightness"
+        property alias brightness: bar_menu.displayedValue
+    }
 
     displayedValue: 5
 
@@ -23,6 +32,7 @@ ProgressBarMenu {
         if (displayedValue < upperLimit)
         {
             displayedValue++
+            brightnessChanged(displayedValue)
         }
         hide_timer.restart()
     }
@@ -32,6 +42,7 @@ ProgressBarMenu {
         if (displayedValue > lowerLimit)
         {
             displayedValue--
+            brightnessChanged(displayedValue)
         }
         hide_timer.restart()
     }

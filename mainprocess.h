@@ -7,6 +7,7 @@
 #include "ialertdisplay.h"
 #include <QQmlApplicationEngine>
 #include "rootedtree.h"
+#include "brightnesscontrol.h"
 
 class MainProcess : public QObject, IAlertDisplay
 {
@@ -19,6 +20,8 @@ public:
     int launchEverything(void);
 
     void updateDisplay(void);
+
+    void setBrightnessControl(BrightnessControl * aBrightnessControl);
 
     //alerts display:
     virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, quint8 unit);
@@ -43,6 +46,9 @@ private:
     bool isDataComplete;
 
     static MainProcess* instance;
+
+    //Objects for signals connection:
+    BrightnessControl * theBrightnessControl;
 
 //    MainWindow * mw;
     CanManager * canmgr;
