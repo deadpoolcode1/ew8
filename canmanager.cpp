@@ -92,7 +92,14 @@ void CanManager::sendVolumeDown(void)
     frame_to_send.can_dlc = 8;
     frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
     frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
-    frame_to_send.data[2] = (0x0);
+    frame_to_send.data[2] = (0x0)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
+
 
     write_frame(&frame_to_send);
 
@@ -111,7 +118,13 @@ void CanManager::sendVolumeUp(void)
     frame_to_send.can_dlc = 8;
     frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
     frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
-    frame_to_send.data[2] = (0x1);
+    frame_to_send.data[2] = (0x1)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
 
     write_frame(&frame_to_send);
 
@@ -131,7 +144,13 @@ void CanManager::sendVolumeGet(void)
     frame_to_send.can_dlc = 8;
     frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
     frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
-    frame_to_send.data[2] = (0x2);
+    frame_to_send.data[2] = (0x2)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
 
     write_frame(&frame_to_send);
 
@@ -150,7 +169,13 @@ void CanManager::sendVolumeMute(void)
     frame_to_send.can_dlc = 8;
     frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
     frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
-    frame_to_send.data[2] = (0x3);
+    frame_to_send.data[2] = (0x3)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
 
     write_frame(&frame_to_send);
 
