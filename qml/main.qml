@@ -451,6 +451,7 @@ ApplicationWindow{
                     function setVisibleSlot() {visible = true;  console.log("pdz:"+Date.now());}
                     function setInvisibleSlot() {visible = false}
 
+                    /*
                     SequentialAnimation on opacity{
                         loops: Animation.Infinite
                         running: alert_pdz.visible
@@ -482,6 +483,7 @@ ApplicationWindow{
 
                         onStopped: {opacity =  1.0}
                     }
+                    */
 
                 }
 

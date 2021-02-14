@@ -314,6 +314,7 @@
         {
             "protocol": "IMS_Status_Protocol_System",
             "keepAlive": "IMS_Status_Protocol_System",
+            "timeout": 1000,
             "signals":[
                 {"name":"Validity", "action": ["", "inverted"], "type": "Validator"},
                 {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}

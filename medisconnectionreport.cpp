@@ -19,7 +19,7 @@ MeDisconnectionReport::MeDisconnectionReport(IAlertDisplay * aDisplay, QObject *
    connectionTimeoutTimer = new QTimer();
 
    connectionTimeoutTimer->setSingleShot(true);
-   connectionTimeoutTimer->setInterval(DEFAULT_EW_CAN_CONNECTION_TIMEOUT);
+   connectionTimeoutTimer->setInterval(CanRxMsg::getKeepAliveMsgTimeout());
    connectionTimeoutTimer->setTimerType(Qt::PreciseTimer);
 
    requestTimeoutTimer = new QTimer();

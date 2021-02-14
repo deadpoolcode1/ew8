@@ -27,7 +27,7 @@ public:
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static void completeInitCanRxMsgsPool(void);
     static void setItsDisconnectionReport(MeDisconnectionReport * aDisconnectionReport);
-    static void setKeepAliveMsg(QString keepAliveMsgName);
+    static void setKeepAliveMsg(QString keepAliveMsgName, qint32 aKeepAliveTimeout);
 
     static CanRxMsg * createInstance(quint32 StdId, QString itsName);
     static CanRxMsg * getMsgByCanId(quint32 std_id);
@@ -54,6 +54,7 @@ public:
     static void discardRequestId(void);
 
     static bool isKeepAliveMsg(CanStdId_t canId){return (canId == keepAliveMsgId);};
+    static qint32 getKeepAliveMsgTimeout(void){return keepAliveTimeout;}
 
     //TODO: make readonly property
     static bool isAlreadyLoaded;
@@ -84,6 +85,7 @@ protected:
 
   static QString keepAliveMsgName;
   static CanStdId_t keepAliveMsgId;
+  static qint32 keepAliveTimeout;
 
   quint32 getCanID(void);
 

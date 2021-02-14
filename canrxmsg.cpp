@@ -20,13 +20,15 @@ bool CanRxMsg::isRequestIdLSBByteReceived = false;
 quint16 CanRxMsg::requestId = 0x0;
 QString CanRxMsg::keepAliveMsgName;
 CanStdId_t CanRxMsg::keepAliveMsgId = 0x0;
+qint32 CanRxMsg::keepAliveTimeout;
 
 
-void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName)
+void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName, qint32 aKeepAliveTimeout)
 {
   if(keepAliveMsgName.isEmpty())
   {
     keepAliveMsgName = aKeepAliveMsgName;
+    keepAliveTimeout = aKeepAliveTimeout;
   }
   else
   {
