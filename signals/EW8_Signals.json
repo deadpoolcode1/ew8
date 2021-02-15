@@ -37,6 +37,7 @@
         ,"ALERT_SLI_SHOW"
         ,"INFO_NO_GPS"
         ,"INFO_GPS_OK"
+        ,"INFO_NO_GSM"
 
         ,"SMART_CROWDED"
         ,"SMART_PED_HWY"
@@ -336,11 +337,12 @@
             "signals":[
 
                 {"name":"GPSStatus", "action": "Vt_GPSstatus",  "isValueTable": true}
+                ,{"name":"CommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
             ],
             "value_tables":[
                 {"name":"Vt_GPSstatus", "type": "GraphicItem", "rows":[
-                        {"value":  0, "action": "INFO_NO_GPS", "description": "GPS Status: No GPS"}
-                        ,{"value":  3, "action": "INFO_GPS_OK", "description": "GPS Status: GPS Ok"}
+                        {"value":  1, "action": "INFO_NO_GPS", "description": "GPS Status: No GPS"}
+                        ,{"value":  4, "action": "INFO_GPS_OK", "description": "GPS Status: GPS Ok"}
                     ]
                 }
             ]

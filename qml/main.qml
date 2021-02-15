@@ -278,12 +278,35 @@ ApplicationWindow{
                     opacity: isInEdition? 1.0 : 0.0
                 }
 
-                Image {
-                    id: ota
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    source: "images/status-bar/status_OTA.png"
-                    opacity: isInEdition? 1.0 : 0.0
+                Rectangle {
+                    id: comm_info
+                    width: 23
+                    height: 35
+                    color: "#00000000"
+                    border.color: "#00000000"
+
+                    Image {
+                        id: ota
+                        anchors.top: parent.top
+                        property int layer_pri: 1
+                        anchors.topMargin: 0
+                        source: "images/status-bar/status_OTA.png"
+                        opacity: isInEdition? 1.0 : 0.0
+                    }
+
+                    Image {
+                        id: gsm_status
+                        anchors.top: parent.top
+                        property string canEntityType: "INFO_NO_GSM"
+                        property int layer_pri: 0
+                        anchors.topMargin: 0
+                        source: "images/status-bar/status_no_GSM.png"
+
+                        function setVisibleSlot() {opacity = 1.0}
+                        function setInvisibleSlot() {opacity = 0.0}
+                        opacity: isInEdition? 1.0 : 0.0
+
+                    }
                 }
 
                 GpsStatus {
