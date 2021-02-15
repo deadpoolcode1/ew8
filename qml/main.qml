@@ -635,7 +635,9 @@ ApplicationWindow{
                             function setInvisibleSlot() {visible = false}
 
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/right_lane-01.png"
+                            source: "images/ldw/left_lane_yellow-01.png"
+                            mirror: true
+                            //source: "images/ldw/right_lane-01.png"
                         }
 
 
@@ -644,7 +646,9 @@ ApplicationWindow{
                             playing: !alert_pdz.visible
                             property string canEntityType: "ALERT_RLDW"
                             property int layer_pri: 1
-                            source: "images/ldw/ldw_right-01.png"
+                            source: "images/ldw/ldw_left-01-01.png"
+                            mirror: true
+                            //source: "images/ldw/ldw_right-01.png"
                         }
 
                         Image {
@@ -657,7 +661,9 @@ ApplicationWindow{
                             function setInvisibleSlot() {visible = false}
 
                             fillMode: Image.PreserveAspectCrop
-                            source: "images/ldw/normal_lane_right-01.png"
+                            source: "images/ldw/normal_lane_left-01.png"
+                            mirror: true
+                            //source: "images/ldw/normal_lane_right-01.png"
                         }
 
 
