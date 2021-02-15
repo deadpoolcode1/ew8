@@ -10,9 +10,10 @@ visible: true
 
 property alias source: sign.source
 
- property alias isInSlot: sign.isInSlot
+property alias isInSlot: sign.isInSlot
 
-function setVisibleSlot(arg) {canEntityArg = arg;  sign.visible = true;}
+property alias sign_visible: sign.visible
+
 function setInvisibleSlot() {sign.visible = false}
 
 //  source: "images/shadow-test/s4.png"
@@ -22,7 +23,7 @@ SequentialAnimation on z {
     running: sign.visible
 
     PropertyAction{
-        value: 5
+        value: 3
     }
 
     PauseAnimation {
@@ -30,7 +31,7 @@ SequentialAnimation on z {
     }
 
     PropertyAction{
-        value: 3
+        value: 1
     }
 }
 

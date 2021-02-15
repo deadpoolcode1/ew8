@@ -21,18 +21,59 @@ Rectangle {
     function setVisibleSlot(){visible = true;}
     function setInvisibleSlot(){visible = false;}
 
-    SLI {
-        id: upper_tsr
-        canEntityType: "ALERT_SLI"
+    Item {
+        id: groupTop
+        objectName: "UPPER_QtQG"
+        property bool mutexGroup: true
         property int layer_pri: 0
 
-        overSpeeding: parent.overSpeeding && isInSlot
+        property bool isInSlot:  true
 
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.left: parent.left
-        anchors.leftMargin: 0
+        property int canEntityType: Alert.QtQG
+
+        visible: true
+
+        z: upper_tsr.z * alert_sli_end.z
+
+        SLI {
+            id: upper_tsr
+            canEntityType: "ALERT_SLI"
+            property int layer_pri: 0
+
+            function setVisibleSlot(arg) {
+                canEntityArg = arg;
+                alert_sli_end.canEntityArg = arg;
+                alert_sli_end.argReceived = true
+                sign_visible = true;
+            }
+
+            overSpeeding: left_panel.overSpeeding && isInSlot
+
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+        }
+
+
+        SLI {
+            id: alert_sli_end
+            canEntityType: "ALERT_SLI_END"
+
+            function setVisibleSlot() {if(argReceived){sign_visible = true;}}
+
+            property bool argReceived: false
+            overSpeeding: false
+            property int layer_pri: 1
+            source: "images/left-panel/TSR/black_stripes.png"
+
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+        }
     }
+
 
 
     Item {
@@ -47,7 +88,7 @@ Rectangle {
 
         visible: true
 
-        z: 4
+        z: 2
 
         anchors.left: parent.left
         anchors.rightMargin: 0
@@ -57,16 +98,13 @@ Rectangle {
         function setVisibleSlot() {visible = true; }
         function setInvisibleSlot() {visible = false}
 
-        DummyItem{
+        TSR {
+            id: alert_end_all_restr
             canEntityType: "ALERT_END_ALL_RESTR"
             property int layer_pri: 1
+            source: "images/left-panel/TSR/black_stripes.png"
 
-            anchors.left: parent.left
-            anchors.rightMargin: 0
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
         }
-
 
 
         TSR{

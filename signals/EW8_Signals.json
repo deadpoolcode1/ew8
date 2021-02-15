@@ -23,6 +23,7 @@
         ,"ALERT_NO_PASS"
         ,"ALERT_PLAYGROUND"
         ,"ALERT_SLI"
+        ,"ALERT_SLI_END"
         ,"ALERT_EXPRESSWAY"
 
         ,"ALERT_MOTORWAY_END"
@@ -111,6 +112,7 @@
                         {"value": 11, "action": "ALERT_SLI", "arg": 120, "description": "standard regular 120 kph"},
                         {"value": 12, "action": "ALERT_SLI", "arg": 130, "description": "standard regular 130 kph"},
                         {"value": 13, "action": "ALERT_SLI", "arg": 140, "description": "standard regular 140 kph"},
+                        {"value": 20, "action": "ALERT_SLI_END", "description": "standard regular end of number"},
 
                         {"value": 28, "action": "ALERT_SLI", "arg": 10, "description": "standard electronic 10 kph"},
                         {"value": 29, "action": "ALERT_SLI", "arg": 20, "description": "standard electronic 20 kph"},
@@ -126,6 +128,7 @@
                         {"value": 39, "action": "ALERT_SLI", "arg": 120, "description": "standard electronic 120 kph"},
                         {"value": 40, "action": "ALERT_SLI", "arg": 130, "description": "standard electronic 130 kph"},
                         {"value": 41, "action": "ALERT_SLI", "arg": 140, "description": "standard electronic 140 kph"},
+                        {"value": 50, "action": "ALERT_SLI_END", "description": "standard electronic end of number"},
 
                         {"value": 64, "action": "ALERT_END_ALL_RESTR", "description": "regular gen end all restrict"},
 
@@ -175,6 +178,8 @@
 
                         {"value": 200, "action": "ALERT_NO_PASS", "description": "regular no passing start"},
                         {"value": 201, "action": "ALERT_NO_PASS_END", "description": "regular no passing end"}
+                        ,{"value": 220, "action": "ALERT_NO_PASS", "description": "electronic no passing start"}
+                        ,{"value": 221, "action": "ALERT_NO_PASS_END", "description": "electronic no passing end"}
 
                     ]
 
