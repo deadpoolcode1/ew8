@@ -20,28 +20,51 @@ Rectangle
 Image {
     id: level_icon
 
-    source: "images/master-volume/m_mute.png"
+    width: 22
+    height: 35
+
+    fillMode: Image.PreserveAspectFit
+
+    source: "images/brightness/brightness_high.png"
 
 
 }
 
 states: [
     State {
-        name: "Low"
-        when: level < 3
+        name: "VeryLow"
+        when: level === 1
 
         PropertyChanges {
             target: level_icon
-            source: "images/master-volume/m_vol_low.png"
+            source: "images/brightness/brightness_very_low.png"
         }
     },
     State {
-        name: "High"
-        when:  level > 2
+        name: "Low"
+        when:  level === 2 || level === 3
 
         PropertyChanges {
             target: level_icon
-            source: "images/master-volume/m_vol_high.png"
+            source: "images/brightness/brightness_low.png"
+        }
+    },
+        State {
+            name: "Half"
+            when:  level === 4
+
+            PropertyChanges {
+                target: level_icon
+                source: "images/brightness/brightness_half.png"
+            }
+    },
+    State {
+        name: "High"
+        when:  level === 5
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness_high.png"
         }
     }
 ]

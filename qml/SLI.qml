@@ -10,13 +10,15 @@ visible: true
 
 property alias source: sign.source
 
+property url usaShapeSource: "images/left-panel/SLI/left_SLI_rect.png"
+
 property alias isInSlot: sign.isInSlot
 
 property alias sign_visible: sign.visible
 
-function setInvisibleSlot() {sign.visible = false}
+property bool disabled4UsaShape: false
 
-//  source: "images/shadow-test/s4.png"
+function setInvisibleSlot() {sign.visible = false}
 
 SequentialAnimation on z {
 
@@ -99,10 +101,18 @@ SideIcon {
    //circular
    states: [
        State {
-           name: "Usa"; when: usaShape
+           name: "UsaRestricted"; when: usaShape & disabled4UsaShape
            PropertyChanges {
                target: sign
-               source: "images/left-panel/SLI/left_SLI_rect.png"
+               visible: false
+           }
+       }
+       ,
+       State {
+           name: "Usa"; when: usaShape & !disabled4UsaShape
+           PropertyChanges {
+               target: sign
+               source: usaShapeSource
            }
 
            PropertyChanges {

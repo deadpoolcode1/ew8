@@ -16,7 +16,7 @@ Rectangle {
     property int layer_pri: 1
     property bool overSpeeding
     property alias speedLimit: upper_tsr.canEntityArg
-    property alias usaShapeSLI: upper_tsr.usaShape
+    property bool usaShapeSLI: false
 
     function setVisibleSlot(){visible = true;}
     function setInvisibleSlot(){visible = false;}
@@ -39,6 +39,7 @@ Rectangle {
             id: upper_tsr
             canEntityType: "ALERT_SLI"
             property int layer_pri: 0
+            usaShape: usaShapeSLI
 
             function setVisibleSlot(arg) {
                 canEntityArg = arg;
@@ -60,7 +61,14 @@ Rectangle {
             id: alert_sli_end
             canEntityType: "ALERT_SLI_END"
 
-            function setVisibleSlot() {if(argReceived){sign_visible = true;}}
+            usaShape: usaShapeSLI
+            disabled4UsaShape: true
+
+            function setVisibleSlot() {
+                if(argReceived && !(usaShape & disabled4UsaShape)){
+                    sign_visible = true;
+                }
+            }
 
             property bool argReceived: false
             overSpeeding: false
