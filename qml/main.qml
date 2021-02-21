@@ -14,7 +14,7 @@ ApplicationWindow{
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
 
-    property bool isInEdition: false
+    property bool isInEdition:true
 
 
     width: 320
@@ -313,31 +313,68 @@ ApplicationWindow{
                     id: gps_status
                 }
 
-                Image {
-                    id: status_error
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    source: "images/status-bar/status_error.png"
-                    opacity: isInEdition? 1.0 : 0.0
+
+                Rectangle{
+
+                    width: 28
+                    height: 35
+                    color: "#00000000"
+                    border.color: "#00000000"
+
+                    Rectangle {
+                        id: status_error
+
+                        width: 28
+                        height: 35
+
+                        opacity: isInEdition? 1.0 : 0.0
+
+                        property string canEntityType: "ALERT_ERROR"
+                        property int canEntityArg: 0x00
+                        property int layer_pri: 0
+                        color: "#00000000"
+                        border.color: "#00000000"
+
+
+
+                        function setVisibleSlot(Arg){
+                            opacity = 1.0
+                            canEntityArg = Arg
+                        }
+                        function setInvisibleSlot(){opacity = 0.0}
+
+
+                        Text {
+                            id: err_code
+                            color: "#e1f1ff"
+                            text: status_error.canEntityArg.toString(16).toUpperCase()
+                            font.letterSpacing: -2.2
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            topPadding: 4
+                            font.family: "HindSiliguri"
+                            font.pixelSize: 24
+                            font.bold: true
+                        }
+
+
+                    }
+
+                    Image {
+                        id: om_mute
+
+                        property string canEntityType: "OM_MUTE"
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        anchors.right: parent.right
+                        property int layer_pri: 1
+                        function setVisibleSlot() {opacity = 1.0}
+                        function setInvisibleSlot() {opacity = 0.0}
+                        source: "images/status-bar/status_mute.png"
+                        opacity: isInEdition? 1.0 : 0.0
+                    }
                 }
-
-                Image {
-                    id: om_mute
-
-                    property string canEntityType: "OM_MUTE"
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-
-                    function setVisibleSlot() {opacity = 1.0}
-                    function setInvisibleSlot() {opacity = 0.0}
-                    source: "images/status-bar/status_mute.png"
-                    opacity: isInEdition? 1.0 : 0.0
-                }
-
-
 
             }
-
 
         }
 
@@ -362,38 +399,29 @@ ApplicationWindow{
 
 
             //TODO: replace with Image
-            Rectangle {
+            Image {
                 id: alert_err
-                width: 100
-                height: 100
-                visible: false
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                //source: "images/error/red_alert-01.png"
+                visible: isInEdition
+                z: 20
+                source: "images/error/error_full_display_general.jpg"
                 property string canEntityType: "ALERT_ERROR"
                 property int canEntityArg: 0x00
                 property int layer_pri: 0
+                fillMode: Image.PreserveAspectCrop
+                width:324
+                height:240
+                anchors.bottomMargin: -20
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.leftMargin: -2
+
+
 
                 function setVisibleSlot(Arg){
                     visible= true;
                     canEntityArg = Arg
                 }
                 function setInvisibleSlot(){visible = false}
-
-                Text {
-                    id: err_code
-                    width: 40
-                    height: 20
-                    text: "ER-"+parent.canEntityArg.toString(16).toUpperCase()
-                    horizontalAlignment: Text.AlignHCenter
-                    style: Text.Sunken
-                    font.weight: Font.Medium
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 0
-                    font.pixelSize: 12
-                }
-
             }
 
             IMS_TSR_Items {
@@ -528,6 +556,8 @@ ApplicationWindow{
                 HMW {
                     id: alert_hmw_general
                     property int layer_pri: 0
+                    width: 180
+                    height: 180
                     anchors.fill: parent
                     playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
                     alert: true

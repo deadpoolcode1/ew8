@@ -69,6 +69,9 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+    system("killall -USR1 ew8_splash");
+
+
     QGuiApplication app(argc,argv);
 
     app.setOrganizationName("mobileye");
@@ -80,24 +83,9 @@ int main(int argc, char *argv[])
 
     QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
 
-    QCommandLineOption splashPid(QStringList() << "s" << "splash-screen-pid", "Wait for splash screen process to finish or kill it","splash_pid");
-
     cmdLnParser.addOption(forceParsing);
 
-    cmdLnParser.addOption(splashPid);
-
     cmdLnParser.process(app);
-
-    bool is_splashed = cmdLnParser.isSet(splashPid);
-
-    QString splash_pid;
-
-    if(is_splashed)
-    {
-        splash_pid = cmdLnParser.value(splashPid);
-        qDebug() << "Splash pid:" << splash_pid;
-    }
-
 
     //TODO: implement forced parsing in code
     bool is_forced = cmdLnParser.isSet(forceParsing);
@@ -152,33 +140,6 @@ int main(int argc, char *argv[])
 
     qDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
 
-#if 0
-    if(is_splashed)
-    {
-#ifndef WIN32
-
-
-        //DESCRIPTION: Wait to splash to complete and flip the application gui to the primary connector using DRM
-        QDir proc("/proc");
-
-        while(proc.exists(splash_pid))
-        {
-            QThread::msleep(100);
-        }
-
-
-        qint32 drm_fd = open("/dev/dri/card0", O_WRONLY);
-
-        qint32 ioctlStat = ioctl(drm_fd, DRM_IOCTL_SET_UNIQUE, NULL);
-               ioctlStat = ioctl(drm_fd, DRM_IOCTL_SET_MASTER, NULL);
-               struct drm_mode_crtc_page_flip page_flip = {.crtc_id = 37, .fb_id = 0};
-               ioctlStat = ioctl(drm_fd, DRM_IOCTL_MODE_PAGE_FLIP, &page_flip);
-
-         qDebug() << "PageFlip status: " << ioctlStat;
-
-#endif
-    }
-#endif
 
 
 
@@ -192,6 +153,11 @@ int main(int argc, char *argv[])
 
 #endif
 
+#ifndef WIN32
+
+        system("killall -USR2 ew8_splash");
+
+#endif
 
     return app.exec();
 }
