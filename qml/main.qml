@@ -14,7 +14,7 @@ ApplicationWindow{
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
 
-    property bool isInEdition:true
+    property bool isInEdition: false
 
 
     width: 320
@@ -946,7 +946,7 @@ ApplicationWindow{
                 event.accepted = true;
 
                 //TODO does not work:
-                volume_menu.timers_restart()
+                volume_menu.timersRestart()
             }
 
             Keys.onReleased: {

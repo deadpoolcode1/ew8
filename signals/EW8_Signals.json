@@ -1,5 +1,5 @@
 {
-    "MediaVersion":[0,5],
+    "MediaVersion":[1,0],
     "GraphicItems": [
          "ALERT_LEFT_LDWOFF"
         ,"ALERT_RIGHT_LDWOFF"

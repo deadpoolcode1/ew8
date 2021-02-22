@@ -25,7 +25,7 @@ Image {
 
     fillMode: Image.PreserveAspectFit
 
-    source: "images/brightness/brightness_high.png"
+    source: "images/brightness/brightness-5.png"
 
 
 }
