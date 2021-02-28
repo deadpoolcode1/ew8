@@ -129,10 +129,10 @@ void VersionMsg::readVersionInfo(void)
     else
     {
 
-        version2send.data[4] = (quint8)buildId.left(2).toUInt(&success,16);
-        if(success) version2send.data[5] = (quint8)buildId.mid(2,2).toUInt(&success,16);
-        if(success) version2send.data[6] = (quint8)buildId.mid(4,2).toUInt(&success,16);
-        if(success) version2send.data[7] = (quint8)buildId.right(2).toUInt(&success,16);
+        version2send.data[4] = (quint8)buildId.right(2).toUInt(&success,16);
+        if(success) version2send.data[5] = (quint8)buildId.mid(4,2).toUInt(&success,16);
+        if(success) version2send.data[6] = (quint8)buildId.mid(2,2).toUInt(&success,16);
+        if(success) version2send.data[7] = (quint8)buildId.left(2).toUInt(&success,16);
     }
 #endif
 
