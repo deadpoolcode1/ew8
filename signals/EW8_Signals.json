@@ -1,5 +1,5 @@
 {
-    "MediaVersion":[1,0],
+    "ConfigVersion":[1,0,0],
     "GraphicItems": [
          "ALERT_LEFT_LDWOFF"
         ,"ALERT_RIGHT_LDWOFF"
@@ -320,7 +320,7 @@
         {
             "protocol": "IMS_Status_Protocol_System",
             "keepAlive": "IMS_Status_Protocol_System",
-            "timeout": 1000,
+            "timeout": 20000,
             "signals":[
                 {"name":"Validity", "action": ["", "inverted"], "type": "Validator"},
                 {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}

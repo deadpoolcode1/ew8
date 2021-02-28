@@ -87,27 +87,27 @@ void VersionMsg::create(CanManager *aCanManager)
 
 void VersionMsg::readVersionInfo(void)
 {
-    //NOTE: Engine version: 
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("MediaVersion").toArray();
 
     version2send.can_id = 0x7d0;
     version2send.can_dlc = 8;
 
+    //NOTE: Engine version:
     version2send.data[0] = (quint8)MAJOR_VERSION;
-    version2send.data[1] = (quint8)MINOR_VERSION;
+    version2send.data[1] = (((quint8)MINOR_VERSION) << 2)|(((qint8)OTA_TEST_VERSION) & (quint8)0x3);
 
-    //NOTE: Config version (Get from Json):
     version2send.data[2] = (quint8)(0xff);
     version2send.data[3] = (quint8)(0xff);
 
+
+    //NOTE: Config version:
+    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
     if(!jsonArray.isEmpty())
     {
         version2send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
-        version2send.data[3] = (quint8)jsonArray.at(1).toInt(0xff);
+        version2send.data[3] = (((quint8)jsonArray.at(1).toInt(0x3f)) << 2)|(((qint8)jsonArray.at(2).toInt(0x3)) & (quint8)0x3);
     }
 
     //NOTE: System build version:
-
     bool success = false;
 
     #ifndef WIN32
