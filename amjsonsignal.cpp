@@ -39,6 +39,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
     QString sigType;
     bool polarity = true;
     qint32 sigIndex = -1;
+    bool isValueTable = false;
 
     activatedAction = nullptr;
 
@@ -85,18 +86,15 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
 
 
+    //WARNING: Polarity suitable only for single decision type(boolean or sets) signals
     if(polarity)
     {
         if(-1 == sigIndex)
         {
-            //TODO verify syntax the signal on DBC side must be boolean
-            if(signal_obj.find("Set") == signal_obj.end())
-            {
-
               //Used properties: (aProtocol, sigName, sigAction, sigType)
 
                 //Find is a value table:
-                bool isValueTable;
+
 
                 if(signal_obj.find("isValueTable") == signal_obj.end())
                 {
@@ -110,32 +108,6 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
 
                 init(aProtocol, sigName, sigAction, true, sigType, -1, nullptr, isValueTable);
-
-            }
-            else //extract field of True Values
-            {
-                //TODO verify syntax the signal on DBC side must be non-boolean integer
-                QList<qint32> * sigTrueValues = new QList<qint32>();
-
-                if (signal_obj["Set"].isArray()){
-
-                    QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
-
-
-                    foreach(QJsonValue value, sigTrueValues_Array)
-                    {
-                        sigTrueValues->append(value.toInt(0));
-                    }
-                }
-                else
-                {
-                    qint32 sigTrueValue = signal_obj["Set"].toInt(0);
-                    sigTrueValues->append(sigTrueValue);
-                }
-
-                 //Used properties: (aProtocol, sigName, sigAction, sigTrueValues, sigType)
-                 init(aProtocol, sigName, sigAction, true, sigType, -1, sigTrueValues, false);
-            }
         }
         else
         {
@@ -148,10 +120,41 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
              }
         }
     }
-    else
+
+
+
+    if(!isValueTable && (-1 == sigIndex))
     {
-        //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
-        init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
+        if(signal_obj.find("Set") == signal_obj.end())
+        {
+            //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
+            init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
+        }
+        else
+        {
+            //TODO verify syntax the signal on DBC side must be non-boolean integer
+            QList<qint32> * sigTrueValues = new QList<qint32>();
+
+            if (signal_obj["Set"].isArray()){
+
+                QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
+
+
+                foreach(QJsonValue value, sigTrueValues_Array)
+                {
+                    sigTrueValues->append(value.toInt(0));
+                }
+            }
+            else
+            {
+                qint32 sigTrueValue = signal_obj["Set"].toInt(0);
+                sigTrueValues->append(sigTrueValue);
+            }
+
+             //Used properties: (aProtocol, sigName, sigAction, sigTrueValues, sigType)
+             init(aProtocol, sigName, sigAction, polarity, sigType, -1, sigTrueValues, false);
+        }
+
     }
 
     poolIndex = objectsPool.size();
@@ -326,7 +329,7 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
      else if (extractedCANsignal.type() == QVariant::Int && nullptr != (trueValues))
      {
          qint32 desired = extractedCANsignal.toInt();
-         *do_active = (trueValues->contains(desired));
+         *do_active = ((trueValues->contains(desired)) == polarity);
      }
      else
      {
