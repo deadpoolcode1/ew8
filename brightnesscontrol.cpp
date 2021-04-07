@@ -9,8 +9,19 @@
 #include <QJsonArray>
 #include <QSettings>
 
+//Static methods and variables
+bool BrightnessControl::doCANDebugReport = false;
+
+void BrightnessControl::setCANDebugReport(bool doReport)
+{
+    doCANDebugReport = doReport;
+};
+//end of static methods and variables
+
 BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
 {
+    itsCanManager = nullptr;
+
     assignMappings();
 
     QSettings settings;
@@ -55,6 +66,11 @@ BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
     triggerTimer->start();
 }
 
+void BrightnessControl::setCanManager(CanManager *aCanManager)
+{
+    itsCanManager = aCanManager;
+}
+
 void BrightnessControl::assignMappings(void)
 {
     QJsonValue illum = AMJsonConfigReader::getInstance()->getJsonTopEntry("Illuminance");
@@ -75,7 +91,7 @@ void BrightnessControl::assignMappings(void)
 
     if(scaleFileName.isEmpty())
     {
-        scaleFileName = "/sys/bus/iio/devices/iio:device0/in_voltage0-voltage_scale";
+        scaleFileName = "/sys/bus/iio/devices/iio:device0/in_voltage_scale";
     }
 
     #ifndef WIN32
@@ -84,7 +100,7 @@ void BrightnessControl::assignMappings(void)
     scale = QString(scaleFile.readLine()).toDouble();
     scaleFile.close();
     #else
-    scale = 0.41;
+    scale = 0.2014;
     #endif
 
 
@@ -178,6 +194,7 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
 #ifndef WIN32
     measureFile->seek(0);
     qint32 currMeasure =  QString(measureFile->readLine()).toInt();
+    illuminance_measure_mV = (quint32)qRound(currMeasure*scale);
     qDebug()<< "Illuminance ADC (mV): " << currMeasure*scale;
 
 
@@ -242,6 +259,22 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
 
 
         qDebug() << "Brightness output - current:" << currentOutput << " target:" << targetOutput;
+
+        if(doCANDebugReport)
+        {
+            struct can_frame debugFrame;
+            debugFrame.can_id = 0x7b0;
+            debugFrame.can_dlc = 8;
+            //Actual brightness
+            debugFrame.data[0] =  (quint8)(illuminance_measure_mV & 0xff);
+            debugFrame.data[1] =  (quint8)((illuminance_measure_mV & 0x1f00) >> 010);
+            //Menu Level selected:
+            debugFrame.data[1] = debugFrame.data[1] | (quint8)((currentMenuLevel & 0x7) << 5);
+            //Output brightness
+            debugFrame.data[2] = (quint8)(currentOutput & 0x3f);
+            debugFrame.data[2] = debugFrame.data[2] | 0x80; //brighness debug reported indicator
+            itsCanManager->write_frame(&debugFrame);
+        }
     }
 
 

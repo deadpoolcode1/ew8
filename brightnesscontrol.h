@@ -7,6 +7,9 @@
 #include <QMap>
 #include <QFileSystemWatcher>
 #include <QSettings>
+#include "canmanager.h"
+
+class CanManager;
 
 class BrightnessControl : public QObject
 {
@@ -14,6 +17,9 @@ class BrightnessControl : public QObject
 public:
     explicit BrightnessControl(QObject *parent = nullptr);
     ~BrightnessControl();
+
+    void setCanManager(CanManager * aCanManager);
+     static void setCANDebugReport(bool doReport);
 
 signals:
 
@@ -44,6 +50,10 @@ private:
     //COONTAINS: menuLevel,Size,PtrToValuesArray
     QMap<qint32, qint32 *> outputLevels;
     qint32 * currentMenuLevelOutputs;
+    static bool doCANDebugReport;
+    CanManager * itsCanManager;
+    quint32 illuminance_measure_mV;
+
 #if 0
     QFileSystemWatcher * settingsWatcher;
 #endif

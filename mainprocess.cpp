@@ -133,6 +133,7 @@ int MainProcess::launchEverything()
     {
         QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
                          theBrightnessControl, SLOT(brightnessLevelChanged(qint32)));
+
     }
     else
     {
@@ -140,6 +141,11 @@ int MainProcess::launchEverything()
     }
 
     canmgr->launch();
+
+    if(nullptr != theBrightnessControl)
+    {
+        theBrightnessControl->setCanManager(canmgr);
+    }
 
     itsThread->start();
 

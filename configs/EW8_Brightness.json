@@ -2,7 +2,7 @@
         "Illuminance": {
           "points": [700,1200,1700,2500]
           ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
-          ,"scale": "/sys/bus/iio/devices/iio:device0/in_voltage-voltage_scale"
+          ,"scale": "/sys/bus/iio/devices/iio:device0/in_voltage_scale"
         }
         ,
         "Brightness": {
