@@ -33,7 +33,9 @@ BO_ 1968 EW8SensorsReport: 8 EW_CAN0
  SG_ isBrightnessReported : 23|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ BrightnessScheme : 13|3@1+ (1,0) [0|7] "level" Vector__XXX
  SG_ ActualBrightness : 16|6@1+ (1,0) [0|41] "level" Vector__XXX
+ SG_ ButtonEvent : 24|2@1+ (1,0) [0|0] "" Vector__XXX
 
 
 CM_ BU_ EW_CAN0 "";
 VAL_ 1968 isBrightnessReported 0 "off" 1 "on" ;
+VAL_ 1968 ButtonEvent 0 "isNotReported" 1 "down" 2 "enter" 3 "up" ;

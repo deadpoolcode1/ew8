@@ -21,6 +21,11 @@ class GraphicItemsEnumMap;
 MainProcess* MainProcess::instance = nullptr;
 
 
+#include "candebugreport.h"
+
+class CANDebugReport;
+
+
 MainProcess* MainProcess::getInstance(QObject * aComponentObject)
 {
     if (instance == nullptr)
@@ -129,6 +134,9 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
                       this, SLOT(volumeKeySent(qint32)));
 
+
+
+
     if(nullptr != theBrightnessControl)
     {
         QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
@@ -144,8 +152,13 @@ int MainProcess::launchEverything()
 
     if(nullptr != theBrightnessControl)
     {
-        theBrightnessControl->setCanManager(canmgr);
+        CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
+        connect(theBrightnessControl, SIGNAL(sendBrightness(quint32 , qint32 , qint32 )), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32 , qint32 , qint32 )));
+        QObject::connect(appWindow, SIGNAL(keyReportSend(qint32)),
+                          CANDebugReport::getInstance(), SLOT(sendButton(qint32)));
+
     }
+
 
     itsThread->start();
 
@@ -282,6 +295,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
     return;
 
 }
+
 
 void MainProcess::volumeKeySent(qint32 qtKey)
 {

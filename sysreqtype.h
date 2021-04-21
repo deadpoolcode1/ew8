@@ -11,6 +11,7 @@ enum sysreq_type_e \
 { \
     GetVersion = 0, \
     DebugBrightness = 1, \
+    DebugButtons = 2, \
 };
 #else
  #error Choose other macro name.

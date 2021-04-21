@@ -305,6 +305,7 @@
                 {"name":"TestDisplay", "action": "Vt_TestDisplay",  "isValueTable": true}
                 ,{"name":"GetVersion", "action": "GetVersion", "type": "SystemRequest"}
                 ,{"name": "DebugBrightness", "action": "DebugBrightness", "type": "SystemRequest"}
+                ,{"name": "DebugButtons", "action": "DebugButtons", "type": "SystemRequest"}
             ],
             "value_tables":[
                 {"name":"Vt_TestDisplay", "type": "GraphicItem", "rows":[

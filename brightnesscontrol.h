@@ -18,11 +18,11 @@ public:
     explicit BrightnessControl(QObject *parent = nullptr);
     ~BrightnessControl();
 
-    void setCanManager(CanManager * aCanManager);
      static void setCANDebugReport(bool doReport);
 
 signals:
 
+   void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
 
 public slots:
     void fireIlluminanceMeasure(void);
@@ -51,7 +51,6 @@ private:
     QMap<qint32, qint32 *> outputLevels;
     qint32 * currentMenuLevelOutputs;
     static bool doCANDebugReport;
-    CanManager * itsCanManager;
     quint32 illuminance_measure_mV;
 
 #if 0

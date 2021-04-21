@@ -3,12 +3,14 @@
 #include "amjsonsystemrequestaction.h"
 #include "canrxmsg.h"
 #include "versionmsg.h"
+#include "candebugreport.h"
 #include <QDebug>
 #include <QObject>
 
 class VersionMsg;
 class SystemRequestType;
 class BrightnessControl;
+class CANDebugReport;
 
 AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
 {
@@ -30,6 +32,10 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
 
     case DebugBrightness:
         BrightnessControl::setCANDebugReport(extractedCANsignal.toBool());
+                break;
+
+    case DebugButtons:
+        CANDebugReport::setSendKeyReport(extractedCANsignal.toBool());
                 break;
     default:
         qDebug()<<"Processing unsupported request type";

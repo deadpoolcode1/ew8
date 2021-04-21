@@ -77,7 +77,8 @@ SOURCES += \
     watchdogdevice.cpp \
     amjsonsystemrequestaction.cpp \
     timedsmoother.cpp \
-    brightnesscontrol.cpp
+    brightnesscontrol.cpp \
+    candebugreport.cpp
 
 RESOURCES += qml.qrc
 
@@ -178,7 +179,8 @@ HEADERS += \
     ismoother.h \
     timedsmoother.h \
     brightnesscontrol.h \
-    sysreqtype.h
+    sysreqtype.h \
+    candebugreport.h
 
 
 win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32

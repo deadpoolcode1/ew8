@@ -9,7 +9,12 @@
 #include <QJsonArray>
 #include <QSettings>
 
+#include "candebugreport.h"
+
 //Static methods and variables
+
+class CANDebugReport;
+
 bool BrightnessControl::doCANDebugReport = false;
 
 void BrightnessControl::setCANDebugReport(bool doReport)
@@ -20,8 +25,6 @@ void BrightnessControl::setCANDebugReport(bool doReport)
 
 BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
 {
-    itsCanManager = nullptr;
-
     assignMappings();
 
     QSettings settings;
@@ -60,15 +63,7 @@ BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
     qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
              << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
 
-
-
-
     triggerTimer->start();
-}
-
-void BrightnessControl::setCanManager(CanManager *aCanManager)
-{
-    itsCanManager = aCanManager;
 }
 
 void BrightnessControl::assignMappings(void)
@@ -262,18 +257,7 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
 
         if(doCANDebugReport)
         {
-            struct can_frame debugFrame;
-            debugFrame.can_id = 0x7b0;
-            debugFrame.can_dlc = 8;
-            //Actual brightness
-            debugFrame.data[0] =  (quint8)(illuminance_measure_mV & 0xff);
-            debugFrame.data[1] =  (quint8)((illuminance_measure_mV & 0x1f00) >> 010);
-            //Menu Level selected:
-            debugFrame.data[1] = debugFrame.data[1] | (quint8)((currentMenuLevel & 0x7) << 5);
-            //Output brightness
-            debugFrame.data[2] = (quint8)(currentOutput & 0x3f);
-            debugFrame.data[2] = debugFrame.data[2] | 0x80; //brighness debug reported indicator
-            itsCanManager->write_frame(&debugFrame);
+            sendBrightness(illuminance_measure_mV, currentMenuLevel, currentOutput);
         }
     }
 

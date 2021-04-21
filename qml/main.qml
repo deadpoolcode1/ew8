@@ -11,6 +11,7 @@ import builtin.mobileye.QRCode 0.1
 
 ApplicationWindow{
     id: page
+    signal keyReportSend(int qtKey);//Qt.Key
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
 
@@ -951,6 +952,8 @@ ApplicationWindow{
 
             Keys.onReleased: {
                 if (event.key === Qt.Key_Up) {
+                    keyReportSend(Qt.Key_Up)
+
                     console.log("pressed Up")
                     if(is_volume_enabled)
                     {
@@ -964,6 +967,7 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Down)
                 {
+                     keyReportSend(Qt.Key_Down)
                     console.log("pressed Down")
                     if(Date.now() - start < 500)
                     {
@@ -992,6 +996,7 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Return)
                 {
+                     keyReportSend(Qt.Key_Return)
                     console.log("pressed Enter")
                     brightness.visible = ! brightness.visible
                     //NOTE: menu key verification
