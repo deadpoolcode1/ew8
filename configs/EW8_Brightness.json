@@ -1,19 +1,20 @@
 {
-        "Illuminance": {
-          "points": [700,1200,1700,2500]
-          ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
-          ,"scale": "/sys/bus/iio/devices/iio:device0/in_voltage_scale"
-        }
+    "Illuminance": {
+        "points": [350,600,850,1250]
+        ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
+        ,"scale": "/sys/bus/iio/devices/iio:device0/in_voltage_scale"
+    }
+    ,
+    "Brightness": {
+        "map": [
+            {"menu": 1, "outputs": [1, 3, 9, 15, 21]}
+            ,{"menu": 2, "outputs": [1, 5, 12, 19, 26]}
+            ,{"menu": 3, "outputs": [1, 7, 15, 23, 31]}
+            ,{"menu": 4, "outputs": [1, 9, 18, 27, 36]}
+            ,{"menu": 5, "outputs": [1, 11, 21, 31, 41]}
+
+        ]
         ,
-        "Brightness": {
-            "map": [
-                    {"menu": 1, "outputs": [1, 6, 11, 16, 21]}
-                    ,{"menu": 2, "outputs": [6, 11, 16, 21, 26]}
-                    ,{"menu": 3, "outputs": [11, 16, 21, 26, 31]}
-                    ,{"menu": 4, "outputs": [16, 21, 26, 31, 36]}
-                    ,{"menu": 5, "outputs": [21, 26, 31, 36, 41]}
-            ]
-            ,
-            "output": "/sys/class/backlight/backlight/brightness"
-        }
+        "output": "/sys/class/backlight/backlight/brightness"
+    }
 }
