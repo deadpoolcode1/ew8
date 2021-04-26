@@ -342,17 +342,9 @@
         {
             "protocol": "IMS_Connectivity",
             "signals":[
-
-                {"name":"GPSStatus", "action": "Vt_GPSstatus",  "isValueTable": true}
-                ,{"name":"CommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
-            ],
-            "value_tables":[
-                {"name":"Vt_GPSstatus", "type": "GraphicItem", "rows":[
-                        {"value":  1, "action": "INFO_NO_GPS", "description": "GPS Status: No GPS"}
-                        ,{"value":  4, "action": "INFO_GPS_OK", "description": "GPS Status: GPS Ok"}
-                    ]
-                }
+                {"name":"CommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
             ]
         }
     ]
 }
+
