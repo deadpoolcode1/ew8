@@ -20,6 +20,9 @@ public:
 
      static void setCANDebugReport(bool doReport);
 
+     void setItsDisplay(IAlertDisplay * aDisplay);
+
+
 signals:
 
    void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
@@ -52,6 +55,7 @@ private:
     qint32 * currentMenuLevelOutputs;
     static bool doCANDebugReport;
     quint32 illuminance_measure_mV;
+    IAlertDisplay * itsAlertDisplay;
 
 #if 0
     QFileSystemWatcher * settingsWatcher;

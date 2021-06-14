@@ -25,6 +25,8 @@ void BrightnessControl::setCANDebugReport(bool doReport)
 
 BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
 {
+    itsAlertDisplay =  nullptr;
+
     assignMappings();
 
     QSettings settings;
@@ -64,6 +66,11 @@ BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
              << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
 
     triggerTimer->start();
+}
+
+void BrightnessControl::setItsDisplay(IAlertDisplay * aDisplay)
+{
+    itsAlertDisplay = aDisplay;
 }
 
 void BrightnessControl::assignMappings(void)
@@ -258,6 +265,14 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
         if(doCANDebugReport)
         {
             sendBrightness(illuminance_measure_mV, currentMenuLevel, currentOutput);
+        }
+
+        if (nullptr != itsAlertDisplay)
+        {
+            QString str;
+            QTextStream out(&str);
+            out << "ill:" << illuminance_measure_mV << "  brt:" << currentOutput;
+            itsAlertDisplay->message(str);
         }
     }
 

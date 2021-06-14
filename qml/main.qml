@@ -15,6 +15,42 @@ ApplicationWindow{
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
 
+    signal debugMessagesConnect(bool On);
+
+    function debugMessage(arg)
+    {
+       console.log("DEBUG MESSAGE: " + arg);
+       debug.text = arg
+       debug.visible = true;
+       debug_timer.restart()
+    }
+
+    Text {
+        z: 100
+        id: debug
+        color: "#e1f1ff"
+        text: ""
+        anchors.top: parent.top
+        anchors.topMargin: 50
+        anchors.horizontalCenterOffset: 0
+        font.pixelSize: 14
+        font.capitalization: Font.MixedCase
+        topPadding: 0
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.family: "HindSiliguri"
+        font.bold: true
+        visible: false
+
+        Timer {
+            id: debug_timer
+            running: false
+            interval: 2000
+            onTriggered: {
+                debug.visible = false
+            }
+        }
+    }
+
     property bool isInEdition: false
 
 
@@ -925,36 +961,92 @@ ApplicationWindow{
 
         }
 
-
         Item {
-            id: volume_menu_listener
+            id: general_menu_listener
             visible: true
             focus: true
             property int layer_pri: 2
             property real start: 0
+
+            property bool is_initial_input_active: true
+            property bool is_initial_up_pressed: false
+            property bool is_initial_down_pressed: false
+
+            Component.onCompleted:
+            {
+                console.log("Initial timer started")
+                stop_initial_keys.start()
+            }
+
+            Timer {
+                    id: stop_initial_keys
+                    interval: 10000
+                    running: false
+                    repeat: false
+                    onTriggered: {
+                        console.log("Initial timer stopped")
+                        general_menu_listener.is_initial_input_active = false
+                    }
+                }
 
             property bool is_volume_enabled: ! (brightness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
 
 
             Keys.onDownPressed:
             {
-                console.log("down pressed")
+                if(general_menu_listener.is_initial_input_active)
+                {
+                    general_menu_listener.is_initial_down_pressed = true
+                }
+
+                console.log("Down pressed")
                 if(start === 0)
                 {
                     start = Date.now()
                 }
-                console.log("down pressed at "+start)
+                console.log("Down pressed at "+start)
                 event.accepted = true;
 
                 //TODO does not work:
                 volume_menu.timersRestart()
             }
 
+            Keys.onUpPressed:
+            {
+                 console.log("Up pressed")
+                if(general_menu_listener.is_initial_input_active)
+                {
+                    general_menu_listener.is_initial_up_pressed = true
+                }
+                 event.accepted = true;
+            }
+
+            Keys.onReturnPressed:
+            {
+               console.log("Enter pressed")
+               general_menu_listener.is_initial_input_active = false
+               event.accepted = true;
+            }
+
             Keys.onReleased: {
+                if(general_menu_listener.is_initial_down_pressed
+                        && general_menu_listener.is_initial_up_pressed)
+                {
+
+                    general_menu_listener.is_initial_down_pressed = false
+                    general_menu_listener.is_initial_up_pressed = false
+                    console.log("Print debug messages on LCD")
+                    debugMessage("Print Debug On")
+                    debugMessagesConnect(true)
+
+                }
+
+                else
+                {
                 if (event.key === Qt.Key_Up) {
                     keyReportSend(Qt.Key_Up)
 
-                    console.log("pressed Up")
+                    console.log("Up released")
                     if(is_volume_enabled)
                     {
                       volumeKeySend(Qt.Key_VolumeUp)
@@ -967,8 +1059,8 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Down)
                 {
-                     keyReportSend(Qt.Key_Down)
-                    console.log("pressed Down")
+                    keyReportSend(Qt.Key_Down)
+                    console.log("Down released")
                     if(Date.now() - start < 500)
                     {
                         if(is_volume_enabled)
@@ -980,7 +1072,7 @@ ApplicationWindow{
                     {
                         if(is_volume_enabled)
                         {
-                        console.log("pressed Mute")
+                        console.log("Mute pressed and released")
                         volumeKeySend(Qt.Key_VolumeMute)
                         }
 
@@ -997,12 +1089,15 @@ ApplicationWindow{
                 else if (event.key === Qt.Key_Return)
                 {
                      keyReportSend(Qt.Key_Return)
-                    console.log("pressed Enter")
+                    console.log("Enter released")
                     brightness.visible = ! brightness.visible
                     //NOTE: menu key verification
                     //volumeKeySend(Qt.Key_Return)
                 }
 
+            }
+
+                general_menu_listener.is_initial_input_active = false;
                 event.accepted = true;
 
 

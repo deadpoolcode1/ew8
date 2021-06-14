@@ -2,7 +2,6 @@
 #define MAINPROCESS_H
 
 #include <QObject>
-//#include "mainwindow.h"
 #include "canmanager.h"
 #include "ialertdisplay.h"
 #include <QQmlApplicationEngine>
@@ -28,13 +27,18 @@ public:
     virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
     virtual void deactivate(DISPLAY_ITEM_ID at);
     virtual void forceUpdate(void);
+    virtual void message(QString aStrMsg);
 
     static MainProcess* getInstance(QObject * aComponentObject);
 
 signals:
     void startUpdateDisplayWindow();
 
+    void messageDisplayWindow(QVariant aStrMsg);
+
 public slots:
+
+    void debugMessagesConnected(bool On);
 
     void volumeKeySent(qint32);
 
@@ -54,14 +58,7 @@ private:
     CanManager * canmgr;
 
 // pointers to display static panels trees
-#if 1
-     RootedTree* generalPanelTree;
-#else
-    RootedTree* mainPanelTree;
-    RootedTree* tsrPanelTree;
-    RootedTree* statusPanelTree;
-    RootedTree* smartADASPanelTree;
-#endif
+    RootedTree* generalPanelTree;
 
 // pointer to QML defining trees for all panels.
     QObject *componentObject;

@@ -1,5 +1,5 @@
 {
-    "ConfigVersion":[1,2,0],
+    "ConfigVersion":[1,3,0],
     "GraphicItems": [
          "ALERT_LEFT_LDWOFF"
         ,"ALERT_RIGHT_LDWOFF"

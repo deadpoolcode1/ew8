@@ -117,19 +117,26 @@ void MainProcess::process()
 #endif
 }
 
+void MainProcess::message(QString aStrMsg)
+{
+   emit messageDisplayWindow(QVariant(aStrMsg));
+}
+
+
 void MainProcess::setBrightnessControl(BrightnessControl *aBrightnessControl)
 {
     theBrightnessControl =  aBrightnessControl;
+    theBrightnessControl->setItsDisplay(this);
+
 }
 
 int MainProcess::launchEverything()
 {
     QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
 
-#if 0
-    QObject::connect(appWindow, SIGNAL(itemSelfDeactivated(QVariant, QString)),
-                      this, SLOT(forceItemDeactivation(QVariant, QString)));
-#endif
+
+    QObject::connect(appWindow, SIGNAL(debugMessagesConnect(bool)),
+                      this, SLOT(debugMessagesConnected(bool)));
 
     QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
                       this, SLOT(volumeKeySent(qint32)));
@@ -163,6 +170,19 @@ int MainProcess::launchEverything()
     itsThread->start();
 
     return 0;
+}
+
+void MainProcess::debugMessagesConnected(bool On)
+{
+  if (On)
+  {
+    QObject * appWindow = MainProcess::componentObject; //->findChild<QObject*>("AppWindow");
+    QObject::connect(this, SIGNAL(messageDisplayWindow(QVariant)), appWindow, SLOT(debugMessage(QVariant)));
+  }
+  else
+  {
+    QObject::disconnect(this, SIGNAL(messageDisplayWindow(QVariant)), nullptr, nullptr);
+  }
 }
 
 
