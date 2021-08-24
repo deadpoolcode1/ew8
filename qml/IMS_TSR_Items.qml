@@ -64,6 +64,8 @@ Rectangle {
             usaShape: usaShapeSLI
             disabled4UsaShape: true
 
+            maxduration: 5000
+
             function setVisibleSlot() {
                 if(argReceived && !(usaShape & disabled4UsaShape)){
                     sign_visible = true;
@@ -110,6 +112,7 @@ Rectangle {
             id: alert_end_all_restr
             canEntityType: "ALERT_END_ALL_RESTR"
             property int layer_pri: 1
+            maxduration: 5000
             source: "images/left-panel/TSR/black_stripes.png"
 
         }
@@ -133,6 +136,7 @@ Rectangle {
             id: alert_motorway
             canEntityType: "ALERT_MOTORWAY"
             property int layer_pri: 0
+            maxduration: 15000
             source: "images/left-panel/TSR/left_motorway_beg.png"
         }
 
@@ -140,6 +144,7 @@ Rectangle {
             id: alert_motorway_end
             canEntityType: "ALERT_MOTORWAY_END"
             property int layer_pri: 0
+            maxduration: 5000
             source: "images/left-panel/TSR/left_motorway_end.png"
         }
 
@@ -147,6 +152,7 @@ Rectangle {
             id: alert_expressway
             canEntityType: "ALERT_EXPRESSWAY"
             property int layer_pri: 0
+            maxduration: 15000
             source: "images/left-panel/TSR/left_expressway_beg.png"
         }
 
@@ -154,6 +160,7 @@ Rectangle {
             id: alert_expressway_end
             canEntityType: "ALERT_EXPRESSWAY_END"
             property int layer_pri: 0
+            maxduration: 5000
             source: "images/left-panel/TSR/left_expressway_end.png"
         }
 
@@ -161,6 +168,7 @@ Rectangle {
             id: alert_playground
             canEntityType: "ALERT_PLAYGROUND"
             property int layer_pri: 0
+            maxduration: 15000
             source: "images/left-panel/TSR/left_playgrond_blue.png"
 
         }
@@ -169,6 +177,7 @@ Rectangle {
             id: alert_playground_end
             canEntityType: "ALERT_PLAYGROUND_END"
             property int layer_pri: 0
+            maxduration: 5000
             source: "images/left-panel/TSR/left_playgrond_blue_end.png"
         }
     }

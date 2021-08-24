@@ -26,12 +26,6 @@ public:
         ALERT_NOCOM = 2,
         ALERT_REQFAIL = 3,
 
-        //Smart Items:
-        SMART_BASE   = 4,
-        SMART_ANIMAL = SMART_BASE + 1,
-        SMART_SEV_WEATHER = SMART_BASE + 2,
-        SMART_SLIPPERY = SMART_BASE + 3,
-
         //Special Item:
          ALERT_END_OF_TYPE,
     };

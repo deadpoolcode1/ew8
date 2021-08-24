@@ -132,7 +132,7 @@ Rectangle {
             id: smart_harsh_dz
             property string canEntityType: "SMART_HARSH_DZ"
             property int layer_pri: 4
-            source: "images/right-panel/SADAS/right_harsh_acc.png"
+            source: "images/right-panel/SADAS/right_break_DZ.png"
         }
 	}
 

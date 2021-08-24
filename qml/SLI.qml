@@ -2,7 +2,7 @@ import QtQuick 2.9
 
 Item {
 id: container
-property int canEntityArg: 30
+property int canEntityArg: 0
 property var canEntityType;
 property bool overSpeeding: false
 property bool usaShape: false
@@ -18,7 +18,20 @@ property alias sign_visible: sign.visible
 
 property bool disabled4UsaShape: false
 
-function setInvisibleSlot() {sign.visible = false}
+property int maxduration: 0
+
+signal  itemActionDeactivate()
+
+Timer {
+    id: max_duration_timer
+    running: sign.visible && (maxduration > 0)
+    interval: maxduration
+    onTriggered: {
+        container.itemActionDeactivate()
+    }
+}
+
+function setInvisibleSlot() {sign_visible = false}
 
 SequentialAnimation on z {
 
