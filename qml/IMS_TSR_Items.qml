@@ -24,7 +24,7 @@ Rectangle {
     Item {
         id: groupTop
         objectName: "UPPER_QtQG"
-        property bool mutexGroup: true
+        property bool mutexGroup: false
         property int layer_pri: 0
 
         property bool isInSlot:  true
@@ -33,12 +33,22 @@ Rectangle {
 
         visible: true
 
-        z: upper_tsr.z * alert_sli_end.z
+        z: (alert_rtw_warn.sign_visible? alert_rtw_warn.z : 1) * (upper_tsr.sign_visible? upper_tsr.z : 1) * (alert_sli_end.sign_visible? alert_sli_end.z : 1)
+
+        RTW {
+            id: alert_rtw_warn
+            canEntityType: "ALERT_RTW_WARN"
+            property int layer_pri: 0
+
+
+            function setVisibleSlot() {sign_visible = true}
+            function setInvisibleSlot() {sign_visible = false}
+        }
 
         SLI {
             id: upper_tsr
             canEntityType: "ALERT_SLI"
-            property int layer_pri: 0
+            property int layer_pri: 1
             usaShape: usaShapeSLI
 
             function setVisibleSlot(arg) {
@@ -47,6 +57,8 @@ Rectangle {
                 alert_sli_end.argReceived = true
                 sign_visible = true;
             }
+
+            function setInvisibleSlot() {sign_visible = false}
 
             overSpeeding: left_panel.overSpeeding && isInSlot
 
@@ -72,9 +84,12 @@ Rectangle {
                 }
             }
 
+
+            function setInvisibleSlot() {sign_visible = false}
+
             property bool argReceived: false
             overSpeeding: false
-            property int layer_pri: 1
+            property int layer_pri: 2
             source: "images/left-panel/TSR/black_stripes.png"
 
             anchors.top: parent.top

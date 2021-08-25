@@ -31,8 +31,6 @@ Timer {
     }
 }
 
-function setInvisibleSlot() {sign_visible = false}
-
 SequentialAnimation on z {
 
     running: sign.visible

@@ -496,6 +496,36 @@ ApplicationWindow{
                 property int layer_pri: 1
             }
 
+
+            Rectangle {
+                id: alert_rtw_alert
+
+                z: 10
+
+                property int layer_pri: 0
+                property string canEntityType: "ALERT_RTW_ALERT"
+
+                color: "black"
+
+                anchors.fill: parent
+
+
+                function setVisibleSlot(Arg){
+                    visible = true;
+                }
+                function setInvisibleSlot(){
+                    visible = false;
+                }
+
+                Image{
+
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "images/traffic-violation/left_TV_TL_big.png"
+                }
+            }
+
+
             Image {
                 id: forward_vehicle
                 width: 80
@@ -521,6 +551,7 @@ ApplicationWindow{
                 anchors.leftMargin: 0
                 function setVisibleSlot(){visible = true}
                 function setInvisibleSlot(){visible = false}
+
 
                 Image {
                     id: alert_pdz
