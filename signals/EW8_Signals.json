@@ -42,6 +42,15 @@
         ,"INFO_NO_GPS"
         ,"INFO_GPS_OK"
         ,"INFO_NO_GSM"
+        ,"INFO_TEST_SIGNALS"
+
+        ,"TEST_BRAKES"
+        ,"TEST_SPEED"
+        ,"TEST_HIGH_BEAM"
+        ,"TEST_BLINKER_LEFT"
+        ,"TEST_BLINKER_RIGHT"
+        ,"TEST_REVERSE"
+        ,"TEST_WIPERS"
 
         ,"SMART_CROWDED"
         ,"SMART_PED_HWY"
@@ -261,8 +270,14 @@
         {
             "protocol": "CarInfo_protocol",
             "signals":[
-                {"name": "Speed_avaliable", "action":"INFO_VEH_SPEED", "type":"GraphicItem"},
-                {"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0, "smoothed": [700, 5, "msec"]}
+                {"name": "Speed_avaliable", "action":"INFO_VEH_SPEED", "type":"GraphicItem"}
+                ,{"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0, "smoothed": [700, 5, "msec"]}
+                ,{"name": "Speed_avaliable", "action": "TEST_SPEED", "type": "GraphicItem"}
+                ,{"name": "Left_blink_avaliable", "action": "TEST_BLINKER_LEFT","type": "GraphicItem"}
+                ,{"name": "Right_blink_avaliable", "action": "TEST_BLINKER_RIGHT","type": "GraphicItem"}
+                ,{"name": "HighBeam_availabled", "action": "TEST_HIGH_BEAM","type": "GraphicItem"}
+                ,{"name": "Brakes", "action": "TEST_BRAKES","type": "GraphicItem"}
+                ,{"name": "Wipers", "action": "TEST_WIPERS", "type": "GraphicItem"}
             ]
         }
         ,
@@ -330,6 +345,8 @@
             "timeout": 20000,
             "signals":[
                 {"name":"Validity", "action": ["", "inverted"], "type": "Validator"},
+                {"name":"Present_app", "action": "INFO_TEST_SIGNALS", "type": "GraphicItem", "Set": 2},
+                {"name":"Present_app", "action": "SignalTest", "type": "Enabler", "Set": 2},
                 {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
             ],
             "value_tables":[
@@ -348,6 +365,20 @@
             "protocol": "IMS_Connectivity",
             "signals":[
                 {"name":"CommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
+            ]
+        }
+        ,
+        {
+            "protocol": "SignalsTest",
+            "signals": [
+                {"name": "Speed_Test_Status", "action": "TEST_SPEED", "type": "IntArgument", "index": 0}
+                ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "GraphicItem", "Set":[0,1,2,3]}
+                ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "IntArgument", "index": 0}
+                ,{"name": "Blinker_Left_Test_Status", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 0}
+                ,{"name": "Blinker_Right_Test_Status", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 0}
+                ,{"name": "High_Beam_Test_Status", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 0}
+                ,{"name": "Brake_Test_Status", "action": "TEST_BRAKES", "type": "IntArgument", "index":  0}
+                ,{"name": "Wipers_Test_Status", "action": "TEST_WIPERS", "type": "IntArgument", "index": 0}
             ]
         }
     ]
