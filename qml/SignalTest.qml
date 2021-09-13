@@ -7,10 +7,13 @@ import QtQml.Models 2.3
 Image{
     id:signaltest
 
-    property var canEntityType;
+    property string canEntityType: "INFO_TEST_SIGNALS"
     function setVisibleSlot() {visible = true}
     function setInvisibleSlot() {visible = false}
 
+    property bool modeGroup: true
+
+    visible: true
 
 
     width: 320
@@ -20,50 +23,32 @@ Image{
     property int layer_pri: 0
     anchors.fill: parent
 
-    source:  "./images/signal-test/Background.png"
+    source:  "images/signal-test/Background.png"
 
 
     //color: "black"
 
-
     ListModel{
         id: signals_model
-        ListElement{property  string canType: "TEST_BRAKES"; property string wildca: "Brake"; property bool my_vis: false }
-        ListElement{property  string canType: "TEST_WIPERS"; property string wildca: "Whip"; property bool my_vis: false}
-        ListElement{property  string canType: "TEST_HIGH_BEAM"; property string wildca: "Lights"; property bool my_vis: false}
-        ListElement{property  string canType: "TEST_BLINKER_LEFT"; property string wildca: "Left";  property bool my_vis: false}
-        ListElement{property  string canType: "TEST_BLINKER_RIGHT"; property string wildca: "Right";  property bool my_vis: false }
-        ListElement{property  string canType: "TEST_REVERSE"; property string wildca: "R";  property bool my_vis: false}
-        ListElement{property  string canType: "TEST_SPEED"; property string wildca: "ER20" ;  property bool my_vis: false}
+        ListElement{property  string canType: "TEST_BRAKES"; property string wildca: "Brake" }
+        ListElement{property  string canType: "TEST_WIPERS"; property string wildca: "Whip"}
+        ListElement{property  string canType: "TEST_HIGH_BEAM"; property string wildca: "Lights"}
+        ListElement{property  string canType: "TEST_BLINKER_LEFT"; property string wildca: "Left"}
+        ListElement{property  string canType: "TEST_BLINKER_RIGHT"; property string wildca: "Right" }
+        ListElement{property  string canType: "TEST_REVERSE"; property string wildca: "R"}
+        ListElement{property  string canType: "TEST_SPEED"; property string wildca: "ER20"}
     }
 
 
 
-    /*
-    ListView {
-            anchors.fill: parent
-            model: signals_model
-            delegate: signal_item_delegate
-        }
-        */
 
-
-
-    Repeater {
-        model: signals_model
-
-            SignalTestItem{
-                parent: index < 5? upper_row : lower_row
-                canEntityType: canType
-                wildcard: wildca
-                anchors.leftMargin: 0
-                anchors.verticalCenter: parent.verticalCenter
-            }
-    }
-
+   /*
     Row
     {
         id: upper_row
+
+         property int layer_pri: 0
+
         height: 49
         anchors.left: parent.left
         anchors.leftMargin: 40
@@ -76,30 +61,54 @@ Image{
     {
         id: lower_row
         height: 49
+
+        property int layer_pri: 0
+
         anchors.left: parent.left
         anchors.leftMargin: 40
         anchors.top: upper_row.bottom
         anchors.topMargin: 3
     }
+    */
 
-    property int  curr: 10
+    Grid{
+        rows: 2
+        columns: 5
+
+        height: 49
+        spacing: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 40
+        anchors.top: parent.top
+        anchors.topMargin: 12
+        visible: true
 
     Repeater {
-        id: rep
         model: signals_model
+
+            SignalTestItem{
+
+                property int layer_pri: 0
+
+                //parent: index < 5? upper_row : lower_row
+                canEntityType: canType
+                wildcard: wildca
+                //anchors.leftMargin: 0
+                //anchors.verticalCenter: parent.verticalCenter
+                isBig: false
+            }
+    }
+    }
+
+    Repeater {
+
+         model: signals_model
+
         SignalTestItem {
 
-            visible: curr == index
+            property int layer_pri: 0
 
-            onTest_statusChanged:
-            {
-                curr = index;
-            }
-
-            onHasRingChanged:
-            {
-                curr = index;
-            }
+            parent: signaltest
 
             width: 120
             height: 120
@@ -115,7 +124,11 @@ Image{
 
 
         }
+
+
+
     }
+
 }
 
 

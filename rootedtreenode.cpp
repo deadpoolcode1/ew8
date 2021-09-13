@@ -20,6 +20,7 @@ RootedTreeNode::RootedTreeNode(QObject * qobject, RootedTree * aRootedTree)
     valueFrac = 0;
     unit = 0;
     stringArg = "";
+    modeGroup = false;
 
     itsRootedTree = aRootedTree;
 
@@ -127,6 +128,15 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     if(canEntityTypeQVar.isValid())
     {
 
+        if(qobject->property("modeGroup").isValid())
+        {
+            modeGroup = qobject->property("modeGroup").toBool();  // real value for group
+        }
+        else
+        {
+            modeGroup = false;
+        }
+
         bool isInt = false;
 
         DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
@@ -184,6 +194,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
             {
                 mutexGroup = false; // default value?
             }
+
         }
 
     }
@@ -265,7 +276,15 @@ void RootedTreeNode::activate()
     {
         return;  // root is detected
     }
-    parent->activate();
+
+    if(!parent->modeGroup)
+    {
+        parent->activate();
+    }
+    else
+    {
+       qDebug("Mode Group: Skip activation");
+    }
 }
 
 void RootedTreeNode::deactivate()
@@ -281,7 +300,14 @@ void RootedTreeNode::deactivate()
         {
             return;
         }
-        parent->deactivate();
+        if(!parent->modeGroup)
+        {
+            parent->deactivate();
+        }
+        else
+        {
+           qDebug("Mode Group: Skip deactivation");
+        }
     }
 }
 

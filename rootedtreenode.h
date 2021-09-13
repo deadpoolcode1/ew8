@@ -68,6 +68,7 @@ private:
     bool visibility; // needed?
 
     bool mutexGroup;
+    bool modeGroup;
 //    QString qname;
 
     //TODO add alert type

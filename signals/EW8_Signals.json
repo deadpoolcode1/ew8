@@ -46,6 +46,7 @@
 
         ,"TEST_BRAKES"
         ,"TEST_SPEED"
+        ,"TEST_SPEED_VALUE"
         ,"TEST_HIGH_BEAM"
         ,"TEST_BLINKER_LEFT"
         ,"TEST_BLINKER_RIGHT"
@@ -276,8 +277,14 @@
                 ,{"name": "Left_blink_avaliable", "action": "TEST_BLINKER_LEFT","type": "GraphicItem"}
                 ,{"name": "Right_blink_avaliable", "action": "TEST_BLINKER_RIGHT","type": "GraphicItem"}
                 ,{"name": "HighBeam_availabled", "action": "TEST_HIGH_BEAM","type": "GraphicItem"}
-                ,{"name": "Brakes", "action": "TEST_BRAKES","type": "GraphicItem"}
-                ,{"name": "Wipers", "action": "TEST_WIPERS", "type": "GraphicItem"}
+                ,{"name": "Brakes_avaliabled", "action": "TEST_BRAKES","type": "GraphicItem"}
+                ,{"name": "speed", "action": "TEST_SPEED", "type": "IntArgument", "index": 1}
+                ,{"name": "Left_blink", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 1}
+                ,{"name": "Right_blink", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 1}
+                ,{"name": "HighBeam", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 1}
+                ,{"name": "Brakes", "action": "TEST_BRAKES", "type": "IntArgument", "index": 1}
+                ,{"name": "Wipers", "action": "TEST_WIPERS", "type": "IntArgument", "index": 1}
+                ,{"name": "Wipers_availabled", "action": "TEST_WIPERS", "type": "GraphicItem"}
             ]
         }
         ,

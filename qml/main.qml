@@ -77,10 +77,8 @@ ApplicationWindow{
 
         SignalTest
         {
-            property int layer_pri: 0
-            canEntityType: "INFO_TEST_SIGNALS"
+            property int layer_pri: 0 
             z: 40
-            visible: false
         }
 
         DummyItem{
