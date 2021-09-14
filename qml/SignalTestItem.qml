@@ -11,18 +11,16 @@ Item {
    width: 49
    height: 49
 
-
-   property string canEntityType
-
    property int test_status: 0;
    property  string wildcard: "Brake"
    property bool isEnabled: false
    property bool hasRing: false
    property  bool isBig: false
+   property alias isSlotVisible: slot.visible
 
    visible: true
 
-   function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; hasRing = ((Arg2 === 1)?true : false)}
+   function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; hasRing = ((Arg2 > 0)?true : false)}
    function setInvisibleSlot() {isEnabled = false; hasRing = false}
 
    Image{
@@ -47,6 +45,7 @@ Item {
        id: slot
        anchors.fill: parent
 
+       visible: true
 
        z: 1
 

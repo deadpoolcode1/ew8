@@ -78,6 +78,7 @@ ApplicationWindow{
         SignalTest
         {
             property int layer_pri: 0 
+            visible: false
             z: 40
         }
 
