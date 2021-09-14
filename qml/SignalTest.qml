@@ -11,6 +11,7 @@ Image{
     function setVisibleSlot() {visible = true}
     function setInvisibleSlot() {visible = false}
 
+
     property bool modeGroup: true
 
     visible: true
@@ -36,7 +37,7 @@ Image{
         ListElement{property  string canType: "TEST_BLINKER_LEFT"; property string wildca: "Left"}
         ListElement{property  string canType: "TEST_BLINKER_RIGHT"; property string wildca: "Right" }
         ListElement{property  string canType: "TEST_REVERSE"; property string wildca: "R"}
-        ListElement{property  string canType: "TEST_SPEED"; property string wildca: "ER20"}
+        /* ListElement{property  string canType: "TEST_SPEED"; property string wildca: "Empty"}*/
     }
 
 
@@ -71,9 +72,21 @@ Image{
     }
     */
 
+
+
+    Item{
+        property string canEntityType: "TEST_SPEED"
+        function setVisibleSlot(Arg1, Arg2, Arg3) { sts1.setVisibleSlot(Arg1, Arg2); sts2.setVisibleSlot(Arg1, Arg2);;sts1.displaySpeed = Arg2; sts2.displaySpeed = Arg2}
+        function setInvisibleSlot(){sts1.setInvisibleSlot(); sts2.setInvisibleSlot()}
+
+         property int layer_pri: 0
+    }
+
     Grid{
         rows: 2
         columns: 5
+
+         property int layer_pri: 0
 
         height: 49
         spacing: 0
@@ -83,26 +96,40 @@ Image{
         anchors.topMargin: 12
         visible: true
 
-    Repeater {
-        model: signals_model
+        Repeater {
+            model: signals_model
+            visible: true
 
             SignalTestItem{
 
                 property int layer_pri: 0
 
                 //parent: index < 5? upper_row : lower_row
-                canEntityType: canType
+                property string canEntityType: canType
                 wildcard: wildca
+                visible: true
+
                 //anchors.leftMargin: 0
                 //anchors.verticalCenter: parent.verticalCenter
                 isBig: false
             }
-    }
+
+
+        }
+
+        SignalTestSpeed{
+
+            id: sts1
+
+            property int layer_pri: 0
+            isBig: false
+        }
+
     }
 
     Repeater {
 
-         model: signals_model
+        model: signals_model
 
         SignalTestItem {
 
@@ -120,13 +147,33 @@ Image{
             anchors.horizontalCenter: parent.horizontalCenter
 
             wildcard: wildca
-            canEntityType: canType
+            property string canEntityType: canType
 
 
         }
 
 
 
+
+    }
+
+
+    SignalTestSpeed {
+
+        property int layer_pri: 0
+
+        id: sts2
+
+        parent: signaltest
+
+        width: 120
+        height: 120
+        isBig: true
+
+        anchors.verticalCenterOffset: 49
+        anchors.horizontalCenterOffset: 0
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
 }
