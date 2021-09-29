@@ -15,6 +15,7 @@ signalcfgs.files = signals/*.json
 configs.files = configs/*.json
 dbcfiles.files = DBC/*.dbc
 rccfiles.files = qml/*.rcc
+fontfiles.files = qml/fonts/*
 
 win32: batches.files = *.bat
 
@@ -96,6 +97,11 @@ else: unix:!android: qmlscripts.path = /opt/$${TARGET}/qml
 
 !android: qmlimages.path = $${qmlscripts.path}/images
 !isEmpty(qmlimages.path): INSTALLS += qmlimages
+
+win32: fontfiles.path = $${OUT_PWD}/qml/fonts
+qnx: signalcfgs.path = /tmp/$${TARGET}/qml/fonts
+else: unix:!android: fontfiles.path = /opt/$${TARGET}/qml/fonts
+!isEmpty(fontfiles.path): INSTALLS += fontfiles
 
 win32: signalcfgs.path = $${OUT_PWD}/signals
 qnx: signalcfgs.path = /tmp/$${TARGET}/signals
