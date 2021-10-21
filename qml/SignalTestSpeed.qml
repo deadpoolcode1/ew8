@@ -17,20 +17,21 @@ SignalTestItem {
    FontLoader { id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-regular.ttf" }
 
 
+
     Text {
         id: speed_value
-        color: "#e1f1ff"
+        color: icon_color
         z: 40
-        text: displaySpeed
+        text: isEnabled ? displaySpeed : "X"
         anchors.horizontalCenterOffset: -2
         anchors.verticalCenter: parent.verticalCenter
         font.letterSpacing: -1.0
         leftPadding: 0
         anchors.horizontalCenter: parent.horizontalCenter
-        //topPadding: -4
         font.family: intelFont.name
         font.pixelSize: parent.width / 3
         font.bold: true
         visible: isSlotVisible
     }
+
 }

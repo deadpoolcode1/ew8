@@ -42,38 +42,6 @@ Image{
 
 
 
-
-   /*
-    Row
-    {
-        id: upper_row
-
-         property int layer_pri: 0
-
-        height: 49
-        anchors.left: parent.left
-        anchors.leftMargin: 40
-        anchors.top: parent.top
-        anchors.topMargin: 12
-
-    }
-
-    Row
-    {
-        id: lower_row
-        height: 49
-
-        property int layer_pri: 0
-
-        anchors.left: parent.left
-        anchors.leftMargin: 40
-        anchors.top: upper_row.bottom
-        anchors.topMargin: 3
-    }
-    */
-
-
-
     Item{
         property string canEntityType: "TEST_SPEED"
         function setVisibleSlot(Arg1, Arg2, Arg3) { sts1.setVisibleSlot(Arg1, Arg2); sts2.setVisibleSlot(Arg1, Arg2);;sts1.displaySpeed = Arg2; sts2.displaySpeed = Arg2}
