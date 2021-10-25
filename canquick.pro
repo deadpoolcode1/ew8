@@ -9,7 +9,7 @@ DEFINES += MAJOR_VERSION=$${MAJOR_VERSION}
 DEFINES += MINOR_VERSION=$${MINOR_VERSION}
 DEFINES += OTA_TEST_VERSION=$${OTA_TEST_VERSION}
 
-qmlscripts.files = qml/*.qml
+qmlscripts.files = qml/*.qml qml/*.js
 qmlimages.files = qml/images/*
 signalcfgs.files = signals/*.json
 configs.files = configs/*.json
