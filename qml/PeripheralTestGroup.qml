@@ -83,7 +83,7 @@ Rectangle{
                 my_title: titl
 
                 //NOTE: When interval's right overpassed its tests result is green:
-                test_status: (_right == curr_test_index)? curr_test_state : ((_right < curr_test_index)? (0) : (2))
+                test_status: (_right == curr_test_index)? curr_test_state : ((_right < curr_test_index)? (0) : (curr_test_state == 1? 1 : 2))
                 visible:  _left <= curr_test_index
 
 
