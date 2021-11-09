@@ -24,7 +24,7 @@ Image{
     property int layer_pri: 0
     anchors.fill: parent
 
-    source:  "images/signal-test/Background.png"
+    source:  "images/peripheral-test/Peripherals_Test_Background.svg"
 
 
     PeripheralTestGroup{
@@ -39,9 +39,9 @@ Image{
         anchors.left: parent.left
         tests_model:
             ListModel{
-            ListElement{property string titl: "Module"; property string wildca: "Empty"; property int _left: 1; property int _right: 3}
-            ListElement{property string titl: "N/W"; property string wildca: "Empty"; property int _left: 4; property int _right: 7}
-            ListElement{property string titl: "Upload"; property string wildca: "Empty"; property int _left: 8; property int _right: 9}
+            ListElement{property string titl: "Module"; property string wildca: "Test_GSM_1"; property int _left: 1; property int _right: 3}
+            ListElement{property string titl: "N/W"; property string wildca: "Test_GSM_2"; property int _left: 4; property int _right: 7}
+            ListElement{property string titl: "Upload"; property string wildca: "Test_GSM_3"; property int _left: 8; property int _right: 9}
         }
     }
 
@@ -57,8 +57,8 @@ Image{
         anchors.right: parent.right
         tests_model:
             ListModel{
-            ListElement{property string titl: "MSGs";property string wildca: "Empty"; property int _left: 1; property int _right: 2}
-            ListElement{property string titl: "Locked";property string wildca: "Empty"; property int _left: 3; property int _right: 4}
+            ListElement{property string titl: "MSGs";property string wildca: "Test_GPS_1"; property int _left: 1; property int _right: 2}
+            ListElement{property string titl: "Locked";property string wildca: "Test_GPS_2"; property int _left: 3; property int _right: 4}
         }
     }
 
@@ -75,8 +75,8 @@ Image{
         anchors.right: parent.right
          tests_model:
              ListModel{
-             ListElement{property string titl: "MSG";property string wildca: "Empty"; property int _left: 1; property int _right: 1}
-             ListElement{property string titl: "Range";property string wildca: "Empty"; property int _left: 2; property int _right: 2}
+             ListElement{property string titl: "MSG";property string wildca: "Test_Gyro_1"; property int _left: 1; property int _right: 1}
+             ListElement{property string titl: "Range";property string wildca: "Test_Gyro_2"; property int _left: 2; property int _right: 2}
          }
 
     }

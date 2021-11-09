@@ -12,9 +12,12 @@ class KeepAliveMsg:  public QObject
 
     enum system_type_e: quint8
     {
-        stypeLinux = 0x0,
-        stypeBareMetal = 0x1,
-        stypeInvalid = 0xf,
+        stypeLinux3_2inch = 0x0
+        ,stypeAndroid = 0x1
+        ,stypeBareMetal = 0x2
+        ,stypeLinux3_5inch = 0x3
+
+        ,stypeInvalid = 0xf,
     };
 
 public:
@@ -40,6 +43,7 @@ private:
 
     WatchDogDevice * wdt;
 
+    const QString deviceModelFileName = "/sys/firmware/devicetree/base/model";
 
 };
 

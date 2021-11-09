@@ -18,7 +18,29 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
 
 
     system_type = stypeInvalid;
-    if ("linux" == QSysInfo::kernelType()) {system_type = stypeLinux;}
+
+    if ("linux" == QSysInfo::kernelType()) {
+        QFile deviceModelFile(deviceModelFileName);
+        QString modelLine;
+
+        if(deviceModelFile.open(QFile::ReadOnly | QFile::Text))
+        {
+            modelLine = deviceModelFile.readLine();
+            deviceModelFile.close();
+
+
+            if(modelLine.contains("pcb353"))
+            {
+                system_type = stypeLinux3_2inch;
+            }
+
+            else if(modelLine.contains("pcb000928"))
+            {
+                system_type = stypeLinux3_5inch;
+            }
+        }
+    }
+
 
     sessionId = rand()%0xffff;
     errorId = 0x00;

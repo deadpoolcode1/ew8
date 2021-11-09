@@ -7,8 +7,8 @@ import QtQml.Models 2.3
 Rectangle{
     id:signaltest
 
-    property int curr_test_index;
-    property int curr_test_state;
+    property int curr_test_index: 0;
+    property int curr_test_state: 3;
     property ListModel tests_model    
     property string feature_title: "     "
 
@@ -20,7 +20,10 @@ Rectangle{
         curr_test_state = Result;
     }
 
-    function setInvisibleSlot() {}
+    function setInvisibleSlot() {
+       curr_test_index = 0;
+       curr_test_state = 3;
+    }
 
     width: 320
     height: 80
@@ -84,7 +87,7 @@ Rectangle{
 
                 //NOTE: When interval's right overpassed its tests result is green:
                 test_status: (_right == curr_test_index)? curr_test_state : ((_right < curr_test_index)? (0) : (curr_test_state == 1? 1 : 2))
-                visible:  _left <= curr_test_index
+                visible:  _left <= curr_test_index && curr_test_state < 3
 
 
             }
@@ -95,13 +98,12 @@ Rectangle{
      PeripheralTestItem
      {
          id: test_check
-         wildcard: "Empty"
-         color: icon_color
+         wildcard: "Result"
          anchors.verticalCenter: parent.verticalCenter
          anchors.right: parent.right
         anchors.rightMargin: 0
         test_status: curr_test_state
-        visible: curr_test_state != 2
+        visible: curr_test_state < 2
      }
 }
 

@@ -12,7 +12,7 @@ Rectangle {
     height: 65
     color: "#00000000"
 
-    property int test_status: 0;
+    property int test_status: 3;
     property  string wildcard: "Empty"
     property alias isSlotVisible: slot.visible
     property color icon_color: gray
@@ -25,7 +25,7 @@ Rectangle {
     property color white: "#ffffff"
 
     property string my_title: ""
-    property string base: "images/peripheral-test/EW8_"
+    property string base: "images/peripheral-test/Peripherals_"
 
     visible: true
 
@@ -33,13 +33,13 @@ Rectangle {
         id: slot
         anchors.fill: parent
 
-        visible: true
+        visible: test_status < 3
 
         z: 1
 
 
         fillMode: Image.PreserveAspectFit
-        source: base+wildcard+"-grn.svg"
+        source: base+wildcard+"_grn.svg"
     }
 
     states: [
@@ -49,7 +49,7 @@ Rectangle {
             when: (test_status === 0)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"-grn.svg"
+                source: base+wildcard+"_grn.svg"
             }
             PropertyChanges {
                 target: upp
@@ -61,7 +61,7 @@ Rectangle {
             when: (test_status === 1)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"-red.svg"
+                source: base+wildcard+"_red.svg"
             }
             PropertyChanges {
                 target: upp
@@ -73,7 +73,7 @@ Rectangle {
             when:  (test_status === 2)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"-blu.svg"
+                source: base+wildcard+"_blu.svg"
 
             }
             PropertyChanges {
