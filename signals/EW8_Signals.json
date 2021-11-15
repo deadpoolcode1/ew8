@@ -279,11 +279,13 @@
                 {"name": "Speed_avaliable", "action":"INFO_VEH_SPEED", "type":"GraphicItem"}
                 ,{"name": "speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0, "smoothed": [700, 5, "msec"]}
                 ,{"name": "Speed_avaliable", "action": "TEST_SPEED", "type": "GraphicItem"}
+                ,{"name": "Reverse_Gear_availabled", "action": "TEST_REVERSE", "type": "GraphicItem"}
                 ,{"name": "Left_blink_avaliable", "action": "TEST_BLINKER_LEFT","type": "GraphicItem"}
                 ,{"name": "Right_blink_avaliable", "action": "TEST_BLINKER_RIGHT","type": "GraphicItem"}
                 ,{"name": "HighBeam_availabled", "action": "TEST_HIGH_BEAM","type": "GraphicItem"}
                 ,{"name": "Brakes_avaliabled", "action": "TEST_BRAKES","type": "GraphicItem"}
                 ,{"name": "speed", "action": "TEST_SPEED", "type": "IntArgument", "index": 1}
+                ,{"name": "Reverse_Gear", "action": "TEST_REVERSE", "type": "IntArgument", "index": 1}
                 ,{"name": "Left_blink", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 1}
                 ,{"name": "Right_blink", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 1}
                 ,{"name": "HighBeam", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 1}
@@ -394,7 +396,6 @@
             "protocol": "SignalsTest",
             "signals": [
                 {"name": "Speed_Test_Status", "action": "TEST_SPEED", "type": "IntArgument", "index": 0}
-                ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "GraphicItem", "Set":[0,1,2,3]}
                 ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "IntArgument", "index": 0}
                 ,{"name": "Blinker_Left_Test_Status", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 0}
                 ,{"name": "Blinker_Right_Test_Status", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 0}
