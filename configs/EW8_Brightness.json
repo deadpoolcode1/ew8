@@ -1,6 +1,6 @@
 {
     "Illuminance": {
-        "points": [1000,1500,2000,2500]
+        "points": [1500,2000,2500,3000]
         ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
         ,"scale": "/sys/bus/iio/devices/iio:device0/in_voltage_scale"
     }

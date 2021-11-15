@@ -2,8 +2,9 @@ import QtQuick 2.9
 
 Image {
     id: line
-    anchors.fill: parent
     property bool playing
+    anchors.bottom: parent.bottom
+    anchors.top: parent.top
 
     SequentialAnimation{
         id: animat

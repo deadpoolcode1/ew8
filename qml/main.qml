@@ -534,7 +534,7 @@ ApplicationWindow{
 
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "images/traffic-violation/left_TV_TL_big.png"
+                    source: "images/traffic-violation/left_TV_RL_big.svg"
                 }
             }
 
@@ -713,7 +713,9 @@ ApplicationWindow{
                             id: alert_ldwoff_left
                             property string canEntityType: "ALERT_LEFT_LDWOFF"
                             property int layer_pri: 0
-                            anchors.fill: parent
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.top: parent.top
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
@@ -729,13 +731,16 @@ ApplicationWindow{
                             playing: !alert_pdz.visible
                             property string canEntityType: "ALERT_LLDW"
                             property int layer_pri: 1
+                            anchors.left: parent.left
                             source: "images/ldw/ldw_left-01-01.png"
                         }
                         Image {
                             id: alert_ldwon_left
                             property string canEntityType: "ALERT_LEFT_LDWON"
                             property int layer_pri: 2
-                            anchors.fill: parent
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.top: parent.top
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
@@ -763,7 +768,9 @@ ApplicationWindow{
                             id: alert_ldwoff_right
                             property string canEntityType: "ALERT_RIGHT_LDWOFF"
                             property int layer_pri: 0
-                            anchors.fill: parent
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            anchors.top: parent.top
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
@@ -783,13 +790,16 @@ ApplicationWindow{
                             source: "images/ldw/ldw_left-01-01.png"
                             mirror: true
                             //source: "images/ldw/ldw_right-01.png"
+                            anchors.right: parent.right
                         }
 
                         Image {
                             id: alert_ldwon_right
                             property string canEntityType: "ALERT_RIGHT_LDWON"
                             property int layer_pri: 2
-                            anchors.fill: parent
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            anchors.top: parent.top
 
                             function setVisibleSlot() {visible = true}
                             function setInvisibleSlot() {visible = false}
