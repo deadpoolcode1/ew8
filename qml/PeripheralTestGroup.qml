@@ -108,8 +108,8 @@ Rectangle{
          id: test_check
          wildcard: "Result"
 
-         width: 33
-         height: 33
+         width: 39
+         height: 39
 
          anchors.verticalCenter: parent.verticalCenter
          anchors.right: parent.right
