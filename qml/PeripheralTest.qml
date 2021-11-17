@@ -29,7 +29,7 @@ Image{
 
     PeripheralTestGroup{
 
-        feature_title: "Gsm  "
+        feature_title: "GSM"
 
         canEntityType: "INFO_TEST_GSM"
         height: 80
@@ -47,7 +47,7 @@ Image{
 
     PeripheralTestGroup{
 
-        feature_title: "Gps  "
+        feature_title: "GPS"
 
         canEntityType: "INFO_TEST_GPS"
         height: 80
@@ -65,7 +65,7 @@ Image{
 
     PeripheralTestGroup{
 
-        feature_title: "Gyro "
+        feature_title: "Gyro"
 
         canEntityType: "INFO_TEST_GYRO"
         height: 80

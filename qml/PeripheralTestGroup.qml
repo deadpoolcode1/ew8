@@ -39,8 +39,10 @@ Rectangle{
     property color gray: "#99a0a6"
     property color white: "#ffffff"
 
+    property int sideMargin: 15
 
-    FontLoader { id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-regular.ttf" }
+
+    FontLoader { id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-light.ttf" }
 
 
 
@@ -51,28 +53,34 @@ Rectangle{
         id: row
         anchors.verticalCenter: parent.verticalCenter
          anchors.left: parent.left
-         anchors.leftMargin: 0
+         anchors.leftMargin: sideMargin
          anchors.top: parent.top
          anchors.topMargin: 0
+         spacing: 5
 
 
-
-         Text {
-             width: test_check.width * 2 / 3
-             height: test_check.height
-             id: test_name
-             color: white
-             z: 40
-             text: feature_title
-             wrapMode: Text.NoWrap
-             verticalAlignment: Text.AlignVCenter
-             style: Text.Raised
+         Rectangle
+         {
+             width: 50
+             height: 60
+             color: "#00000000"
              anchors.verticalCenter: parent.verticalCenter
-             font.letterSpacing: -1.0
-             leftPadding: 0
-             font.family: intelFont.name
-             font.bold: true
+             Text {
+                 id: test_name
+                 color: white
+                 z: 40
+                 text: feature_title
+                 wrapMode: Text.NoWrap
+                 verticalAlignment: Text.AlignVCenter
+                 style: Text.Raised
+                 anchors.verticalCenter: parent.verticalCenter
+                 font.letterSpacing: -1.0
+                 leftPadding: 0
+                 font.family: intelFont.name
+                 font.bold: true
+             }
          }
+
 
          Repeater {
              id: repeater
@@ -99,9 +107,13 @@ Rectangle{
      {
          id: test_check
          wildcard: "Result"
+
+         width: 33
+         height: 33
+
          anchors.verticalCenter: parent.verticalCenter
          anchors.right: parent.right
-        anchors.rightMargin: 0
+        anchors.rightMargin: sideMargin
         test_status: curr_test_state
         visible: curr_test_state < 2
      }

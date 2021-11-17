@@ -8,8 +8,8 @@ Rectangle {
 
     id: upp
 
-    width: 65
-    height: 65
+    width: 60
+    height: 60
     color: "#00000000"
 
     property int test_status: 3;
