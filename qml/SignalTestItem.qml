@@ -28,14 +28,14 @@ Item {
 
     visible: true
 
-    function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; isOn = (Arg2 == 1)}
+    function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; isOn = (Arg2 === 1)}
     function setInvisibleSlot() {isEnabled = false; isOn = false}
 
     Image{
         id: slot
         anchors.fill: parent
 
-        visible: true
+        visible: !isBig
 
         z: 1
 
@@ -121,16 +121,73 @@ Item {
                 icon_color: white
             }
         },
+        //////////////////////////////////////////////
         State {
-            name: "InvisibleBig"
-            when: (!isEnabled || test_status !== 1) && isBig
+            name: "GrnBig"
+            when: isEnabled && (test_status === 2) && isBig && !isOn
+            PropertyChanges {
+                target: slot
+                source: "images/signal-test/EW8_"+wildcard+"-grn_120x120.svg"
+            }
             PropertyChanges {
                 target: slot
                 visible: false
             }
+            PropertyChanges {
+                target: upp
+                icon_color: green
+            }
         },
         State {
-            name: "TestedBig"
+            name: "GrnBigOn"
+            when: isEnabled && (test_status === 2) && isBig && isOn
+            PropertyChanges {
+                target: slot
+                source: "images/signal-test/EW8_"+wildcard+"-grn-on_120x120.svg"
+            }
+            PropertyChanges {
+                target: slot
+                visible: false
+            }
+            PropertyChanges {
+                target: upp
+                icon_color: white
+            }
+        },
+        State {
+            name: "RedBig"
+            when: isEnabled && (test_status === 3) && isBig && !isOn
+            PropertyChanges {
+                target: slot
+                source: "images/signal-test/EW8_"+wildcard+"-red_120x120.svg"
+            }
+            PropertyChanges {
+                target: slot
+                visible: false
+            }
+            PropertyChanges {
+                target: upp
+                icon_color: red
+            }
+        },
+        State {
+            name: "RedBigOn"
+            when: isEnabled && (test_status === 3) && isBig && isOn
+            PropertyChanges {
+                target: slot
+                source: "images/signal-test/EW8_"+wildcard+"-red-on_120x120.svg"
+            }
+            PropertyChanges {
+                target: slot
+                visible: false
+            }
+            PropertyChanges {
+                target: upp
+                icon_color: white
+            }
+        },
+        State {
+            name: "BlueBig"
             when: isEnabled && (test_status === 1) && isBig && !isOn
             PropertyChanges {
                 target: slot
@@ -146,7 +203,7 @@ Item {
             }
         },
         State {
-            name: "TestedBigOn"
+            name: "BlueBigOn"
             when: isEnabled && (test_status === 1) && isBig && isOn
             PropertyChanges {
                 target: slot
@@ -162,5 +219,30 @@ Item {
             }
         }
     ]
-
+    transitions: [
+        Transition {to: "RedBigOn";
+            ParallelAnimation {
+                PropertyAnimation {target: slot; property: "visible"; duration: 500}
+                PropertyAnimation {target: slot; property: "source"; duration: 0}
+            }
+        }
+        ,Transition {to: "RedBig";
+            ParallelAnimation {
+                PropertyAnimation {target: slot; property: "visible"; duration: 500}
+                PropertyAnimation {target: slot; property: "source"; duration: 0}
+            }
+        }
+        ,Transition {to: "GrnBigOn";
+            ParallelAnimation {
+                PropertyAnimation {target: slot; property: "visible"; duration: 500}
+                PropertyAnimation {target: slot; property: "source"; duration: 0}
+            }
+        }
+        ,Transition {to: "GrnBig";
+            ParallelAnimation {
+                PropertyAnimation {target: slot; property: "visible"; duration: 500}
+                PropertyAnimation {target: slot; property: "source"; duration: 0}
+            }
+        }
+    ]
 }
