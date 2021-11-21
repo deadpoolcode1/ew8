@@ -8,8 +8,8 @@ Item {
 
     id: upp
 
-    width: 49
-    height: 49
+    width: 50
+    height: 50
 
     property int test_status: 0;
     property  string wildcard: "Brake"
