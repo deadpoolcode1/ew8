@@ -28,7 +28,7 @@ Item {
 
     visible: true
 
-    function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; isOn = ((Arg2 > 0)?true : false)}
+    function setVisibleSlot(Arg1, Arg2) {test_status = Arg1; isEnabled = true; isOn = (Arg2 == 1)}
     function setInvisibleSlot() {isEnabled = false; isOn = false}
 
     Image{

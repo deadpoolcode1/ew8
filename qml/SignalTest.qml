@@ -44,7 +44,14 @@ Image{
 
     Item{
         property string canEntityType: "TEST_SPEED"
-        function setVisibleSlot(Arg1, Arg2, Arg3) { sts1.setVisibleSlot(Arg1, Arg2); sts2.setVisibleSlot(Arg1, Arg2);;sts1.displaySpeed = Arg2; sts2.displaySpeed = Arg2}
+
+        function setVisibleSlot(Arg1, Arg2) {
+          sts1.setVisibleSlot(Arg1, Arg1);
+          sts2.setVisibleSlot(Arg1, Arg1);
+          sts1.displaySpeed = Arg2;
+          sts2.displaySpeed = Arg2;
+        }
+
         function setInvisibleSlot(){sts1.setInvisibleSlot(); sts2.setInvisibleSlot()}
 
          property int layer_pri: 0
