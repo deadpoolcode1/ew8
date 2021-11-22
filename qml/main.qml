@@ -25,6 +25,14 @@ ApplicationWindow{
        debug_timer.restart()
     }
 
+
+    FontLoader {id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-bold.ttf"}
+    FontLoader { source: "fonts/intelone-display-font-family-ttf/intelone-display-regular.ttf"}
+     FontLoader { source: "fonts/intelone-display-font-family-ttf/intelone-display-medium.ttf"}
+    FontLoader { source: "fonts/intelone-display-font-family-ttf/intelone-display-light.ttf"}
+
+
+
     Text {
         z: 100
         id: debug
@@ -37,8 +45,7 @@ ApplicationWindow{
         font.capitalization: Font.MixedCase
         topPadding: 0
         anchors.horizontalCenter: parent.horizontalCenter
-        font.family: "HindSiliguri"
-        font.bold: true
+        font.family: intelFont.name
         visible: false
 
         Timer {
@@ -179,7 +186,7 @@ ApplicationWindow{
                     property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
 
                     property bool is_mph: false
-                    property string unit_str: is_mph? qsTr("Mph") : qsTr("Km/h");
+                    property string unit_str: is_mph? qsTr("MPH") : qsTr("KMH");
                     property bool speed_available: false
 
                     function setVisibleSlot(arg, is_mph_arg) {
@@ -196,15 +203,17 @@ ApplicationWindow{
                         x: 0
                         color: "#e1f1ff"
                         text: speed.displaySpeed
-                        font.letterSpacing: -2.2
+                        font.letterSpacing: 0
                         leftPadding: -2
                         anchors.horizontalCenter: parent.horizontalCenter
                         topPadding: -4
-                        font.family: "HindSiliguri"
-                        font.pixelSize: 24
-                        font.bold: true
+                        font.family: intelFont.name
+                        font.weight: Font.Medium
+                        font.pixelSize: 22
 
-                        onTextChanged: {console.log("speed:"+text+" ts:"+Date.now());}
+                        onTextChanged: {
+                            console.log("speed:"+text+" ts:"+Date.now());
+                        }
                     }
 
                     Text {
@@ -216,10 +225,14 @@ ApplicationWindow{
                         anchors.horizontalCenterOffset: 0
                         font.pixelSize: 14
                         font.capitalization: Font.MixedCase
+                        font.family: intelFont.name
+                        font.weight: Font.Medium
                         topPadding: 0
                         anchors.horizontalCenter: parent.horizontalCenter
-                        font.family: "HindSiliguri"
-                        font.bold: true
+
+
+
+
                     }
 
                 }
@@ -320,11 +333,8 @@ ApplicationWindow{
                 anchors.rightMargin: 0
 
 
-                Image {
-                    id: green_user
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    source: "images/status-bar/status_Signed_in.png"
+                SignedStatus {
+                    id: signed_status
                     opacity: isInEdition? 1.0 : 0.0
                 }
 
@@ -401,9 +411,9 @@ ApplicationWindow{
                             font.letterSpacing: -2.2
                             anchors.horizontalCenter: parent.horizontalCenter
                             topPadding: 4
-                            font.family: "HindSiliguri"
+                            font.family: intelFont.name
+                            font.weight: Font.Bold
                             font.pixelSize: 24
-                            font.bold: true
                         }
 
 
@@ -914,9 +924,10 @@ ApplicationWindow{
                     id: om_pwroff_label
                     color: "#111abc"
                     text: qsTr("Power off")
-                    font.bold: true
                     anchors.top: parent.bottom
                     anchors.topMargin: -20
+                    font.family: intelFont.name
+                    font.weight: Font.Bold
                     font.pixelSize: 20
                 }
             }
@@ -942,9 +953,10 @@ ApplicationWindow{
                     id: om_keeppwr_label
                     color: "#111abc"
                     text: qsTr("Keep Power On")
-                    font.bold: true
                     anchors.top: parent.bottom
                     anchors.topMargin: -20
+                    font.family: intelFont.name
+                    font.weight: Font.Bold
                     font.pixelSize: 20
                 }
             }
@@ -973,9 +985,10 @@ ApplicationWindow{
                     id: om_pilot_label
                     color: "#111abc"
                     text: qsTr("Pilot mode")
-                    font.bold: true
                     anchors.top: parent.bottom
                     anchors.topMargin: -20
+                    font.family: intelFont.name
+                    font.weight: Font.Bold
                     font.pixelSize: 20
                 }
             }
@@ -1003,9 +1016,10 @@ ApplicationWindow{
                     id: discon_label
                     color: "#111abc"
                     text: qsTr("Disconnected")
-                    font.bold: true
                     anchors.top: parent.bottom
                     anchors.topMargin: -20
+                    font.family: intelFont.name
+                    font.weight: Font.Bold
                     font.pixelSize: 20
                 }
             }

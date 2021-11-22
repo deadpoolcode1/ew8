@@ -9,7 +9,7 @@
 #define SYSREQ_TYPE_ENUM_DEFINITION \
 enum sysreq_type_e \
 { \
-    GetVersion = 0, \
+    GetVersionInfo = 0, \
     DebugBrightness = 1, \
     DebugButtons = 2, \
 };

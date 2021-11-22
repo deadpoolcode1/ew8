@@ -44,6 +44,10 @@
         ,"INFO_NO_GSM"
         ,"INFO_TEST_SIGNALS"
 
+        ,"INFO_DRIVER_AUTH_IN"
+        ,"INFO_DRIVER_AUTH_OUT"
+        ,"INFO_DRIVER_AUTH_PROCESS"
+
         ,"TEST_BRAKES"
         ,"TEST_SPEED"
         ,"TEST_SPEED_VALUE"
@@ -302,18 +306,16 @@
             ],
             "value_tables":[
                 {"name":"FirstIcon_Type", "type": "GraphicItem", "rows":[
-                        {"value":  1, "action": "SMART_CROWDED", "description": "Crowd zone"},
-                        {"value":  2, "action": "SMART_PED_HWY", "description": "Pedestrian on the highway"},
-                        {"value":  3, "action": "SMART_CYC_HWY", "description": "Cyclist on highway"},
-                        {"value":  4, "action": "SMART_WEA_ROAD", "description": "Weather condition: Road"},
-                        {"value":  5, "action": "SMART_WEA_HYDRO", "description": "Weather condition: Hydroplanning"},
-                        {"value":  6, "action": "SMART_WEA_FG", "description": "Weather condition: Fog"},
-                        {"value":  7, "action": "SMART_WEA_WND", "description": "Weather condition: Wind"},
-                        {"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"},
-                        {"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"},
-                        {"value": 10, "action": "SMART_FATIGUE", "description": "Fatigue detection"},
-                        {"value": 11, "action": "SMART_BUMPERS", "description": "Portholes/Bumpers"},
-                        {"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
+                        {"value":  1, "action": "SMART_CROWDED", "description": "Crowd zone"}
+                        ,{"value":  2, "action": "SMART_PED_HWY", "description": "Pedestrian on the highway"}
+                        ,{"value":  3, "action": "SMART_CYC_HWY", "description": "Cyclist on highway"}
+                        ,{"value":  4, "action": "SMART_WEA_ROAD", "description": "Weather condition: Road"}
+                        ,{"value":  5, "action": "SMART_WEA_HYDRO", "description": "Weather condition: Hydroplanning"}
+                        ,{"value":  6, "action": "SMART_WEA_FG", "description": "Weather condition: Fog"}
+                        ,{"value":  7, "action": "SMART_WEA_WND", "description": "Weather condition: Wind"}
+                        ,{"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"}
+                        ,{"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"}
+                        ,{"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
                    ]
                 }
             ]
@@ -337,7 +339,7 @@
             "protocol": "EW8TestProtocol",
             "signals":[
                 {"name":"TestDisplay", "action": "Vt_TestDisplay",  "isValueTable": true}
-                ,{"name":"GetVersion", "action": "GetVersion", "type": "SystemRequest"}
+                ,{"name":"GetVersion", "action": "GetVersionInfo", "type": "SystemRequest"}
                 ,{"name": "DebugBrightness", "action": "DebugBrightness", "type": "SystemRequest"}
                 ,{"name": "DebugButtons", "action": "DebugButtons", "type": "SystemRequest"}
             ],
@@ -358,11 +360,12 @@
             "keepAlive": "IMS_Status_Protocol_System",
             "timeout": 20000,
             "signals":[
-                {"name":"Validity", "action": ["", "inverted"], "type": "Validator"},
-                {"name":"Present_app", "action": "INFO_TEST_SIGNALS", "type": "GraphicItem", "Set": 2},
-                {"name":"Present_app", "action": "SignalTest", "type": "Enabler", "Set": 2},
-                {"name":"Present_app", "action": "INFO_TEST_PERIPHERALS", "type": "GraphicItem", "Set": 3},
-                {"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
+                {"name":"Validity", "action": ["", "inverted"], "type": "Validator"}
+                ,{"name":"Present_app", "action": "INFO_TEST_SIGNALS", "type": "GraphicItem", "Set": 2}
+                ,{"name":"Present_app", "action": "SignalTest", "type": "Enabler", "Set": 2}
+                ,{"name":"Present_app", "action": "INFO_TEST_PERIPHERALS", "type": "GraphicItem", "Set": 3}
+                ,{"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
+                ,{"name":"Driver_assignment", "action": "Vt_Driver_assignment",  "isValueTable": true}
             ],
             "value_tables":[
                 {"name":"Vt_OperationMode", "type": "GraphicItem", "rows":[
@@ -371,6 +374,12 @@
                         ,{"value":  2, "action": "OM_MUTE", "description": "AWS operational mode: Mute"}
                         ,{"value":  3, "action": "OM_KEEPPWR", "description": "AWS operational mode: Keep power on"}
                         ,{"value":  4, "action": "OM_PILOT", "description": "AWS operational mode: Pilot mode"}
+                    ]
+                }
+                ,{"name":"Vt_Driver_assignment", "type": "GraphicItem", "rows":[
+                        {"value":  1, "action": "INFO_DRIVER_AUTH_OUT", "description": "AWS operational mode: Normal mode"}
+                        ,{"value":  2, "action": "INFO_DRIVER_AUTH_PROCESS", "description": "AWS operational mode: Mute"}
+                        ,{"value":  3, "action": "INFO_DRIVER_AUTH_IN", "description": "AWS operational mode: Keep power on"}
                     ]
                 }
             ]

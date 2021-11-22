@@ -14,11 +14,7 @@ SignalTestItem {
    visible: true
 
 
-   FontLoader { id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-light.ttf" }
-
-
-
-    Text {
+   Text {
         id: speed_value
         color: icon_color
         z: 40
@@ -31,7 +27,7 @@ SignalTestItem {
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: intelFont.name
         font.pixelSize: upp.width / 3 + (isBig? 1 : 0)
-        font.bold: true
+        font.weight: Font.Light
         visible: isSlotVisible
     }
 }

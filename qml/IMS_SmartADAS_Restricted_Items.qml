@@ -53,35 +53,35 @@ Rectangle {
             id: smart_crowded
             property string canEntityType: "SMART_CROWDED"
             property int layer_pri: 1
-            source: "images/right-panel/SADAS/right_crowded.png"
+            source: "images/right-panel/SADAS/right_crowded.svg"
 		}
 
       SADAS {
             id: smart_ped_hwy
             property string canEntityType: "SMART_PED_HWY"
             property int layer_pri: 2
-            source: "images/right-panel/SADAS/right_ped_highway.png"
+            source: "images/right-panel/SADAS/right_ped_highway.svg"
         }
 
       SADAS {
             id: smart_cyc_hwy
             property string canEntityType: "SMART_CYC_HWY"
             property int layer_pri: 3
-            source: "images/right-panel/SADAS/right_cyc_highway.png"
+            source: "images/right-panel/SADAS/right_cyc_highway.svg"
         }
 
       SADAS {
             id: smart_wea_road
             property string canEntityType: "SMART_WEA_ROAD"
             property int layer_pri: 5
-            source: "images/right-panel/SADAS/right_w_road.png"
+            source: "images/right-panel/SADAS/right_w_road.svg"
         }
 
       SADAS {
             id: smart_wea_wtr
             property string canEntityType: "SMART_WEA_HYDRO"
             property int layer_pri: 5
-            source: "images/right-panel/SADAS/right_w_hydro.png"
+            source: "images/right-panel/SADAS/right_w_hydro.svg"
         }
 
 
@@ -89,7 +89,7 @@ Rectangle {
             id: smart_wea_fg
             property string canEntityType: "SMART_WEA_FG"
             property int layer_pri: 6
-            source: "images/right-panel/SADAS/right_w_fog.png"
+            source: "images/right-panel/SADAS/right_w_fog.svg"
         }
 
 
@@ -97,42 +97,29 @@ Rectangle {
             id: smart_wea_wnd
             property string canEntityType: "SMART_WEA_WND"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_wind.png"
+            source: "images/right-panel/SADAS/right_w_wind.svg"
         }
 
       SADAS {
             id: smart_wea_ra
             property string canEntityType: "SMART_WEA_HAIL"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_rain.png"
+            source: "images/right-panel/SADAS/right_w_hail.svg"
         }
 
       SADAS {
             id: smart_wea_tstm
             property string canEntityType: "SMART_WEA_TSTM"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_lightening.png"
+            source: "images/right-panel/SADAS/right_w_lightening.svg"
         }
 
-      SADAS {
-            id: smart_fatigue
-            property string canEntityType: "SMART_FATIGUE"
-            property int layer_pri: 8
-            source: "images/right-panel/SADAS/right_fatigue.png"
-        }
-
-      SADAS {
-            id: smart_bumpers
-            property string canEntityType: "SMART_BUMPERS"
-            property int layer_pri: 8
-            source: "images/right-panel/SADAS/right_bumpers.png"
-        }
 
       SADAS {
             id: smart_harsh_dz
             property string canEntityType: "SMART_HARSH_DZ"
             property int layer_pri: 4
-            source: "images/right-panel/SADAS/right_break_DZ.png"
+            source: "images/right-panel/SADAS/right_harsh_break.svg"
         }
 	}
 
@@ -160,7 +147,7 @@ Rectangle {
         {
             id: sign
 
-            source:"images/right-panel/fms_alert.png"
+            source:"images/right-panel/fms_alert.svg"
             property string canEntityType: "FMS_ALERT"
 
             quadrant: 4

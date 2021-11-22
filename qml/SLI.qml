@@ -59,8 +59,8 @@ SideIcon {
         text: canEntityArg.toString()
         font.pixelSize: 40
         fontSizeMode: Text.FixedSize
-        font.family: "Arial"
-        font.bold: true
+        font.family: intelFont.name
+        font.weight: Font.Medium
         color: "black"
         visible: parent.visible
         opacity: 1

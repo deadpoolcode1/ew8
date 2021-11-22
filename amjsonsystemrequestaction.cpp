@@ -22,7 +22,7 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
 {
     switch (type)
     {
-    case GetVersion:
+    case GetVersionInfo:
 
     if (extractedCANsignal.toBool())
     {

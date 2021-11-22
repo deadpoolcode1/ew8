@@ -37,8 +37,8 @@ Item{
         lineHeight: 1
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignTop
-        font.bold: true
-        font.family: "HindSiliguri"
+        font.weight: Font.Bold
+        font.family: intelFont.name
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 38
@@ -49,6 +49,7 @@ Item{
     Item{
         id: time
         anchors.horizontalCenter: strips_img.horizontalCenter
+        anchors.horizontalCenterOffset: -2
         anchors.bottom: units.top
         anchors.bottomMargin: -13
         width: timeInt.width+(timePoint.width-12)+timeFrac.width
@@ -59,12 +60,11 @@ Item{
             color: text_color
             text: timeText.slice(0,-2)
             anchors.bottomMargin: 0
-            font.weight: Font.Black
-            font.letterSpacing: -2
-
-            font.bold: true
+            anchors.right: timePoint.left
+            anchors.rightMargin: 0
+            font.weight: Font.Bold
             font.pixelSize: parent.fontPixelSize
-            font.family: "HindSiliguri"
+            font.family: intelFont.name
             anchors.bottom: parent.bottom
             visible: strips_img.visible
         }
@@ -73,15 +73,13 @@ Item{
             id: timePoint
             color: text_color
             text: timeText.charAt(timeText.length - 2)
-            anchors.left: timeInt.right
-            anchors.leftMargin: -6
+            anchors.horizontalCenter: time.horizontalCenter
+            anchors.horizontalCenterOffset: 1
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            font.weight: Font.Black
-            font.letterSpacing: -2
-            font.bold: true
+            font.weight: Font.Bold
             font.pixelSize: parent.fontPixelSize
-            font.family: "HindSiliguri"
+            font.family: intelFont.name
             visible: strips_img.visible
         }
 
@@ -90,14 +88,12 @@ Item{
             color: text_color
             text: timeText.charAt(timeText.length - 1)
             anchors.left: timePoint.right
-            anchors.leftMargin: -6
+            anchors.leftMargin: 0
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            font.weight: Font.Black
-            font.letterSpacing: -2
-            font.bold: true
+            font.weight: Font.Bold
             font.pixelSize: parent.fontPixelSize
-            font.family: "HindSiliguri"
+            font.family: intelFont.name
 
             visible: strips_img.visible
         }

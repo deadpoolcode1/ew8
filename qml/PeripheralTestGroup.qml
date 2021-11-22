@@ -41,14 +41,6 @@ Rectangle{
 
     property int sideMargin: 15
 
-
-    FontLoader { id: intelFont; source: "fonts/intelone-display-font-family-ttf/intelone-display-light.ttf" }
-
-
-
-
-
-
     Row{
         id: row
         anchors.verticalCenter: parent.verticalCenter
@@ -77,7 +69,7 @@ Rectangle{
                  font.letterSpacing: -1.0
                  leftPadding: 0
                  font.family: intelFont.name
-                 font.bold: true
+                 font.weight: Font.Bold
              }
          }
 

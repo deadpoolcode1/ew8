@@ -8,7 +8,7 @@ AnimatedImage {
     visible: true
 
     property int y_start_from
-    property int x_start_from
+    property int x_start_from: 0
 
     property int quadrant
 
@@ -26,8 +26,8 @@ AnimatedImage {
     y_start_from: is_top? 12 : (165 - 112 - 12)
     anchors.topMargin: 12
     anchors.bottomMargin: 165 - 112 - 12
-    anchors.rightMargin: 0
-    anchors.leftMargin: 0
+    anchors.rightMargin: x_start_from
+    anchors.leftMargin: x_start_from
 
     scale: 1
 
@@ -37,6 +37,8 @@ AnimatedImage {
                   target: sign
                   anchors.top: parent.top
                   anchors.right: parent.right
+                  x_start_from: 80
+                  target_scale: 0.5124
                 }
             }
         ,State {name: "II"; when:  quadrant === 2
@@ -67,8 +69,8 @@ AnimatedImage {
             scale = 1
             anchors.topMargin = y_start_from
             anchors.bottomMargin = y_start_from
-            anchors.leftMargin = 0
-            anchors.rightMargin = 0
+            anchors.leftMargin = x_start_from
+            anchors.rightMargin = x_start_from
     }
 
 
@@ -104,7 +106,7 @@ AnimatedImage {
             NumberAnimation {
                 target: sign
                 properties: "anchors.leftMargin, anchors.rightMargin"
-                from: 0
+                from: x_start_from
                 to: targetWidthMargin
                 duration: 500
                 easing.type: Easing.OutQuad

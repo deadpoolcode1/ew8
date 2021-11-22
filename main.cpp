@@ -69,7 +69,9 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+#ifndef WIN32
     system("killall -USR1 ew8_splash");
+#endif
 
 
     QGuiApplication app(argc,argv);
