@@ -43,10 +43,12 @@ AnimatedImage {
                   target: sign
                   anchors.top: parent.top
                   anchors.right: parent.right
-                  x_start_from: 80
-                  target_scale: 0.5124
-                  start_scale: 0.85
-                  _topMar: 2
+                  x_start_from: 92
+                  y_start_from: -8
+                  target_scale: 0.6028
+                  start_scale: 1.0
+                  pause_duration: 1500
+                  _topMar: 3
                 }
           }
           ,State {name: "Ia"; when:  quadrant === 1 && is_in_alert
@@ -54,11 +56,10 @@ AnimatedImage {
                   target: sign
                   anchors.top: parent.top
                   anchors.right: parent.right
-                  target_scale: 0.5124
-                  start_scale: 0.7
-                  _topMar: 2
-                  x_start_from: -18
-                  pause_duration: 1500
+                  target_scale: 0.6028
+                  start_scale: 0.78
+                  _topMar: 3
+                  x_start_from: -8
                 }
         }
         ,State {name: "II"; when:  quadrant === 2
