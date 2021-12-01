@@ -8,6 +8,7 @@ Item {
     //z: sign.z
 
     property alias source: sign.source
+    property alias is_in_alert: sign.is_in_alert
 
     function setVisibleSlot() {sign.visible = true;}
     function setInvisibleSlot() {sign.visible = false;}

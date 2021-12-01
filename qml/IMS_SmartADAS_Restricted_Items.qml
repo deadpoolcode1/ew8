@@ -12,6 +12,7 @@ Rectangle {
     function setInvisibleSlot(){visible = false; console.log("IMS_SmartADAS_Restricted PANEL OFF")}
 
     visible: true
+    property bool is_in_alert: false
 
     Item {
 		id: groupTop
@@ -51,6 +52,7 @@ Rectangle {
 
       SADAS {
             id: smart_crowded
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_CROWDED"
             property int layer_pri: 1
             source: "images/right-panel/SADAS/right_crowded.svg"
@@ -58,6 +60,7 @@ Rectangle {
 
       SADAS {
             id: smart_ped_hwy
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_PED_HWY"
             property int layer_pri: 2
             source: "images/right-panel/SADAS/right_ped_highway.svg"
@@ -65,6 +68,7 @@ Rectangle {
 
       SADAS {
             id: smart_cyc_hwy
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_CYC_HWY"
             property int layer_pri: 3
             source: "images/right-panel/SADAS/right_cyc_highway.svg"
@@ -72,6 +76,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_road
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_ROAD"
             property int layer_pri: 5
             source: "images/right-panel/SADAS/right_w_road.svg"
@@ -79,6 +84,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_wtr
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_HYDRO"
             property int layer_pri: 5
             source: "images/right-panel/SADAS/right_w_hydro.svg"
@@ -87,6 +93,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_fg
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_FG"
             property int layer_pri: 6
             source: "images/right-panel/SADAS/right_w_fog.svg"
@@ -95,6 +102,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_wnd
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_WND"
             property int layer_pri: 7
             source: "images/right-panel/SADAS/right_w_wind.svg"
@@ -102,6 +110,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_ra
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_HAIL"
             property int layer_pri: 7
             source: "images/right-panel/SADAS/right_w_hail.svg"
@@ -109,6 +118,7 @@ Rectangle {
 
       SADAS {
             id: smart_wea_tstm
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_TSTM"
             property int layer_pri: 7
             source: "images/right-panel/SADAS/right_w_lightening.svg"
@@ -117,6 +127,7 @@ Rectangle {
 
       SADAS {
             id: smart_harsh_dz
+            is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_HARSH_DZ"
             property int layer_pri: 4
             source: "images/right-panel/SADAS/right_harsh_break.svg"

@@ -52,27 +52,14 @@ Item{
         anchors.horizontalCenterOffset: -2
         anchors.bottom: units.top
         anchors.bottomMargin: -13
-        width: timeInt.width+(timePoint.width-12)+timeFrac.width
-        property int fontPixelSize: 36
+        width: time_text_id.width
+        property int fontPixelSize: 28
+
 
         Text {
-            id: timeInt
+            id: time_text_id
             color: text_color
-            text: timeText.slice(0,-2)
-            anchors.bottomMargin: 0
-            anchors.right: timePoint.left
-            anchors.rightMargin: 0
-            font.weight: Font.Bold
-            font.pixelSize: parent.fontPixelSize
-            font.family: intelFont.name
-            anchors.bottom: parent.bottom
-            visible: strips_img.visible
-        }
-
-        Text {
-            id: timePoint
-            color: text_color
-            text: timeText.charAt(timeText.length - 2)
+            text: timeText
             anchors.horizontalCenter: time.horizontalCenter
             anchors.horizontalCenterOffset: 1
             anchors.bottom: parent.bottom
@@ -82,22 +69,6 @@ Item{
             font.family: intelFont.name
             visible: strips_img.visible
         }
-
-        Text {
-            id: timeFrac
-            color: text_color
-            text: timeText.charAt(timeText.length - 1)
-            anchors.left: timePoint.right
-            anchors.leftMargin: 0
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            font.weight: Font.Bold
-            font.pixelSize: parent.fontPixelSize
-            font.family: intelFont.name
-
-            visible: strips_img.visible
-        }
-
     }
 
     Item{

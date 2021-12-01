@@ -7,12 +7,19 @@ AnimatedImage {
     id: sign
     visible: true
 
-    property int y_start_from
+    property int _topMar: 12
+    property int _bottomMar: (165 - 112 - 12)
+    property int y_start_from: is_top? _topMar : _bottomMar
     property int x_start_from: 0
+
+    property int pause_duration: 1000
 
     property int quadrant
 
+    property bool is_in_alert: false
+
     property bool is_top: quadrant < 3
+    property double start_scale: 1.0
     property double target_scale: 0.732
 
     property int targetWidthMargin: - (width * (1 - target_scale) / 2)
@@ -23,24 +30,37 @@ AnimatedImage {
 
     property bool isInSlot: false
 
-    y_start_from: is_top? 12 : (165 - 112 - 12)
-    anchors.topMargin: 12
-    anchors.bottomMargin: 165 - 112 - 12
+    anchors.topMargin: _topMar
+    anchors.bottomMargin: _bottomMar
     anchors.rightMargin: x_start_from
     anchors.leftMargin: x_start_from
 
-    scale: 1
+    scale: start_scale
 
     states: [
-         State {name: "I"; when:  quadrant === 1
+         State {name: "I"; when:  quadrant === 1 && (!is_in_alert)
                 PropertyChanges{
                   target: sign
                   anchors.top: parent.top
                   anchors.right: parent.right
                   x_start_from: 80
                   target_scale: 0.5124
+                  start_scale: 0.85
+                  _topMar: 2
                 }
-            }
+          }
+          ,State {name: "Ia"; when:  quadrant === 1 && is_in_alert
+                PropertyChanges{
+                  target: sign
+                  anchors.top: parent.top
+                  anchors.right: parent.right
+                  target_scale: 0.5124
+                  start_scale: 0.7
+                  _topMar: 2
+                  x_start_from: -18
+                  pause_duration: 1500
+                }
+        }
         ,State {name: "II"; when:  quadrant === 2
             PropertyChanges{
               target: sign
@@ -66,11 +86,12 @@ AnimatedImage {
 
     onVisibleChanged:
     {
-            scale = 1
+            scale = start_scale
             anchors.topMargin = y_start_from
             anchors.bottomMargin = y_start_from
             anchors.leftMargin = x_start_from
             anchors.rightMargin = x_start_from
+           console.log("Smart ADAS is at alert:" +  is_in_alert)
     }
 
 
@@ -83,7 +104,7 @@ AnimatedImage {
         id: enter_animat
 
         PauseAnimation {
-            duration: 1000
+            duration: pause_duration
         }
 
         ParallelAnimation
@@ -115,7 +136,7 @@ AnimatedImage {
             NumberAnimation {
                 target: sign
                 property: "scale"
-                from: 1
+                from: start_scale
                 to: target_scale
                 duration: 500
                 easing.type: Easing.OutQuad

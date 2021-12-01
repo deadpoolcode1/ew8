@@ -517,6 +517,10 @@ ApplicationWindow{
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
+                is_in_alert: alert_pdz.visible || alert_rtw_alert.visible ||
+                             alert_lldw.visible || alert_rldw.visible ||
+                             (alert_hmw_general.visible) // && alert_hmw_general.alert)
+
             }
 
 
