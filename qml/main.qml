@@ -186,7 +186,7 @@ ApplicationWindow{
                     property int displaySpeed: is_mph? (canEntityArg * 0.621371):canEntityArg;
 
                     property bool is_mph: false
-                    property string unit_str: is_mph? qsTr("MPH") : qsTr("KMH");
+                    property string unit_str: is_mph? qsTr("MPH") : qsTr("km/h");
                     property bool speed_available: false
 
                     function setVisibleSlot(arg, is_mph_arg) {

@@ -37,7 +37,7 @@ Item{
         lineHeight: 1
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignTop
-        font.weight: Font.Bold
+        font.weight: Font.Medium
         font.family: intelFont.name
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -64,7 +64,7 @@ Item{
             anchors.horizontalCenterOffset: 1
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            font.weight: Font.Bold
+            font.weight: Font.Medium
             font.pixelSize: parent.fontPixelSize
             font.family: intelFont.name
             visible: strips_img.visible

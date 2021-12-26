@@ -57,7 +57,7 @@ SideIcon {
     Text {
         id: splim
         text: canEntityArg.toString()
-        font.pixelSize: 40
+        font.pixelSize: 36
         fontSizeMode: Text.FixedSize
         font.family: intelFont.name
         font.weight: Font.Medium
@@ -66,6 +66,7 @@ SideIcon {
         opacity: 1
         scale: 1.6 - (text.length * 0.2)
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenterOffset: 2
         anchors.verticalCenter : parent.verticalCenter
         onTextChanged: {if(sign.visible){sign.visible = false; sign.visible = true;}}
     }
@@ -128,7 +129,12 @@ SideIcon {
 
            PropertyChanges {
                target: splim
-               anchors.verticalCenterOffset: 23
+               anchors.verticalCenterOffset: 17
+           }
+
+           PropertyChanges {
+               target: splim
+	       font.pixelSize: 30
            }
        }
    ]
