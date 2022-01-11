@@ -18,6 +18,7 @@
 #include <QCommandLineOption>
 #include <QScreen>
 #include "brightnesscontrol.h"
+#include "amjsonconfigreader.h"
 
 
 #ifndef WIN32
@@ -41,6 +42,7 @@
 
 class AlertTypes;
 class QQuickQRCode;
+class AMJsonConfigReader;
 
 QElapsedTimer bootUpTimer;
 
@@ -78,21 +80,54 @@ int main(int argc, char *argv[])
 
     app.setOrganizationName("mobileye");
 
+
     BrightnessControl brightnessControl(&app);
 
 
     QCommandLineParser cmdLnParser;
+    QString mainQmlFileName;
 
     QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
+    QCommandLineOption testingConfig(QStringList() << "t" << "testing-mode", "Run the application with with testing mode configs");
 
     cmdLnParser.addOption(forceParsing);
+    cmdLnParser.addOption(testingConfig);
 
     cmdLnParser.process(app);
 
-    //TODO: implement forced parsing in code
     bool is_forced = cmdLnParser.isSet(forceParsing);
+    bool is_testing_mode = cmdLnParser.isSet(testingConfig);
 
-    if(is_forced)
+
+    if (is_testing_mode)
+    {
+       mainQmlFileName = "tests.qml";
+    }
+    else
+    {
+        mainQmlFileName = "main.qml";
+    }
+
+
+
+    if (is_testing_mode)
+    {
+        AMJsonConfigReader::getInstance()->readJsonDocument("signals/ME_Test_Signals.json");
+    }
+    else
+    {
+        AMJsonConfigReader::getInstance()->readJsonDocument("signals/EW8_Signals.json");
+    }
+
+
+
+
+
+
+
+
+
+    if (is_forced)
     {
         CanRxMsg::forceDBCParsing();
     }
@@ -107,36 +142,33 @@ int main(int argc, char *argv[])
     QUrl mainQmlUrl;
 
 
-    //TODO: check if main.rcc exists and register
-    if(!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
+    if (!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
     {
          engine.addImportPath(":/");
-         mainQmlUrl = QUrl(QStringLiteral("qrc:/main.qml"));
+         mainQmlUrl = QUrl(QStringLiteral("qrc:/")+mainQmlFileName);
     }
     else
     {
-        mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.qml"));
+        mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/")+mainQmlFileName);
     }
 
     QQmlComponent component(&engine, mainQmlUrl);
-
 
 
     QObject * componentObject = component.create();
 
     qDebug() << "Component created, time" << bootUpTimer.elapsed();
 
-
-
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
     mp->setBrightnessControl(& brightnessControl);
 
-    CanRxMsg::saveToStorage();
+    if (!is_testing_mode)
+    {
+        CanRxMsg::saveToStorage();
+    }
 
     qDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
-
-
 
     mp->launchEverything();
 
@@ -147,17 +179,24 @@ int main(int argc, char *argv[])
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
 
-    if(kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+
+    if ( ! is_testing_mode)
     {
-       kernMsgDev.write("<2> canquick: in main loop");
-       kernMsgDev.close();
+        if (kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+        {
+           kernMsgDev.write("<2> canquick: in main loop");
+           kernMsgDev.close();
+        }
     }
 
 #endif
 
 #ifndef WIN32
 
+    if ( ! is_testing_mode)
+    {
         system("killall -USR2 ew8_splash");
+    }
 
 #endif
 

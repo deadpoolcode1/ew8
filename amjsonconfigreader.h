@@ -13,13 +13,13 @@ public:
 
     static AMJsonConfigReader * getInstance(void);
 
+    void readJsonDocument(QString arg);
+
     QJsonValue getJsonTopEntry(QString entryKey);
 
 private:
 
     static QMutex instanceMutex;
-
-    void readJsonDocument(QString arg);
 
     static AMJsonConfigReader * instance;
 

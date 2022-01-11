@@ -39,7 +39,6 @@ AMJsonConfigReader * AMJsonConfigReader::getInstance(void)
 
 AMJsonConfigReader::AMJsonConfigReader(void)
 {
-    readJsonDocument("signals/EW8_Signals.json");
     readJsonDocument("configs/EW8_Brightness.json");
 }
 
