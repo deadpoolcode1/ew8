@@ -14,6 +14,22 @@
 
 qint32 WatchDogDevice::fd = 0;
 
+int WatchDogDevice::disarm(void)
+{
+    int ret;
+
+    qDebug() << "Disabling WDT!";
+
+    ret = write(fd, "V\0", 2);
+    if (ret != 1) {
+        ret = -1;
+    }
+
+    close(fd);
+
+    return ret;
+}
+
 void WatchDogDevice::sighandler(qint32 signum)
 {
 #ifndef WIN32
@@ -21,15 +37,7 @@ void WatchDogDevice::sighandler(qint32 signum)
 
     if (signum == SIGUSR2)
     {
-        qDebug() << "Disabling WDT!";
-
-        ret = write(fd, "V\0", 2);
-        if (ret != 1) {
-            ret = -1;
-        }
-
-        close(fd);
-        //TODO initiate regular exit
+        ret = disarm();
         exit(ret);
     }
 #endif

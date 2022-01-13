@@ -4,13 +4,16 @@
 #include "canrxmsg.h"
 #include "versionmsg.h"
 #include "candebugreport.h"
+#include "watchdogdevice.h"
 #include <QDebug>
 #include <QObject>
+#include <QProcess>
 
 class VersionMsg;
 class SystemRequestType;
 class BrightnessControl;
 class CANDebugReport;
+class WatchDogDevice;
 
 AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
 {
@@ -37,6 +40,41 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
     case DebugButtons:
         CANDebugReport::setSendKeyReport(extractedCANsignal.toBool());
                 break;
+
+
+    case SwitchModeTest:
+        if(extractedCANsignal.toBool())
+        {
+#ifndef WIN32
+            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick -t"));
+            WatchDogDevice::disarm();
+
+#elif ! defined(QT_DEBUG)
+            QProcess::startDetached(QStringLiteral("release/canquick -t"));
+
+#else
+            QProcess::startDetached(QStringLiteral("debug/canquick -t"));
+#endif
+            exit(0);
+        }
+        break;
+
+    case SwitchModeAWS:
+        if(extractedCANsignal.toBool())
+        {
+#ifndef WIN32
+            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick"));
+            WatchDogDevice::disarm();
+#elif ! defined(QT_DEBUG)
+            QProcess::startDetached(QStringLiteral("release/canquick"));
+
+#else
+            QProcess::startDetached(QStringLiteral("debug/canquick"));
+#endif
+            exit(0);
+        }
+        break;
+
     default:
         qDebug()<<"Processing unsupported request type";
         break;

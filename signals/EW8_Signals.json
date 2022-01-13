@@ -1,5 +1,4 @@
 {
-    "ConfigVersion":[1,6,0],
     "GraphicItems": [
          "ALERT_LEFT_LDWOFF"
         ,"ALERT_RIGHT_LDWOFF"
@@ -90,13 +89,6 @@
 
 
     "Protocols": [
-        {
-            "protocol":["Buttons","GPIO"],
-            "signals":[
-                {"name":"LeftButton", "action": "INFO_QRCODE", "type": "GraphicItem"}
-            ]
-        }
-        ,
         {
             "protocol": "AfterMarket_TSR",
             "signals":[
@@ -252,50 +244,10 @@
         }
         ,
         {
-            "protocol":"SeeQInfo",
-            "signals":[
-                {"name":"SeeqProductionDateYear0","action":"INFO_QRCODE", "type":"StringArgument","index": 0},
-                {"name":"SeeqProductionDateYear1","action":"INFO_QRCODE", "type":"StringArgument","index": 1},
-                {"name":"SeeqProductionDateWeek0","action":"INFO_QRCODE", "type":"StringArgument","index": 2},
-                {"name":"SeeqProductionDateWeek1","action":"INFO_QRCODE", "type":"StringArgument","index": 3},
-
-                {"name":"SeeqProduct0","action":"INFO_QRCODE", "type":"StringArgument","index": 4},
-                {"name":"SeeqProduct1","action":"INFO_QRCODE", "type":"StringArgument","index": 5},
-                {"name":"SeeqProduct2","action":"INFO_QRCODE", "type":"StringArgument","index": 6},
-
-                {"name":"ManufacturerCode0","action":"INFO_QRCODE", "type":"StringArgument","index": 7},
-                {"name":"ManufacturerCode1","action":"INFO_QRCODE", "type":"StringArgument","index": 8},
-
-                {"name":"Reserved410","action":"INFO_QRCODE", "type":"StringArgument","index": 9},
-                {"name":"Reserved411","action":"INFO_QRCODE", "type":"StringArgument","index": 10},
-
-                {"name":"SeeQSerialNumber0","action":"INFO_QRCODE", "type":"StringArgument","index": 11},
-                {"name":"SeeQSerialNumber1","action":"INFO_QRCODE", "type":"StringArgument","index": 12},
-                {"name":"SeeQSerialNumber2","action":"INFO_QRCODE", "type":"StringArgument","index": 13},
-                {"name":"SeeQSerialNumber3","action":"INFO_QRCODE", "type":"StringArgument","index": 14},
-                {"name":"SeeQSerialNumber4","action":"INFO_QRCODE", "type":"StringArgument","index": 15}
-            ]
-        }
-        ,
-        {
             "protocol": "CarInfo_protocol",
             "signals":[
                 {"name": "Speed_availabled", "action":"INFO_VEH_SPEED", "type":"GraphicItem"}
                 ,{"name": "Speed", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 0, "smoothed": [700, 5, "msec"]}
-                ,{"name": "Speed_availabled", "action": "TEST_SPEED", "type": "GraphicItem"}
-                ,{"name": "Reverse_Gear_availabled", "action": "TEST_REVERSE", "type": "GraphicItem"}
-                ,{"name": "Left_blink_availabled", "action": "TEST_BLINKER_LEFT","type": "GraphicItem"}
-                ,{"name": "Right_blink_availabled", "action": "TEST_BLINKER_RIGHT","type": "GraphicItem"}
-                ,{"name": "HighBeam_availabled", "action": "TEST_HIGH_BEAM","type": "GraphicItem"}
-                ,{"name": "Brakes_availabled", "action": "TEST_BRAKES","type": "GraphicItem"}
-                ,{"name": "Speed", "action": "TEST_SPEED", "type": "IntArgument", "index": 1}
-                ,{"name": "Reverse_Gear", "action": "TEST_REVERSE", "type": "IntArgument", "index": 1}
-                ,{"name": "Left_blink", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 1}
-                ,{"name": "Right_blink", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 1}
-                ,{"name": "HighBeam", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 1}
-                ,{"name": "Brakes", "action": "TEST_BRAKES", "type": "IntArgument", "index": 1}
-                ,{"name": "Wipers", "action": "TEST_WIPERS", "type": "IntArgument", "index": 1}
-                ,{"name": "Wipers_availabled", "action": "TEST_WIPERS", "type": "GraphicItem"}
             ]
         }
         ,
@@ -361,9 +313,7 @@
             "timeout": 20000,
             "signals":[
                 {"name":"Validity", "action": ["", "inverted"], "type": "Validator"}
-                ,{"name":"Present_app", "action": "INFO_TEST_SIGNALS", "type": "GraphicItem", "Set": 2}
-                ,{"name":"Present_app", "action": "SignalTest", "type": "Enabler", "Set": 2}
-                ,{"name":"Present_app", "action": "INFO_TEST_PERIPHERALS", "type": "GraphicItem", "Set": 3}
+                ,{"name":"Present_app", "action": "SwitchModeTest", "type": "SystemRequest", "Set": [2,3]}
                 ,{"name":"RunningMode", "action": "Vt_OperationMode",  "isValueTable": true}
                 ,{"name":"Driver_assignment", "action": "Vt_Driver_assignment",  "isValueTable": true}
             ],
@@ -389,28 +339,6 @@
             "protocol": "IMS_Connectivity",
             "signals":[
                 {"name":"CellularCommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
-                ,{"name":"GyroTestResult", "action": "INFO_TEST_GYRO", "type": "GraphicItem", "Set": [0, 1 , 2]}
-                ,{"name":"GSMTestResult", "action": "INFO_TEST_GSM", "type": "GraphicItem", "Set": [0, 1 , 2]}
-                ,{"name":"GPSTestResult", "action": "INFO_TEST_GPS", "type": "GraphicItem", "Set": [0, 1 , 2]}
-                ,{"name":"GyroTestResult", "action": "INFO_TEST_GYRO", "type": "IntArgument", "index": 0}
-                ,{"name":"GSMTestResult", "action": "INFO_TEST_GSM", "type": "IntArgument", "index": 0}
-                ,{"name":"GPSTestResult", "action": "INFO_TEST_GPS", "type": "IntArgument", "index": 0}
-                ,{"name":"GyroTestStatus", "action": "INFO_TEST_GYRO", "type": "IntArgument", "index": 1}
-                ,{"name":"GSMTestStatus", "action": "INFO_TEST_GSM", "type": "IntArgument", "index": 1}
-                ,{"name":"GPSTestStatus", "action": "INFO_TEST_GPS", "type": "IntArgument", "index": 1}
-            ]
-        }
-        ,
-        {
-            "protocol": "SignalsTest",
-            "signals": [
-                {"name": "Speed_Test_Status", "action": "TEST_SPEED", "type": "IntArgument", "index": 0}
-                ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "IntArgument", "index": 0}
-                ,{"name": "Blinker_Left_Test_Status", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 0}
-                ,{"name": "Blinker_Right_Test_Status", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 0}
-                ,{"name": "High_Beam_Test_Status", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 0}
-                ,{"name": "Brake_Test_Status", "action": "TEST_BRAKES", "type": "IntArgument", "index":  0}
-                ,{"name": "Wipers_Test_Status", "action": "TEST_WIPERS", "type": "IntArgument", "index": 0}
             ]
         }
     ]

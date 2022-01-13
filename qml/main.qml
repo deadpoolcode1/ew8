@@ -84,19 +84,6 @@ ApplicationWindow{
         width: 320
         height: 240
 
-        SignalTest
-        {
-            property int layer_pri: 0 
-            visible: false
-            z: 40
-        }
-
-        PeripheralTest {
-            property int layer_pri: 0
-            visible: false
-            z: 40
-        }
-
         DummyItem{
             property int layer_pri: 5
             canEntityType: "OM_NORMAL"

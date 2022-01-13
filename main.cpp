@@ -95,8 +95,9 @@ int main(int argc, char *argv[])
 
     cmdLnParser.process(app);
 
-    bool is_forced = cmdLnParser.isSet(forceParsing);
     bool is_testing_mode = cmdLnParser.isSet(testingConfig);
+    bool is_forced = is_testing_mode || cmdLnParser.isSet(forceParsing);
+
 
 
     if (is_testing_mode)

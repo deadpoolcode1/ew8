@@ -11,8 +11,10 @@ public:
 
     void toggle(void);
 
+    static int disarm(void);
+
 private:
-    void disarm(void);
+
     static void sighandler(qint32 signum);
     static qint32 fd;
 };
