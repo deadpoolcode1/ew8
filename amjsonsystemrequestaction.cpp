@@ -46,8 +46,9 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         if(extractedCANsignal.toBool())
         {
 #ifndef WIN32
-            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick -t"));
             WatchDogDevice::disarm();
+            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick -t"));
+
 
 #elif ! defined(QT_DEBUG)
             QProcess::startDetached(QStringLiteral("release/canquick -t"));
@@ -63,8 +64,9 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         if(extractedCANsignal.toBool())
         {
 #ifndef WIN32
-            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick"));
             WatchDogDevice::disarm();
+            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick"));
+
 #elif ! defined(QT_DEBUG)
             QProcess::startDetached(QStringLiteral("release/canquick"));
 
