@@ -1,6 +1,6 @@
 {
     "GraphicItems": [
-         "ALERT_LEFT_LDWOFF"
+        "ALERT_LEFT_LDWOFF"
         ,"ALERT_RIGHT_LDWOFF"
         ,"ALERT_LEFT_LDWON"
         ,"ALERT_RIGHT_LDWON"
@@ -22,7 +22,6 @@
         ,"ALERT_NO_PASS"
         ,"ALERT_PLAYGROUND"
         ,"ALERT_SLI"
-        ,"ALERT_SLI_END"
         ,"ALERT_EXPRESSWAY"
 
         ,"ALERT_MOTORWAY_END"
@@ -92,23 +91,10 @@
         {
             "protocol": "AfterMarket_TSR",
             "signals":[
-
-                {"name":"Vision_only_Sign_Type_D1", "action": "Vision_only_Sign_Type",  "isValueTable": true},
-
-                {"name":"Vision_only_supp_Sign_Type_D1", "action": "Vision_only_Sign_Type_D1",  "type": "Enabler", "Set": 0},
-
-                {"name":"Vision_only_Sign_Type_D2", "action": "Vision_only_Sign_Type",  "isValueTable": true},
-
-                {"name":"Vision_only_supp_Sign_Type_D2", "action": "Vision_only_Sign_Type_D2",  "type": "Enabler", "Set": 0},
-
-                {"name":"Vision_only_Sign_Type_D3", "action": "Vision_only_Sign_Type",  "isValueTable": true},
-
-                {"name":"Vision_only_supp_Sign_Type_D3", "action": "Vision_only_Sign_Type_D3",  "type": "Enabler", "Set": 0},
-
-                {"name":"Vision_only_Sign_Type_D4", "action": "Vision_only_Sign_Type",  "isValueTable": true}
-
-                ,{"name":"Vision_only_supp_Sign_Type_D4", "action": "Vision_only_Sign_Type_D4",  "type": "Enabler", "Set": 0}
-
+                {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
+                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
+                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
+                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
             ],
             "value_tables":[
                 {"name":"Vision_only_Sign_Type", "type": "GraphicItem", "rows":[
@@ -126,7 +112,6 @@
                         {"value": 11, "action": "ALERT_SLI", "arg": 120, "description": "standard regular 120 kph"},
                         {"value": 12, "action": "ALERT_SLI", "arg": 130, "description": "standard regular 130 kph"},
                         {"value": 13, "action": "ALERT_SLI", "arg": 140, "description": "standard regular 140 kph"},
-                        {"value": 20, "action": "ALERT_SLI_END", "description": "standard regular end of number"},
 
                         {"value": 28, "action": "ALERT_SLI", "arg": 10, "description": "standard electronic 10 kph"},
                         {"value": 29, "action": "ALERT_SLI", "arg": 20, "description": "standard electronic 20 kph"},
@@ -142,7 +127,6 @@
                         {"value": 39, "action": "ALERT_SLI", "arg": 120, "description": "standard electronic 120 kph"},
                         {"value": 40, "action": "ALERT_SLI", "arg": 130, "description": "standard electronic 130 kph"},
                         {"value": 41, "action": "ALERT_SLI", "arg": 140, "description": "standard electronic 140 kph"},
-                        {"value": 50, "action": "ALERT_SLI_END", "description": "standard electronic end of number"},
 
                         {"value": 64, "action": "ALERT_END_ALL_RESTR", "description": "regular gen end all restrict"},
 
@@ -268,7 +252,7 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
-                   ]
+                    ]
                 }
             ]
         }

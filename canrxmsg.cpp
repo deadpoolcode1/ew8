@@ -379,6 +379,19 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
                 jsonsig->setItsCanDbSignal(curSignal);
 
+                QString supSignalName = jsonsig->getItsSupName();
+
+                if (!supSignalName.isEmpty())
+                {
+                    foreach (Signal * iSignal, *canSignalsArray)
+                    {
+                        if(iSignal->name == supSignalName)
+                        {
+                            jsonsig->setItsCanSecDbSignal(iSignal);
+                        }
+                    }
+                }
+
                 //TODO: for EnumItem table fetch on parsing from the value table
                 switch(jsonsig->type)
                 {
@@ -448,6 +461,12 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
            canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSignal()));
 
+           if(jsonsig->getIsSupplemented())
+           {
+               (jsonsig->getCanDbSupSignal())->AMJsonSignalIdx = jsonsig->getItsIndex();
+               canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSupSignal()));
+           }
+
         }
 
     }
@@ -479,6 +498,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
         AMJsonSignal * jsonsig = AMJsonSignal::getByIndex(it->AMJsonSignalIdx);
 
         QVariant arg = 0;
+        QVariant supArg = 0;
 
         if(!jsonsig)
         {
@@ -524,7 +544,19 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
                 if(!discardMsg&&!(arg.isNull()))
                 {
-                    jsonsig->process(arg);
+
+
+                    if (! jsonsig->getIsSupplemented())
+                    {
+                        jsonsig->process(arg);
+                    }
+                    else
+                    {
+                        Signal supSig =  * (++it);
+                        supArg =  extractSignal(&supSig, frame);
+                        jsonsig->process(arg, supArg);
+
+                    }
                 }
             }
         }

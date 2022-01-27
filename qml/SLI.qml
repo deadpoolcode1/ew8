@@ -11,12 +11,15 @@ visible: true
 property alias source: sign.source
 
 property url usaShapeSource: "images/left-panel/SLI/left_SLI_rect.png"
+property url endRegularSource: "images/left-panel/TSR/black_stripes.png"
 
 property alias isInSlot: sign.isInSlot
 
-property alias sign_visible: sign.visible
+property bool sign_visible: false
 
-property bool disabled4UsaShape: false
+property bool endOfLimit: false
+
+property bool supplemented: false
 
 property int maxduration: 0
 
@@ -51,6 +54,10 @@ SequentialAnimation on z {
 SideIcon {
 
     id: sign
+ 
+    property bool no_source: false
+
+    visible: sign_visible && !no_source
 
     quadrant: 2
 
@@ -113,15 +120,23 @@ SideIcon {
    //circular
    states: [
        State {
-           name: "UsaRestricted"; when: usaShape & disabled4UsaShape
+           name: "UsaEnd"; when: usaShape && endOfLimit
            PropertyChanges {
                target: sign
-               visible: false
+               no_source: true
            }
        }
        ,
        State {
-           name: "Usa"; when: usaShape & !disabled4UsaShape
+           name: "GeneralEnd"; when: !usaShape && endOfLimit
+           PropertyChanges {
+               target: sign
+               source: endRegularSource
+           }
+       }
+       ,
+       State {
+           name: "Usa"; when: usaShape && !endOfLimit
            PropertyChanges {
                target: sign
                source: usaShapeSource

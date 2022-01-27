@@ -16,6 +16,7 @@ public:
 
     void process(QObject *sender, QVariant extractedCANsignal);
 
+    bool setSupplimentary(QVariant extractedCANsignal);
 
 
 

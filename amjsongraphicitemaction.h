@@ -28,6 +28,8 @@ public:
 
     void process(QObject * sender, QVariant extractedCANsignal);
 
+    bool setSupplimentary(QVariant extractedCANsignal);
+
     bool getIsActived(void);
 
 
@@ -55,6 +57,8 @@ private:
 
     bool hasArguments;
     bool areArgumentsReceived;
+    bool isSupplemented;
+    QVariant itsSupplimentary;
 
     quint8 argInt;
     quint8 argFrac;

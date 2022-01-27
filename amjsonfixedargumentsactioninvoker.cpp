@@ -12,6 +12,13 @@ AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraph
     itsAction->setCalledWithFixedArgument(isProcessedWithStringArg);
 }
 
+
+bool AMJsonFixedArgumentsActionInvoker::setSupplimentary (QVariant extractedCanSignal)
+{
+    bool ret = itsAction->setSupplimentary(extractedCanSignal);
+    return ret;
+}
+
 AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<qint32> intArgs)
 {
     itsAction =  anAction;

@@ -8,6 +8,12 @@ AMJsonAction::AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e aType, 
   type = aType;
 }
 
+
+bool AMJsonAction::setSupplimentary(QVariant)
+{
+    return false;
+}
+
 AMJsonProtocol * AMJsonAction::getItsJsonProtocol(void)
 {
     return itsProtocol;

@@ -33,7 +33,7 @@ Rectangle {
 
         visible: true
 
-        z: (alert_rtw_warn.sign_visible? alert_rtw_warn.z : 1) * (upper_tsr.sign_visible? upper_tsr.z : 1) * (alert_sli_end.sign_visible? alert_sli_end.z : 1)
+        z: (alert_rtw_warn.sign_visible? alert_rtw_warn.z : 1) * (upper_tsr.sign_visible? upper_tsr.z : 1)
 
         RTW {
             id: alert_rtw_warn
@@ -51,11 +51,25 @@ Rectangle {
             property int layer_pri: 1
             usaShape: usaShapeSLI
 
-            function setVisibleSlot(arg) {
-                canEntityArg = arg;
-                alert_sli_end.canEntityArg = arg;
-                alert_sli_end.argReceived = true
-                sign_visible = true;
+            function setVisibleSlot(arg, supp)
+            {
+                console.log("supple: "+supp)
+                switch (supp)
+                {
+                case 0:
+                    endOfLimit = false;
+                    canEntityArg = arg;
+                    sign_visible = true;
+                    break;
+                case 24:
+                    endOfLimit = true;
+                    canEntityArg = arg;
+                    sign_visible = true;
+                    break;
+                default:
+                    itemActionDeactivate()
+                }
+
             }
 
             function setInvisibleSlot() {sign_visible = false}
@@ -68,7 +82,7 @@ Rectangle {
             anchors.leftMargin: 0
         }
 
-
+/*
         SLI {
             id: alert_sli_end
             canEntityType: "ALERT_SLI_END"
@@ -97,7 +111,9 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 0
         }
+        */
     }
+
 
 
 

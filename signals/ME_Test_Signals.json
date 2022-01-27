@@ -90,39 +90,6 @@
 
     "Protocols": [
         {
-            "protocol":["Buttons","GPIO"],
-            "signals":[
-                {"name":"LeftButton", "action": "INFO_QRCODE", "type": "GraphicItem"}
-            ]
-        }
-        ,
-        {
-            "protocol":"SeeQInfo",
-            "signals":[
-                {"name":"SeeqProductionDateYear0","action":"INFO_QRCODE", "type":"StringArgument","index": 0},
-                {"name":"SeeqProductionDateYear1","action":"INFO_QRCODE", "type":"StringArgument","index": 1},
-                {"name":"SeeqProductionDateWeek0","action":"INFO_QRCODE", "type":"StringArgument","index": 2},
-                {"name":"SeeqProductionDateWeek1","action":"INFO_QRCODE", "type":"StringArgument","index": 3},
-
-                {"name":"SeeqProduct0","action":"INFO_QRCODE", "type":"StringArgument","index": 4},
-                {"name":"SeeqProduct1","action":"INFO_QRCODE", "type":"StringArgument","index": 5},
-                {"name":"SeeqProduct2","action":"INFO_QRCODE", "type":"StringArgument","index": 6},
-
-                {"name":"ManufacturerCode0","action":"INFO_QRCODE", "type":"StringArgument","index": 7},
-                {"name":"ManufacturerCode1","action":"INFO_QRCODE", "type":"StringArgument","index": 8},
-
-                {"name":"Reserved410","action":"INFO_QRCODE", "type":"StringArgument","index": 9},
-                {"name":"Reserved411","action":"INFO_QRCODE", "type":"StringArgument","index": 10},
-
-                {"name":"SeeQSerialNumber0","action":"INFO_QRCODE", "type":"StringArgument","index": 11},
-                {"name":"SeeQSerialNumber1","action":"INFO_QRCODE", "type":"StringArgument","index": 12},
-                {"name":"SeeQSerialNumber2","action":"INFO_QRCODE", "type":"StringArgument","index": 13},
-                {"name":"SeeQSerialNumber3","action":"INFO_QRCODE", "type":"StringArgument","index": 14},
-                {"name":"SeeQSerialNumber4","action":"INFO_QRCODE", "type":"StringArgument","index": 15}
-            ]
-        }
-        ,
-        {
             "protocol": "CarInfo_protocol",
             "signals":[
                 {"name": "Speed_availabled", "action": "TEST_SPEED", "type": "GraphicItem"}

@@ -43,12 +43,27 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstanceByItemID(DISPLAY_I
     return ret;
 }
 
+bool AMJsonGraphicItemAction::setSupplimentary(QVariant extractedCANsignal)
+{
+    bool ret = false;
+  
+    if(!isSupplemented || (itsSupplimentary != extractedCANsignal))
+    {
+        itsSupplimentary =  extractedCANsignal;
+        isSupplemented = true;
+        ret = true;
+    }
+
+    return ret;
+}
+
 AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
 {
    itsGraphicItemID = aGraphicItemID;
    itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
    hasArguments = false;
    areArgumentsReceived = false;
+   isSupplemented =  false;
 }
 
 void AMJsonGraphicItemAction::process(QObject * sender, QVariant extractedCANsignal)
@@ -92,13 +107,29 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
 
         if(!hasArguments)
         {
-            itsDisplay->activate(itsGraphicItemID);
+            if(!isSupplemented)
+            {
+                itsDisplay->activate(itsGraphicItemID);
+            }
+            else
+            {
+                itsDisplay->activate(itsGraphicItemID,(quint8)itsSupplimentary.toInt());
+            }
+
         }
         else if (areArgumentsReceived)
         {
             if(!isArgOfStringType)
             {
-                itsDisplay->activate(itsGraphicItemID, argInt, argFrac, argUnits);
+                if(!isSupplemented)
+                {
+                     itsDisplay->activate(itsGraphicItemID, argInt, argFrac, argUnits);
+                }
+                else
+                {
+                     itsDisplay->activate(itsGraphicItemID, argInt, (quint8)itsSupplimentary.toInt());
+                }
+
             }
             else
             {

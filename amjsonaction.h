@@ -16,9 +16,10 @@ public:
 
     AMJsonProtocol * getItsJsonProtocol(void);
 
-     QString getActionName(void);
+    QString getActionName(void);
 
     virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
+    bool setSupplimentary(QVariant extractedCANsignal);
 
     action_type_e getActionType(void);
 

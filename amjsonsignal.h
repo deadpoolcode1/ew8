@@ -42,14 +42,21 @@ public:
     bool getIsEnabled(void) {return disablers.isEmpty();}
 
     void process(QVariant pureExtractedCANsignal);
+    void process(QVariant pureExtractedCANsignal, QVariant extractedSupCANsignal);
 
     void deactivateAllGraphicItems(void);
 
     void triggerAllDisablers(void);
 
     Signal * getCanDbSignal(void);
+    Signal * getCanDbSupSignal(void);
+    bool getIsSupplemented(void){return isSupplementedSignalEntry;}
 
     void setItsCanDbSignal(Signal * canSignalPtr);
+
+    void setItsCanSecDbSignal(Signal * canSignalPtr);
+
+    QString getItsSupName(void);
 
     static  AMJsonSignal * getByIndex(quint32 idx);
 
@@ -90,14 +97,20 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString name, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues, bool isValueTable);
+  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues, bool isValueTable);
   void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString smoothingType);
 
-  QString name;
+  QString itsName;
+
+  QString itsSupName;
+
+  bool isSupplementedSignalEntry;
 
   QList<QObject *> disablers;
 
   Signal itsCanDbSignal;
+  Signal itsSecondCanDbSignal;
+
 };
 
 #endif // AMJSONSIGNAL_H

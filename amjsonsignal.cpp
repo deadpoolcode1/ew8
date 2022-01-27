@@ -35,6 +35,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
     //Signal row parsing:
     QJsonObject signal_obj = singleSignalsEntry.toObject();
     QString sigName;
+    QString supName = "";
     QString sigAction;
     QString sigType;
     bool polarity = true;
@@ -43,7 +44,20 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
     activatedAction = nullptr;
 
-    sigName = signal_obj["name"].toString();
+    QJsonValue sigNameQJsonValue = signal_obj["name"];
+
+    isSupplementedSignalEntry = (sigNameQJsonValue.isArray());
+
+    if(isSupplementedSignalEntry)
+    {
+        sigName = sigNameQJsonValue.toArray().at(0).toString();
+        supName = sigNameQJsonValue.toArray().at(1).toString();
+    }
+    else
+    {
+
+        sigName = sigNameQJsonValue.toString();
+    }
 
 
     //Action parsing:
@@ -107,12 +121,12 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
 
 
-                init(aProtocol, sigName, sigAction, true, sigType, -1, nullptr, isValueTable);
+                init(aProtocol, sigName, supName, sigAction, true, sigType, -1, nullptr, isValueTable);
         }
         else
         {
             //Used properties (argument signal) : (aProtocol, sigName, sigAction, sigType, sigIndex)
-             init(aProtocol, sigName, sigAction, true, sigType, sigIndex, nullptr, false);
+             init(aProtocol, sigName, supName, sigAction, true, sigType, sigIndex, nullptr, false);
 
              if(bufferLength > 0)
              {
@@ -128,7 +142,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
         if(signal_obj.find("Set") == signal_obj.end())
         {
             //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
-            init(aProtocol, sigName, sigAction, polarity, sigType, -1, nullptr, false);
+            init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, nullptr, false);
         }
         else
         {
@@ -152,7 +166,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
             }
 
              //Used properties: (aProtocol, sigName, sigAction, sigTrueValues, sigType)
-             init(aProtocol, sigName, sigAction, polarity, sigType, -1, sigTrueValues, false);
+             init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, sigTrueValues, false);
         }
 
     }
@@ -173,14 +187,20 @@ quint32 AMJsonSignal::getItsIndex(void)
     return poolIndex;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
+QString AMJsonSignal::getItsSupName(void)
+{
+    return itsSupName;
+}
+
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex,  QList<qint32> * aTrueValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 
     itsProtocol = aProtocol;
     itsAMJsonActionFactory = aProtocol->itsModel->getItsAMJsonActionFactory();
 
-    name = aName;
+    itsName = aName;
+    itsSupName = aSupName;
 
     action = anAction;
 
@@ -216,7 +236,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString anAct
 
     itsProtocol->append(this);
 
-    qDebug() << "JSON: new signal with name" << name <<"action: "<< action << "type: "<< type <<" extracted.";
+    qDebug() << "JSON: new signal with name" << itsName <<"action: "<< action << "type: "<< type <<" extracted.";
 
     //TODO use actions map
 }
@@ -251,7 +271,7 @@ void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta
 
  QString AMJsonSignal::getName(void)
  {
-     return name;
+     return itsName;
  }
 
  Signal * AMJsonSignal::getCanDbSignal(void)
@@ -259,11 +279,18 @@ void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta
     return &itsCanDbSignal;
  }
 
+ Signal * AMJsonSignal::getCanDbSupSignal(void)
+ {
+     Signal * ret  = nullptr;
+     if (!itsSupName.isEmpty())
+     {
+         ret = & itsSecondCanDbSignal;
+     }
+     return ret;
+ }
+
 void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
 {
-#if 0
-    itsCanDbSignal = *canSignalPtr;
-#else
     itsCanDbSignal.name = canSignalPtr->name;
     itsCanDbSignal.startByte = canSignalPtr->startByte;
     itsCanDbSignal.startBit = canSignalPtr->startBit;
@@ -274,10 +301,23 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
     itsCanDbSignal.min = canSignalPtr->min;
     itsCanDbSignal.max = canSignalPtr->max;
     itsCanDbSignal.valueType = canSignalPtr->valueType;
-#endif
 }
 
- void AMJsonSignal::process(QVariant extractedCANsignal)
+void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
+{
+    itsSecondCanDbSignal.name = canSignalPtr->name;
+    itsSecondCanDbSignal.startByte = canSignalPtr->startByte;
+    itsSecondCanDbSignal.startBit = canSignalPtr->startBit;
+    itsSecondCanDbSignal.numOfBits = canSignalPtr->numOfBits;
+    itsSecondCanDbSignal.sign = canSignalPtr->sign;
+    itsSecondCanDbSignal.factor =  canSignalPtr->factor;
+    itsSecondCanDbSignal.offset = canSignalPtr->offset;
+    itsSecondCanDbSignal.min = canSignalPtr->min;
+    itsSecondCanDbSignal.max = canSignalPtr->max;
+    itsSecondCanDbSignal.valueType = canSignalPtr->valueType;
+}
+
+ void AMJsonSignal::process(QVariant extractedCANsignal, QVariant extractedSupCANsignal)
  {
      if(itsProtocol->getIsEnabled()&&this->getIsEnabled())
      {
@@ -287,17 +327,24 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
 
            IAMJsonProcessable * toDeactivate = getActivatedAction();
 
-           if(toActivate != toDeactivate)//WARNING: without args only
+           bool supUpdated = (toActivate != nullptr && isSupplementedSignalEntry && toActivate->setSupplimentary(extractedSupCANsignal));
+
+           if (toActivate != toDeactivate || (supUpdated))//WARNING: without args only
                //TODO: if args are present compare the args
            {
+               if(toDeactivate != nullptr)
+               {
 
-               if(toDeactivate != nullptr){
                    toDeactivate->process(this, false);
+
                }
 
                if(toActivate != nullptr)
                {
+
+
                    toActivate->process(this, true);
+
                }
 
                setActivatedAction(toActivate);
@@ -315,6 +362,11 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
        }
      }
  }
+
+  void AMJsonSignal::process(QVariant pureExtractedCANsignal)
+  {
+      process(pureExtractedCANsignal, QVariant(0));
+  }
 
 
  bool AMJsonSignal::extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active)
@@ -359,12 +411,12 @@ void AMJsonSignal::setItsCanDbSignal(Signal *canSignalPtr)
 
      if(is_pre_enabled && !is_post_enabled)
      {
-         qDebug ("Signal %s is %s",qPrintable(name), "disabled");
+         qDebug ("Signal %s is %s",qPrintable(itsName), "disabled");
          deactivateAllGraphicItems();
      }
      else if (!is_pre_enabled && is_post_enabled)
      {
-         qDebug ("Signal %s is %s",qPrintable(name), "enabled");
+         qDebug ("Signal %s is %s",qPrintable(itsName), "enabled");
      }
  }
 
