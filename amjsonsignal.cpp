@@ -426,16 +426,16 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
              *do_active = ((trueValues->contains(desired)) == polarity);
              break;
          case set_op_lt:
-              *do_active = ((trueValues->constFirst() < desired) == polarity);
-             break;
-         case set_op_le:
-              *do_active = ((trueValues->constFirst() <= desired) == polarity);
-             break;
-         case set_op_gt:
               *do_active = ((trueValues->constFirst() > desired) == polarity);
              break;
-         case set_op_ge:
+         case set_op_le:
               *do_active = ((trueValues->constFirst() >= desired) == polarity);
+             break;
+         case set_op_gt:
+              *do_active = ((trueValues->constFirst() < desired) == polarity);
+             break;
+         case set_op_ge:
+              *do_active = ((trueValues->constFirst() <= desired) == polarity);
              break;
          default:
              qDebug () << "Set operation in not defined.";
