@@ -70,6 +70,7 @@ public:
     bool polarity;
     action_type_e type;
     QList<qint32> * trueValues;//actual, when is not boolean
+    set_ops_t trueValuesOp;
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
     AMJsonAction * getItsAction(void){return itsValueTable ? nullptr : itsAction;}
@@ -97,7 +98,7 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, QList<qint32> * trueValues, bool isValueTable);
+  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<qint32> * trueValues, bool isValueTable);
   void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString smoothingType);
 
   QString itsName;

@@ -33,6 +33,16 @@ struct can_frame{
 #endif
 
 
+typedef enum set_ops_e
+{
+    set_op_na= -1,
+    set_op_lt = 0,
+    set_op_le = 1,
+    set_op_gt = 2,
+    set_op_ge = 3,
+    set_op_or = 4,
+} set_ops_t;
+
 typedef enum DISPLAY_ERRORS
 {
     OK= 0,
