@@ -16,6 +16,8 @@ public:
 
     static void setSendKeyReport(bool doSend);
 
+    static void setSendAlertsReport(bool doSend);
+
     void setCanManager(CanManager * aCanManager);
 
 signals:
@@ -27,6 +29,8 @@ public slots:
 
     void sendButton(qint32 qtKey);
 
+    void sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, bool PCWRstate);
+
 
 private:
      explicit CANDebugReport(QObject *parent = nullptr);
@@ -34,6 +38,7 @@ private:
      CanManager * itsCanManager;
      static CANDebugReport * instance;
      static bool doSendKeyReport;
+     static bool doSendAlertsReport;
 };
 
 #endif // CANDEBUGREPORT_H

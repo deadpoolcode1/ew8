@@ -41,6 +41,9 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         CANDebugReport::setSendKeyReport(extractedCANsignal.toBool());
                 break;
 
+    case DebugAlerts:
+        CANDebugReport::setSendAlertsReport(extractedCANsignal.toBool());
+                break;
 
     case SwitchModeTest:
         if(extractedCANsignal.toBool())

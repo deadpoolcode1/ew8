@@ -3,8 +3,7 @@
 
 CANDebugReport * CANDebugReport::instance = nullptr;
 bool CANDebugReport::doSendKeyReport = false;
-
-
+bool CANDebugReport::doSendAlertsReport = false;
 
 CANDebugReport::CANDebugReport(QObject *parent) : QObject(parent)
 {
@@ -14,6 +13,11 @@ CANDebugReport::CANDebugReport(QObject *parent) : QObject(parent)
 void CANDebugReport::setSendKeyReport(bool doSend)
 {
     doSendKeyReport = doSend;
+}
+
+void CANDebugReport::setSendAlertsReport(bool doSend)
+{
+    doSendAlertsReport = doSend;
 }
 
 CANDebugReport * CANDebugReport::getInstance(QObject *parent)
@@ -52,10 +56,41 @@ void CANDebugReport::sendBrightness(quint32 illuminance_measure_mV, qint32 curre
     }
 }
 
+void CANDebugReport::sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, bool PCWRstate)
+{
+    if (doSendAlertsReport)
+    {
+        qDebug("Alerts report sent");
+
+        struct can_frame debugFrame;
+
+        memset(&debugFrame,  0 , sizeof(struct can_frame));
+
+        debugFrame.data[4] = (quint8)0x1;
+
+        if(PDZFstate) {debugFrame.data[4] |= 0x2;}
+        if(PDZRstate) {debugFrame.data[4] |= 0x4;}
+        if(PCWFstate) {debugFrame.data[4] |= 0x8;}
+        if(PCWRstate) {debugFrame.data[4] |= 0x10;}
+
+        debugFrame.can_id = 0x7b0;
+        debugFrame.can_dlc = 8;
+
+        if(nullptr != itsCanManager)
+        {
+            itsCanManager->write_frame(&debugFrame);
+        }
+
+    }
+
+
+}
+
+
 void CANDebugReport::sendButton(qint32 qtKey)
 {
 
-    if(doSendKeyReport)
+    if (doSendKeyReport)
     {
 
         qDebug("Key report sent");

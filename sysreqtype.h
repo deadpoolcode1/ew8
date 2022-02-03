@@ -12,8 +12,9 @@ enum sysreq_type_e \
     GetVersionInfo = 0, \
     DebugBrightness = 1, \
     DebugButtons = 2, \
-    SwitchModeTest = 3, \
-    SwitchModeAWS = 4, \
+    DebugAlerts = 3, \
+    SwitchModeTest = 4, \
+    SwitchModeAWS = 5, \
 };
 #else
  #error Choose other macro name.

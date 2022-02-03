@@ -164,6 +164,9 @@ int MainProcess::launchEverything()
         QObject::connect(appWindow, SIGNAL(keyReportSend(qint32)),
                           CANDebugReport::getInstance(), SLOT(sendButton(qint32)));
 
+        QObject::connect(appWindow, SIGNAL(alertsReportSend(bool, bool, bool, bool)),
+                          CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
+
     }
 
 

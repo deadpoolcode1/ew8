@@ -33,15 +33,17 @@ BO_ 1964 TestRequest: 8 ME_AWS_CANA
  SG_ reserved_6 : 48|8@1+ (1,0) [255|255] "" Vector__XXX
  SG_ reserved_5 : 40|8@1+ (1,0) [255|255] "" Vector__XXX
  SG_ reserved_4 : 32|8@1+ (1,0) [255|255] "" Vector__XXX
- SG_ reserved_3 : 26|6@1+ (1,0) [255|255] "" Vector__XXX
+ SG_ reserved_3 : 27|5@1+ (1,0) [255|255] "" Vector__XXX
  SG_ reserved_2 : 17|7@1+ (1,0) [127|127] "" Vector__XXX
  SG_ TestSampleSound : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ reserved_1 : 11|5@1+ (1,0) [31|31] "" Vector__XXX
  SG_ TestDisplay : 8|3@1+ (1,0) [0|5] "" Vector__XXX
- SG_ reserved_0 : 1|7@1+ (1,0) [127|127] "" Vector__XXX
+ SG_ reserved_0 : 2|6@1+ (1,0) [127|127] "" Vector__XXX
  SG_ GetVersion : 0|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ DebugBrightness : 24|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ DebugButtons : 25|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ GetDriverIDVersion : 1|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ DebugAlerts : 26|1@1+ (1,0) [0|0] "" Vector__XXX
 
 
 BA_DEF_  "BusType" STRING ;
