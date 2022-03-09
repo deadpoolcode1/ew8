@@ -23,6 +23,7 @@ Item{
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenterOffset: 0
         visible: false;
 
 
@@ -49,7 +50,8 @@ Item{
     Item{
         id: time
         anchors.horizontalCenter: strips_img.horizontalCenter
-        anchors.horizontalCenterOffset: -2
+        anchors.horizontalCenterOffset: -1
+
         anchors.bottom: units.top
         anchors.bottomMargin: -13
         width: time_text_id.width

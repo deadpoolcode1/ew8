@@ -60,7 +60,7 @@ ProgressBarMenu {
     Timer {
         id: hide_timer
         running: bar_menu.visible
-        interval: 3000
+        interval: 5000
         onTriggered: {
            bar_menu.visible = false
         }

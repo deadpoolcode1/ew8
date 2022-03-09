@@ -14,6 +14,9 @@ ApplicationWindow{
     signal keyReportSend(int qtKey);//Qt.Key
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
+    signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
+
+    property color white: "#ffffff"
 
     signal debugMessagesConnect(bool On);
 
@@ -38,7 +41,7 @@ ApplicationWindow{
     Text {
         z: 100
         id: debug
-        color: "#e1f1ff"
+        color: white
         text: ""
         anchors.top: parent.top
         anchors.topMargin: 50
@@ -190,7 +193,7 @@ ApplicationWindow{
                     Text {
                         id: speed_value
                         x: 0
-                        color: "#e1f1ff"
+                        color: white
                         text: speed.displaySpeed
                         font.letterSpacing: 0
                         leftPadding: -2
@@ -207,7 +210,7 @@ ApplicationWindow{
 
                     Text {
                         id: speed_units
-                        color: "#e1f1ff"
+                        color: white
                         text: speed.unit_str
                         anchors.bottom: speed_value.bottom
                         anchors.bottomMargin: -11
@@ -379,7 +382,7 @@ ApplicationWindow{
                         opacity: isInEdition? 1.0 : 0.0
 
                         property string canEntityType: "ALERT_ERROR"
-                        property int canEntityArg: 0x00
+                        property int canEntityArg: 0
                         property int layer_pri: 0
                         color: "#00000000"
                         border.color: "#00000000"
@@ -395,13 +398,13 @@ ApplicationWindow{
 
                         Text {
                             id: err_code
-                            color: "#e1f1ff"
+                            color: white
                             text: status_error.canEntityArg.toString(16).toUpperCase()
-                            font.letterSpacing: -2.2
+                            font.letterSpacing: 0
                             anchors.horizontalCenter: parent.horizontalCenter
                             topPadding: 4
                             font.family: intelFont.name
-                            font.weight: Font.Bold
+                            font.weight: Font.Medium
                             font.pixelSize: 24
                         }
 
@@ -640,9 +643,11 @@ ApplicationWindow{
                 HMW {
                     id: alert_hmw_general
                     property int layer_pri: 0
-                    width: 180
-                    height: 180
-                    anchors.fill: parent
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.top: parent.top
+                    anchors.leftMargin: -2
                     playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
                     alert: true
                 }

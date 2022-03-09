@@ -47,7 +47,7 @@ Image {
     Timer {
         id: volume_reqfail_timer
         running: volume_reqfail.visible
-        interval: 300
+        interval: 5000
         onTriggered: {
             volume_reqfail.itemSelfDeactivate()
         }
@@ -75,7 +75,7 @@ Image {
     Timer {
         id: volume_fail_timer
         running: volume_fail.visible
-        interval: 500
+        interval: 5000
         onTriggered: {
             volume_fail.itemActionDeactivate()
         }
@@ -100,7 +100,7 @@ Image {
     Timer {
         id: volume_done_timer
         running: volume_done.visible
-        interval: 1000
+        interval: 5000
         onTriggered: {
             volume_done.itemActionDeactivate()
         }
