@@ -23,12 +23,38 @@ Rectangle {
     }
 
     Image {
+        id: driver_out
         property string canEntityType: "INFO_DRIVER_AUTH_OUT"
         anchors.top: parent.top
         anchors.topMargin: 0
+        opacity: 1.0
         source: "images/status-bar/status_Signed_out.png"
         function setVisibleSlot(){visible = true; user_stat.opacity = 1.0}
         function setInvisibleSlot(){visible = false;}
+
+        SequentialAnimation {
+            id: driver_out_animat
+            loops: Animation.Infinite
+            running: driver_out.visible
+
+            NumberAnimation {
+                target:  driver_out
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+                duration: 404
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: driver_out
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+                duration: 404
+                easing.type: Easing.InOutQuad
+            }
+        }
     }
 
     Image {
