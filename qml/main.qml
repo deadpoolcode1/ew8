@@ -1071,7 +1071,8 @@ ApplicationWindow{
                     start = Date.now()
                 }
                 console.log("Down pressed at "+start)
-                event.accepted = true;
+
+                pressed_handler(event)
 
                 //TODO does not work:
                 volume_menu.timersRestart()
@@ -1084,17 +1085,27 @@ ApplicationWindow{
                 {
                     general_menu_listener.is_initial_up_pressed = true
                 }
-                 event.accepted = true;
+                pressed_handler(event)
             }
 
             Keys.onReturnPressed:
             {
                console.log("Enter pressed")
                general_menu_listener.is_initial_input_active = false
-               event.accepted = true;
+               pressed_handler(event)
             }
 
-            Keys.onReleased: {
+            Keys.onReleased:
+            {
+                if (event.key === Qt.Key_Down){
+                  start = 0
+                }
+                event.accepted = true;
+            }
+
+
+
+            function pressed_handler(event){
                 if(general_menu_listener.is_initial_down_pressed
                         && general_menu_listener.is_initial_up_pressed)
                 {
@@ -1104,7 +1115,6 @@ ApplicationWindow{
                     console.log("Print debug messages on LCD")
                     debugMessage("Print Debug On")
                     debugMessagesConnect(true)
-
                 }
 
                 else
@@ -1126,7 +1136,6 @@ ApplicationWindow{
                 else if (event.key === Qt.Key_Down)
                 {
                     keyReportSend(Qt.Key_Down)
-                    console.log("Down released")
                     if(Date.now() - start < 500)
                     {
                         if(is_volume_enabled)
@@ -1147,16 +1156,21 @@ ApplicationWindow{
                     if(brightness.visible)
                     {
                         brightness.down()
-                    }
-
-
-                    start = 0
+                    }                  
                 }
                 else if (event.key === Qt.Key_Return)
                 {
                      keyReportSend(Qt.Key_Return)
                     console.log("Enter released")
-                    brightness.visible = ! brightness.visible
+
+                    if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(1.0 === status_error.opacity && status_error.canEntityArg === 0x20))
+                    {
+                        brightness.visible = ! brightness.visible
+                    }
+                    else if (brightness.visible)
+                    {
+                       brightness.visible = false
+                    }
                     //NOTE: menu key verification
                     //volumeKeySend(Qt.Key_Return)
                 }
