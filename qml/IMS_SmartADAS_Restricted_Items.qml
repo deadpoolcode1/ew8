@@ -28,26 +28,17 @@ Rectangle {
         function setVisibleSlot() {visible = true}
 		    function setInvisibleSlot() {visible = false}
 
-        z: 5
+        z: (smart_crowded.sign_visible? smart_crowded.z : 1)
+             * (smart_ped_hwy.sign_visible? smart_ped_hwy.z : 1)
+             * (smart_cyc_hwy.sign_visible? smart_cyc_hwy.z : 1)
+             * (smart_wea_road.sign_visible? smart_wea_road.z : 1)
+             * (smart_wea_wtr.sign_visible? smart_wea_wtr.z : 1)
+             * (smart_wea_fg.sign_visible? smart_wea_fg.z : 1)
+             * (smart_wea_wnd.sign_visible? smart_wea_wnd.z : 1)
+             * (smart_wea_ra.sign_visible? smart_wea_ra.z : 1)
+             * (smart_wea_tstm.sign_visible? smart_wea_tstm.z : 1)
+             * (smart_harsh_dz.sign_visible? smart_harsh_dz.z : 1)
 
-        /*
-        SequentialAnimation on z {
-
-            running: groupTop.visibleChildren.length
-
-            PropertyAction{
-                value: 5
-            }
-
-            PauseAnimation {
-                duration: 1200
-            }
-
-            PropertyAction{
-                value: 3
-            }
-        }
-        */
 
 
       SADAS {
@@ -55,15 +46,15 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_CROWDED"
             property int layer_pri: 1
-            source: "images/right-panel/SADAS/right_crowded.svg"
-		}
+            source: "images/right-panel/SADAS/right_crowded.png"
+      }
 
       SADAS {
             id: smart_ped_hwy
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_PED_HWY"
             property int layer_pri: 2
-            source: "images/right-panel/SADAS/right_ped_highway.svg"
+            source: "images/right-panel/SADAS/right_ped_highway.png"
         }
 
       SADAS {
@@ -71,7 +62,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_CYC_HWY"
             property int layer_pri: 3
-            source: "images/right-panel/SADAS/right_cyc_highway.svg"
+            source: "images/right-panel/SADAS/right_cyc_highway.png"
         }
 
       SADAS {
@@ -79,7 +70,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_ROAD"
             property int layer_pri: 5
-            source: "images/right-panel/SADAS/right_w_road.svg"
+            source: "images/right-panel/SADAS/right_w_road.png"
         }
 
       SADAS {
@@ -87,7 +78,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_HYDRO"
             property int layer_pri: 5
-            source: "images/right-panel/SADAS/right_w_hydro.svg"
+            source: "images/right-panel/SADAS/right_w_hydro.png"
         }
 
 
@@ -96,7 +87,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_FG"
             property int layer_pri: 6
-            source: "images/right-panel/SADAS/right_w_fog.svg"
+            source: "images/right-panel/SADAS/right_w_fog.png"
         }
 
 
@@ -105,7 +96,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_WND"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_wind.svg"
+            source: "images/right-panel/SADAS/right_w_wind.png"
         }
 
       SADAS {
@@ -113,7 +104,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_HAIL"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_hail.svg"
+            source: "images/right-panel/SADAS/right_w_hail.png"
         }
 
       SADAS {
@@ -121,7 +112,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_WEA_TSTM"
             property int layer_pri: 7
-            source: "images/right-panel/SADAS/right_w_lightening.svg"
+            source: "images/right-panel/SADAS/right_w_lightening.png"
         }
 
 
@@ -130,7 +121,7 @@ Rectangle {
             is_in_alert: ims_smartadas_restricted.is_in_alert
             property string canEntityType: "SMART_HARSH_DZ"
             property int layer_pri: 4
-            source: "images/right-panel/SADAS/right_harsh_break.svg"
+            source: "images/right-panel/SADAS/right_harsh_break.png"
         }
 	}
 
@@ -146,7 +137,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
 
-        z: 4
+        z: 2
 
         visible: true
 
@@ -158,13 +149,96 @@ Rectangle {
         {
             id: sign
 
-            source:"images/right-panel/fms_alert.svg"
+            source:"images/right-panel/fms_alert.png"
             property string canEntityType: "FMS_ALERT"
 
             quadrant: 4
         }
         */
-	}
+        SADAS2 {
+            id: smart_crowded_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_CROWDED_SEC"
+            property int layer_pri: 1
+            source: "images/right-panel/SADAS/right_crowded.png"
+        }
+
+        SADAS2 {
+            id: smart_ped_hwy_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_PED_HWY_SEC"
+            property int layer_pri: 2
+            source: "images/right-panel/SADAS/right_ped_highway.png"
+        }
+
+        SADAS2 {
+            id: smart_cyc_hwy_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_CYC_HWY_SEC"
+            property int layer_pri: 3
+            source: "images/right-panel/SADAS/right_cyc_highway.png"
+        }
+
+        SADAS2 {
+            id: smart_wea_road_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_ROAD_SEC"
+            property int layer_pri: 5
+            source: "images/right-panel/SADAS/right_w_road.png"
+        }
+
+        SADAS2 {
+            id: smart_wea_wtr_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_HYDRO_SEC"
+            property int layer_pri: 5
+            source: "images/right-panel/SADAS/right_w_hydro.png"
+        }
+
+
+        SADAS2 {
+            id: smart_wea_fg_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_FG_SEC"
+            property int layer_pri: 6
+            source: "images/right-panel/SADAS/right_w_fog.png"
+        }
+
+
+        SADAS2 {
+            id: smart_wea_wnd_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_WND_SEC"
+            property int layer_pri: 7
+            source: "images/right-panel/SADAS/right_w_wind.png"
+        }
+
+        SADAS2 {
+            id: smart_wea_ra_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_HAIL_SEC"
+            property int layer_pri: 7
+            source: "images/right-panel/SADAS/right_w_hail.png"
+        }
+
+        SADAS2 {
+            id: smart_wea_tstm_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_WEA_TSTM_SEC"
+            property int layer_pri: 7
+            source: "images/right-panel/SADAS/right_w_lightening.png"
+        }
+
+
+        SADAS2 {
+            id: smart_harsh_dz_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_HARSH_DZ_SEC"
+            property int layer_pri: 4
+            source: "images/right-panel/SADAS/right_harsh_break.png"
+        }
+
+    }
 }
 /*##^##
 Designer {

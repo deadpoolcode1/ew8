@@ -28,6 +28,69 @@ class CanIntArgumentsAccumulator;
 
 QMap<quint32,AMJsonSignal *> AMJsonSignal::objectsPool;
 
+QList<qint32> * AMJsonSignal::extractSetValuesField( QJsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
+{
+
+      QList<qint32> * trueValues = nullptr;
+      * a_set_op = set_op_na;
+
+    if(signal_obj.find(fieldName) != signal_obj.end())
+    {
+        trueValues = new QList<qint32>();
+
+        if (signal_obj[fieldName].isArray()){
+
+            QJsonArray trueValues_Array = signal_obj[fieldName].toArray();
+
+            if (trueValues_Array[0].isString())
+            {
+                QString opString = trueValues_Array[0].toString();
+                if("gt" == opString)
+                {
+                    * a_set_op = set_op_gt;
+                }
+                else if ("ge" == opString)
+                {
+                    * a_set_op = set_op_ge;
+                }
+                else if ("lt" == opString)
+                {
+                    * a_set_op = set_op_lt;
+                }
+                else if ("le" == opString)
+                {
+                    * a_set_op = set_op_le;
+                }
+                else
+                {
+                    qDebug() << "Set: operation type error";
+                }
+
+                trueValues->append(trueValues_Array[1].toInt(0));
+
+
+            }
+            else
+            {
+                   * a_set_op = set_op_or;
+
+                foreach(QJsonValue value, trueValues_Array)
+                {
+                    trueValues->append(value.toInt(0));
+                }
+            }
+
+
+        }
+        else
+        {
+            qint32 sigTrueValue = signal_obj["Set"].toInt(0);
+            * a_set_op = set_op_or;
+            trueValues->append(sigTrueValue);
+        }
+    }
+    return trueValues;
+}
 
 AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
 {
@@ -47,11 +110,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
     QJsonValue sigNameQJsonValue = signal_obj["name"];
 
     isSupplementedSignalEntry = (sigNameQJsonValue.isArray());
+     QList<qint32> * domainTrueValues = nullptr;
+     set_ops_t a_domain_set_op = set_op_na;
 
     if(isSupplementedSignalEntry)
     {
         sigName = sigNameQJsonValue.toArray().at(0).toString();
         supName = sigNameQJsonValue.toArray().at(1).toString();
+        domainTrueValues = extractSetValuesField(signal_obj, "Domain", & a_domain_set_op);
     }
     else
     {
@@ -121,12 +187,12 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
 
 
-                init(aProtocol, sigName, supName, sigAction, true, sigType, -1, set_op_na, nullptr, isValueTable);
+                init(aProtocol, sigName, supName, sigAction, true, sigType, -1, set_op_na, nullptr, a_domain_set_op, domainTrueValues, isValueTable);
         }
         else
         {
             //Used properties (argument signal) : (aProtocol, sigName, sigAction, sigType, sigIndex)
-             init(aProtocol, sigName, supName, sigAction, true, sigType, sigIndex, set_op_na, nullptr, false);
+             init(aProtocol, sigName, supName, sigAction, true, sigType, sigIndex, set_op_na, nullptr, a_domain_set_op, domainTrueValues, false);
 
              if(bufferLength > 0)
              {
@@ -139,73 +205,10 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
     if(!isValueTable && (-1 == sigIndex))
     {
-        if(signal_obj.find("Set") == signal_obj.end())
-        {
-            //Used properties:  (aProtocol, sigName, sigAction, false, sigType);
-            init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, set_op_na, nullptr, false);
-        }
-        else
-        {
-            //TODO verify syntax the signal on DBC side must be non-boolean integer
-            QList<qint32> * sigTrueValues = new QList<qint32>();
 
-            set_ops_t a_set_op = set_op_na;
-
-            if (signal_obj["Set"].isArray()){
-
-                QJsonArray sigTrueValues_Array = signal_obj["Set"].toArray();
-
-                if (sigTrueValues_Array[0].isString())
-                {
-                    QString opString = sigTrueValues_Array[0].toString();
-                    if("gt" == opString)
-                    {
-                        a_set_op = set_op_gt;
-                    }
-                    else if ("ge" == opString)
-                    {
-                        a_set_op = set_op_ge;
-                    }
-                    else if ("lt" == opString)
-                    {
-                        a_set_op = set_op_lt;
-                    }
-                    else if ("le" == opString)
-                    {
-                        a_set_op = set_op_le;
-                    }
-                    else
-                    {
-                        qDebug() << "Set: operation type error";
-                    }
-
-                    sigTrueValues->append(sigTrueValues_Array[1].toInt(0));
-
-
-                }
-                else
-                {
-                       a_set_op = set_op_or;
-
-                    foreach(QJsonValue value, sigTrueValues_Array)
-                    {
-                        sigTrueValues->append(value.toInt(0));
-                    }
-                }
-
-
-            }
-            else
-            {
-                qint32 sigTrueValue = signal_obj["Set"].toInt(0);
-                a_set_op = set_op_or;
-                sigTrueValues->append(sigTrueValue);
-            }
-
-             //Used properties: (aProtocol, sigName, sigAction, sigTrueValues, sigType)
-             init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, a_set_op, sigTrueValues, false);
-        }
-
+        set_ops_t a_set_op = set_op_na;
+        QList<qint32> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
+        init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, a_set_op, sigTrueValues,   a_domain_set_op, domainTrueValues, false);
     }
 
     poolIndex = objectsPool.size();
@@ -229,7 +232,7 @@ QString AMJsonSignal::getItsSupName(void)
     return itsSupName;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<qint32> * aTrueValues, bool isValueTable)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<qint32> * aTrueValues,  set_ops_t trueDomainOp, QList<qint32> * trueDomainValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 
@@ -238,6 +241,9 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupN
 
     itsName = aName;
     itsSupName = aSupName;
+
+    itsDomainSetOp = trueDomainOp;
+    itsDomainTrueValues = trueDomainValues,
 
     action = anAction;
 
@@ -358,11 +364,15 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
  void AMJsonSignal::process(QVariant extractedCANsignal, QVariant extractedSupCANsignal)
  {
+
      if(itsProtocol->getIsEnabled()&&this->getIsEnabled())
      {
        if(itsValueTable != nullptr)
        {
-           IAMJsonProcessable * toActivate = itsValueTable->value(extractedCANsignal.toInt());
+
+           bool is_domain_valid = getDomainValidity(extractedSupCANsignal);
+
+           IAMJsonProcessable * toActivate = is_domain_valid ? itsValueTable->value(extractedCANsignal.toInt()) : nullptr;
 
            IAMJsonProcessable * toDeactivate = getActivatedAction();
 
@@ -396,7 +406,6 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
        {
          bool do_activate;
          bool success = extractSetUnsetAction(extractedCANsignal, &do_activate);
-
          itsAction->process(this, success ? do_activate : extractedCANsignal);
        }
      }
@@ -407,6 +416,40 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
       process(pureExtractedCANsignal, QVariant(0));
   }
 
+ bool AMJsonSignal::getDomainValidity(QVariant extractedSupCANsignal)
+ {
+     bool ret = true;
+
+     if(extractedSupCANsignal.type() == QVariant::Int && nullptr != (itsDomainTrueValues))
+     {
+         qint32 desired = extractedSupCANsignal.toInt();
+         switch (itsDomainSetOp)
+         {
+         case set_op_or:
+             ret = ((itsDomainTrueValues->contains(desired)) == polarity);
+             break;
+         case set_op_lt:
+             ret = ((itsDomainTrueValues->constFirst() > desired) == polarity);
+             break;
+         case set_op_le:
+             ret = ((itsDomainTrueValues->constFirst() >= desired) == polarity);
+             break;
+         case set_op_gt:
+             ret = ((itsDomainTrueValues->constFirst() < desired) == polarity);
+             break;
+         case set_op_ge:
+             ret = ((itsDomainTrueValues->constFirst() <= desired) == polarity);
+             break;
+         default:
+             qDebug () << "Domain set operation in not defined.";
+             break;
+         }
+
+     }
+
+     return ret;
+
+ }
 
  bool AMJsonSignal::extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active)
  {
@@ -423,19 +466,19 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          switch (trueValuesOp)
          {
          case set_op_or:
-             *do_active = ((trueValues->contains(desired)) == polarity);
+             * do_active = ((trueValues->contains(desired)) == polarity);
              break;
          case set_op_lt:
-              *do_active = ((trueValues->constFirst() > desired) == polarity);
+             * do_active = ((trueValues->constFirst() > desired) == polarity);
              break;
          case set_op_le:
-              *do_active = ((trueValues->constFirst() >= desired) == polarity);
+             * do_active = ((trueValues->constFirst() >= desired) == polarity);
              break;
          case set_op_gt:
-              *do_active = ((trueValues->constFirst() < desired) == polarity);
+             * do_active = ((trueValues->constFirst() < desired) == polarity);
              break;
          case set_op_ge:
-              *do_active = ((trueValues->constFirst() <= desired) == polarity);
+             * do_active = ((trueValues->constFirst() <= desired) == polarity);
              break;
          default:
              qDebug () << "Set operation in not defined.";

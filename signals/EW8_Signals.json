@@ -18,11 +18,18 @@
         ,"ALERT_ERROR"
         ,"INFO_QRCODE"
         ,"ALERT_END_ALL_RESTR"
+
         ,"ALERT_MOTORWAY"
         ,"ALERT_NO_PASS"
         ,"ALERT_PLAYGROUND"
         ,"ALERT_SLI"
         ,"ALERT_EXPRESSWAY"
+
+        ,"ALERT_MOTORWAY_SUPP"
+        ,"ALERT_NO_PASS_SUPP"
+        ,"ALERT_PLAYGROUND_SUPP"
+        ,"ALERT_SLI_SUPP"
+        ,"ALERT_EXPRESSWAY_SUPP"
 
         ,"ALERT_MOTORWAY_END"
         ,"ALERT_NO_PASS_END"
@@ -36,6 +43,7 @@
         ,"INFO_FAILSAFE"
         ,"SHAPE_USA"
         ,"INFO_SPEED_SHOW"
+        ,"FUNC_BUTTONS"
         ,"ALERT_SLI_SHOW"
         ,"INFO_NO_GPS"
         ,"INFO_GPS_OK"
@@ -72,6 +80,21 @@
         ,"SMART_FATIGUE"
         ,"SMART_BUMPERS"
         ,"SMART_HARSH_DZ"
+
+        ,"SMART_CROWDED_SEC"
+        ,"SMART_PED_HWY_SEC"
+        ,"SMART_CYC_HWY_SEC"
+        ,"SMART_WEA_ROAD_SEC"
+        ,"SMART_WEA_HYDRO_SEC"
+        ,"SMART_WEA_FG_SEC"
+        ,"SMART_WEA_WND_SEC"
+        ,"SMART_WEA_HAIL_SEC"
+        ,"SMART_WEA_TSTM_SEC"
+        ,"SMART_FATIGUE_SEC"
+        ,"SMART_BUMPERS_SEC"
+        ,"SMART_HARSH_DZ_SEC"
+    
+
         ,"VOLUME_FAIL"
         ,"VOLUME_DONE"
         ,"RGB_RED"
@@ -91,10 +114,14 @@
         {
             "protocol": "AfterMarket_TSR",
             "signals":[
-                {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
-                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
-                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
-                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type",  "isValueTable": true}
+                {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
+                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
+                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
+                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
+                ,{"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
+                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
+                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
+                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
             ],
             "value_tables":[
                 {"name":"Vision_only_Sign_Type", "type": "GraphicItem", "rows":[
@@ -182,6 +209,81 @@
                     ]
 
                 }
+                ,
+                {"name":"Vision_only_Sign_Type_Supp", "type": "GraphicItem", "rows":[
+                        {"value": 0, "action": "ALERT_SLI_SUPP", "arg": 10, "description": "Standard regular 10 kph"},
+                        {"value": 1, "action": "ALERT_SLI_SUPP", "arg": 20, "description": "standard regular 20 kph"},
+                        {"value": 2, "action": "ALERT_SLI_SUPP", "arg": 30, "description": "standard regular 30 kph"},
+                        {"value": 3, "action": "ALERT_SLI_SUPP", "arg": 40, "description": "standard regular 40 kph"},
+                        {"value": 4, "action": "ALERT_SLI_SUPP", "arg": 50, "description": "standard regular 50 kph"},
+                        {"value": 5, "action": "ALERT_SLI_SUPP", "arg": 60, "description": "standard regular 60 kph"},
+                        {"value": 6, "action": "ALERT_SLI_SUPP", "arg": 70, "description": "standard regular 70 kph"},
+                        {"value": 7, "action": "ALERT_SLI_SUPP", "arg": 80, "description": "standard regular 80 kph"},
+                        {"value": 8, "action": "ALERT_SLI_SUPP", "arg": 90, "description": "standard regular 90 kph"},
+                        {"value": 9, "action": "ALERT_SLI_SUPP", "arg": 100, "description": "standard regular 100 kph"},
+                        {"value": 10, "action": "ALERT_SLI_SUPP", "arg": 110, "description": "standard regular 110 kph"},
+                        {"value": 11, "action": "ALERT_SLI_SUPP", "arg": 120, "description": "standard regular 120 kph"},
+                        {"value": 12, "action": "ALERT_SLI_SUPP", "arg": 130, "description": "standard regular 130 kph"},
+                        {"value": 13, "action": "ALERT_SLI_SUPP", "arg": 140, "description": "standard regular 140 kph"},
+
+                        {"value": 28, "action": "ALERT_SLI_SUPP", "arg": 10, "description": "standard electronic 10 kph"},
+                        {"value": 29, "action": "ALERT_SLI_SUPP", "arg": 20, "description": "standard electronic 20 kph"},
+                        {"value": 30, "action": "ALERT_SLI_SUPP", "arg": 30, "description": "standard electronic 30 kph"},
+                        {"value": 31, "action": "ALERT_SLI_SUPP", "arg": 40, "description": "standard electronic 40 kph"},
+                        {"value": 32, "action": "ALERT_SLI_SUPP", "arg": 50, "description": "standard electronic 50 kph"},
+                        {"value": 33, "action": "ALERT_SLI_SUPP", "arg": 60, "description": "standard electronic 60 kph"},
+                        {"value": 34, "action": "ALERT_SLI_SUPP", "arg": 70, "description": "standard electronic 70 kph"},
+                        {"value": 35, "action": "ALERT_SLI_SUPP", "arg": 80, "description": "standard electronic 80 kph"},
+                        {"value": 36, "action": "ALERT_SLI_SUPP", "arg": 90, "description": "standard electronic 90 kph"},
+                        {"value": 37, "action": "ALERT_SLI_SUPP", "arg": 100, "description": "standard electronic 100 kph"},
+                        {"value": 38, "action": "ALERT_SLI_SUPP", "arg": 110, "description": "standard electronic 110 kph"},
+                        {"value": 39, "action": "ALERT_SLI_SUPP", "arg": 120, "description": "standard electronic 120 kph"},
+                        {"value": 40, "action": "ALERT_SLI_SUPP", "arg": 130, "description": "standard electronic 130 kph"},
+                        {"value": 41, "action": "ALERT_SLI_SUPP", "arg": 140, "description": "standard electronic 140 kph"},
+
+                        {"value": 100, "action": "ALERT_SLI_SUPP", "arg": 5, "description": "standard regular 5 kph"},
+                        {"value": 101, "action": "ALERT_SLI_SUPP", "arg": 15, "description": "standard regular 15 kph"},
+                        {"value": 102, "action": "ALERT_SLI_SUPP", "arg": 25, "description": "standard regular 25 kph"},
+                        {"value": 103, "action": "ALERT_SLI_SUPP", "arg": 35, "description": "standard regular 35 kph"},
+                        {"value": 104, "action": "ALERT_SLI_SUPP", "arg": 45, "description": "standard regular 45 kph"},
+                        {"value": 105, "action": "ALERT_SLI_SUPP", "arg": 55, "description": "standard regular 55 kph"},
+                        {"value": 106, "action": "ALERT_SLI_SUPP", "arg": 65, "description": "standard regular 65 kph"},
+                        {"value": 107, "action": "ALERT_SLI_SUPP", "arg": 75, "description": "standard regular 75 kph"},
+                        {"value": 108, "action": "ALERT_SLI_SUPP", "arg": 85, "description": "standard regular 85 kph"},
+                        {"value": 109, "action": "ALERT_SLI_SUPP", "arg": 95, "description": "standard regular 95 kph"},
+                        {"value": 110, "action": "ALERT_SLI_SUPP", "arg": 105, "description": "standard regular 105 kph"},
+                        {"value": 111, "action": "ALERT_SLI_SUPP", "arg": 115, "description": "standard regular 115 kph"},
+                        {"value": 112, "action": "ALERT_SLI_SUPP", "arg": 125, "description": "standard regular 125 kph"},
+                        {"value": 113, "action": "ALERT_SLI_SUPP", "arg": 135, "description": "standard regular 135 kph"},
+                        {"value": 114, "action": "ALERT_SLI_SUPP", "arg": 145, "description": "Standard regular 145 kph"},
+
+                        {"value": 115, "action": "ALERT_SLI_SUPP", "arg": 5, "description": "standard electronic 5 kph"},
+                        {"value": 116, "action": "ALERT_SLI_SUPP", "arg": 15, "description": "standard electronic 15 kph"},
+                        {"value": 117, "action": "ALERT_SLI_SUPP", "arg": 25, "description": "standard electronic 25 kph"},
+                        {"value": 118, "action": "ALERT_SLI_SUPP", "arg": 35, "description": "standard electronic 35 kph"},
+                        {"value": 119, "action": "ALERT_SLI_SUPP", "arg": 45, "description": "standard electronic 45 kph"},
+                        {"value": 120, "action": "ALERT_SLI_SUPP", "arg": 55, "description": "standard electronic 55 kph"},
+                        {"value": 121, "action": "ALERT_SLI_SUPP", "arg": 65, "description": "standard electronic 65 kph"},
+                        {"value": 122, "action": "ALERT_SLI_SUPP", "arg": 75, "description": "standard electronic 75 kph"},
+                        {"value": 123, "action": "ALERT_SLI_SUPP", "arg": 85, "description": "standard electronic 85 kph"},
+                        {"value": 124, "action": "ALERT_SLI_SUPP", "arg": 95, "description": "standard electronic 95 kph"},
+                        {"value": 125, "action": "ALERT_SLI_SUPP", "arg": 105, "description": "standard electronic 105 kph"},
+                        {"value": 126, "action": "ALERT_SLI_SUPP", "arg": 115, "description": "standard electronic 115 kph"},
+                        {"value": 127, "action": "ALERT_SLI_SUPP", "arg": 125, "description": "standard electronic 125 kph"},
+                        {"value": 128, "action": "ALERT_SLI_SUPP", "arg": 135, "description": "standard electronic 135 kph"},
+                        {"value": 129, "action": "ALERT_SLI_SUPP", "arg": 145, "description": "Standard electronic 145 kph"},
+
+
+                        {"value": 171, "action": "ALERT_EXPRESSWAY_SUPP", "description": "standard regular begin of ExpressWay"},
+                        {"value": 173, "action": "ALERT_MOTORWAY_SUPP", "description": "standard regular begin of MotorWay"},
+
+                        {"value": 175, "action": "ALERT_PLAYGROUND_SUPP", "description": "regular Playground area begin"},
+
+                        {"value": 200, "action": "ALERT_NO_PASS_SUPP", "description": "regular no passing start"}
+                        ,{"value": 220, "action": "ALERT_NO_PASS_SUPP", "description": "electronic no passing start"}
+                    ]
+
+                }
             ]
         }
         ,
@@ -239,6 +341,7 @@
             "protocol": "IMS_SmartADAS_Restricted",
             "signals":[
                 {"name":"FirstIcon", "action": "FirstIcon_Type",  "isValueTable": true}
+                ,{"name":"SecondIcon", "action": "SecondIcon_Type",  "isValueTable": true}
             ],
             "value_tables":[
                 {"name":"FirstIcon_Type", "type": "GraphicItem", "rows":[
@@ -252,6 +355,20 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
+                    ]
+                }
+                ,
+                {"name":"SecondIcon_Type", "type": "GraphicItem", "rows":[
+                        {"value":   1, "action": "SMART_CROWDED_SEC", "description": "Crowd zone"}
+                        ,{"value":  2, "action": "SMART_PED_HWY_SEC", "description": "Pedestrian on the highway"}
+                        ,{"value":  3, "action": "SMART_CYC_HWY_SEC", "description": "Cyclist on highway"}
+                        ,{"value":  4, "action": "SMART_WEA_ROAD_SEC", "description": "Weather condition: Road"}
+                        ,{"value":  5, "action": "SMART_WEA_HYDRO_SEC", "description": "Weather condition: Hydroplanning"}
+                        ,{"value":  6, "action": "SMART_WEA_FG_SEC", "description": "Weather condition: Fog"}
+                        ,{"value":  7, "action": "SMART_WEA_WND_SEC", "description": "Weather condition: Wind"}
+                        ,{"value":  8, "action": "SMART_WEA_HAIL_SEC", "description": "Weather condition: Hail"}
+                        ,{"value":  9, "action": "SMART_WEA_TSTM_SEC", "description": "Weather condition: Thunderstorm"}
+                        ,{"value": 12, "action": "SMART_HARSH_DZ_SEC", "description": "Harsh breaking danger zone"}
                     ]
                 }
             ]

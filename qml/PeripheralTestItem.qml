@@ -39,7 +39,7 @@ Rectangle {
 
 
         fillMode: Image.PreserveAspectFit
-        source: base+wildcard+"_grn.svg"
+        source: base+wildcard+"_grn.png"
     }
 
     states: [
@@ -49,7 +49,7 @@ Rectangle {
             when: (test_status === 0)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"_grn.svg"
+                source: base+wildcard+"_grn.png"
             }
             PropertyChanges {
                 target: upp
@@ -61,7 +61,7 @@ Rectangle {
             when: (test_status === 1)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"_red.svg"
+                source: base+wildcard+"_red.png"
             }
             PropertyChanges {
                 target: upp
@@ -73,7 +73,7 @@ Rectangle {
             when:  (test_status === 2)
             PropertyChanges {
                 target: slot
-                source: base+wildcard+"_blu.svg"
+                source: base+wildcard+"_blu.png"
 
             }
             PropertyChanges {

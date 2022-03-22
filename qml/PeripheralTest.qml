@@ -24,7 +24,7 @@ Image{
     property int layer_pri: 0
     anchors.fill: parent
 
-    source:  "images/peripheral-test/Peripherals_Test_Background.svg"
+    source:  "images/peripheral-test/Peripherals_Test_Background.png"
 
 
     PeripheralTestGroup{

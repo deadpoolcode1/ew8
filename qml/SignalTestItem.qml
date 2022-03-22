@@ -41,7 +41,7 @@ Item {
 
 
         fillMode: Image.PreserveAspectFit
-        source: "images/signal-test/EW8_"+wildcard+"-gry.svg"
+        source: "images/signal-test/EW8_"+wildcard+"-gry.png"
     }
 
     states: [
@@ -51,7 +51,7 @@ Item {
             when: isEnabled && (test_status === 0 || test_status === 1) && !isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-blu.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-blu.png"
 
             }
             PropertyChanges {
@@ -64,7 +64,7 @@ Item {
             when: isEnabled && (test_status === 2)  && !isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-grn.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-grn.png"
             }
             PropertyChanges {
                 target: upp
@@ -76,7 +76,7 @@ Item {
             when: isEnabled && (test_status === 3)  && !isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-red.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-red.png"
             }
             PropertyChanges {
                 target: upp
@@ -89,7 +89,7 @@ Item {
             when: isEnabled && (test_status === 0 || test_status === 1) && !isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-blu-on.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-blu-on.png"
 
             }
             PropertyChanges {
@@ -102,7 +102,7 @@ Item {
             when: isEnabled && (test_status === 2)  && !isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-grn-on.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-grn-on.png"
             }
             PropertyChanges {
                 target: upp
@@ -114,7 +114,7 @@ Item {
             when: isEnabled && (test_status === 3)  && !isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-red-on.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-red-on.png"
             }
             PropertyChanges {
                 target: upp
@@ -127,7 +127,7 @@ Item {
             when: isEnabled && (test_status === 2) && isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-grn_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-grn_120x120.png"
             }
             PropertyChanges {
                 target: slot
@@ -143,7 +143,7 @@ Item {
             when: isEnabled && (test_status === 2) && isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-grn-on_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-grn-on_120x120.png"
             }
             PropertyChanges {
                 target: slot
@@ -159,7 +159,7 @@ Item {
             when: isEnabled && (test_status === 3) && isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-red_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-red_120x120.png"
             }
             PropertyChanges {
                 target: slot
@@ -175,7 +175,7 @@ Item {
             when: isEnabled && (test_status === 3) && isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-red-on_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-red-on_120x120.png"
             }
             PropertyChanges {
                 target: slot
@@ -191,7 +191,7 @@ Item {
             when: isEnabled && (test_status === 1) && isBig && !isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-blu_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-blu_120x120.png"
             }
             PropertyChanges {
                 target: slot
@@ -207,7 +207,7 @@ Item {
             when: isEnabled && (test_status === 1) && isBig && isOn
             PropertyChanges {
                 target: slot
-                source: "images/signal-test/EW8_"+wildcard+"-blu-on_120x120.svg"
+                source: "images/signal-test/EW8_"+wildcard+"-blu-on_120x120.png"
             }
             PropertyChanges {
                 target: slot

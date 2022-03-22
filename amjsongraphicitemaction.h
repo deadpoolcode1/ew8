@@ -59,6 +59,7 @@ private:
     bool areArgumentsReceived;
     bool isSupplemented;
     QVariant itsSupplimentary;
+    QList<QVariant> itsSuppDomain;
 
     quint8 argInt;
     quint8 argFrac;

@@ -513,7 +513,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
             if(jsonsig->type == Validator)
             {
                 bool isValidData;
-                if(jsonsig->extractSetUnsetAction(arg, &isValidData))
+                if(jsonsig->extractSetUnsetAction(arg,&isValidData))
                 {discardMsg = !isValidData;}
                 else
                 {discardMsg = true;}

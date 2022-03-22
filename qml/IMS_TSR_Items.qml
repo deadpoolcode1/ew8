@@ -59,16 +59,13 @@ Rectangle {
                 case 0:
                     endOfLimit = false;
                     canEntityArg = arg;
-                    sign_visible = true;
                     break;
                 case 24:
                     endOfLimit = true;
                     canEntityArg = arg;
-                    sign_visible = true;
                     break;
-                default:
-                    itemActionDeactivate()
                 }
+                 sign_visible = true;
 
             }
 
@@ -81,37 +78,6 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 0
         }
-
-/*
-        SLI {
-            id: alert_sli_end
-            canEntityType: "ALERT_SLI_END"
-
-            usaShape: usaShapeSLI
-            disabled4UsaShape: true
-
-            maxduration: 5000
-
-            function setVisibleSlot() {
-                if(argReceived && !(usaShape & disabled4UsaShape)){
-                    sign_visible = true;
-                }
-            }
-
-
-            function setInvisibleSlot() {sign_visible = false}
-
-            property bool argReceived: false
-            overSpeeding: false
-            property int layer_pri: 2
-            source: "images/left-panel/TSR/black_stripes.png"
-
-            anchors.top: parent.top
-            anchors.topMargin: 0
-            anchors.left: parent.left
-            anchors.leftMargin: 0
-        }
-        */
     }
 
 
@@ -151,7 +117,7 @@ Rectangle {
 
         TSR{
             id: alert_no_pass
-            property string canEntityType: "ALERT_NO_PASS"
+            canEntityType: "ALERT_NO_PASS"
             property int layer_pri: 0
             source: "images/left-panel/TSR/left_nopass_red.png"
         }
@@ -210,6 +176,42 @@ Rectangle {
             property int layer_pri: 0
             maxduration: 5000
             source: "images/left-panel/TSR/left_playgrond_blue_end.png"
+        }
+
+        SLIsupp {
+            id: sli_supp
+            canEntityType: "ALERT_SLI_SUPP"
+            property int layer_pri: 1
+            usaShape: usaShapeSLI
+        }
+
+
+        TSRsupp {
+            id: alert_no_pass_supp
+            property string canEntityType: "ALERT_NO_PASS_SUPP"
+            property int layer_pri: 1
+            source: "images/left-panel/TSR/left_nopass_red.png"
+        }
+
+        TSRsupp{
+            id: alert_motorway_supp
+            canEntityType: "ALERT_MOTORWAY_SUPP"
+            property int layer_pri: 1
+            source: "images/left-panel/TSR/left_motorway_beg.png"
+        }
+
+        TSRsupp{
+            id: alert_expressway_supp
+            canEntityType: "ALERT_EXPRESSWAY_SUPP"
+            property int layer_pri: 1
+            source: "images/left-panel/TSR/left_expressway_beg.png"
+        }
+
+        TSRsupp{
+            id: alert_playground_supp
+            canEntityType: "ALERT_PLAYGROUND_SUPP"
+            property int layer_pri: 1
+            source: "images/left-panel/TSR/left_playgrond_blue.png"
         }
     }
 }

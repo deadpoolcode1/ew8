@@ -94,11 +94,15 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
+  QList<qint32> * extractSetValuesField( QJsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
+
+  bool getDomainValidity(QVariant extractedSupCANsignal);
+
   IAMJsonProcessable * getActivatedAction(void){return activatedAction;}
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<qint32> * trueValues, bool isValueTable);
+  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<qint32> * trueValues, set_ops_t trueDomainOp, QList<qint32> * trueDomainValues, bool isValueTable);
   void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString smoothingType);
 
   QString itsName;
@@ -106,6 +110,10 @@ private:
   QString itsSupName;
 
   bool isSupplementedSignalEntry;
+
+  set_ops_t itsDomainSetOp;
+  QList<qint32> * itsDomainTrueValues;
+
 
   QList<QObject *> disablers;
 

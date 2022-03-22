@@ -32,7 +32,7 @@ SideIcon {
 
     quadrant: 2
 
-    source: "images/traffic-violation/left_TV_RL_small.svg"
+    source: "images/traffic-violation/left_TV_RL_small.png"
 
    }
 }

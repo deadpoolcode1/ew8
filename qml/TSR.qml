@@ -10,7 +10,10 @@ Item {
 
     property alias source: sign.source
 
-    function setVisibleSlot() {sign.visible = true;}
+    function setVisibleSlot(arg) {
+            sign.visible = true;
+    }
+
     function setInvisibleSlot() {sign.visible = false;}
 
     signal  itemActionDeactivate()

@@ -25,6 +25,31 @@ property int maxduration: 0
 
 signal  itemActionDeactivate()
 
+
+function setVisibleSlot(arg, supp)
+{
+    console.log("supple: "+supp)
+    switch (supp)
+    {
+    case 0:
+        endOfLimit = false;
+        canEntityArg = arg;
+        sign_visible = true;
+        break;
+    case 24:
+        endOfLimit = true;
+        canEntityArg = arg;
+        sign_visible = true;
+        break;
+    default:
+    break;
+    }
+
+}
+
+function setInvisibleSlot() {sign_visible = false}
+
+
 Timer {
     id: max_duration_timer
     running: sign.visible && (maxduration > 0)

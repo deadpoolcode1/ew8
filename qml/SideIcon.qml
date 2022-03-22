@@ -17,6 +17,7 @@ AnimatedImage {
     property int quadrant
 
     property bool is_in_alert: false
+    property bool has_supp: false
 
     property bool is_top: quadrant < 3
     property double start_scale: 1.0
@@ -24,8 +25,6 @@ AnimatedImage {
 
     property int targetWidthMargin: - (width * (1 - target_scale) / 2)
     property int targetHeightMargin: - (height * (1 - target_scale) / 2)
-
-
 
 
     property bool isInSlot: false
@@ -69,20 +68,50 @@ AnimatedImage {
               anchors.left: parent.left
             }
         }
-        ,State {name: "III"; when:  quadrant === 3
+        ,State {name: "III"; when:  quadrant === 3 && !has_supp
                 PropertyChanges{
                   target: sign
                   anchors.bottom: parent.bottom
                   anchors.left: parent.left
                 }
             }
-        ,State {name: "IV"; when: quadrant === 4
+        ,State {name: "IIIs"; when:  quadrant === 3 && has_supp
                 PropertyChanges{
                   target: sign
+                  anchors.bottom: parent.bottom
+                  anchors.left: parent.left
+                  start_scale: 0.82
+                  target_scale: 0.6028 * 0.9
+                  targetHeightMargin: - (height * (1 - target_scale) / 2) * 0.3
+                  targetWidthMargin: - (width * (1 - target_scale) / 2) * 0.57
+                }
+            }
+        ,State {name: "IV"; when: quadrant === 4&& (!is_in_alert)
+                PropertyChanges{
+                  target: sign
+                  x_start_from: 92
+                  y_start_from: 38
+                  target_scale: 0.6028
+                  start_scale: 1.0
+                  pause_duration: 1500
+               
                   anchors.bottom: parent.bottom
                   anchors.right: parent.right
                 }
             }
+        ,State {name: "IVa"; when: quadrant === 4 && (is_in_alert)
+                PropertyChanges{
+                  target: sign
+                  x_start_from: -8
+                  y_start_from: 26
+                  target_scale: 0.6028
+                  start_scale: 0.78
+                  pause_duration: 1500
+                  anchors.bottom: parent.bottom
+                  anchors.right: parent.right
+                }
+            }
+ 
     ]
 
     onVisibleChanged:

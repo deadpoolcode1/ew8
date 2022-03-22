@@ -2,3 +2,6 @@ canquick.pro.user
 canquick.pro.user.*
 cscope.out
 Thumbs.db
+Makefile
+candbgrammar.h
+

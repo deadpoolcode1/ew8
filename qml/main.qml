@@ -540,7 +540,7 @@ ApplicationWindow{
 
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "images/traffic-violation/left_TV_RL_big.svg"
+                    source: "images/traffic-violation/left_TV_RL_big.png"
                 }
             }
 
