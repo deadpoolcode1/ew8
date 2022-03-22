@@ -295,7 +295,7 @@ ApplicationWindow{
 
 
 
-
+                /*
                 Image {
                     id: vsn
                     visible: isInEdition
@@ -310,6 +310,7 @@ ApplicationWindow{
                     function setVisibleSlot() {visible = true}
                     function setInvisibleSlot() {visible = false}
                 }
+                */
             }
             }
 
@@ -882,6 +883,54 @@ ApplicationWindow{
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "images/pcw/main_PCW_big.gif"
             }
+        }
+
+        Rectangle
+        {
+            id: vsn
+
+            property string canEntityType: "INFO_FAILSAFE"
+            property int layer_pri: 2
+
+            z: 10
+
+            function setVisibleSlot(){visible = true;}
+            function setInvisibleSlot(){visible = false;}
+
+            anchors.fill: parent
+
+            color: "#a0000000"
+
+            visible: isInEdition
+
+
+            Image
+            {
+                id: lv_icon
+                anchors.top: parent.top
+                anchors.topMargin: 62
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: vsn.visible
+
+
+                source: "images/error/icon_eye.png"
+
+            }
+
+            Text {
+                id: low_vis_text
+                text: "Low Visibility"
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 70
+                font.pixelSize: 36
+                fontSizeMode: Text.FixedSize
+                font.family: intelFont.name
+                font.weight: Font.Medium
+                color: "#fed500"
+                visible: vsn.visible
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
         }
 
 
