@@ -80,6 +80,7 @@
         ,"SMART_FATIGUE"
         ,"SMART_BUMPERS"
         ,"SMART_HARSH_DZ"
+        ,"SMART_CA"
 
         ,"SMART_CROWDED_SEC"
         ,"SMART_PED_HWY_SEC"
@@ -93,7 +94,7 @@
         ,"SMART_FATIGUE_SEC"
         ,"SMART_BUMPERS_SEC"
         ,"SMART_HARSH_DZ_SEC"
-    
+        ,"SMART_CA_SEC"
 
         ,"VOLUME_FAIL"
         ,"VOLUME_DONE"
@@ -355,6 +356,7 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
+                        ,{"value": 13, "action": "SMART_CA", "description": "Construction area"}
                     ]
                 }
                 ,
@@ -369,6 +371,7 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL_SEC", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM_SEC", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ_SEC", "description": "Harsh breaking danger zone"}
+                        ,{"value": 13, "action": "SMART_CA_SEC", "description": "Construction area"}
                     ]
                 }
             ]

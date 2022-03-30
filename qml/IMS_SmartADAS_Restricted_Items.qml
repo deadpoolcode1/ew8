@@ -123,7 +123,15 @@ Rectangle {
             property int layer_pri: 4
             source: "images/right-panel/SADAS/right_harsh_break.png"
         }
-	}
+
+        SADAS {
+            id: smart_ca
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_CA"
+            property int layer_pri: 4
+            source: "images/right-panel/SADAS/right_ca.png"
+        }
+    }
 
     Item {
 		id: groupBottom
@@ -237,6 +245,15 @@ Rectangle {
             property int layer_pri: 4
             source: "images/right-panel/SADAS/right_harsh_break.png"
         }
+
+        SADAS2 {
+            id: smart_ca_sec
+            is_in_alert: ims_smartadas_restricted.is_in_alert
+            property string canEntityType: "SMART_CA_SEC"
+            property int layer_pri: 4
+            source: "images/right-panel/SADAS/right_ca.png"
+        }
+
 
     }
 }

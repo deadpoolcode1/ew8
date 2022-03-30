@@ -899,7 +899,7 @@ ApplicationWindow{
 
             anchors.fill: parent
 
-            color: "#a0000000"
+            color: "#00000000"
 
             visible: isInEdition
 
@@ -908,10 +908,11 @@ ApplicationWindow{
             {
                 id: lv_icon
                 anchors.top: parent.top
-                anchors.topMargin: 62
+                anchors.topMargin: 135
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: vsn.visible
 
+                scale: 0.6
 
                 source: "images/error/icon_eye.png"
 
@@ -920,9 +921,9 @@ ApplicationWindow{
             Text {
                 id: low_vis_text
                 text: "Low Visibility"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 70
-                font.pixelSize: 36
+                anchors.top: lv_icon.bottom
+                anchors.topMargin: -12
+                font.pixelSize: 17
                 fontSizeMode: Text.FixedSize
                 font.family: intelFont.name
                 font.weight: Font.Medium
