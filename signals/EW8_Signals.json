@@ -115,10 +115,10 @@
         {
             "protocol": "AfterMarket_TSR",
             "signals":[
-                {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
-                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
-                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
-                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,18]}
+                {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,21,24]}
+                ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,21,24]}
+                ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,21,24]}
+                ,{"name": ["Vision_only_Sign_Type_D4", "Vision_only_supp_Sign_Type_D4"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,21,24]}
                 ,{"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
                 ,{"name": ["Vision_only_Sign_Type_D2", "Vision_only_supp_Sign_Type_D2"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
                 ,{"name": ["Vision_only_Sign_Type_D3", "Vision_only_supp_Sign_Type_D3"], "action": "Vision_only_Sign_Type_Supp",  "isValueTable": true, "Domain": [1,2,4,5,6,7,8,9,11,12,13,14,22]}
@@ -356,7 +356,7 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ", "description": "Harsh breaking danger zone"}
-                        ,{"value": 13, "action": "SMART_CA", "description": "Construction area"}
+                        ,{"value": 14, "action": "SMART_CA", "description": "Construction area"}
                     ]
                 }
                 ,
@@ -371,7 +371,7 @@
                         ,{"value":  8, "action": "SMART_WEA_HAIL_SEC", "description": "Weather condition: Hail"}
                         ,{"value":  9, "action": "SMART_WEA_TSTM_SEC", "description": "Weather condition: Thunderstorm"}
                         ,{"value": 12, "action": "SMART_HARSH_DZ_SEC", "description": "Harsh breaking danger zone"}
-                        ,{"value": 13, "action": "SMART_CA_SEC", "description": "Construction area"}
+                        ,{"value": 14, "action": "SMART_CA_SEC", "description": "Construction area"}
                     ]
                 }
             ]

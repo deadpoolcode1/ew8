@@ -51,26 +51,6 @@ Rectangle {
             property int layer_pri: 1
             usaShape: usaShapeSLI
 
-            function setVisibleSlot(arg, supp)
-            {
-                console.log("supple: "+supp)
-                switch (supp)
-                {
-                case 0:
-                    endOfLimit = false;
-                    canEntityArg = arg;
-                    break;
-                case 24:
-                    endOfLimit = true;
-                    canEntityArg = arg;
-                    break;
-                }
-                 sign_visible = true;
-
-            }
-
-            function setInvisibleSlot() {sign_visible = false}
-
             overSpeeding: left_panel.overSpeeding && isInSlot
 
             anchors.top: parent.top

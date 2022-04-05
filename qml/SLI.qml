@@ -32,6 +32,7 @@ function setVisibleSlot(arg, supp)
     switch (supp)
     {
     case 0:
+    case 21:
         endOfLimit = false;
         canEntityArg = arg;
         sign_visible = true;
