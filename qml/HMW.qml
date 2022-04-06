@@ -8,6 +8,7 @@ Item{
     property double car_scale: 1
     property int car_margin: 47
     property bool alert
+    property bool is_text_hidden: false
     width: 220
     height: 190
     property string timeText: (hmw_item.canEntityArg == 0x00 ? "  " : (hmw_item.canEntityArg/10).toFixed(1))
@@ -43,7 +44,7 @@ Item{
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 38
-        visible: strips_img.visible
+        visible: strips_img.visible && !is_text_hidden
     }
 
 
@@ -69,7 +70,7 @@ Item{
             font.weight: Font.Medium
             font.pixelSize: parent.fontPixelSize
             font.family: intelFont.name
-            visible: strips_img.visible
+            visible: strips_img.visible && !is_text_hidden
         }
     }
 

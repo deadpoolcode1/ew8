@@ -651,6 +651,7 @@ ApplicationWindow{
                     anchors.leftMargin: -2
                     playing: !(alert_lldw.visible||alert_rldw.visible||alert_pdz.visible)
                     alert: true
+                    is_text_hidden: vsn.visible
                 }
             }
 
