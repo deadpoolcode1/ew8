@@ -1,5 +1,5 @@
 {
-    "ConfigVersion":[1,7,0],
+    "ConfigVersion":[1,8,0],
     "Illuminance": {
         "points": [1500,2000,2500,3000]
         ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"

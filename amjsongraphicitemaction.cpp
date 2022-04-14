@@ -154,6 +154,7 @@ void AMJsonGraphicItemAction::deactivate(void)
         itsDisplay->mutex.lock();
         itsDisplay->deactivate(itsGraphicItemID);
         itsDisplay->mutex.unlock();
+        areArgumentsReceived = false;
     }
 }
 
