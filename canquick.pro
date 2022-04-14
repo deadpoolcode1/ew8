@@ -199,7 +199,7 @@ win32: LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
 win32: INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 win32: DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 
-linux: LIBS += -lsocketcan -lqrencode -lwebp -ldrm
+linux: LIBS += -lsocketcan -lqrencode -ldrm
 
 linux: DEFINES += LOG_INIT_COMPLETE_TO_DMESG
 

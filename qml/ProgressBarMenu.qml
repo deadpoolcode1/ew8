@@ -27,6 +27,8 @@ Rectangle {
     property bool isInEdition: true
 
     property alias mnemonicIconSlot: value_rectangle
+
+    property string font_family
      
     anchors.fill: parent
     
@@ -52,6 +54,8 @@ Rectangle {
             anchors.topMargin: -10
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 54
+            font.family: font_family
+            font.weight: Font.Light
         }
     }
     Rectangle {
@@ -103,6 +107,8 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: -4
             font.pixelSize: 19
+            font.family: font_family
+            font.weight: Font.Medium
         }
 
         Text {
@@ -116,6 +122,8 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: -4
             font.pixelSize: 19
+            font.family: font_family
+            font.weight: Font.Medium
         }
      }
 }

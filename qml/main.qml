@@ -1241,6 +1241,7 @@ ApplicationWindow{
         VolumeMenu {
             id: volume_menu
             z:20
+            font_family: intelFont.name
             property int layer_pri: 2
             visible: false
         }
@@ -1249,6 +1250,7 @@ ApplicationWindow{
         {
            z: 20
            id: brightness
+           font_family: intelFont.name
            visible: false
         }
 
