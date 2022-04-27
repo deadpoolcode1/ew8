@@ -10,12 +10,13 @@ visible: true
 
 property alias source: sign.source
 
+property alias sign_visible: sign.visible
+
+
 property url usaShapeSource: "images/left-panel/SLI/left_SLI_rect.png"
 property url endRegularSource: "images/left-panel/TSR/black_stripes.png"
 
 property alias isInSlot: sign.isInSlot
-
-property bool sign_visible: false
 
 property bool endOfLimit: false
 
@@ -35,12 +36,15 @@ function setVisibleSlot(arg, supp)
     case 21:
         endOfLimit = false;
         canEntityArg = arg;
-        sign_visible = true;
+        sign.visible = true
         break;
     case 24:
         endOfLimit = true;
         canEntityArg = arg;
-        sign_visible = true;
+        if(!usaShape)
+        {
+            sign.visible = true
+        }
         break;
     default:
     break;
@@ -48,7 +52,10 @@ function setVisibleSlot(arg, supp)
 
 }
 
-function setInvisibleSlot() {sign_visible = false}
+function setInvisibleSlot() {
+    sign.visible = false
+    console.log("SLI "+canEntityArg+"switched off");
+}
 
 
 Timer {
@@ -83,7 +90,7 @@ SideIcon {
  
     property bool no_source: false
 
-    visible: sign_visible && !no_source
+    visible: false
 
     quadrant: 2
 
@@ -149,7 +156,7 @@ SideIcon {
            name: "UsaEnd"; when: usaShape && endOfLimit
            PropertyChanges {
                target: sign
-               no_source: true
+               visible: false
            }
        }
        ,

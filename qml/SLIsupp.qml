@@ -14,7 +14,7 @@ property url usaShapeSource: "images/left-panel/SLI/left_SLI_rect.png"
 
 property alias isInSlot: sign.isInSlot
 
-property bool sign_visible: false
+property alias sign_visible: sign.visible
 
 property bool endOfLimit: false
 
@@ -26,10 +26,10 @@ function setVisibleSlot(arg, supp)
 
     itsSupp.supp = supp
     canEntityArg = arg;
-    sign_visible = true;
+    sign.visible = true;
 }
 
-function setInvisibleSlot() {sign_visible = false}
+function setInvisibleSlot() {sign.visible = false}
 
 signal  itemActionDeactivate()
 
@@ -45,10 +45,8 @@ Timer {
 SideIcon {
 
     id: sign
- 
-    property bool no_source: false
 
-    visible: sign_visible && !no_source
+    visible: false
 
     quadrant: 3
 
