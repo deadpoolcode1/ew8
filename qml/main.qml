@@ -1123,6 +1123,8 @@ ApplicationWindow{
                 }
                 console.log("Down pressed at "+start)
 
+                qr_code.is_down_pressed = true
+
                 pressed_handler(event)
 
                 //TODO does not work:
@@ -1136,6 +1138,9 @@ ApplicationWindow{
                 {
                     general_menu_listener.is_initial_up_pressed = true
                 }
+
+                qr_code.is_up_pressed = true
+
                 pressed_handler(event)
             }
 
@@ -1150,7 +1155,16 @@ ApplicationWindow{
             {
                 if (event.key === Qt.Key_Down){
                   start = 0
+                  qr_code.is_down_pressed = false
                 }
+
+                if (event.key === Qt.Key_Up){
+                  //start = 0
+                  qr_code.is_up_pressed = false
+                }
+
+                general_menu_listener.is_initial_input_active = false;
+
                 event.accepted = true;
             }
 
@@ -1168,8 +1182,13 @@ ApplicationWindow{
                     debugMessagesConnect(true)
                 }
 
-                else
+                else if(qr_code.is_active && qr_code.is_down_pressed && qr_code.is_up_pressed)
                 {
+                    qr_code.visible = ! qr_code.visible
+                }
+
+                else
+                {       
                 if (event.key === Qt.Key_Up) {
                     keyReportSend(Qt.Key_Up)
 
@@ -1228,7 +1247,7 @@ ApplicationWindow{
 
             }
 
-                general_menu_listener.is_initial_input_active = false;
+
                 event.accepted = true;
 
 
@@ -1253,6 +1272,46 @@ ApplicationWindow{
            font_family: intelFont.name
            visible: false
         }
+
+
+        QRCode
+        {
+
+
+            property string canEntityType: "INFO_QRCODE"
+            property int layer_pri: 0
+            z: 40
+
+            property bool is_up_pressed: false
+            property bool is_down_pressed: false
+            property bool is_active: false
+
+            function setVisibleSlotStr(Arg) {
+                qr_code.sn = Arg;
+                is_active = true;
+            }
+            function setInvisibleSlot(){is_active = false; visible = false;}
+
+            id: qr_code
+
+
+            width: 39
+            height: 39
+
+            scale: 3
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+
+            fillColor: "black"
+
+            sn: "NA"
+
+            visible: false
+        }
+
+
 
 
         Test{

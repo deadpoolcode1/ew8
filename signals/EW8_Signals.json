@@ -326,7 +326,8 @@
                 {"name": "Speed_format", "action":"INFO_VEH_SPEED", "type":"IntArgument", "index": 1},
                 {"name": "TrafficLightWarning", "action": "ALERT_RTW_ALERT", "type":"GraphicItem", "Set": [2,3]},
                 {"name": "TrafficLightWarning", "action": "ALERT_RTW_WARN", "type":"GraphicItem", "Set": 1},
-                {"name": "TSR_Shape", "action": "SHAPE_USA", "type":"GraphicItem"}
+                {"name": "TSR_Shape", "action": "SHAPE_USA", "type":"GraphicItem"},
+                {"name": "Zero_speed", "action": "INFO_QRCODE", "type": "GraphicItem"}
             ]
         }
         ,
@@ -443,6 +444,32 @@
             "protocol": "IMS_Connectivity",
             "signals":[
                 {"name":"CellularCommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
+            ]
+        }
+        ,
+        {
+            "protocol":"SeeQInfo",
+            "signals":[
+                {"name":"ProductionDateYear0", "action":"INFO_QRCODE", "type":"StringArgument","index": 0},
+                {"name":"ProductionDateYear1", "action":"INFO_QRCODE", "type":"StringArgument","index": 1},
+                {"name":"ProductionDateWeek0", "action":"INFO_QRCODE", "type":"StringArgument","index": 2},
+                {"name":"ProductionDateWeek1", "action":"INFO_QRCODE", "type":"StringArgument","index": 3},
+
+                {"name":"Product0", "action":"INFO_QRCODE", "type":"StringArgument","index": 4},
+                {"name":"Product1", "action":"INFO_QRCODE", "type":"StringArgument","index": 5},
+                {"name":"Product2", "action":"INFO_QRCODE", "type":"StringArgument","index": 6},
+
+                {"name":"ManufacturerCode0", "action":"INFO_QRCODE", "type":"StringArgument","index": 7},
+                {"name":"ManufacturerCode1", "action":"INFO_QRCODE", "type":"StringArgument","index": 8},
+
+                {"name":"Reserved411_1", "action":"INFO_QRCODE", "type":"StringArgument","index": 9},
+                {"name":"Reserved411_2", "action":"INFO_QRCODE", "type":"StringArgument","index": 10},
+
+                {"name":"SerialNumber0", "action":"INFO_QRCODE", "type":"StringArgument","index": 11},
+                {"name":"SerialNumber1", "action":"INFO_QRCODE", "type":"StringArgument","index": 12},
+                {"name":"SerialNumber2", "action":"INFO_QRCODE", "type":"StringArgument","index": 13},
+                {"name":"SerialNumber3", "action":"INFO_QRCODE", "type":"StringArgument","index": 14},
+                {"name":"SerialNumber4", "action":"INFO_QRCODE", "type":"StringArgument","index": 15}
             ]
         }
     ]
