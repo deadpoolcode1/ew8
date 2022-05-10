@@ -1156,11 +1156,13 @@ ApplicationWindow{
                 if (event.key === Qt.Key_Down){
                   start = 0
                   qr_code.is_down_pressed = false
+                  press2activate_timer.stop()
                 }
 
                 if (event.key === Qt.Key_Up){
                   //start = 0
                   qr_code.is_up_pressed = false
+                  press2activate_timer.stop()
                 }
 
                 general_menu_listener.is_initial_input_active = false;
@@ -1184,7 +1186,10 @@ ApplicationWindow{
 
                 else if(qr_code.is_active && qr_code.is_down_pressed && qr_code.is_up_pressed)
                 {
-                    qr_code.visible = ! qr_code.visible
+                    if(!press2activate_timer.running)
+                    {
+                        press2activate_timer.start()
+                    }
                 }
 
                 else
@@ -1286,11 +1291,41 @@ ApplicationWindow{
             property bool is_down_pressed: false
             property bool is_active: false
 
+            Timer{
+                id: press2activate_timer
+                running: false
+
+                interval: 5000
+
+                onTriggered:
+                {
+                    if(qr_code.is_active&&qr_code.is_up_pressed&&qr_code.is_down_pressed)
+                    {
+                        qr_code.visible = true;
+                        deactivate_timer.start();
+                    }
+                }
+            }
+
+
+            Timer{
+                id: deactivate_timer
+                running: false
+
+                interval: 10000
+
+                onTriggered:
+                {
+                    qr_code.visible = false
+                }
+            }
+
+
             function setVisibleSlotStr(Arg) {
                 qr_code.sn = Arg;
                 is_active = true;
             }
-            function setInvisibleSlot(){is_active = false; visible = false;}
+            function setInvisibleSlot(){is_active = false; visible = false; press2activate_timer.stop()}
 
             id: qr_code
 
