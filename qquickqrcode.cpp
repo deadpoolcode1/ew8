@@ -13,6 +13,9 @@ class AMSignalsModel;
 class QPainter;
 
 QString QQuickQRCode::sn = "";
+QString QQuickQRCode::baseurl = "";
+QString QQuickQRCode::request = "";
+
 
 void QQuickQRCode::declareQML() {
                 qmlRegisterType<QQuickQRCode>("builtin.mobileye.QRCode",0, 1, "QRCode");
@@ -27,9 +30,9 @@ QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPainted
 void QQuickQRCode::paint(QPainter * painter)
 {
 
-    QString m_sn = url + sn;
+    QString m_encoded = baseurl + request;
 
-    QRcode *qrcode = QRcode_encodeString8bit(m_sn.toLatin1(), 4, QR_ECLEVEL_L);
+    QRcode *qrcode = QRcode_encodeString8bit(m_encoded.toLatin1(), 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
     quint8 * data = qrcode->data;
@@ -83,12 +86,32 @@ void QQuickQRCode::setSn(QString aSn)
     snUpdate(aSn);
 }
 
+void QQuickQRCode::setRequest(QString aRequest)
+{
+   reqUpdate(aRequest);
+}
+
+void QQuickQRCode::setBaseUrl(QString aUrl)
+{
+   baseurl = aUrl;
+}
+
 void QQuickQRCode::snUpdate(QString arg)
 {
     if(sn != arg)
     {
         sn =  arg;
         qDebug("New sn: %s", qPrintable(arg));
+        update();
+    }
+}
+
+void QQuickQRCode::reqUpdate(QString arg)
+{
+    if(request != arg)
+    {
+        request =  arg;
+        qDebug("New qr request: %s", qPrintable(arg));
         update();
     }
 }

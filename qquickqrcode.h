@@ -13,6 +13,8 @@ class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(QString sn  READ getSn  WRITE setSn)
+    Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
+    Q_PROPERTY(QString request  WRITE setRequest)
 #if 0
     Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
@@ -33,6 +35,10 @@ public:
 
     void setSn(QString aSn);
 
+    void setRequest(QString aRequest);
+
+    void setBaseUrl(QString aUrl);
+
 signals:
 
 
@@ -48,7 +54,9 @@ public slots:
 private:
     const quint8 whiteBlackBitMask = 0x01;
 
-    const QString  url = "https://cloud.aftermarket.mobileye.com/qrcode?sn=";
+
+    static QString  baseurl;
+    static QString  request;
     static QString  sn;
 
     qint32 margin;
@@ -59,7 +67,7 @@ private:
     DISPLAY_ITEM_ID type;
 
     void snUpdate(QString arg);
-
+    void reqUpdate(QString arg);
 };
 
 #endif // QQUICKQRCODE_H

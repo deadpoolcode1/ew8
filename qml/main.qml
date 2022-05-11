@@ -7,6 +7,8 @@ import QtQml.Models 2.3
 //Custom modules:
 import MyQMLenums 0.1
 import builtin.mobileye.QRCode 0.1
+import builtin.mobileye.EWInfo 0.1
+
 
 
 ApplicationWindow{
@@ -17,6 +19,7 @@ ApplicationWindow{
     signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
 
     property color white: "#ffffff"
+
 
     signal debugMessagesConnect(bool On);
 
@@ -1291,6 +1294,8 @@ ApplicationWindow{
             property bool is_down_pressed: false
             property bool is_active: false
 
+            baseurl: "https://connect.mobileye.com/admin/deactivate-sn/?"
+
             Timer{
                 id: press2activate_timer
                 running: false
@@ -1312,7 +1317,7 @@ ApplicationWindow{
                 id: deactivate_timer
                 running: false
 
-                interval: 10000
+                interval: 20000
 
                 onTriggered:
                 {
@@ -1323,15 +1328,20 @@ ApplicationWindow{
 
             function setVisibleSlotStr(Arg) {
                 qr_code.sn = Arg;
+                qr_code.request = "sn="+sn+"&client=ew&ewver="+ewinfo.bin+"-"+ewinfo.cfg+"&EWSN="+ewinfo.sn
                 is_active = true;
             }
             function setInvisibleSlot(){is_active = false; visible = false; press2activate_timer.stop()}
 
             id: qr_code
 
+            width: 49
+            height: 49
 
-            width: 39
-            height: 39
+            EWInfo{
+                id: ewinfo
+            }
+ 
 
             scale: 3
 

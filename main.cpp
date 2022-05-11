@@ -20,6 +20,7 @@
 #include "brightnesscontrol.h"
 #include "amjsonconfigreader.h"
 
+#include "ewinfo.h"
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -42,6 +43,7 @@
 
 class AlertTypes;
 class QQuickQRCode;
+class EWInfo;
 class AMJsonConfigReader;
 
 QElapsedTimer bootUpTimer;
@@ -137,6 +139,7 @@ int main(int argc, char *argv[])
     //Usage of QML enum in C++:
     AlertTypes::declareQML();
     QQuickQRCode::declareQML();
+    EWInfo::declareQML();
 
     QQmlApplicationEngine engine;
 
