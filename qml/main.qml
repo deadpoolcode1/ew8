@@ -519,6 +519,78 @@ ApplicationWindow{
 
             }
 
+            QRCode {
+
+                property string canEntityType: "INFO_QRCODE"
+                property int layer_pri: 1
+                z: 40
+
+                property bool is_up_pressed: false
+                property bool is_down_pressed: false
+                property bool is_active: false
+
+                baseurl: "https://connect.mobileye.com/admin/deactivate-sn/?"
+
+                Timer{
+                    id: press2activate_timer
+                    running: false
+
+                    interval: 5000
+
+                    onTriggered:
+                    {
+                        if(qr_code.is_active&&qr_code.is_up_pressed&&qr_code.is_down_pressed)
+                        {
+                            qr_code.visible = true;
+                            deactivate_timer.start();
+                        }
+                    }
+                }
+
+
+                Timer{
+                    id: deactivate_timer
+                    running: false
+
+                    interval: 20000
+
+                    onTriggered:
+                    {
+                        qr_code.visible = false
+                    }
+                }
+
+
+                function setVisibleSlotStr(Arg) {
+                    qr_code.sn = Arg;
+                    qr_code.request = "sn="+sn+"&client=ew&ewver="+ewinfo.bin+"-"+ewinfo.cfg+"&EWSN="+ewinfo.sn
+                    qr_code.is_active = true;
+                }
+                function setInvisibleSlot(){qr_code.is_active = false; visible = false; press2activate_timer.stop()}
+
+                id: qr_code
+
+                width: 49
+                height: 49
+
+                EWInfo{
+                    id: ewinfo
+                }
+
+
+                scale: 3
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+
+                fillColor: "black"
+
+                sn: "NA"
+
+                visible: false
+            }
+
 
             Rectangle {
                 id: alert_rtw_alert
@@ -1280,83 +1352,6 @@ ApplicationWindow{
            font_family: intelFont.name
            visible: false
         }
-
-
-        QRCode
-        {
-
-
-            property string canEntityType: "INFO_QRCODE"
-            property int layer_pri: 0
-            z: 40
-
-            property bool is_up_pressed: false
-            property bool is_down_pressed: false
-            property bool is_active: false
-
-            baseurl: "https://connect.mobileye.com/admin/deactivate-sn/?"
-
-            Timer{
-                id: press2activate_timer
-                running: false
-
-                interval: 5000
-
-                onTriggered:
-                {
-                    if(qr_code.is_active&&qr_code.is_up_pressed&&qr_code.is_down_pressed)
-                    {
-                        qr_code.visible = true;
-                        deactivate_timer.start();
-                    }
-                }
-            }
-
-
-            Timer{
-                id: deactivate_timer
-                running: false
-
-                interval: 20000
-
-                onTriggered:
-                {
-                    qr_code.visible = false
-                }
-            }
-
-
-            function setVisibleSlotStr(Arg) {
-                qr_code.sn = Arg;
-                qr_code.request = "sn="+sn+"&client=ew&ewver="+ewinfo.bin+"-"+ewinfo.cfg+"&EWSN="+ewinfo.sn
-                is_active = true;
-            }
-            function setInvisibleSlot(){is_active = false; visible = false; press2activate_timer.stop()}
-
-            id: qr_code
-
-            width: 49
-            height: 49
-
-            EWInfo{
-                id: ewinfo
-            }
- 
-
-            scale: 3
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-
-
-            fillColor: "black"
-
-            sn: "NA"
-
-            visible: false
-        }
-
-
 
 
         Test{
