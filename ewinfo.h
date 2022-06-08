@@ -10,7 +10,8 @@ class EWInfo: public QObject
     Q_PROPERTY(QString sn READ getEwsn)
     Q_PROPERTY(QString bin READ getEngineVer)
     Q_PROPERTY(QString cfg READ getConfigVer)
-
+    Q_PROPERTY(QString mesn WRITE setMeSn)
+    Q_PROPERTY(QString snv READ getSnv)
 
 
 public:
@@ -22,6 +23,9 @@ public:
     QString getEwsn(void);
     QString getEngineVer(void);
     QString getConfigVer(void);
+
+    QString getSnv(void);
+    void setMeSn(QString);
 
 private:
 
@@ -42,6 +46,8 @@ private:
     QString ewsn_str;
     QString ewbin_str;
     QString ewcfg_str;
+    QString snv_str;
+    bool is_snv_ready;
 };
 
 #endif // EWINFO_H

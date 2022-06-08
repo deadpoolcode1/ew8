@@ -12,7 +12,6 @@ class AMSignalsModel;
 
 class QPainter;
 
-QString QQuickQRCode::sn = "";
 QString QQuickQRCode::baseurl = "";
 QString QQuickQRCode::request = "";
 
@@ -79,13 +78,6 @@ void QQuickQRCode::paint(QPainter * painter)
     QRcode_free(qrcode);
 }
 
-QString QQuickQRCode::getSn(void){return sn;}
-
-void QQuickQRCode::setSn(QString aSn)
-{
-    snUpdate(aSn);
-}
-
 void QQuickQRCode::setRequest(QString aRequest)
 {
    reqUpdate(aRequest);
@@ -96,15 +88,6 @@ void QQuickQRCode::setBaseUrl(QString aUrl)
    baseurl = aUrl;
 }
 
-void QQuickQRCode::snUpdate(QString arg)
-{
-    if(sn != arg)
-    {
-        sn =  arg;
-        qDebug("New sn: %s", qPrintable(arg));
-        update();
-    }
-}
 
 void QQuickQRCode::reqUpdate(QString arg)
 {

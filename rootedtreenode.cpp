@@ -8,9 +8,6 @@
 #include "graphicitemsenummap.h"
 #include "amjsongraphicitemaction.h"
 
-// map initialization of EntityType should be done here for some magic reason...
-EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
-
 RootedTreeNode::RootedTreeNode(QObject * qobject, RootedTree * aRootedTree)
 {
     activationSemaphore = 0;

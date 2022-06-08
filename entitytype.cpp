@@ -1,5 +1,7 @@
 #include "entitytype.h"
 
+EntityType::t_TreeNodesTypeMap EntityType::_typesMap;
+
 
 #if 0
 EntityType::t_TreeNodesTypeMap EntityType::createNodesTypesMap()

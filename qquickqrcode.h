@@ -12,7 +12,6 @@ class QPainter;
 class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString sn  READ getSn  WRITE setSn)
     Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
     Q_PROPERTY(QString request  WRITE setRequest)
 #if 0
@@ -31,10 +30,6 @@ public:
 
     static void declareQML();
 
-    QString getSn(void);
-
-    void setSn(QString aSn);
-
     void setRequest(QString aRequest);
 
     void setBaseUrl(QString aUrl);
@@ -44,20 +39,12 @@ signals:
 
 public slots:
 
-    void snChangedArgumentSlot(QString arg)
-    {
-        snUpdate(arg);
-    }
-
-
-
 private:
     const quint8 whiteBlackBitMask = 0x01;
 
 
     static QString  baseurl;
     static QString  request;
-    static QString  sn;
 
     qint32 margin;
 

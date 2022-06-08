@@ -22,6 +22,8 @@
 #include <ctype.h>
 #endif
 
+#include <limits.h>
+
 //NOTE: Next header is used for random()
 //TODO: replace with QRandomGenerator, when passing to qt 5.12
 
@@ -42,6 +44,8 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
     ewsn_str = "NA";
     ewbin_str = "NA";
     ewcfg_str = "NA";
+    snv_str = "NA";
+    is_snv_ready = false;
     readEWInfo();
 
 #ifndef WIN32
@@ -63,6 +67,61 @@ QString EWInfo::getConfigVer(void)
 {
   return ewcfg_str;
 }
+
+QString EWInfo::getSnv(void)
+{
+#if 0
+    ewsn_str = "3021016070300013";
+    setMeSn("0121011070P00524");
+    qDebug()<<"SNV property ="<<snv_str;
+#endif
+  return snv_str;
+}
+
+void EWInfo::setMeSn(QString aMeSn)
+{
+
+//TODO compute the snv value
+
+    QByteArray ew = ewsn_str.toLocal8Bit();
+    QByteArray me = aMeSn.toLocal8Bit();
+
+    //TODO verifications: length etc
+    if(me.length() == 16 && ew.length() == 16)
+    {
+    quint64 A = (quint64)ew[me[15]%16];//4:0:48
+    quint64 B = (quint64)ew[me[14]%16] ;//2:2:50
+    quint64 C = (quint64)ew[me[13]%16] ;//5:1:49
+    quint64 D = (quint64)ew[me[12]%16] ;//0:3:51
+    quint64 E = (quint64)ew[me[11]%16] ;//0:3:51
+
+    quint64 F = (quint64)me[ew[0]%16] ;
+    quint64 G = (quint64)me[ew[1]%16] ;
+    quint64 H = (quint64)me[ew[11]%16] ;
+    quint64 I = (quint64)me[ew[12]%16] ;
+    quint64 J = (quint64)me[ew[13]%16] ;
+
+    quint64 SNV = (quint64)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
+
+#if 0
+    qDebug () << " A:" << A << " B:" << B << " C:" << C
+              << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
+                 " I:" << I << " J:"<< J;
+
+    qDebug()<< "quint64 SNV=" << SNV;
+#endif
+
+    snv_str = QString::number(SNV);
+
+
+    is_snv_ready = true;
+    }
+    else
+    {
+        qDebug() << "SN number length is wrong";
+    }
+}
+
 
 void EWInfo::declareQML(void)
 {

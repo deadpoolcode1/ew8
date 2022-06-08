@@ -529,7 +529,7 @@ ApplicationWindow{
                 property bool is_down_pressed: false
                 property bool is_active: false
 
-                baseurl: "https://connect.mobileye.com/admin/deactivate-sn/?"
+                baseurl: "https://connect.mobileye.com/login?"
 
                 Timer{
                     id: press2activate_timer
@@ -562,8 +562,8 @@ ApplicationWindow{
 
 
                 function setVisibleSlotStr(Arg) {
-                    qr_code.sn = Arg;
-                    qr_code.request = "sn="+sn+"&client=ew&ewver="+ewinfo.bin+"-"+ewinfo.cfg+"&EWSN="+ewinfo.sn
+                    ewinfo.mesn = Arg;
+                    qr_code.request = "sn="+Arg+"&ew_sn="+ewinfo.sn+"&ew_fw="+ewinfo.bin.replace(/\./g,"-")+"&ew_cfg="+ewinfo.cfg.replace(/\./g,"-")+"&snv="+ewinfo.snv
                     qr_code.is_active = true;
                 }
                 function setInvisibleSlot(){qr_code.is_active = false; visible = false; press2activate_timer.stop()}
@@ -585,8 +585,6 @@ ApplicationWindow{
 
 
                 fillColor: "black"
-
-                sn: "NA"
 
                 visible: false
             }
