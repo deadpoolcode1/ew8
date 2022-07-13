@@ -450,10 +450,11 @@
         {
             "protocol":"SeeQInfo",
             "signals":[
-                {"name":"ProductionDateYear0", "action":"INFO_QRCODE", "type":"StringArgument","index": 0},
-                {"name":"ProductionDateYear1", "action":"INFO_QRCODE", "type":"StringArgument","index": 1},
-                {"name":"ProductionDateWeek0", "action":"INFO_QRCODE", "type":"StringArgument","index": 2},
-                {"name":"ProductionDateWeek1", "action":"INFO_QRCODE", "type":"StringArgument","index": 3},
+                {"name":"ProductionDateWeek0", "action":"INFO_QRCODE", "type":"StringArgument","index": 0},
+                {"name":"ProductionDateWeek1", "action":"INFO_QRCODE", "type":"StringArgument","index": 1},
+                {"name":"ProductionDateYear0", "action":"INFO_QRCODE", "type":"StringArgument","index": 2},
+                {"name":"ProductionDateYear1", "action":"INFO_QRCODE", "type":"StringArgument","index": 3},
+
 
                 {"name":"Product0", "action":"INFO_QRCODE", "type":"StringArgument","index": 4},
                 {"name":"Product1", "action":"INFO_QRCODE", "type":"StringArgument","index": 5},
