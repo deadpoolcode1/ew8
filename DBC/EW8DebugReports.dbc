@@ -33,7 +33,10 @@ BO_ 1968 EW8SensorsReport: 8 EW_CAN0
  SG_ isBrightnessReported : 23|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ BrightnessScheme : 13|3@1+ (1,0) [0|7] "level" Vector__XXX
  SG_ ActualBrightness : 16|6@1+ (1,0) [0|41] "level" Vector__XXX
- SG_ ButtonEvent : 24|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ isButtonsStateReported : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Down : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Return : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Up : 27|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ areAlertsReported : 32|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Ped_DZ_Front_State : 33|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Ped_DZ_Rear_State : 34|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -43,4 +46,7 @@ BO_ 1968 EW8SensorsReport: 8 EW_CAN0
 
 CM_ BU_ EW_CAN0 "";
 VAL_ 1968 isBrightnessReported 0 "off" 1 "on" ;
-VAL_ 1968 ButtonEvent 0 "isNotReported" 1 "down" 2 "enter" 3 "up" ;
+VAL_ 1968 isButtonsStateReported 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Down 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Return 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Up 0 "off" 1 "on" ;

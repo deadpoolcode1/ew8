@@ -13,7 +13,8 @@ import builtin.mobileye.EWInfo 0.1
 
 ApplicationWindow{
     id: page
-    signal keyReportSend(int qtKey);//Qt.Key
+    signal keyPressedReportSend(int qtKey);
+    signal keyReleasedReportSend(int qtKey);
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
     signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
@@ -1228,6 +1229,8 @@ ApplicationWindow{
 
             Keys.onReleased:
             {
+                keyReleasedReportSend(event.key)
+
                 if (event.key === Qt.Key_Down){
                   start = 0
                   qr_code.is_down_pressed = false
@@ -1248,6 +1251,9 @@ ApplicationWindow{
 
 
             function pressed_handler(event){
+
+                keyPressedReportSend(event.key)
+
                 if(general_menu_listener.is_initial_down_pressed
                         && general_menu_listener.is_initial_up_pressed)
                 {
@@ -1270,8 +1276,6 @@ ApplicationWindow{
                 else
                 {       
                 if (event.key === Qt.Key_Up) {
-                    keyReportSend(Qt.Key_Up)
-
                     console.log("Up released")
                     if(is_volume_enabled)
                     {
@@ -1285,7 +1289,6 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Down)
                 {
-                    keyReportSend(Qt.Key_Down)
                     if(Date.now() - start < 500)
                     {
                         if(is_volume_enabled)
@@ -1310,7 +1313,6 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Return)
                 {
-                     keyReportSend(Qt.Key_Return)
                     console.log("Enter released")
 
                     if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(1.0 === status_error.opacity && status_error.canEntityArg === 0x20))

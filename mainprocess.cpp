@@ -161,8 +161,11 @@ int MainProcess::launchEverything()
     {
         CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
         connect(theBrightnessControl, SIGNAL(sendBrightness(quint32 , qint32 , qint32 )), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32 , qint32 , qint32 )));
-        QObject::connect(appWindow, SIGNAL(keyReportSend(qint32)),
-                          CANDebugReport::getInstance(), SLOT(sendButton(qint32)));
+
+        QObject::connect(appWindow, SIGNAL(keyPressedReportSend(qint32)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(qint32)));
+        QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(qint32)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(qint32)));
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool, bool, bool, bool)),
                           CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));

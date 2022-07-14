@@ -5,6 +5,11 @@ CANDebugReport * CANDebugReport::instance = nullptr;
 bool CANDebugReport::doSendKeyReport = false;
 bool CANDebugReport::doSendAlertsReport = false;
 
+bool CANDebugReport::keyDown = false;
+bool CANDebugReport::keyReturn = false;
+bool CANDebugReport::keyUp = false;
+
+
 CANDebugReport::CANDebugReport(QObject *parent) : QObject(parent)
 {
   itsCanManager = nullptr;
@@ -86,10 +91,8 @@ void CANDebugReport::sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, 
 
 }
 
-
-void CANDebugReport::sendButton(qint32 qtKey)
+void CANDebugReport::sendButtonsReport(void)
 {
-
     if (doSendKeyReport)
     {
 
@@ -99,36 +102,11 @@ void CANDebugReport::sendButton(qint32 qtKey)
 
         memset(&debugFrame,  0 , sizeof(struct can_frame));
 
-        switch(qtKey)
-        {
-
-
-        case Qt::Key_Down:
-
-            debugFrame.data[3] =  (quint8)0x1;
-
-            break;
-
-        case Qt::Key_Return:
-            debugFrame.data[3] = (quint8)0x2;
-
-            break;
-
-        case Qt::Key_Up:
-
-            debugFrame.data[3] = (quint8)0x3;
-
-
-
-            break;
-
-        default:
-
-            qDebug("Unsupported key to report");
-
-            break;
-        }
-
+        debugFrame.data[3] = (quint8)true << 0
+                                             | ((quint8)keyDown) << 1
+                                             | ((quint8)keyReturn) << 2
+                                             | ((quint8)keyUp) << 3
+                                             ;
 
         debugFrame.can_id = 0x7b0;
         debugFrame.can_dlc = 8;
@@ -138,5 +116,75 @@ void CANDebugReport::sendButton(qint32 qtKey)
             itsCanManager->write_frame(&debugFrame);
         }
     }
+}
+
+
+
+void CANDebugReport::sendButtonPressed(qint32 qtKey)
+{
+
+    switch(qtKey)
+    {
+    case Qt::Key_Down:
+
+        keyDown =  true;
+
+        break;
+
+    case Qt::Key_Return:
+        keyReturn = true;
+
+        break;
+
+    case Qt::Key_Up:
+
+        keyUp = true;
+
+        break;
+
+    default:
+
+        qDebug("Unsupported key to report");
+
+        break;
+    }
+
+
+   sendButtonsReport();
+
+}
+
+
+void CANDebugReport::sendButtonReleased(qint32 qtKey)
+{
+    switch(qtKey)
+    {
+    case Qt::Key_Down:
+
+        keyDown =  false;
+
+        break;
+
+    case Qt::Key_Return:
+        keyReturn = false;
+
+        break;
+
+    case Qt::Key_Up:
+
+        keyUp = false;
+
+        break;
+
+    default:
+
+        qDebug("Unsupported key to report");
+
+        break;
+    }
+
+    sendButtonsReport();
+
+
 }
 

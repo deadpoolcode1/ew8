@@ -11,9 +11,11 @@ import builtin.mobileye.QRCode 0.1
 
 ApplicationWindow{
     id: page
-    signal keyReportSend(int qtKey);//Qt.Key
+    signal keyPressedReportSend(int qtKey);
+    signal keyReleasedReportSend(int qtKey);
     signal volumeKeySend(int qtKey);//Qt.Key
     signal brightnessChanged(int newLevel);
+    signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
 
     signal debugMessagesConnect(bool On);
 

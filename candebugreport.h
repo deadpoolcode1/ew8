@@ -27,7 +27,8 @@ public slots:
 
     void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
 
-    void sendButton(qint32 qtKey);
+    void sendButtonPressed(qint32 qtKey);
+    void sendButtonReleased(qint32 qtKey);
 
     void sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, bool PCWRstate);
 
@@ -35,10 +36,17 @@ public slots:
 private:
      explicit CANDebugReport(QObject *parent = nullptr);
 
+    void sendButtonsReport(void);
+
+
      CanManager * itsCanManager;
      static CANDebugReport * instance;
      static bool doSendKeyReport;
      static bool doSendAlertsReport;
+
+     static bool keyDown;
+     static bool keyReturn;
+     static bool keyUp;
 };
 
 #endif // CANDEBUGREPORT_H
