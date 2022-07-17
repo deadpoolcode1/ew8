@@ -890,7 +890,50 @@ ApplicationWindow{
             }
         }
 
-        QRCode {
+        Rectangle {
+
+
+            color: "black"
+            anchors.fill: parent
+
+
+            Rectangle {
+
+                id: qr_code_logo_bar
+
+                height: 43
+                color: "#ff000000"
+                border.color: "#ff000000"
+                z: 41
+
+                property int canEntityType: Alert.QtQG
+                property int layer_pri: 2
+
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                anchors.top: parent.top
+                anchors.topMargin: 8
+                visible: true
+
+                Image {
+                    id: logo_qr_code
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    clip: true
+                    visible: true
+                    fillMode: Image.PreserveAspectCrop
+                    //source: "images/logo/logo.png"
+                    source: "images/logo/ME_status_logo.png"
+                }
+
+
+
+
+            }
+
 
             property string canEntityType: "INFO_QRCODE"
             property int layer_pri: 2
@@ -900,7 +943,6 @@ ApplicationWindow{
             property bool is_down_pressed: false
             property bool is_active: false
 
-            baseurl: "https://connect.mobileye.com/login?"
 
             Timer{
                 id: press2activate_timer
@@ -934,28 +976,42 @@ ApplicationWindow{
 
             function setVisibleSlotStr(Arg) {
                 ewinfo.mesn = Arg;
-                qr_code.request = "sn="+Arg+"&ew_sn="+ewinfo.sn+"&ew_fw="+ewinfo.bin.replace(/\./g,"-")+"&ew_cfg="+ewinfo.cfg.replace(/\./g,"-")+"&snv="+ewinfo.snv
+                qr_code_core.request = "sn="+Arg+"&ew_sn="+ewinfo.sn+"&ew_fw="+ewinfo.bin.replace(/\./g,"-")+"&ew_cfg="+ewinfo.cfg.replace(/\./g,"-")+"&snv="+ewinfo.snv
                 qr_code.is_active = true;
             }
             function setInvisibleSlot(){qr_code.is_active = false; visible = false; press2activate_timer.stop()}
 
             id: qr_code
 
-            width: 49
-            height: 49
+            QRCode{
+
+                id: qr_code_core
+                x: (320 - width)/2
+                y: (240 - height  + qr_code_logo_bar.height)/2
+                z: 42
+
+                baseurl: "https://connect.mobileye.com/login?"
+                fillColor: "black"
+
+                visible: true
+
+
+                width: 49
+                height: 49
+                scale: 3
+
+            }
 
             EWInfo{
                 id: ewinfo
             }
 
 
-            scale: 3
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
 
 
-            fillColor: "black"
+
+
+
 
             visible: false
         }
