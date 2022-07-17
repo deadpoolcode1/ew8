@@ -226,15 +226,9 @@ ApplicationWindow{
                         topPadding: 0
                         anchors.horizontalCenter: parent.horizontalCenter
 
-
-
-
                     }
 
                 }
-
-
-
 
                 Beam {
                     id: alert_hi_low_beam
@@ -250,72 +244,46 @@ ApplicationWindow{
                     color: "#00000000"
                     anchors.top: parent.top
 
-                Image {
-                    id: alert_blinkers
-                    property string canEntityType: "ALERT_BLINKERS"
-                    property int layer_pri: 1
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    function setVisibleSlot() {visible = true; is_blinking = true}
-                    function setInvisibleSlot() {visible = false; is_blinking = false}
+                    Image {
+                        id: alert_blinkers
+                        property string canEntityType: "ALERT_BLINKERS"
+                        property int layer_pri: 1
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        function setVisibleSlot() {visible = true; is_blinking = true}
+                        function setInvisibleSlot() {visible = false; is_blinking = false}
 
-                    visible: isInEdition
-                    property bool is_blinking: false
+                        visible: isInEdition
+                        property bool is_blinking: false
 
 
-                    fillMode: Image.PreserveAspectFit
-                    source: "images/status-bar/status_blinker_yellow.png"
+                        fillMode: Image.PreserveAspectFit
+                        source: "images/status-bar/status_blinker_yellow.png"
 
-                    SequentialAnimation {
-                        id: blinkers_animat
-                        loops: Animation.Infinite
-                        running: alert_blinkers.is_blinking
-                        NumberAnimation {
-                            target:  alert_blinkers
-                            property: "opacity"
-                            from: 1.0
-                            to: 0.0
-                            duration: 404
-                            easing.type: Easing.InOutQuad
+                        SequentialAnimation {
+                            id: blinkers_animat
+                            loops: Animation.Infinite
+                            running: alert_blinkers.is_blinking
+                            NumberAnimation {
+                                target:  alert_blinkers
+                                property: "opacity"
+                                from: 1.0
+                                to: 0.0
+                                duration: 404
+                                easing.type: Easing.InOutQuad
+                            }
+                            NumberAnimation {
+                                target: alert_blinkers
+                                property: "opacity"
+                                from: 0.0
+                                to: 1.0
+                                duration: 404
+                                easing.type: Easing.InOutQuad
+                            }
+
                         }
-                        NumberAnimation {
-                            target: alert_blinkers
-                            property: "opacity"
-                            from: 0.0
-                            to: 1.0
-                            duration: 404
-                            easing.type: Easing.InOutQuad
-                        }
-
                     }
-
-
                 }
-
-
-
-
-
-
-
-
-                /*
-                Image {
-                    id: vsn
-                    visible: isInEdition
-                    fillMode: Image.PreserveAspectFit
-                    source: "images/status-bar/status_low_vis.png"
-
-                    property string canEntityType: "INFO_FAILSAFE"
-                    property int layer_pri: 0
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-
-                    function setVisibleSlot() {visible = true}
-                    function setInvisibleSlot() {visible = false}
-                }
-                */
-            }
             }
 
 
