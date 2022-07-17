@@ -1187,7 +1187,7 @@ ApplicationWindow{
 
             property bool is_initial_input_active: true
             property bool is_initial_up_pressed: false
-            property bool is_initial_down_pressed: false
+            property bool is_initial_menu_pressed: false
 
             Component.onCompleted:
             {
@@ -1209,14 +1209,14 @@ ApplicationWindow{
             property bool is_volume_enabled: ! (brightness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
 
 
-            Keys.onDownPressed:
+            Keys.onReturnPressed:
             {
                 if(general_menu_listener.is_initial_input_active)
                 {
-                    general_menu_listener.is_initial_down_pressed = true
+                    general_menu_listener.is_initial_menu_pressed = true
                 }
 
-                console.log("Down pressed")
+                console.log("Return pressed")
                 if(start === 0)
                 {
                     start = Date.now()
@@ -1244,9 +1244,9 @@ ApplicationWindow{
                 pressed_handler(event)
             }
 
-            Keys.onReturnPressed:
+            Keys.onDownPressed:
             {
-               console.log("Enter pressed")
+               console.log("Down pressed")
                general_menu_listener.is_initial_input_active = false
                pressed_handler(event)
             }
@@ -1278,11 +1278,11 @@ ApplicationWindow{
 
                 keyPressedReportSend(event.key)
 
-                if(general_menu_listener.is_initial_down_pressed
+                if(general_menu_listener.is_initial_menu_pressed
                         && general_menu_listener.is_initial_up_pressed)
                 {
 
-                    general_menu_listener.is_initial_down_pressed = false
+                    general_menu_listener.is_initial_menu_pressed = false
                     general_menu_listener.is_initial_up_pressed = false
                     console.log("Print debug messages on LCD")
                     debugMessage("Print Debug On")

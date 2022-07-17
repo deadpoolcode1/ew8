@@ -169,7 +169,16 @@ int MainProcess::launchEverything()
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool, bool, bool, bool)),
                           CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
-
+#if 0
+        if (-1 != appWindow->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("alertsReportSend(bool, bool, bool, bool)")))
+        {
+            qDebug()<<"alertsReportSend(bool, bool, bool, bool) connected";
+        }
+        else
+        {
+             qDebug()<<"alertsReportSend(bool, bool, bool, bool) is not present.";
+        }
+#endif
     }
 
 
