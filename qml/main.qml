@@ -954,8 +954,8 @@ ApplicationWindow{
             QRCode{
 
                 id: qr_code_core
-                x: (320 - width)/2
-                y: (240 - height  + qr_code_logo_bar.height)/2
+                x: (320 - 40)/2
+                y: (240 - 50  + qr_code_logo_bar.height)/2
                 z: 42
 
                 baseurl: "https://connect.mobileye.com/login?"
@@ -1195,6 +1195,27 @@ ApplicationWindow{
                 stop_initial_keys.start()
             }
 
+/*
+            Timer {
+                    id: single_key_gap_timer
+                    interval: 100
+                    running: false
+                    repeat: false
+
+                    property var its_event: undefined
+
+                    function registerStartEvent(event)
+                    {
+                        its_event = event
+                    }
+
+                    onTriggered: {
+                        pressed_handler(event);
+                    }
+                }
+*/
+
+
             Timer {
                     id: stop_initial_keys
                     interval: 10000
@@ -1216,19 +1237,11 @@ ApplicationWindow{
                     general_menu_listener.is_initial_menu_pressed = true
                 }
 
-                console.log("Return pressed")
-                if(start === 0)
-                {
-                    start = Date.now()
-                }
-                console.log("Down pressed at "+start)
 
-                qr_code.is_down_pressed = true
 
                 pressed_handler(event)
 
-                //TODO does not work:
-                volume_menu.timersRestart()
+
             }
 
             Keys.onUpPressed:
@@ -1248,7 +1261,20 @@ ApplicationWindow{
             {
                console.log("Down pressed")
                general_menu_listener.is_initial_input_active = false
+
+                console.log("Return pressed")
+                if(start === 0)
+                {
+                    start = Date.now()
+                }
+                console.log("Down pressed at "+start)
+
+                qr_code.is_down_pressed = true
+
                pressed_handler(event)
+
+                //TODO does not work:
+                volume_menu.timersRestart()
             }
 
             Keys.onReleased:
