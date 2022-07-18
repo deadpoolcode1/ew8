@@ -150,7 +150,6 @@ ApplicationWindow{
                     text: qsTr("(Test Application)")
                     anchors.top: discon_label.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.horizontalCenterOffset: -10
                     font.family: intelFont.name
                     font.weight: Font.Bold
                     font.pixelSize: 20

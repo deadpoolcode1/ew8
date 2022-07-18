@@ -1078,6 +1078,7 @@ ApplicationWindow{
                     font.family: intelFont.name
                     font.weight: Font.Bold
                     font.pixelSize: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
 
@@ -1107,6 +1108,7 @@ ApplicationWindow{
                     font.family: intelFont.name
                     font.weight: Font.Bold
                     font.pixelSize: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
 
@@ -1139,6 +1141,7 @@ ApplicationWindow{
                     font.family: intelFont.name
                     font.weight: Font.Bold
                     font.pixelSize: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
 
@@ -1170,6 +1173,7 @@ ApplicationWindow{
                     font.family: intelFont.name
                     font.weight: Font.Bold
                     font.pixelSize: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
 
