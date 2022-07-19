@@ -1382,7 +1382,7 @@ ApplicationWindow{
                 }
                 else if (event.key === Qt.Key_Down)
                 {
-                    if(Date.now() - start < 500)
+                    if(Date.now() - start < (500 - single_key_gap_timer.interval))
                     {
                         if(is_volume_enabled)
                         {
