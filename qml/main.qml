@@ -19,6 +19,10 @@ ApplicationWindow{
     signal brightnessChanged(int newLevel);
     signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
 
+    property bool keyDownState: false;
+    property bool keyReturnState: false;
+    property bool keyUpState: false;
+
     property color white: "#ffffff"
 
 
@@ -1199,25 +1203,24 @@ ApplicationWindow{
                 stop_initial_keys.start()
             }
 
-/*
             Timer {
                     id: single_key_gap_timer
                     interval: 100
                     running: false
                     repeat: false
 
-                    property var its_event: undefined
+                    property var its_event
 
                     function registerStartEvent(event)
                     {
                         its_event = event
+                        start()
                     }
 
                     onTriggered: {
-                        pressed_handler(event);
+                        general_menu_listener.pressed_handler(its_event);
                     }
                 }
-*/
 
 
             Timer {
@@ -1236,33 +1239,57 @@ ApplicationWindow{
 
             Keys.onReturnPressed:
             {
+
+                keyPressedReportSend(event.key)
+
                 if(general_menu_listener.is_initial_input_active)
                 {
                     general_menu_listener.is_initial_menu_pressed = true
                 }
 
-
-
-                pressed_handler(event)
-
-
+                if(single_key_gap_timer.running)
+                {
+                   single_key_gap_timer.stop()
+                   pressed_handler(single_key_gap_timer.its_event)
+                   pressed_handler(event)
+                }
+                else
+                {
+                   single_key_gap_timer.registerStartEvent(event)
+                }
             }
 
             Keys.onUpPressed:
             {
-                 console.log("Up pressed")
-                if(general_menu_listener.is_initial_input_active)
+                  keyPressedReportSend(event.key)
+
+
+                console.log("Up pressed")
+               if(general_menu_listener.is_initial_input_active)
+               {
+                   general_menu_listener.is_initial_up_pressed = true
+               }
+
+               qr_code.is_up_pressed = true
+
+                if(single_key_gap_timer.running)
                 {
-                    general_menu_listener.is_initial_up_pressed = true
+                   single_key_gap_timer.stop()
+                   pressed_handler(single_key_gap_timer.its_event)
+                   pressed_handler(event)
+                }
+                else
+                {
+                   single_key_gap_timer.registerStartEvent(event)
                 }
 
-                qr_code.is_up_pressed = true
-
-                pressed_handler(event)
+                volume_menu.timersRestart()
             }
 
             Keys.onDownPressed:
             {
+                keyPressedReportSend(event.key)
+
                console.log("Down pressed")
                general_menu_listener.is_initial_input_active = false
 
@@ -1275,8 +1302,16 @@ ApplicationWindow{
 
                 qr_code.is_down_pressed = true
 
-               pressed_handler(event)
-
+                if(single_key_gap_timer.running)
+                {
+                   single_key_gap_timer.stop()
+                   pressed_handler(single_key_gap_timer.its_event)
+                   pressed_handler(event)
+                }
+                else
+                {
+                   single_key_gap_timer.registerStartEvent(event)
+                }
                 //TODO does not work:
                 volume_menu.timersRestart()
             }
@@ -1284,6 +1319,12 @@ ApplicationWindow{
             Keys.onReleased:
             {
                 keyReleasedReportSend(event.key)
+
+                if(single_key_gap_timer.running)
+                {
+                   single_key_gap_timer.stop()
+                   pressed_handler(single_key_gap_timer.its_event)
+                }
 
                 if (event.key === Qt.Key_Down){
                   start = 0
@@ -1305,8 +1346,6 @@ ApplicationWindow{
 
 
             function pressed_handler(event){
-
-                keyPressedReportSend(event.key)
 
                 if(general_menu_listener.is_initial_menu_pressed
                         && general_menu_listener.is_initial_up_pressed)
@@ -1385,6 +1424,8 @@ ApplicationWindow{
 
 
                 event.accepted = true;
+
+
 
 
             }
