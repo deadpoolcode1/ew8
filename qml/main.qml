@@ -958,7 +958,7 @@ ApplicationWindow{
             QRCode{
 
                 id: qr_code_core
-                x: (320 - 40)/2
+                x: (320 - 32)/2
                 y: (240 - 50  + qr_code_logo_bar.height)/2
                 z: 42
 
