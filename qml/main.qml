@@ -924,11 +924,8 @@ ApplicationWindow{
 
                 onTriggered:
                 {
-                    if(qr_code.is_active&&qr_code.is_up_pressed&&qr_code.is_down_pressed)
-                    {
                         qr_code.visible = true;
                         deactivate_timer.start();
-                    }
                 }
             }
 
@@ -1194,8 +1191,6 @@ ApplicationWindow{
             property real start: 0
 
             property bool is_initial_input_active: true
-            property bool is_initial_up_pressed: false
-            property bool is_initial_menu_pressed: false
 
             Component.onCompleted:
             {
@@ -1209,16 +1204,31 @@ ApplicationWindow{
                     running: false
                     repeat: false
 
-                    property var its_event
+                    property int its_eventkey
 
-                    function registerStartEvent(event)
+                    function registerStartEvent(eventkey)
                     {
-                        its_event = event
+                        its_eventkey = eventkey
                         start()
                     }
 
                     onTriggered: {
-                        general_menu_listener.pressed_handler(its_event);
+                        general_menu_listener.pressed_handler(its_eventkey);
+                    }
+                }
+
+            Timer {
+                    id: volume_mute_timer
+                    interval: 500 - single_key_gap_timer.interval
+                    running: false
+                    repeat: false
+
+                    onTriggered: {
+                        if(general_menu_listener.is_volume_enabled)
+                        {
+                            console.log("Mute pressed")
+                            volumeKeySend(Qt.Key_VolumeMute)
+                        }
                     }
                 }
 
@@ -1242,76 +1252,67 @@ ApplicationWindow{
 
                 keyPressedReportSend(event.key)
 
-                if(general_menu_listener.is_initial_input_active)
-                {
-                    general_menu_listener.is_initial_menu_pressed = true
-                }
+                press2activate_timer.stop()
+
+                start = 0
+
+                volume_mute_timer.stop()
 
                 if(single_key_gap_timer.running)
                 {
                    single_key_gap_timer.stop()
-                   pressed_handler(single_key_gap_timer.its_event)
-                   pressed_handler(event)
+                   double_pressed_handler(event.key)
                 }
                 else
                 {
-                   single_key_gap_timer.registerStartEvent(event)
+                   single_key_gap_timer.registerStartEvent(event.key)
                 }
+                event.accepted = true
             }
 
             Keys.onUpPressed:
             {
-                  keyPressedReportSend(event.key)
+                keyPressedReportSend(event.key)
 
+                start = 0
+
+                volume_mute_timer.stop()
 
                 console.log("Up pressed")
-               if(general_menu_listener.is_initial_input_active)
-               {
-                   general_menu_listener.is_initial_up_pressed = true
-               }
-
-               qr_code.is_up_pressed = true
 
                 if(single_key_gap_timer.running)
                 {
                    single_key_gap_timer.stop()
-                   pressed_handler(single_key_gap_timer.its_event)
-                   pressed_handler(event)
+                   double_pressed_handler(event.key)
                 }
                 else
                 {
-                   single_key_gap_timer.registerStartEvent(event)
+                   single_key_gap_timer.registerStartEvent(event.key)
                 }
+                event.accepted = true
 
                 volume_menu.timersRestart()
             }
 
             Keys.onDownPressed:
             {
-                keyPressedReportSend(event.key)
+               keyPressedReportSend(event.key)
 
                console.log("Down pressed")
                general_menu_listener.is_initial_input_active = false
 
                 console.log("Return pressed")
-                if(start === 0)
-                {
-                    start = Date.now()
-                }
-                console.log("Down pressed at "+start)
-
-                qr_code.is_down_pressed = true
 
                 if(single_key_gap_timer.running)
                 {
                    single_key_gap_timer.stop()
-                   pressed_handler(single_key_gap_timer.its_event)
-                   pressed_handler(event)
+                   double_pressed_handler(event.key)
                 }
                 else
                 {
-                   single_key_gap_timer.registerStartEvent(event)
+                   single_key_gap_timer.registerStartEvent(event.key)
                 }
+                event.accepted = true
                 //TODO does not work:
                 volume_menu.timersRestart()
             }
@@ -1320,59 +1321,62 @@ ApplicationWindow{
             {
                 keyReleasedReportSend(event.key)
 
+                press2activate_timer.stop()
+
+                general_menu_listener.is_initial_input_active = false;
+
+
+
+                start = 0
+
+                volume_mute_timer.stop()
+
                 if(single_key_gap_timer.running)
                 {
                    single_key_gap_timer.stop()
-                   pressed_handler(single_key_gap_timer.its_event)
+                   pressed_handler(single_key_gap_timer.its_eventkey)
                 }
-
-                if (event.key === Qt.Key_Down){
-                  start = 0
-                  qr_code.is_down_pressed = false
-                  press2activate_timer.stop()
-                }
-
-                if (event.key === Qt.Key_Up){
-                  //start = 0
-                  qr_code.is_up_pressed = false
-                  press2activate_timer.stop()
-                }
-
-                general_menu_listener.is_initial_input_active = false;
 
                 event.accepted = true;
             }
 
 
+            function double_pressed_handler(eventkey)
+            {
+                var eventkey1 = single_key_gap_timer.its_eventkey
+                var eventkey2 = eventkey
 
-            function pressed_handler(event){
-
-                if(general_menu_listener.is_initial_menu_pressed
-                        && general_menu_listener.is_initial_up_pressed)
+                if (general_menu_listener.is_initial_input_active
+                        && ((Qt.Key_Up === eventkey1 && Qt.Key_Return === eventkey2)
+                            ||(Qt.Key_Up === eventkey2 && Qt.Key_Return === eventkey1) )
+                        )
                 {
-
-                    general_menu_listener.is_initial_menu_pressed = false
-                    general_menu_listener.is_initial_up_pressed = false
                     console.log("Print debug messages on LCD")
                     debugMessage("Print Debug On")
                     debugMessagesConnect(true)
                 }
 
-                else if(qr_code.is_active && qr_code.is_down_pressed && qr_code.is_up_pressed)
+                else if (qr_code.is_active
+                         && ((Qt.Key_Up === eventkey1 && Qt.Key_Down === eventkey2)
+                             ||(Qt.Key_Up === eventkey2 && Qt.Key_Down === eventkey1) )
+                         )
                 {
                     if(!press2activate_timer.running)
                     {
                         press2activate_timer.start()
                     }
                 }
+            }
 
-                else
-                {       
-                if (event.key === Qt.Key_Up) {
+
+
+            function pressed_handler(eventkey)
+            {
+                if (Qt.Key_Up === eventkey ) {
                     console.log("Up released")
                     if(is_volume_enabled)
                     {
-                      volumeKeySend(Qt.Key_VolumeUp)
+                        volumeKeySend(Qt.Key_VolumeUp)
                     }
 
                     if(brightness.visible)
@@ -1380,31 +1384,41 @@ ApplicationWindow{
                         brightness.up()
                     }
                 }
-                else if (event.key === Qt.Key_Down)
+                else if (Qt.Key_Down === eventkey)
                 {
-                    if(Date.now() - start < (500 - single_key_gap_timer.interval))
+
+                    if(is_volume_enabled)
                     {
-                        if(is_volume_enabled)
+
+                        if(start === 0)
                         {
-                            volumeKeySend(Qt.Key_VolumeDown)
-                        }
-                    }
-                    else
-                    {
-                        if(is_volume_enabled)
-                        {
-                        console.log("Mute pressed and released")
-                        volumeKeySend(Qt.Key_VolumeMute)
+                            start = Date.now();
                         }
 
+
+                        if(Date.now() - start < (500 - single_key_gap_timer.interval))
+                        {
+                                volumeKeySend(Qt.Key_VolumeDown)
+                        }
+                        else
+                        {
+                                volumeKeySend(Qt.Key_VolumeMute)
+                        }
+
+
+                        if(!volume_mute_timer.running)
+                        {
+                            volume_mute_timer.start()
+                        }
                     }
+
 
                     if(brightness.visible)
                     {
                         brightness.down()
-                    }                  
+                    }
                 }
-                else if (event.key === Qt.Key_Return)
+                else if (Qt.Key_Return === eventkey)
                 {
                     console.log("Enter released")
 
@@ -1414,21 +1428,16 @@ ApplicationWindow{
                     }
                     else if (brightness.visible)
                     {
-                       brightness.visible = false
+                        brightness.visible = false
                     }
                     //NOTE: menu key verification
                     //volumeKeySend(Qt.Key_Return)
                 }
-
             }
 
 
-                event.accepted = true;
 
 
-
-
-            }
 
             function setVisibleSlot() {visible = true}
             function setInvisibleSlot() {visible = false}
