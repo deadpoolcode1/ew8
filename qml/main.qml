@@ -1255,7 +1255,7 @@ ApplicationWindow{
 
                 press2activate_timer.stop()
 
-                if (! is_in_double_press)
+                if (! (is_in_double_press || deactivate_timer.running))
                 {
                     start = 0
 
@@ -1284,7 +1284,7 @@ ApplicationWindow{
 
                 console.log("Up pressed")
 
-                if (! is_in_double_press)
+                if (! (is_in_double_press || deactivate_timer.running))
                 {
 
                     if(single_key_gap_timer.running)
@@ -1314,7 +1314,7 @@ ApplicationWindow{
 
                 console.log("Return pressed")
 
-                if (! is_in_double_press)
+                if (! (is_in_double_press || deactivate_timer.running))
                 {
                     if(single_key_gap_timer.running)
                     {
@@ -1329,8 +1329,6 @@ ApplicationWindow{
                     volume_menu.timersRestart()
                 }
                 event.accepted = true
-
-
             }
 
             Keys.onReleased:
