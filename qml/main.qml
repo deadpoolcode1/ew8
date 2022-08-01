@@ -1191,6 +1191,7 @@ ApplicationWindow{
             property real start: 0
 
             property bool is_initial_input_active: true
+            property bool is_in_double_press: false
 
             Component.onCompleted:
             {
@@ -1254,18 +1255,21 @@ ApplicationWindow{
 
                 press2activate_timer.stop()
 
-                start = 0
-
-                volume_mute_timer.stop()
-
-                if(single_key_gap_timer.running)
+                if (! is_in_double_press)
                 {
-                   single_key_gap_timer.stop()
-                   double_pressed_handler(event.key)
-                }
-                else
-                {
-                   single_key_gap_timer.registerStartEvent(event.key)
+                    start = 0
+
+                    volume_mute_timer.stop()
+
+                    if(single_key_gap_timer.running)
+                    {
+                        single_key_gap_timer.stop()
+                        double_pressed_handler(event.key)
+                    }
+                    else
+                    {
+                        single_key_gap_timer.registerStartEvent(event.key)
+                    }
                 }
                 event.accepted = true
             }
@@ -1280,18 +1284,25 @@ ApplicationWindow{
 
                 console.log("Up pressed")
 
-                if(single_key_gap_timer.running)
+                if (! is_in_double_press)
                 {
-                   single_key_gap_timer.stop()
-                   double_pressed_handler(event.key)
-                }
-                else
-                {
-                   single_key_gap_timer.registerStartEvent(event.key)
+
+                    if(single_key_gap_timer.running)
+                    {
+                        single_key_gap_timer.stop()
+                        double_pressed_handler(event.key)
+                    }
+                    else
+                    {
+                        single_key_gap_timer.registerStartEvent(event.key)
+                    }
+
+
+                    volume_menu.timersRestart()
+
                 }
                 event.accepted = true
 
-                volume_menu.timersRestart()
             }
 
             Keys.onDownPressed:
@@ -1303,23 +1314,30 @@ ApplicationWindow{
 
                 console.log("Return pressed")
 
-                if(single_key_gap_timer.running)
+                if (! is_in_double_press)
                 {
-                   single_key_gap_timer.stop()
-                   double_pressed_handler(event.key)
-                }
-                else
-                {
-                   single_key_gap_timer.registerStartEvent(event.key)
+                    if(single_key_gap_timer.running)
+                    {
+                        single_key_gap_timer.stop()
+                        double_pressed_handler(event.key)
+                    }
+                    else
+                    {
+                        single_key_gap_timer.registerStartEvent(event.key)
+                    }
+                    //TODO does not work:
+                    volume_menu.timersRestart()
                 }
                 event.accepted = true
-                //TODO does not work:
-                volume_menu.timersRestart()
+
+
             }
 
             Keys.onReleased:
             {
                 keyReleasedReportSend(event.key)
+
+                is_in_double_press = false
 
                 press2activate_timer.stop()
 
@@ -1343,6 +1361,9 @@ ApplicationWindow{
 
             function double_pressed_handler(eventkey)
             {
+
+                is_in_double_press = true
+
                 var eventkey1 = single_key_gap_timer.its_eventkey
                 var eventkey2 = eventkey
 
