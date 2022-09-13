@@ -173,6 +173,8 @@ ApplicationWindow{
                 layoutDirection: Qt.LeftToRight
                 spacing: 8
 
+                visible: ! (status_error.is_in_err20)
+
                 Rectangle {
                     id: speed
                     width: 42
@@ -304,7 +306,7 @@ ApplicationWindow{
 
                 SignedStatus {
                     id: signed_status
-                    opacity: isInEdition? 1.0 : 0.0
+                    opacity: (! status_error.is_in_err20) || isInEdition? 1.0 : 0.0
                 }
 
                 Rectangle {
@@ -313,6 +315,8 @@ ApplicationWindow{
                     height: 35
                     color: "#00000000"
                     border.color: "#00000000"
+
+                    opacity: (! status_error.is_in_err20)? 1.0 : 0.0
 
                     Image {
                         id: ota
@@ -340,6 +344,7 @@ ApplicationWindow{
 
                 GpsStatus {
                     id: gps_status
+                    is_in_err20: status_error.is_in_err20
                 }
 
 
@@ -363,6 +368,8 @@ ApplicationWindow{
                         property int layer_pri: 0
                         color: "#00000000"
                         border.color: "#00000000"
+
+                        property bool is_in_err20: (opacity === 1.0 && canEntityArg === 32)
 
 
 
@@ -396,10 +403,11 @@ ApplicationWindow{
                         anchors.topMargin: 0
                         anchors.right: parent.right
                         property int layer_pri: 1
-                        function setVisibleSlot() {opacity = 1.0}
-                        function setInvisibleSlot() {opacity = 0.0}
+                        property bool vis_state: true
+                        function setVisibleSlot() {vis_state = true}
+                        function setInvisibleSlot() {vis_state = false}
                         source: "images/status-bar/status_mute.png"
-                        opacity: isInEdition? 1.0 : 0.0
+                        opacity: ((! status_error.is_in_err20) && vis_state)|| isInEdition? 1.0 : 0.0
                     }
                 }
 
@@ -1441,7 +1449,7 @@ ApplicationWindow{
                 {
                     console.log("Enter released")
 
-                    if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(1.0 === status_error.opacity && status_error.canEntityArg === 0x20))
+                    if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
                     {
                         brightness.visible = ! brightness.visible
                     }
