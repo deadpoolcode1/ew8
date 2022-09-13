@@ -1001,17 +1001,20 @@ ApplicationWindow{
 
             property string canEntityType: "INFO_FAILSAFE"
             property int layer_pri: 2
+            property bool is_active: false
 
             z: 10
 
-            function setVisibleSlot(){visible = true;}
-            function setInvisibleSlot(){visible = false;}
+            function setVisibleSlot(){is_active = true;}
+            function setInvisibleSlot(){is_active = false;}
 
             anchors.fill: parent
 
             color: "#00000000"
 
-            visible: isInEdition
+            visible: (is_active && ! alert_err.visible) || isInEdition
+
+
 
 
             Image
