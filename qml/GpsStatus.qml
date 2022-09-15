@@ -13,10 +13,10 @@ Image {
     id: gps_status
     anchors.top: parent.top
     anchors.topMargin: 0
-    source: "images/status-bar/status_no_GPS.png"
-    property bool is_active: isInEdition
+    source: "images/status-bar/status_no_GPS.png"   
+    property bool is_active: false
     property bool is_in_err20: false
-    opacity: ((!is_in_err20) && active)? 1.0 : 0.0
+    opacity: ((!is_in_err20) && is_active)? 1.0 : 0.0
     property int layer_pri: 0
 
 

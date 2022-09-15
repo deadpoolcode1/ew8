@@ -12,13 +12,18 @@ Rectangle {
     height: auth_in.height
     color: "#00000000"
 
+    property bool is_in_err20: false
+    property bool is_active: false
+
+    opacity: (!is_in_err20 && is_active) ? 1.0 : 0.0
+
     Image {
         property string canEntityType: "INFO_DRIVER_AUTH_IN"
         id: auth_in
         anchors.top: parent.top
         anchors.topMargin: 0
         source: "images/status-bar/status_Signed_in.png"
-        function setVisibleSlot(){visible = true; user_stat.opacity = 1.0}
+        function setVisibleSlot(){visible = true; user_stat.is_active = true}
         function setInvisibleSlot(){visible = false;}
     }
 
@@ -29,7 +34,7 @@ Rectangle {
         anchors.topMargin: 0
         opacity: 1.0
         source: "images/status-bar/status_Signed_out.png"
-        function setVisibleSlot(){visible = true; user_stat.opacity = 1.0}
+        function setVisibleSlot(){visible = true; user_stat.is_active = true}
         function setInvisibleSlot(){visible = false;}
 
         SequentialAnimation {
@@ -62,7 +67,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.topMargin: 0
         source: "images/status-bar/status_Signed_process.png"
-        function setVisibleSlot(){visible = true; user_stat.opacity = 1.0}
+        function setVisibleSlot(){visible = true; user_stat.is_active = true}
         function setInvisibleSlot(){visible = false;}
     }
 

@@ -306,7 +306,19 @@ ApplicationWindow{
 
                 SignedStatus {
                     id: signed_status
-                    opacity: (! status_error.is_in_err20) || isInEdition? 1.0 : 0.0
+
+                    is_in_err20: status_error.is_in_err20
+
+                    opacity: isInEdition? 1.0 : 0.0
+                }
+
+                SadasStatus
+                {
+                  id: sadas_status
+                  distance: 0
+
+                  function setVisibleSlot(Arg) {distance = Arg}
+                  function setInvisibleSlot() {distance = 0}
                 }
 
                 Rectangle {
@@ -315,6 +327,8 @@ ApplicationWindow{
                     height: 35
                     color: "#00000000"
                     border.color: "#00000000"
+
+                    visible: ! sadas_status.visible
 
                     opacity: (! status_error.is_in_err20)? 1.0 : 0.0
 
@@ -344,6 +358,11 @@ ApplicationWindow{
 
                 GpsStatus {
                     id: gps_status
+
+                    is_active: isInEdition
+
+                    visible: ! sadas_status.visible
+
                     is_in_err20: status_error.is_in_err20
                 }
 
@@ -403,7 +422,7 @@ ApplicationWindow{
                         anchors.topMargin: 0
                         anchors.right: parent.right
                         property int layer_pri: 1
-                        property bool vis_state: true
+                        property bool vis_state: false
                         function setVisibleSlot() {vis_state = true}
                         function setInvisibleSlot() {vis_state = false}
                         source: "images/status-bar/status_mute.png"
