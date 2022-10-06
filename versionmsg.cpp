@@ -197,8 +197,14 @@ void VersionMsg::readServiceNumber(void)
 
             regIntegrity = (byteLSB == (quint8)(~ byteMSB));
 
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << hex << (quint32)byteLSB << " Control:" << hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
-        }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
+            qDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+#else
+            qDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+#endif
+
+ }
 
         if(i < 8)
         {
