@@ -47,6 +47,9 @@
 
 #include "canmanager.h"
 
+
+const char * CanManager::can_if_name = "can0";
+
 CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
 {
     itsDisplay = alertdisp;
@@ -210,17 +213,16 @@ void CanManager::init(void)
 
     int can_err_status;
 
-
-    can_err_status = can_do_stop("can0");
+    can_err_status = can_do_stop(can_if_name);
 
     if(can_err_status)
     {
-        qDebug("failed can0 stop");
+        qDebug("failed can interface stop");
     }
     else
     {
         //set parameters:
-        can_err_status = can_set_bitrate_samplepoint("can0", 500000, 0.875);
+        can_err_status = can_set_bitrate_samplepoint(can_if_name, 500000, 0.875);
 
         struct can_ctrlmode cm =
         {
@@ -228,12 +230,7 @@ void CanManager::init(void)
             .flags = 0x80, // CAN_CTRLMODE_FD_NON_ISO,
         };
 
-#if 0
-        can_get_ctrlmode("can0",&cm);
-        qDebug("cm.mask:%X,cm.flag:%X\n",cm.mask,cm.flags);
-#endif
-
-        can_err_status |= can_set_ctrlmode("can0", &cm);
+        can_err_status |= can_set_ctrlmode(can_if_name, &cm);
 
 
         if(can_err_status)
@@ -242,11 +239,11 @@ void CanManager::init(void)
         }
         else
         {
-            can_err_status = can_do_start("can0");
+            can_err_status = can_do_start(can_if_name);
 
             if(can_err_status)
             {
-                qDebug("failed can0 start");
+                qDebug("failed can interface start");
             }
         }
     }
@@ -298,14 +295,14 @@ void CanManager::init(void)
 
     setsockopt(socknum, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, rfilterSize * sizeof(struct can_filter));
 
-    strcpy(ifr.ifr_name, "can0" );
+    strcpy(ifr.ifr_name, can_if_name);
     ioctl(socknum, SIOCGIFINDEX, &ifr);
 
     addr.can_family = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex;
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
-    qDebug("can0 initiated");
+    qDebug("can interface initiated");
 #else
       canInitializeLibrary();
 
@@ -347,7 +344,7 @@ void CanManager::read_frame(void)
     else
     {
 #if 1
-        qDebug() << "can0:" << (void*) (quint32) frame.can_id << ":" <<
+        qDebug() << "can interface:" << (void*) (quint32) frame.can_id << ":" <<
                    (void*) (quint32) frame.data[0] <<
                    (void*) (quint32) frame.data[1] <<
                    (void*) (quint32) frame.data[2] <<

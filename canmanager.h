@@ -63,6 +63,8 @@ private:
 
 #ifndef WIN32
     //inner variables
+
+    static const char * can_if_name;
     int32_t socknum;
     struct sockaddr_can addr;
     struct ifreq ifr;
