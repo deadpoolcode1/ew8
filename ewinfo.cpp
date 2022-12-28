@@ -48,7 +48,7 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
     is_snv_ready = false;
     readEWInfo();
 
-#ifndef WIN32
+#if !((defined WIN32) || (defined REMOVE_EW8_HW))
     readServiceNumber();
 #endif
 }
@@ -151,7 +151,7 @@ void EWInfo::readEWInfo(void)
 }
 
 
-#ifndef WIN32
+#if !((defined WIN32) || (defined REMOVE_EW8_HW))
 
 void EWInfo::readServiceNumber(void)
 {

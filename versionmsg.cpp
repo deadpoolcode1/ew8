@@ -43,7 +43,7 @@ VersionMsg::VersionMsg(CanManager * aCanManager)
 {
     itsCanManager = aCanManager;
     readVersionInfo();
-#ifndef WIN32
+#if !((defined WIN32) || (defined REMOVE_EW8_HW))
     readServiceNumber();
 #endif
 }
@@ -110,7 +110,7 @@ void VersionMsg::readVersionInfo(void)
     //NOTE: System build version:
     bool success = false;
 
-    #ifndef WIN32
+    #if !((defined WIN32) || (defined REMOVE_EW8_HW))
     QFile buildIdFile("/etc/version2epoch");
 
     QString buildId;
@@ -145,7 +145,7 @@ void VersionMsg::readVersionInfo(void)
     }
 }
 
-#ifndef WIN32
+#if !((defined WIN32) || (defined REMOVE_EW8_HW))
 
 void VersionMsg::readServiceNumber(void)
 {

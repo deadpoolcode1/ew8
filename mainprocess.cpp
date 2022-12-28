@@ -46,6 +46,8 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     flag_tree_changed = false;
 
+    theBrightnessControl = nullptr;
+
     //Init QtQuick Objects:
 
     // //////////////////////////////

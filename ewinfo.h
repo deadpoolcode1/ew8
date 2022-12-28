@@ -32,7 +32,8 @@ private:
 
 
     void readEWInfo(void);
-#ifndef WIN32
+#if !((defined WIN32) || (defined REMOVE_EW8_HW))
+
     void readServiceNumber(void);
     void enableDisableSFC(quint32 * wr_ptr, bool On);
     quint32 readDataSFC(quint32 * rd_ptr, quint32 index);

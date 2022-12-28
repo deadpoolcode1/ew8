@@ -72,6 +72,9 @@ int main(int argc, char *argv[])
 #endif
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#ifdef REMOVE_EW8_HW
+    QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+#endif
 
 #ifndef WIN32
     system("killall -USR1 ew8_splash");
@@ -82,9 +85,9 @@ int main(int argc, char *argv[])
 
     app.setOrganizationName("mobileye");
 
-
+#ifndef REMOVE_EW8_HW
     BrightnessControl brightnessControl(&app);
-
+#endif
 
     QCommandLineParser cmdLnParser;
     QString mainQmlFileName;
@@ -165,8 +168,9 @@ int main(int argc, char *argv[])
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
+#ifndef REMOVE_EW8_HW
     mp->setBrightnessControl(& brightnessControl);
-
+#endif
     if (!is_testing_mode)
     {
         CanRxMsg::saveToStorage();

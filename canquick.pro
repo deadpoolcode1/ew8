@@ -211,6 +211,6 @@ DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED
 !isEmpty(target.path): DEFINES += "BASE_TARGET_DIR=\'\"$${target.path}/../\"\'"
 else: DEFINES += "BASE_TARGET_DIR=\'\"\"\'"
 
-
-
+#DEFINES += REMOVE_EW8_HW
+#DEFINES += VIRTUAL_CAN0
 
