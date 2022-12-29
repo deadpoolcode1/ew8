@@ -328,6 +328,7 @@
                 {"name": "TrafficLightWarning", "action": "ALERT_RTW_WARN", "type":"GraphicItem", "Set": 1},
                 {"name": "TSR_Shape", "action": "SHAPE_USA", "type":"GraphicItem"},
                 {"name": "Zero_speed", "action": "INFO_QRCODE", "type": "GraphicItem"}
+                ,{"name": "TSR_enabbled", "action": "AfterMarket_TSR", "type": "Enabler"}
             ]
         }
         ,
