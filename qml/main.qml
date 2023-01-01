@@ -153,11 +153,10 @@ ApplicationWindow{
                 id: logo
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 0
+                anchors.topMargin: 5
                 clip: true
                 visible: true
                 fillMode: Image.PreserveAspectCrop
-                //source: "images/logo/logo.png"
                 source: "images/logo/ME_status_logo.png"
             }
 
@@ -392,9 +391,9 @@ ApplicationWindow{
 
 
 
-                        function setVisibleSlot(Arg){
+                        function setVisibleSlot(Arg, isTamperAlert){
                             opacity = 1.0
-                            canEntityArg = Arg
+                            canEntityArg = isTamperAlert? 0xda : Arg
                         }
                         function setInvisibleSlot(){opacity = 0.0}
 
@@ -915,16 +914,14 @@ ApplicationWindow{
                 anchors.top: parent.top
                 anchors.topMargin: 8
                 visible: true
-
                 Image {
                     id: logo_qr_code
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
-                    anchors.topMargin: 0
+                    anchors.topMargin: 5
                     clip: true
                     visible: true
                     fillMode: Image.PreserveAspectCrop
-                    //source: "images/logo/logo.png"
                     source: "images/logo/ME_status_logo.png"
                 }
 

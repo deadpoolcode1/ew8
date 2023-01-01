@@ -308,7 +308,11 @@
                 {"name": "Hi_Low_BeamControl", "action": ["ALERT_LOW_BEAM", "inverted"],"type": "GraphicItem"},
 
                 {"name": "Error_code", "action": "ALERT_ERROR", "type": "IntArgument", "index": 0},
+                {"name": "TamperAlert", "action": "ALERT_ERROR", "type": "IntArgument", "index": 1},
+                {"name": "ShowTamperAlert", "action": "ALERT_ERROR", "type": "GraphicItem"},
+                {"name": "TamperAlert", "action": "ShowTamperAlert", "type": "Enabler"},
                 {"name": "Error_Active", "action": ["ALERT_ERROR", "inverted"], "type": "GraphicItem"},
+                {"name": "TamperAlert", "action": ["Error_Active", "inverted"], "type": "Enabler"},
 
                 {"name": "PCW_PedDZ", "action":"ALERT_PCW", "type":"GraphicItem", "Set": [1,3]},
                 {"name": "PCW_PedDZ", "action":"ALERT_PDZ", "type":"GraphicItem", "Set": 2},
