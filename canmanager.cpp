@@ -47,10 +47,12 @@
 
 #include "canmanager.h"
 
+#ifndef WIN32
 #ifndef VIRTUAL_CAN0
 const char * CanManager::can_if_name = "can0";
 #else
 const char * CanManager::can_if_name = "vcan0";
+#endif
 #endif
 
 CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
