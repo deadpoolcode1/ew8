@@ -308,7 +308,7 @@ ApplicationWindow{
 
                     is_in_err20: status_error.is_in_err20
 
-                    opacity: isInEdition? 1.0 : 0.0
+                    is_active: isInEdition
                 }
 
                 SadasStatus
