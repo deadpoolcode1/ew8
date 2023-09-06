@@ -104,8 +104,8 @@ ApplicationWindow{
             id: shape
             property string canEntityType: "SHAPE_USA"
             property int layer_pri: 2
-            function setVisibleSlot() {left_panel.usaShapeSLI = true}
-            function setInvisibleSlot() {left_panel.usaShapeSLI = false}
+            function setVisibleSlot() {left_panel_tsr.usaShapeSLI = true}
+            function setInvisibleSlot() {left_panel_tsr.usaShapeSLI = false}
             visible: false
         }
 
@@ -118,14 +118,40 @@ ApplicationWindow{
             visible: false
         }
 
+
+
         Item {
+
+             property int canEntityType: Alert.QtQG
+             property int layer_pri: 2
+
+            function setVisibleSlot() {visible = true}
+            function setInvisibleSlot() {visible = false}
+
+            Item {
             id: show_sli_overspeed
             property string canEntityType: "ALERT_SLI_SHOW"
-            property int layer_pri: 2
+            property int layer_pri: 1
             function setVisibleSlot() {visible = true}
             function setInvisibleSlot() {visible = false}
             visible: false
+            }
+
+            Item {
+                id: alert_isa_overspeed
+                property string canEntityType: "ALERT_ISA_OVERSPEED"
+                property int layer_pri: 0
+                function setVisibleSlot() {visible = true}
+                function setInvisibleSlot() {visible = false}
+                visible: false
+            }
+
+
         }
+
+
+
+
 
 
 
@@ -479,7 +505,7 @@ ApplicationWindow{
                 function setInvisibleSlot(){visible = false}
             }
 
-            IMS_TSR_Items {
+            Rectangle {
                 id: left_panel
                 width: 50
                 color: "#00000000"
@@ -491,8 +517,36 @@ ApplicationWindow{
                 z: 6
                 anchors.left: parent.left
 
-                //NOTE: SLI units are always same as units of SpeedFormat(e.g. UK has EU shape with Mph)
-                overSpeeding: show_sli_overspeed.visible
+                function setVisibleSlot(){visible = true;}
+                function setInvisibleSlot(){visible = false;}
+
+                IMS_TSR_Items {
+                    id: left_panel_tsr
+
+                    anchors.fill: parent
+
+                    color: "#00000000"
+
+                    //NOTE: SLI units are always same as units of SpeedFormat(e.g. UK has EU shape with Mph)
+                    overSpeeding: show_sli_overspeed.visible
+                    property int canEntityType: Alert.QtQG
+                    property int layer_pri: 1
+                }
+
+
+                IMS_ISA_Items {
+
+                    anchors.fill: parent
+                    id: left_panel_isa
+
+                    color: "#00000000"
+
+
+                    overSpeeding: alert_isa_overspeed.visible
+                    property int layer_pri: 0
+
+                }
+
 
                 property int canEntityType: Alert.QtQG
                 property int layer_pri: 1
