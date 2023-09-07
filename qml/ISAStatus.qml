@@ -54,7 +54,10 @@ Rectangle {
         leftPadding: 2
         anchors.right: parent.right
         anchors.rightMargin: 3
+        font.pixelSize: 12
+        fontSizeMode: Text.FixedSize
         font.family: intelFont.name
+        font.weight: Font.Medium
     }
 
 
