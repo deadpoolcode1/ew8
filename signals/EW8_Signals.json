@@ -120,6 +120,20 @@
 
     "Protocols": [
         {
+            "protocol":"IMS_ISA",
+            "signals":[
+                {"name": "ISA_STATE_Value", "action": "AfterMarket_TSR", "type": "Enabler", "Set": 0}
+                ,{"name": "ISA_STATE_Value", "action": "ISA_SLWF", "type": "Enabler" , "Set": [2,3]}
+                ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": [1,2,3]}
+                ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_ERROR", "type": "GraphicItem", "Set": 4}
+                ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_INACTIVE", "type": "GraphicItem", "Set": 1}
+                ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_PARTIAL", "type": "GraphicItem", "Set": 2}
+                ,{"name": "ISA_SLWF", "action": "ALERT_ISA_OVERSPEED", "type": "GraphicItem", "Set": [2,3]}
+                ,{"name": "ISA_Legal_Speed", "action": "ALERT_ISA_SPEED", "type": "IntArgument", "index": 0}
+            ]
+        }
+        ,
+        {
             "protocol": "AfterMarket_TSR",
             "signals":[
                 {"name": ["Vision_only_Sign_Type_D1", "Vision_only_supp_Sign_Type_D1"], "action": "Vision_only_Sign_Type",  "isValueTable": true, "Domain": [0,21,24]}
@@ -340,20 +354,6 @@
                 {"name": "TSR_Shape", "action": "SHAPE_USA", "type":"GraphicItem"},
                 {"name": "Zero_speed", "action": "INFO_QRCODE", "type": "GraphicItem"}
                 ,{"name": "TSR_enabbled", "action": "AfterMarket_TSR", "type": "Enabler"}
-            ]
-        }
-        ,
-        {
-            "protocol":"IMS_ISA",
-            "signals":[
-                {"name": "ISA_STATE_Value", "action": "AfterMarket_TSR", "type": "Enabler", "Set": 0}
-                ,{"name": "ISA_STATE_Value", "action": "ISA_SLWF", "type": "Enabler" , "Set": [2,3]}
-                ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": [1,2,3]}
-                ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_ERROR", "type": "GraphicItem", "Set": 4}
-                ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_INACTIVE", "type": "GraphicItem", "Set": 1}
-                ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_PARTIAL", "type": "GraphicItem", "Set": 2}
-                ,{"name": "ISA_SLWF", "action": "ALERT_ISA_OVERSPEED", "type": "GraphicItem", "Set": [2,3]}
-                ,{"name": "ISA_Legal_Speed", "action": "ALERT_ISA_SPEED", "type": "IntArgument", "index": 0}
             ]
         }
         ,

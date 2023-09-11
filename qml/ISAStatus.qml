@@ -12,13 +12,14 @@ Rectangle {
     property color white: "#ffffff"
     property color red: "#ef000c"
 
-    width: 40
-    height: 16
+    width: 52
+    height: 20
     color: "#00000000"
     radius: 1
     border.color: white
+	border.width: 2
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: 20
+    anchors.bottomMargin: 12
     anchors.left: parent.left
     anchors.leftMargin: 8
 
@@ -33,11 +34,11 @@ Rectangle {
 
     Image{
         id: icon
-        width: 10
-        height: 10
+        width: 14
+        height: 14
         anchors.verticalCenterOffset: 0
         anchors.left: parent.left
-        anchors.leftMargin: 2
+        anchors.leftMargin: 4
         anchors.verticalCenter: parent.verticalCenter
         source: "images/Volume_Control_shortcut/mute.png"
 
@@ -54,11 +55,13 @@ Rectangle {
         leftPadding: 2
         anchors.right: parent.right
         anchors.rightMargin: 3
-        font.pixelSize: 12
+		font.pixelSize: 14
         fontSizeMode: Text.FixedSize
         font.family: intelFont.name
         font.weight: Font.Medium
-    }
+		anchors.verticalCenterOffset: 0
+        anchors.verticalCenter: parent.verticalCenter
+     }
 
 
     Canvas
