@@ -55,6 +55,7 @@
         ,"ALERT_ISA_ERROR"
         ,"INFO_ISA_INACTIVE"
         ,"INFO_ISA_PARTIAL"
+        ,"ALERT_ISA_HIGHWAY"
 
 
         ,"INFO_DRIVER_AUTH_IN"
@@ -124,12 +125,14 @@
             "signals":[
                 {"name": "ISA_STATE_Value", "action": "AfterMarket_TSR", "type": "Enabler", "Set": 0}
                 ,{"name": "ISA_STATE_Value", "action": "ISA_SLWF", "type": "Enabler" , "Set": [2,3]}
-                ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": [1,2,3]}
+                ,{"name": "ISA_STATE_Value", "action": "Legal_Speed_Validity", "type": "Enabler", "Set": [1,2,3]}
                 ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_ERROR", "type": "GraphicItem", "Set": 4}
                 ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_INACTIVE", "type": "GraphicItem", "Set": 1}
                 ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_PARTIAL", "type": "GraphicItem", "Set": 2}
                 ,{"name": "ISA_SLWF", "action": "ALERT_ISA_OVERSPEED", "type": "GraphicItem", "Set": [2,3]}
                 ,{"name": "ISA_Legal_Speed", "action": "ALERT_ISA_SPEED", "type": "IntArgument", "index": 0}
+                ,{"name": "Legal_Speed_Validity", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": 2}
+                ,{"name": "Legal_Speed_Validity", "action": "ALERT_ISA_HIGHWAY", "type": "GraphicItem", "Set": 3}
             ]
         }
         ,

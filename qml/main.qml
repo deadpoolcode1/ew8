@@ -328,56 +328,113 @@ ApplicationWindow{
                 anchors.right: parent.right
                 anchors.rightMargin: 0
 
-
-                SignedStatus {
-                    id: signed_status
-
-                    is_in_err20: status_error.is_in_err20
-
-                    is_active: isInEdition
-                }
-
-                SadasStatus
-                {
-                  id: sadas_status
-                  distance: 0
-
-                  function setVisibleSlot(Arg) {distance = Arg}
-                  function setInvisibleSlot() {distance = 0}
-                }
-
-                Rectangle {
-                    id: comm_info
-                    width: 23
+                Rectangle{
+                    width: 47
                     height: 35
                     color: "#00000000"
-                    border.color: "#00000000"
 
-                    visible: ! sadas_status.visible
 
-                    opacity: (! status_error.is_in_err20)? 1.0 : 0.0
 
-                    Image {
-                        id: ota
-                        anchors.top: parent.top
-                        property int layer_pri: 1
-                        anchors.topMargin: 0
-                        source: "images/status-bar/status_OTA.png"
-                        opacity: isInEdition? 1.0 : 0.0
-                    }
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#00000000"
 
-                    Image {
-                        id: gsm_status
-                        anchors.top: parent.top
-                        property string canEntityType: "INFO_NO_GSM"
+                        property int canEntityType: Alert.QtQG
                         property int layer_pri: 0
-                        anchors.topMargin: 0
-                        source: "images/status-bar/status_no_GSM.png"
 
                         function setVisibleSlot() {opacity = 1.0}
                         function setInvisibleSlot() {opacity = 0.0}
-                        opacity: isInEdition? 1.0 : 0.0
 
+                        ISAStatus {
+                            id: alert_isa_error
+                            canEntityType: "ALERT_ISA_ERROR"
+                            property int layer_pri: 0
+                            is_error: true
+                            anchors.fill: parent
+                            visible: false
+                        }
+
+                        ISAStatus {
+                            id: info_isa_inactive
+                            canEntityType: "INFO_ISA_INACTIVE"
+                            property int layer_pri: 1
+                            is_deactivated: true
+                            anchors.fill: parent
+                            visible: false
+                        }
+
+                        ISAStatus {
+                            id: info_isa_partial
+                            canEntityType: "INFO_ISA_PARTIAL"
+                            property int layer_pri: 2
+                            anchors.fill: parent
+                            visible: false
+                        }
+
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#00000000"
+
+                        property int canEntityType: Alert.QtQG
+                        property int layer_pri: 1
+
+                        function setVisibleSlot() {opacity = 1.0}
+                        function setInvisibleSlot() {opacity = 0.0}
+
+
+                        SignedStatus {
+                            id: signed_status
+
+                            is_in_err20: status_error.is_in_err20
+
+                            is_active: isInEdition
+                        }
+
+                        SadasStatus
+                        {
+                            id: sadas_status
+                            distance: 0
+
+                            function setVisibleSlot(Arg) {distance = Arg}
+                            function setInvisibleSlot() {distance = 0}
+                        }
+
+                        Rectangle {
+                            id: comm_info
+                            width: 23
+                            height: 35
+                            color: "#00000000"
+                            border.color: "#00000000"
+
+                            visible: ! sadas_status.visible
+
+                            opacity: (! status_error.is_in_err20)? 1.0 : 0.0
+
+                            Image {
+                                id: ota
+                                anchors.top: parent.top
+                                property int layer_pri: 1
+                                anchors.topMargin: 0
+                                source: "images/status-bar/status_OTA.png"
+                                opacity: isInEdition? 1.0 : 0.0
+                            }
+
+                            Image {
+                                id: gsm_status
+                                anchors.top: parent.top
+                                property string canEntityType: "INFO_NO_GSM"
+                                property int layer_pri: 0
+                                anchors.topMargin: 0
+                                source: "images/status-bar/status_no_GSM.png"
+
+                                function setVisibleSlot() {opacity = 1.0}
+                                function setInvisibleSlot() {opacity = 0.0}
+                                opacity: isInEdition? 1.0 : 0.0
+
+                            }
+                        }
                     }
                 }
 

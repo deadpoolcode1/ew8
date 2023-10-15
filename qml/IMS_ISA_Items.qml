@@ -63,47 +63,4 @@ Rectangle {
 
 
 
-    Item {
-        id: groupBottom
-        objectName: "BOTTOM_QtQG"
-        property bool mutexGroup: true
-        property int layer_pri: 0
-
-        property bool isInSlot:  true
-
-        property int canEntityType: Alert.QtQG
-
-        visible: true
-
-        z: 2
-
-        anchors.left: parent.left
-        anchors.rightMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-
-        function setVisibleSlot() {visible = true; }
-        function setInvisibleSlot() {visible = false}
-
-
-        ISAStatus {
-            id: alert_isa_error
-            canEntityType: "ALERT_ISA_ERROR"
-            property int layer_pri: 0
-            is_error: true
-        }
-
-        ISAStatus {
-            id: info_isa_inactive
-            canEntityType: "INFO_ISA_INACTIVE"
-            property int layer_pri: 1
-            is_deactivated: true
-        }
-
-        ISAStatus {
-            id: info_isa_partial
-            canEntityType: "INFO_ISA_PARTIAL"
-            property int layer_pri: 2
-        }
-    }
 }
