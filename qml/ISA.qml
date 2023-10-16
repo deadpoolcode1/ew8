@@ -6,11 +6,17 @@ property int canEntityArg: 0
 property var canEntityType;
 property bool overSpeeding: false
 property bool usaShape: false
+property bool isHighway: false
 visible: true
 
 property alias source: sign.source
 
 property alias sign_visible: sign.visible
+
+
+property url regularSource: "images/left-panel/ISA/bellow_speed.png"
+property url overspeedRegularSource: "images/left-panel/ISA/above_speed.png"
+property url highwaySource: "images/left-panel/TSR/left_expressway_beg.png"
 
 
 property url usaShapeSource: "images/left-panel/SLI/left_SLI_rect.png"
@@ -95,7 +101,7 @@ SideIcon {
     SequentialAnimation{
         id:over_speeding_animat
         loops: Animation.Infinite
-        running: overSpeeding
+        running: overSpeeding && ! isHighway
 
 
         NumberAnimation {
@@ -127,14 +133,26 @@ SideIcon {
         onStopped: {sign.opacity =  1.0}
     }
 
-    source: "images/left-panel/SLI/left_SLI_circ.png"
-
+    source: overSpeeding? overspeedRegularSource : regularSource
    }
    
    //circular
    states: [
        State {
-           name: "UsaEnd"; when: usaShape && endOfLimit
+           name: "NoSpeedLimit"; when: isHighway
+           PropertyChanges {
+               target: sign
+               source: highwaySource
+           }
+
+           PropertyChanges {
+               target: splim
+               visible: false
+           }
+       }
+       ,
+       State {
+           name: "UsaEnd"; when: usaShape && endOfLimit && ! isHighway
            PropertyChanges {
                target: sign
                visible: false
@@ -142,7 +160,7 @@ SideIcon {
        }
        ,
        State {
-           name: "GeneralEnd"; when: !usaShape && endOfLimit
+           name: "GeneralEnd"; when: !usaShape && endOfLimit && ! isHighway
            PropertyChanges {
                target: sign
                source: endRegularSource
@@ -150,7 +168,7 @@ SideIcon {
        }
        ,
        State {
-           name: "Usa"; when: usaShape && !endOfLimit
+           name: "Usa"; when: usaShape && !endOfLimit  && ! isHighway
            PropertyChanges {
                target: sign
                source: usaShapeSource

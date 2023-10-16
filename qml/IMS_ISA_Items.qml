@@ -33,7 +33,7 @@ Rectangle {
 
         visible: true
 
-        z: (alert_rtw_warn.sign_visible? alert_rtw_warn.z : 1) * (upper_isa.sign_visible? upper_isa.z : 1)
+        z: (alert_rtw_warn.sign_visible? alert_rtw_warn.z : 1) * (upper_isa.sign_visible? upper_isa.z : 1) * (upper_isa_nolim.sign_visible? upper_isa_nolim.z : 1)
 
         RTW {
             id: alert_rtw_warn
@@ -48,10 +48,25 @@ Rectangle {
         ISA {
             id: upper_isa
             canEntityType: "ALERT_ISA_SPEED"
-            property int layer_pri: 1
+            property int layer_pri: 2
             usaShape: usaShapeSLI
 
             overSpeeding: left_panel.overSpeeding && isInSlot
+
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+        }
+
+        ISA {
+            id: upper_isa_nolim
+            canEntityType: "ALERT_ISA_HIGHWAY"
+            property int layer_pri: 1
+            usaShape: usaShapeSLI
+
+            overSpeeding: false
+            isHighway: true
 
             anchors.top: parent.top
             anchors.topMargin: 0
