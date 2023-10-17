@@ -19,11 +19,14 @@ Rectangle
     property int canEntityArg1: 0x0
     property int canEntityArg2: 0x5
 
+    property  bool isLimitFail: false
+
     function timersRestart()
     {
        volume_done_timer.restart()
        volume_fail_timer.restart()
     }
+
 
 Image {
     id: volume_reqfail
@@ -94,7 +97,7 @@ Image {
     source: "images/master-volume/m_mute.png"
     
     function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2;}
-    function setInvisibleSlot(){visible = false}
+    function setInvisibleSlot(){visible = false; isLimitFail = false}
     signal itemActionDeactivate()
     
     Timer {
@@ -102,6 +105,7 @@ Image {
         running: volume_done.visible
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_done.itemActionDeactivate()
         }
     }
@@ -111,7 +115,7 @@ Image {
 states: [
     State {
         name: "Low"
-        when: canEntityArg > 0 && canEntityArg < 3
+        when: canEntityArg > 0 && canEntityArg < 3  && !isLimitFail
 
         PropertyChanges {
             target: volume_done
@@ -120,11 +124,19 @@ states: [
     },
     State {
         name: "High"
-        when: canEntityArg > 2
+        when: canEntityArg > 2 && !isLimitFail
 
         PropertyChanges {
             target: volume_done
             source: "images/master-volume/m_vol_high.png"
+        }
+    },
+    State {
+        name: "Limit"
+        when: isLimitFail
+        PropertyChanges {
+            target: volume_done
+            source: "images/master-volume/m_red alert.png"
         }
     }
 ]

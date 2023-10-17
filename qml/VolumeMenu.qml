@@ -17,6 +17,11 @@ ProgressBarMenu {
         volume_done.timersRestart()
     }
 
+    function invokeLimitFail()
+    {
+      volume_done.isLimitFail =  true
+    }
+
     displayedValue: volume_done.canEntityArg
 
     lowerLimit: volume_done.canEntityArg1
@@ -27,6 +32,8 @@ ProgressBarMenu {
 
     VolumeIndicator {
         id: volume_done
+
+
 
         anchors.verticalCenter: mnemonicIconSlot.verticalCenter
         anchors.left:mnemonicIconSlot.left
