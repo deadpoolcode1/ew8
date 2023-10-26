@@ -1228,7 +1228,6 @@ ApplicationWindow{
                         {
                             console.log("Mute pressed")
                             volumeKeySend(Qt.Key_Return)
-                            volume_conditional_send_timer.key2Send = Qt.Key_VolumeMute
                             volume_conditional_send_timer.start()
                         }
                     }
@@ -1378,9 +1377,8 @@ ApplicationWindow{
                     console.log("Up released")
                     if(is_volume_enabled)
                     {
-                        volumeKeySend(Qt.Key_Return)
-                        volume_conditional_send_timer.key2Send = Qt.Key_VolumeUp
-                        volume_conditional_send_timer.start()
+                        volume_menu.suppressLimitFail()
+                        volumeKeySend(Qt.Key_VolumeUp)
                     }
 
                     if(brightness.visible)
@@ -1402,14 +1400,12 @@ ApplicationWindow{
 
                         if(Date.now() - start < (500 - single_key_gap_timer.interval))
                         {
-                            volumeKeySend(Qt.Key_Return)
-                            volume_conditional_send_timer.key2Send = Qt.Key_VolumeDown
-                            volume_conditional_send_timer.start()
+                                volume_menu.suppressLimitFail() 
+                                volumeKeySend(Qt.Key_VolumeDown)
                         }
                         else
                         {
                             volumeKeySend(Qt.Key_Return)
-                            volume_conditional_send_timer.key2Send = Qt.Key_VolumeMute
                             volume_conditional_send_timer.start()
                         }
 
@@ -1438,8 +1434,6 @@ ApplicationWindow{
                     {
                         brightness.visible = false
                     }
-                    //NOTE: menu key verification
-                    //volumeKeySend(Qt.Key_Return)
                 }
             }
 
@@ -1450,44 +1444,17 @@ ApplicationWindow{
                 interval: 60
                 running: false
                 repeat: false
-                property int key2Send: Qt.Key_VolumeMute
 
                 onTriggered:
                 {
-                    switch (key2Send){
-                    case Qt.Key_VolumeMute:
-                        if(volume_menu.lowerLimit == 0)
-                        {
-                            console.log("Mute is permited: send")
-                            volumeKeySend(Qt.Key_VolumeMute)
-                        }
-                        else
-                        {
-                            volume_menu.invokeLimitFail()
-                        }
-                        break;
-                    case Qt.Key_VolumeDown:
-                        if(volume_menu.lowerLimit < volume_menu.displayedValue)
-                        {
-                            volumeKeySend(Qt.Key_VolumeDown);
-                        }
-                        else
-                        {
-                            volume_menu.invokeLimitFail()
-                        }
-
-                        break;
-                    case Qt.Key_VolumeUp:
-                        if(volume_menu.upperLimit > volume_menu.displayedValue)
-                        {
-                            volumeKeySend(Qt.Key_VolumeUp);
-                        }
-                        else
-                        {
-                            volume_menu.invokeLimitFail()
-                        }
-
-                        break;
+                    if(volume_menu.lowerLimit == 0)
+                    {
+                        console.log("Mute is permited: send")
+                        volumeKeySend(Qt.Key_VolumeMute)
+                    }
+                    else
+                    {
+                        volume_menu.invokeLimitFail()
                     }
                 }
             }

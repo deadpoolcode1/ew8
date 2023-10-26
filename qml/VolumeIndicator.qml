@@ -10,6 +10,7 @@ import builtin.mobileye.QRCode 0.1
 
 Rectangle
 {
+    id: volume_indicator
     width: 22
     height: 35
     color: "#00000000"
@@ -52,6 +53,7 @@ Image {
         running: volume_reqfail.visible
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_reqfail.itemSelfDeactivate()
         }
     }
@@ -80,18 +82,26 @@ Image {
         running: volume_fail.visible
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_fail.itemActionDeactivate()
         }
     }
 }
 
+Timer {
+	id: limit_fail_timer
+	running: false
+	interval: 1000
+	onTriggered: {
+	    isLimitFail = false
+	}
+}
 
 
 Image {
     id: volume_done
     property string canEntityType: "VOLUME_DONE"
     objectName: "DONE_VOLUME"
-    //TODO check the values integrity
     property int layer_pri: 1
     
     source: "images/master-volume/m_mute.png"
@@ -137,6 +147,11 @@ states: [
         PropertyChanges {
             target: volume_done
             source: "images/master-volume/m_red alert.png"
+        }
+
+        PropertyChanges {
+            target: limit_fail_timer
+            running: true
         }
     }
 ]

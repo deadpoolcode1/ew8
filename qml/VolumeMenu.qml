@@ -22,6 +22,11 @@ ProgressBarMenu {
       volume_done.isLimitFail =  true
     }
 
+    function suppressLimitFail()
+    {
+      volume_done.isLimitFail =  false
+    }
+
     displayedValue: volume_done.canEntityArg
 
     lowerLimit: volume_done.canEntityArg1
