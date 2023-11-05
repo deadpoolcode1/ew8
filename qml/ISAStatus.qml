@@ -4,24 +4,28 @@ Rectangle {
 
     id: container
     property var canEntityType;
-    visible: true
 
     property bool is_error: false
     property  bool is_deactivated: false
+    property  bool is_available: true
+    property bool is_forced: false
+    property bool is_active: false
 
     property color white: "#ffffff"
     property color red: "#ef000c"
+
+    visible: is_forced || (is_active && is_available)
 
     width: 47
     height: 20
     color: "#00000000"
 
     function setVisibleSlot() {
-        visible = true;
+        is_active = true;
     }
 
     function setInvisibleSlot() {
-       // visible = false;
+        is_active = false;
     }
 
     Image{

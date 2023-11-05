@@ -10,8 +10,7 @@ import builtin.mobileye.QRCode 0.1
 import builtin.mobileye.EWInfo 0.1
 
 
-
-ApplicationWindow{
+Window {
     id: page
     signal keyPressedReportSend(int qtKey);
     signal keyReleasedReportSend(int qtKey);
@@ -118,6 +117,69 @@ ApplicationWindow{
             visible: false
         }
 
+        Item {
+            id: state_isa
+            property string canEntityType: "STATE_ISA_NOT_TSR"
+            property int layer_pri: 2
+            function setVisibleSlot() {
+                if (state === "preinit")
+                {
+                    state = "isa_init"
+                }
+            }
+            function setInvisibleSlot() {
+                if (state === "preinit")
+                {
+                    state = "tsr"
+                }
+                if (state === "graphicinit")
+                {
+                    state = "preinit"
+                }
+
+            }
+
+            visible: false
+
+
+            states:
+                [
+                State { name: "graphicinit";}
+                ,State { name: "preinit"; PropertyChanges {target: isa_not_tsr_uknown_timer; running: true}}
+                , State {name: "isa_init"; PropertyChanges {target: isa_not_tsr_first_activation_timer; running: true}}
+                , State {name: "tsr"}
+                , State {name: "isa"}
+            ]
+
+            state: "graphicinit"
+
+
+            Timer {
+                id: isa_not_tsr_uknown_timer
+
+                running: false
+
+                interval: 100
+
+                onTriggered:
+                {
+                    state_isa.state = "tsr"
+                }
+            }
+
+            Timer {
+                id: isa_not_tsr_first_activation_timer
+                running: false
+
+                interval: 1000
+
+                onTriggered:
+                {
+                    state_isa.state = "isa"
+                }
+            }
+
+        }
 
 
         Item {
@@ -131,7 +193,7 @@ ApplicationWindow{
             Item {
             id: show_sli_overspeed
             property string canEntityType: "ALERT_SLI_SHOW"
-            property int layer_pri: 1
+            property int layer_pri: 0
             function setVisibleSlot() {visible = true}
             function setInvisibleSlot() {visible = false}
             visible: false
@@ -339,11 +401,16 @@ ApplicationWindow{
                         anchors.fill: parent
                         color: "#00000000"
 
+                        visible: is_active
+
+                        z: 10
+
                         property int canEntityType: Alert.QtQG
+                        property bool is_active: false
                         property int layer_pri: 0
 
-                        function setVisibleSlot() {opacity = 1.0}
-                        function setInvisibleSlot() {opacity = 0.0}
+                        function setVisibleSlot() {is_active = true}
+                        function setInvisibleSlot() {is_active = false}
 
                         ISAStatus {
                             id: alert_isa_error
@@ -351,7 +418,7 @@ ApplicationWindow{
                             property int layer_pri: 0
                             is_error: true
                             anchors.fill: parent
-                            visible: false
+                            is_forced:  state_isa.state === "isa_init"
                         }
 
                         ISAStatus {
@@ -360,7 +427,7 @@ ApplicationWindow{
                             property int layer_pri: 1
                             is_deactivated: true
                             anchors.fill: parent
-                            visible: false
+                            is_available: state_isa.state === "isa"
                         }
 
                         ISAStatus {
@@ -368,7 +435,7 @@ ApplicationWindow{
                             canEntityType: "INFO_ISA_PARTIAL"
                             property int layer_pri: 2
                             anchors.fill: parent
-                            visible: false
+                            is_available: state_isa.state === "isa"
                         }
 
                     }
@@ -582,12 +649,14 @@ ApplicationWindow{
 
                     anchors.fill: parent
 
+                    is_available: state_isa.state === "tsr"
+
                     color: "#00000000"
 
                     //NOTE: SLI units are always same as units of SpeedFormat(e.g. UK has EU shape with Mph)
                     overSpeeding: show_sli_overspeed.visible
                     property int canEntityType: Alert.QtQG
-                    property int layer_pri: 1
+                    property int layer_pri: 0
                 }
 
 
@@ -597,6 +666,8 @@ ApplicationWindow{
                     id: left_panel_isa
 
                     color: "#00000000"
+
+                    is_available: state_isa.state === "isa"
 
 
                     overSpeeding: alert_isa_overspeed.visible

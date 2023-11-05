@@ -10,7 +10,10 @@ import builtin.mobileye.QRCode 0.1
 Rectangle {
     id: left_panel
 
-    visible: true
+    visible: is_active && is_available
+
+    property bool is_active: false
+    property bool is_available: false
 
     property int canEntityType: Alert.QtQG
     property int layer_pri: 1
@@ -18,8 +21,8 @@ Rectangle {
     property alias speedLimit: upper_isa.canEntityArg
     property bool usaShapeSLI: false
 
-    function setVisibleSlot(){visible = true;}
-    function setInvisibleSlot(){visible = false;}
+    function setVisibleSlot(){is_active = true;}
+    function setInvisibleSlot(){is_active = false;}
 
     Item {
         id: groupTop
