@@ -14,7 +14,8 @@ Rectangle {
     property color white: "#ffffff"
     property color red: "#ef000c"
 
-    visible: is_forced || (is_active && is_available)
+    visible: to_be_displayed
+    property bool to_be_displayed: is_forced || (is_active && is_available)
 
     width: 47
     height: 20

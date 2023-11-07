@@ -21,8 +21,8 @@ Rectangle {
     property alias speedLimit: upper_tsr.canEntityArg
     property bool usaShapeSLI: false
 
-    function setVisibleSlot(){is_active = true;}
-    function setInvisibleSlot(){is_active = false;}
+    //function setVisibleSlot(){is_active = true;}
+    //function setInvisibleSlot(){is_active = false;}
 
     Item {
         id: groupTop

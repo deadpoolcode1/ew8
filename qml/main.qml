@@ -118,40 +118,46 @@ Window {
         }
 
         Item {
+            id: state_tsr
+            property string canEntityType: "STATE_TSR_NOT_ISA"
+            property int layer_pri: 2
+            property bool is_graphic_init: false
+
+            function setVisibleSlot() {
+                if (state_isa.state !== "isa" && state_isa.state !== "isa_init")
+                {
+                    state_isa.state = "tsr"
+                }
+            }
+        }
+
+
+        Item {
             id: state_isa
             property string canEntityType: "STATE_ISA_NOT_TSR"
             property int layer_pri: 2
+
             function setVisibleSlot() {
-                if (state === "preinit")
+                if (state !== "isa" && state !== "tsr")
                 {
                     state = "isa_init"
                 }
             }
-            function setInvisibleSlot() {
-                if (state === "preinit")
-                {
-                    state = "tsr"
-                }
-                if (state === "graphicinit")
-                {
-                    state = "preinit"
-                }
 
-            }
 
             visible: false
 
 
             states:
                 [
-                State { name: "graphicinit";}
-                ,State { name: "preinit"; PropertyChanges {target: isa_not_tsr_uknown_timer; running: true}}
+                State { name: "preinit"}
+                ,State { name: "isa_wait"; PropertyChanges {target: isa_not_tsr_uknown_timer; running: true}}
                 , State {name: "isa_init"; PropertyChanges {target: isa_not_tsr_first_activation_timer; running: true}}
                 , State {name: "tsr"}
                 , State {name: "isa"}
             ]
 
-            state: "graphicinit"
+            state: "preinit"
 
 
             Timer {
@@ -401,13 +407,17 @@ Window {
                         anchors.fill: parent
                         color: "#00000000"
 
-                        visible: is_active
+                        id: isa_status
+
+                        visible: ((hasActiveChildren) &&  (! status_error.is_in_err20))
+
+                        property bool hasActiveChildren: alert_isa_error.is_forced || info_isa_inactive.to_be_displayed || info_isa_partial.to_be_displayed
 
                         z: 10
 
                         property int canEntityType: Alert.QtQG
                         property bool is_active: false
-                        property int layer_pri: 0
+                        property int layer_pri: 1
 
                         function setVisibleSlot() {is_active = true}
                         function setInvisibleSlot() {is_active = false}
@@ -447,8 +457,11 @@ Window {
                         property int canEntityType: Alert.QtQG
                         property int layer_pri: 1
 
-                        function setVisibleSlot() {opacity = 1.0}
-                        function setInvisibleSlot() {opacity = 0.0}
+                        property bool is_active: false
+                        opacity: (is_active && ! isa_status.hasActiveChildren)? 1.0 : 0.0
+
+                        function setVisibleSlot() {is_active = true}
+                        function setInvisibleSlot() {is_active = false}
 
 
                         SignedStatus {
@@ -650,6 +663,9 @@ Window {
                     anchors.fill: parent
 
                     is_available: state_isa.state === "tsr"
+
+                    function setVisibleSlot(){is_active = true; if (state_isa.state === "preinit") {state_isa.state = "isa_wait"}}
+                    function setInvisibleSlot(){is_active = false;}
 
                     color: "#00000000"
 
