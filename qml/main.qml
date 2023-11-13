@@ -15,6 +15,11 @@ Window {
     signal keyPressedReportSend(int qtKey);
     signal keyReleasedReportSend(int qtKey);
     signal volumeKeySend(int qtKey);//Qt.Key
+    signal isaFullDeactivationRequest()
+    signal isaPartialDeactivationRequest()
+    signal isaFullActivationRequest()
+
+
     signal brightnessChanged(int newLevel);
     signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
 
@@ -411,7 +416,7 @@ Window {
 
                         visible: ((hasActiveChildren) &&  (! status_error.is_in_err20))
 
-                        property bool hasActiveChildren: alert_isa_error.is_forced || info_isa_inactive.to_be_displayed || info_isa_partial.to_be_displayed
+                        property bool hasActiveChildren: alert_isa_error.to_be_displayed || info_isa_inactive.to_be_displayed || info_isa_partial.to_be_displayed
 
                         z: 10
 
@@ -1470,7 +1475,9 @@ Window {
                     }
                 }
 
-            property bool is_volume_enabled: ! (brightness.visible || discon_panel.visible || alert_err.visible || groupFCW.visible)
+            property bool is_volume_enabled: (! (brightness.visible|| isa_menu.visible)) && is_remote_menu_request_enabled
+
+            property bool is_remote_menu_request_enabled: !(discon_panel.visible || alert_err.visible || groupFCW.visible)
 
 
             Keys.onReturnPressed:
@@ -1627,6 +1634,10 @@ Window {
                     {
                         brightness.up()
                     }
+                    else if (isa_menu.visible)
+                    {
+                       isa_menu.up();
+                    }
                 }
                 else if (Qt.Key_Down === eventkey)
                 {
@@ -1661,6 +1672,10 @@ Window {
                     {
                         brightness.down()
                     }
+                    else if (isa_menu.visible)
+                    {
+                       isa_menu.down();
+                    }
                 }
                 else if (Qt.Key_Return === eventkey)
                 {
@@ -1668,11 +1683,27 @@ Window {
 
                     if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
                     {
-                        brightness.visible = ! brightness.visible
+                        if(!brightness.visible && !isa_menu.visible)
+                        {
+                            brightness.visible = true
+                        }
+                        else if (!isa_menu.visible && state_isa.state === "isa" && is_remote_menu_request_enabled)
+                        {
+                            brightness.visible = false
+                            isa_menu.visible = true
+                        }
+                        else
+                        {
+                            brightness.visible = false
+                            isa_menu.deactivate()
+                            isa_menu.visible = false
+                        }
                     }
-                    else if (brightness.visible)
+                    else
                     {
                         brightness.visible = false
+                        isa_menu.deactivate()
+                        isa_menu.visible = false
                     }
                     //NOTE: menu key verification
                     //volumeKeySend(Qt.Key_Return)
@@ -1689,10 +1720,18 @@ Window {
 
         VolumeMenu {
             id: volume_menu
-            z:20
+            z:21
             font_family: intelFont.name
             property int layer_pri: 2
-            visible: false
+            is_suppressed: isa_menu.visible
+
+            onForwardReqfailDeactToMain:
+            {
+                if(visible)
+                {
+                    isa_menu.reqfail_ref.itemSelfDeactivate()
+                }
+            }
         }
 
         BrightnessMenu
@@ -1702,6 +1741,59 @@ Window {
            font_family: intelFont.name
            visible: false
         }
+
+
+
+        ISAMenu {
+            z: 20
+            id: isa_menu
+            displayedValue: ((info_isa_inactive.visible || alert_isa_error.visible) ? 0 : (info_isa_partial.visible ? 1 : 2))
+            is_in_error: alert_isa_error.visible
+            font_family: intelFont.name
+            visible: false
+            property int layer_pri: 2
+
+            onForwardReqfailDeactToMain:
+            {
+                if(visible)
+                {
+                    volume_menu.reqfail_ref.itemSelfDeactivate()
+                }
+            }
+
+            function up()
+            {
+
+                switch (displayedValue)
+                {
+                  case 0:
+                    isaPartialDeactivationRequest()
+                    break;
+                  case 1:
+                    isaFullActivationRequest()
+                    break;
+                }
+
+                hide_timer_restart()
+            }
+
+            function down()
+            {
+               switch (displayedValue)
+                {
+                  case 1:
+                    isaFullDeactivationRequest()
+                    break;
+                  case 2:
+                    isaPartialDeactivationRequest()
+                    break;
+                }
+
+                hide_timer_restart()
+            }
+        }
+
+
 
 
         Test{

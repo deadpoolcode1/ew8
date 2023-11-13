@@ -12,6 +12,15 @@ import builtin.mobileye.QRCode 0.1
 ProgressBarMenu {
     id: volume_menu
 
+
+    property bool is_active: false
+    property bool is_suppressed: false
+
+    property alias reqfail_ref: volume_done.reqfail_item
+    signal forwardReqfailDeactToMain()
+
+    visible: is_active && !is_suppressed
+
     function timersRestart()
     {
         volume_done.timersRestart()
@@ -22,8 +31,8 @@ ProgressBarMenu {
     lowerLimit: volume_done.canEntityArg1
     upperLimit: volume_done.canEntityArg2
 
-    function setVisibleSlot(){visible= true}
-    function setInvisibleSlot(){visible = false}
+    function setVisibleSlot(){is_active = true}
+    function setInvisibleSlot(){is_active = false}
 
     VolumeIndicator {
         id: volume_done
@@ -31,6 +40,10 @@ ProgressBarMenu {
         anchors.verticalCenter: mnemonicIconSlot.verticalCenter
         anchors.left:mnemonicIconSlot.left
         anchors.leftMargin: 0
+        onForwardReqfailDeactivate:
+        {
+          forwardReqfailDeactToMain()
+        }
     }
     
 }

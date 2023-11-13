@@ -14,6 +14,9 @@ Rectangle
     height: 35
     color: "#00000000"
     border.color: "#00000000"
+    property alias reqfail_item: volume_reqfail
+    signal forwardReqfailDeactivate()
+
 
     property int canEntityArg: 0x0
     property int canEntityArg1: 0x0
@@ -23,6 +26,7 @@ Rectangle
     {
        volume_done_timer.restart()
        volume_fail_timer.restart()
+       volume_reqfail_timer.restart()
     }
 
 Image {
@@ -35,18 +39,22 @@ Image {
     anchors.leftMargin: 0
     source: "images/master-volume/m_red alert.png"
 
+    onItemSelfDeactivate:
+    {
+        forwardReqfailDeactivate()
+    }
 
     anchors.verticalCenter: parent.verticalCenter
 
     visible: false
 
-    function setVisibleSlot(arg){visible = true}
-    function setInvisibleSlot(){visible = false}
+    function setVisibleSlot(arg){visible = true; volume_reqfail_timer.start()}
+
+    function setInvisibleSlot(){visible = false; volume_reqfail_timer.stop()}
     signal  itemSelfDeactivate()
 
     Timer {
         id: volume_reqfail_timer
-        running: volume_reqfail.visible
         interval: 5000
         onTriggered: {
             volume_reqfail.itemSelfDeactivate()

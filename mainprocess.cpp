@@ -104,7 +104,7 @@ void MainProcess::process()
         {
             flag_tree_changed = false;
             isDataComplete = false;
-            startUpdateDisplayWindow();
+            emit startUpdateDisplayWindow();
             mutex.lock();
             qDebug()<< "updateStart:" << QDateTime::currentMSecsSinceEpoch();
             updateDisplay();
@@ -162,14 +162,14 @@ int MainProcess::launchEverything()
     if(nullptr != theBrightnessControl)
     {
         CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
-        connect(theBrightnessControl, SIGNAL(sendBrightness(quint32 , qint32 , qint32 )), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32 , qint32 , qint32 )));
+        connect(theBrightnessControl, SIGNAL(sendBrightness(quint32,qint32,qint32)), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32,qint32,qint32)));
 
         QObject::connect(appWindow, SIGNAL(keyPressedReportSend(qint32)),
                           CANDebugReport::getInstance(), SLOT(sendButtonPressed(qint32)));
         QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(qint32)),
                           CANDebugReport::getInstance(), SLOT(sendButtonReleased(qint32)));
 
-        QObject::connect(appWindow, SIGNAL(alertsReportSend(bool, bool, bool, bool)),
+        QObject::connect(appWindow, SIGNAL(alertsReportSend(bool,bool,bool,bool)),
                           CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
 #if 0
         if (-1 != appWindow->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("alertsReportSend(bool, bool, bool, bool)")))
