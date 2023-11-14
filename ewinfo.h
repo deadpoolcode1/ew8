@@ -7,11 +7,12 @@
 class EWInfo: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString sn READ getEwsn)
-    Q_PROPERTY(QString bin READ getEngineVer)
-    Q_PROPERTY(QString cfg READ getConfigVer)
+    Q_PROPERTY(QString sn READ getEwsn CONSTANT)
+    Q_PROPERTY(QString bin READ getEngineVer CONSTANT)
+    Q_PROPERTY(QString cfg READ getConfigVer CONSTANT)
     Q_PROPERTY(QString mesn WRITE setMeSn)
-    Q_PROPERTY(QString snv READ getSnv)
+    Q_PROPERTY(QString snv READ getSnv NOTIFY snvChanged)
+    Q_PROPERTY(QString osbuild READ getOSBuildTimestamp CONSTANT)
 
 
 public:
@@ -23,17 +24,21 @@ public:
     QString getEwsn(void);
     QString getEngineVer(void);
     QString getConfigVer(void);
+    QString getOSBuildTimestamp(void);
 
     QString getSnv(void);
     void setMeSn(QString);
 
+signals:
+    void snvChanged(QString newSnv);
+
 private:
 
-
-
     void readEWInfo(void);
+
 #if !((defined WIN32) || (defined REMOVE_EW8_HW))
 
+    void readOSBuildInfo(void);
     void readServiceNumber(void);
     void enableDisableSFC(quint32 * wr_ptr, bool On);
     quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
@@ -47,6 +52,7 @@ private:
     QString ewsn_str;
     QString ewbin_str;
     QString ewcfg_str;
+    QString ewosbuild_str;
     QString snv_str;
     bool is_snv_ready;
 };

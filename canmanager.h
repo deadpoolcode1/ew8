@@ -47,6 +47,12 @@ public:
     void sendVolumeMute(void);
     void sendVolumeGet(void);
 
+    void sendISAFullDeact(void);
+    void sendISAPartDeact(void);
+    void sendISAFullActivate(void);
+
+
+
     void launch(void);
 
 signals:

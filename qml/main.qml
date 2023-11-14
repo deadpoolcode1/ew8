@@ -662,6 +662,19 @@ Window {
                 function setVisibleSlot(){visible = true;}
                 function setInvisibleSlot(){visible = false;}
 
+                RTW {
+                    id: alert_rtw_warn
+                    canEntityType: "ALERT_RTW_WARN"
+                    property int layer_pri: 0
+
+                    property bool is_active: false
+
+                    sign_visible: is_active && !(left_panel_tsr.visible || left_panel_isa.visible)
+
+                    function setVisibleSlot() {is_active = true}
+                    function setInvisibleSlot() {is_active = false}
+                }
+
                 IMS_TSR_Items {
                     id: left_panel_tsr
 
@@ -794,41 +807,6 @@ Window {
 
                     function setVisibleSlot() {visible = true;  console.log("pdz:"+Date.now());}
                     function setInvisibleSlot() {visible = false}
-
-                    /*
-                    SequentialAnimation on opacity{
-                        loops: Animation.Infinite
-                        running: alert_pdz.visible
-
-
-                        NumberAnimation{
-                            from: 1
-                            to: 0
-                            duration: 300
-                            easing.type: Easing.InOutQuad
-                        }
-
-
-                        PauseAnimation {
-                            duration: 500
-                        }
-
-
-                        NumberAnimation {
-                            from: 0
-                            to: 1
-                            duration: 300
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        PauseAnimation {
-                            duration: 500
-                        }
-
-                        onStopped: {opacity =  1.0}
-                    }
-                    */
-
                 }
 
 
@@ -1683,18 +1661,27 @@ Window {
 
                     if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
                     {
-                        if(!brightness.visible && !isa_menu.visible)
+                        if(!brightness.visible && !isa_menu.visible && !isa_version.visible)
                         {
                             brightness.visible = true
                         }
-                        else if (!isa_menu.visible && state_isa.state === "isa" && is_remote_menu_request_enabled)
+                        else if (brightness.visible && state_isa.state === "isa" && !isa_menu.is_in_error && is_remote_menu_request_enabled)
                         {
                             brightness.visible = false
+                            isa_version.visible = false
                             isa_menu.visible = true
+                        }
+                        else if (!isa_version.visible && isa_version.is_available)
+                        {
+                            brightness.visible = false
+                            isa_menu.deactivate()
+                            isa_menu.visible = false
+                            isa_version.visible = true
                         }
                         else
                         {
                             brightness.visible = false
+                            isa_version.visible = false
                             isa_menu.deactivate()
                             isa_menu.visible = false
                         }
@@ -1791,6 +1778,13 @@ Window {
 
                 hide_timer_restart()
             }
+        }
+
+        ISAVersion {
+            z: 20
+            id: isa_version
+            font_family: intelFont.name
+            visible: false
         }
 
 

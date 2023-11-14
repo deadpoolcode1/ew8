@@ -45,11 +45,13 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
     ewbin_str = "NA";
     ewcfg_str = "NA";
     snv_str = "NA";
+    ewosbuild_str = "NA";
     is_snv_ready = false;
     readEWInfo();
 
 #if !((defined WIN32) || (defined REMOVE_EW8_HW))
     readServiceNumber();
+    readOSBuildInfo();
 #endif
 }
 
@@ -76,6 +78,11 @@ QString EWInfo::getSnv(void)
     qDebug()<<"SNV property ="<<snv_str;
 #endif
   return snv_str;
+}
+
+QString EWInfo::getOSBuildTimestamp(void)
+{
+  return ewosbuild_str;
 }
 
 void EWInfo::setMeSn(QString aMeSn)
@@ -115,6 +122,8 @@ void EWInfo::setMeSn(QString aMeSn)
 
 
     is_snv_ready = true;
+
+    emit snvChanged(snv_str);
     }
     else
     {
@@ -152,6 +161,38 @@ void EWInfo::readEWInfo(void)
 
 
 #if !((defined WIN32) || (defined REMOVE_EW8_HW))
+
+void EWInfo::readOSBuildInfo(void)
+{
+
+    QFile buildIdFile("/etc/version2epoch");
+
+    QString buildId;
+
+    if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
+    {
+      QTextStream buildIdStream(&buildIdFile);
+      buildId = buildIdStream.readLine();
+      buildIdFile.close();
+    }
+
+    if(buildId.length() != 8)
+    {
+       qDebug("System Build ID is not found is not found.");
+    }
+    else
+    {
+       bool ok;
+       quint32 tstamp = buildId.toUInt(&ok, 16);
+       if(ok)
+       {
+           ewosbuild_str = QString::number(tstamp);
+       }
+
+    }
+
+}
+
 
 void EWInfo::readServiceNumber(void)
 {

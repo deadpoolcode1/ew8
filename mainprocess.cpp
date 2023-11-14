@@ -143,6 +143,16 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
                       this, SLOT(volumeKeySent(qint32)));
 
+    QObject::connect(appWindow, SIGNAL(isaFullActivationRequest()),
+                      this, SLOT(isaFullActivationRequestSend()));
+
+    QObject::connect(appWindow, SIGNAL(isaPartialDeactivationRequest()),
+                      this, SLOT(isaPartialDeactivationRequestSend()));
+
+
+    QObject::connect(appWindow, SIGNAL(isaFullDeactivationRequest()),
+                      this, SLOT(isaFullDeactivationRequestSend()));
+
 
 
 
@@ -364,6 +374,23 @@ void MainProcess::volumeKeySent(qint32 qtKey)
 
       break;
   }
+}
+
+void MainProcess::isaFullActivationRequestSend()
+{
+  canmgr->sendISAFullActivate();
+}
+
+
+
+void MainProcess::isaPartialDeactivationRequestSend()
+{
+    canmgr->sendISAPartDeact();
+}
+
+void MainProcess::isaFullDeactivationRequestSend()
+{
+    canmgr->sendISAFullDeact();
 }
 
 

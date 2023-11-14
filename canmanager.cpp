@@ -190,6 +190,83 @@ void CanManager::sendVolumeMute(void)
     CanRxMsg::expectRequestId(requestId);
 }
 
+void CanManager::sendISAFullDeact()
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x5)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+void CanManager::sendISAPartDeact(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x4)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+void CanManager::sendISAFullActivate(void)
+{
+    quint16 requestId = rand()%0xffff;
+
+    struct can_frame frame_to_send;
+
+    memset(frame_to_send.data,0xff,8);
+
+    frame_to_send.can_id = 0x733;
+    frame_to_send.can_dlc = 8;
+    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[2] = (0x6)|(0xf8);
+
+    frame_to_send.data[3] = (0xff);
+    frame_to_send.data[4] = (0xff);
+    frame_to_send.data[5] = (0xff);
+    frame_to_send.data[6] = (0xff);
+    frame_to_send.data[7] = (0xff);
+
+    write_frame(&frame_to_send);
+
+    CanRxMsg::expectRequestId(requestId);
+}
+
+
+
 
  IAlertDisplay * CanManager::getItsDisplay(void)
  {

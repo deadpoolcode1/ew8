@@ -42,6 +42,12 @@ public slots:
 
     void volumeKeySent(qint32);
 
+    void isaFullActivationRequestSend();
+    void isaPartialDeactivationRequestSend();
+    void isaFullDeactivationRequestSend();
+
+
+
     void process();
 
 private:
