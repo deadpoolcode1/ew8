@@ -1436,7 +1436,8 @@ Window {
                         if(general_menu_listener.is_volume_enabled)
                         {
                             console.log("Mute pressed")
-                            volumeKeySend(Qt.Key_VolumeMute)
+                            volumeKeySend(Qt.Key_Return)
+                            volume_conditional_send_timer.start()
                         }
                     }
                 }
@@ -1605,6 +1606,7 @@ Window {
                     console.log("Up released")
                     if(is_volume_enabled)
                     {
+                        volume_menu.suppressLimitFail()
                         volumeKeySend(Qt.Key_VolumeUp)
                     }
 
@@ -1631,11 +1633,13 @@ Window {
 
                         if(Date.now() - start < (500 - single_key_gap_timer.interval))
                         {
+                                volume_menu.suppressLimitFail() 
                                 volumeKeySend(Qt.Key_VolumeDown)
                         }
                         else
                         {
-                                volumeKeySend(Qt.Key_VolumeMute)
+                            volumeKeySend(Qt.Key_Return)
+                            volume_conditional_send_timer.start()
                         }
 
 
@@ -1692,11 +1696,30 @@ Window {
                         isa_menu.deactivate()
                         isa_menu.visible = false
                     }
-                    //NOTE: menu key verification
-                    //volumeKeySend(Qt.Key_Return)
                 }
             }
 
+
+            Timer {
+                id: volume_conditional_send_timer
+
+                interval: 60
+                running: false
+                repeat: false
+
+                onTriggered:
+                {
+                    if(volume_menu.lowerLimit == 0)
+                    {
+                        console.log("Mute is permited: send")
+                        volumeKeySend(Qt.Key_VolumeMute)
+                    }
+                    else
+                    {
+                        volume_menu.invokeLimitFail()
+                    }
+                }
+            }
 
 
 

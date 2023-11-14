@@ -10,6 +10,7 @@ import builtin.mobileye.QRCode 0.1
 
 Rectangle
 {
+    id: volume_indicator
     width: 22
     height: 35
     color: "#00000000"
@@ -22,12 +23,15 @@ Rectangle
     property int canEntityArg1: 0x0
     property int canEntityArg2: 0x5
 
+    property  bool isLimitFail: false
+
     function timersRestart()
     {
        volume_done_timer.restart()
        volume_fail_timer.restart()
        volume_reqfail_timer.restart()
     }
+
 
 Image {
     id: volume_reqfail
@@ -57,6 +61,7 @@ Image {
         id: volume_reqfail_timer
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_reqfail.itemSelfDeactivate()
         }
     }
@@ -85,24 +90,32 @@ Image {
         running: volume_fail.visible
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_fail.itemActionDeactivate()
         }
     }
 }
 
+Timer {
+	id: limit_fail_timer
+	running: false
+	interval: 1000
+	onTriggered: {
+	    isLimitFail = false
+	}
+}
 
 
 Image {
     id: volume_done
     property string canEntityType: "VOLUME_DONE"
     objectName: "DONE_VOLUME"
-    //TODO check the values integrity
     property int layer_pri: 1
     
     source: "images/master-volume/m_mute.png"
     
     function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2;}
-    function setInvisibleSlot(){visible = false}
+    function setInvisibleSlot(){visible = false; isLimitFail = false}
     signal itemActionDeactivate()
     
     Timer {
@@ -110,6 +123,7 @@ Image {
         running: volume_done.visible
         interval: 5000
         onTriggered: {
+            isLimitFail = false
             volume_done.itemActionDeactivate()
         }
     }
@@ -119,7 +133,7 @@ Image {
 states: [
     State {
         name: "Low"
-        when: canEntityArg > 0 && canEntityArg < 3
+        when: canEntityArg > 0 && canEntityArg < 3  && !isLimitFail
 
         PropertyChanges {
             target: volume_done
@@ -128,11 +142,24 @@ states: [
     },
     State {
         name: "High"
-        when: canEntityArg > 2
+        when: canEntityArg > 2 && !isLimitFail
 
         PropertyChanges {
             target: volume_done
             source: "images/master-volume/m_vol_high.png"
+        }
+    },
+    State {
+        name: "Limit"
+        when: isLimitFail
+        PropertyChanges {
+            target: volume_done
+            source: "images/master-volume/m_red alert.png"
+        }
+
+        PropertyChanges {
+            target: limit_fail_timer
+            running: true
         }
     }
 ]
