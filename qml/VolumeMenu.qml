@@ -6,7 +6,6 @@ import QtQml.Models 2.3
 
 //Custom modules:
 import MyQMLenums 0.1
-import builtin.mobileye.QRCode 0.1
 
 
 ProgressBarMenu {
@@ -47,11 +46,9 @@ ProgressBarMenu {
     VolumeIndicator {
         id: volume_done
 
-
-
-        anchors.verticalCenter: mnemonicIconSlot.verticalCenter
-        anchors.left:mnemonicIconSlot.left
-        anchors.leftMargin: 0
+        anchors.horizontalCenter: mnemonicIconSlot.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 13
         onForwardReqfailDeactivate:
         {
           forwardReqfailDeactToMain()

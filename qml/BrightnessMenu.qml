@@ -52,9 +52,9 @@ ProgressBarMenu {
 
         level: displayedValue
 
-        anchors.verticalCenter: mnemonicIconSlot.verticalCenter
-        anchors.left:mnemonicIconSlot.left
-        anchors.leftMargin: 0
+        anchors.horizontalCenter: mnemonicIconSlot.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 13
     }
 
     Timer {
