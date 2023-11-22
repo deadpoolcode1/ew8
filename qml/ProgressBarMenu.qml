@@ -12,15 +12,16 @@ Rectangle {
     id: progress_menu
     color: "#191414"
 
-    property alias displayedValue: actual_value.value
+    property int displayedValue: 0
 
     property bool isDisplayedValueAnImage: false
+    property ListModel mnemonicsModel: segments_model
 
-    property alias lowerLimit: min_value.value
-    property alias upperLimit: max_value.value
+    property int lowerLimit: 0
+    property int upperLimit: 5
 
-    property int numOfSegments: (max_value.value - min_value.value + 1)
-    property int usedSegments: (actual_value.value - min_value.value + 1)
+    property int numOfSegments: (upperLimit - lowerLimit + 1)
+    property int usedSegments: (displayedValue - lowerLimit + 1)
 
     property int progressBarSegmentFillDuration: 350
 
@@ -62,8 +63,7 @@ Rectangle {
         Text {
             id: actual_value
             color: blue
-            property int value: 0
-            text: value //.toFixed(0)
+            text: displayedValue
             anchors.top: parent.top
             anchors.topMargin: -10
             anchors.horizontalCenter: parent.horizontalCenter
@@ -76,26 +76,21 @@ Rectangle {
         Image {
             id: actual_value_image
 
+
             anchors.top: parent.top
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
-
-            source: "images/status-bar/ISA_full_act.png"
+            source: mnemonicsModel.get(displayedValue).bigIcon
             visible: isDisplayedValueAnImage
         }
     }
 
 
+
     ListModel{
         id: segments_model
-        /*
-        ListElement{property  string canType: "TEST_BRAKES"; property string wildca: "Brake" }
-        ListElement{property  string canType: "TEST_WIPERS"; property string wildca: "Whip"}
-        ListElement{property  string canType: "TEST_HIGH_BEAM"; property string wildca: "Lights"}
-        ListElement{property  string canType: "TEST_BLINKER_LEFT"; property string wildca: "Left"}
-        ListElement{property  string canType: "TEST_BLINKER_RIGHT"; property string wildca: "Right" }
-        ListElement{property  string canType: "TEST_REVERSE"; property string wildca: "R"}
-        */
+        ListElement {property url smallIcon: "images/status-bar/ISA_full_deact.png" ; property int centerOffset: -20;
+            property url bigIcon: "images/isa-menu/ISA_full_deact_big.png"}
     }
 
 
@@ -121,7 +116,7 @@ Rectangle {
 
         Repeater {
             id: progress_bar_repeater
-            model: isDisplayedValueAnImage ? segments_model : numOfSegments
+            model: isDisplayedValueAnImage ? mnemonicsModel : numOfSegments
 
 
 
@@ -141,6 +136,45 @@ Rectangle {
                     anchors.leftMargin: progressBarOffset(index)
                     color: gray
                     z: 0
+                }
+
+                Rectangle {
+                    id: progress_point_stick
+                    height: 8
+                    width: 2
+                    anchors.horizontalCenter: progress_segment.right
+                    anchors.top:  progress_segment.bottom
+                    color: gray
+                    z: 0
+                }
+
+                Text {
+                    id: progress_point_value
+                    color: gray
+                    property int value: index + lowerLimit
+                    text: value
+                    anchors.horizontalCenter: progress_point_stick.horizontalCenter
+                    anchors.top:  progress_point_stick.bottom
+                    anchors.topMargin: progress_point_stick.height
+                    font.pixelSize: 18
+                    font.family: font_family
+                    font.weight: Font.Light
+                    visible: ! isDisplayedValueAnImage
+                }
+
+                Image {
+                    id: progress_point_image
+
+                    property int value: index + lowerLimit
+
+                    source:  smallIcon
+
+                    anchors.horizontalCenter: progress_point_stick.horizontalCenter
+                    anchors.horizontalCenterOffset: centerOffset
+                    anchors.verticalCenter: progress_point_stick.bottom
+                    anchors.verticalCenterOffset: progress_point_stick.height * 3
+
+                    visible: isDisplayedValueAnImage
                 }
             }
         }
@@ -219,54 +253,9 @@ Rectangle {
         height: 8
         width: 8
         radius: 8
-
         z: 0
-
         anchors.verticalCenter: progress_bar.verticalCenter
         anchors.horizontalCenter: progress_bar.right
         color: gray
     }
-
-    Rectangle {
-        id: value_boundaries
-        height: 14
-        color: "#00000000"
-        border.color: "#00000000"
-        anchors.top: progress_bar.bottom
-        anchors.topMargin: 8
-        anchors.right: parent.right
-        anchors.rightMargin: 14
-        anchors.left: parent.left
-        anchors.leftMargin: 14
-
-        Text {
-            id: min_value
-            color: gray
-            opacity: 0.9
-            property int value: 0
-            text: value
-            anchors.left: parent.left
-            anchors.leftMargin: -1
-            anchors.top: parent.top
-            anchors.topMargin: -4
-            font.pixelSize: 19
-            font.family: font_family
-            font.weight: Font.Medium
-        }
-
-        Text {
-            id: max_value
-            color: gray
-            opacity: 0.9
-            property int value: 0
-            text: value
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.top: parent.top
-            anchors.topMargin: -4
-            font.pixelSize: 19
-            font.family: font_family
-            font.weight: Font.Medium
-        }
-     }
 }

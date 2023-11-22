@@ -8,11 +8,28 @@ import QtQml.Models 2.3
 import MyQMLenums 0.1
 
 
-ISAProgressBarMenu {
+ProgressBarMenu {
     id: isa_menu
 
-    property bool is_in_error: false
+    mnemonicsModel: isa_model
+    isDisplayedValueAnImage: true
 
+
+    ListModel {
+     id: isa_model
+     ListElement {property url smallIcon: "images/status-bar/ISA_full_deact.png" ; property int centerOffset: 20;
+         property url bigIcon: "images/isa-menu/ISA_full_deact_big.png"}
+     ListElement {property url smallIcon: "images/status-bar/ISA_part_deact.png" ;  property int centerOffset: 0;
+         property url bigIcon: "images/isa-menu/ISA_part_deact_big.png"}
+     ListElement {property url smallIcon: "images/status-bar/ISA_full_act.png" ;  property int centerOffset: -20;
+         property url bigIcon: "images/isa-menu/ISA_full_act_big.png"}
+    }
+
+    lowerLimit: 0
+    upperLimit: 2
+
+
+    property bool is_in_error: false
     property alias reqfail_ref: isa_indicator.reqfail_item
     signal forwardReqfailDeactToMain()
 
@@ -25,7 +42,6 @@ ISAProgressBarMenu {
     {
       isa_indicator.deactivate()
     }
-
 
 
     ISAIndicator {

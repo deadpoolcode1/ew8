@@ -30,13 +30,24 @@ Rectangle
     }
 
     Image {
+        id: isa_menu_logo
+        z: 1
+        visible: !(isa_fail.visible || isa_reqfail.visible)
+
+        source: "images/isa-menu/ISA.png"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+
+    Image {
         id: isa_reqfail
         property int canEntityType: Alert.ALERT_REQFAIL
         objectName: "REQFAIL_ISA"
         property int layer_pri: 0
 
-        anchors.left: parent.left
-        anchors.leftMargin: 0
+        z: 1
+
         source: "images/master-volume/m_red alert.png"
 
         onItemSelfDeactivate:
@@ -46,6 +57,7 @@ Rectangle
 
 
         anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
 
         visible: false
 
@@ -68,14 +80,12 @@ Rectangle
         property string canEntityType: "VOLUME_FAIL"
         objectName: "FAIL_ISA"
         property int layer_pri: 0
-
-        anchors.left: parent.left
-        anchors.leftMargin: 0
-        //color: "red"
+        z: 1
         source: "images/master-volume/m_red alert.png"
 
 
         anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
 
         function setVisibleSlot(){visible = true}
         function setInvisibleSlot(){visible = false}

@@ -39,8 +39,6 @@ Image {
     objectName: "REQFAIL_VOLUME"
     property int layer_pri: 0
 
-    anchors.left: parent.left
-    anchors.leftMargin: 0
     source: "images/master-volume/m_red alert.png"
 
     onItemSelfDeactivate:
@@ -49,6 +47,7 @@ Image {
     }
 
     anchors.verticalCenter: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
 
     visible: false
 
@@ -73,13 +72,10 @@ Image {
     objectName: "FAIL_VOLUME"
     property int layer_pri: 0
 
-    anchors.left: parent.left
-    anchors.leftMargin: 0
-    //color: "red"
     source: "images/master-volume/m_red alert.png"
 
-
     anchors.verticalCenter: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
 
     function setVisibleSlot(arg){visible = true}
     function setInvisibleSlot(){visible = false}
