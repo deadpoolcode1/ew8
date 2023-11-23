@@ -57,6 +57,14 @@ ProgressBarMenu {
         anchors.topMargin: 13
     }
 
+    BallsFooter {
+      current: 0
+      quantity: 3
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+
     Timer {
         id: hide_timer
         running: bar_menu.visible

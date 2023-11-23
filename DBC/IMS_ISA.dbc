@@ -45,8 +45,9 @@ VAL_TABLE_ ISA_State 4 "E_ISA_STATE_ERROR" 3 "E_ISA_STATE_ACTIVE" 2 "E_ISA_STATE
 
 
 BO_ 1981 IMS_ISA_Version: 3 Vector__XXX
- SG_ IMS_ISA_version : 0|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ Bundle_year : 8|8@1+ (1,0) [23|99] "" Vector__XXX
+ SG_ ISA_Minor_version : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ ISA_Major_version : 5|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ Bundle_year : 8|8@1+ (1,0) [22|99] "" Vector__XXX
  SG_ Bundle_mounth : 16|4@1+ (1,0) [0|12] "" Vector__XXX
 
 BO_ 1980 IMS_ISA: 6 Vector__XXX
@@ -56,7 +57,7 @@ BO_ 1980 IMS_ISA: 6 Vector__XXX
  SG_ Reserved1_1b : 23|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VehicleType : 8|6@1+ (1,0) [0|63] "" Vector__XXX
  SG_ Legal_Speed_Validity : 16|2@1+ (1,0) [0|3] "" Vector__XXX
- SG_ VehicleClass : 14|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VehicleClass : 14|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ suspenededSpeed : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ IMS_ISA_Error : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ ISA_Legal_Speed : 0|8@1+ (1,0) [0|255] "" Vector__XXX

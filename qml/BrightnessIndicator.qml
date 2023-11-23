@@ -10,8 +10,8 @@ import builtin.mobileye.QRCode 0.1
 
 Rectangle
 {
-    width: 23
-    height: 35
+    width: 51
+    height: 51
     color: "#00000000"
     border.color: "#00000000"
 
@@ -20,8 +20,8 @@ Rectangle
 Image {
     id: level_icon
 
-    width: 23
-    height: 35
+
+    anchors.fill: parent
 
     fillMode: Image.PreserveAspectFit
 
@@ -37,26 +37,44 @@ states: [
 
         PropertyChanges {
             target: level_icon
-            source: "images/brightness/brightness-0.png"
+            source: "images/brightness/brightness-1.png"
         }
     },
     State {
         name: "Low"
-        when:  level === 2 || level === 3
+        when:  level === 1
 
         PropertyChanges {
             target: level_icon
             source: "images/brightness/brightness-1.png"
         }
     },
-        State {
-            name: "Half"
-            when:  level === 4
+    State {
+        name: "Low2"
+        when:  level === 2
 
-            PropertyChanges {
-                target: level_icon
-                source: "images/brightness/brightness-3.png"
-            }
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-2.png"
+        }
+    },
+    State {
+        name: "Low3"
+        when:  level === 3
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-3.png"
+        }
+    },
+    State {
+        name: "Half"
+        when:  level === 4
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-4.png"
+        }
     },
     State {
         name: "High"

@@ -58,6 +58,13 @@ ProgressBarMenu {
         }
     }
 
+    BallsFooter {
+      current: 1
+      quantity: 3
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+    }
+
 
     Timer {
         id: hide_timer

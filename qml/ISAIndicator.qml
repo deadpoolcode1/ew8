@@ -10,8 +10,8 @@ import builtin.mobileye.QRCode 0.1
 
 Rectangle
 {
-    width: 23
-    height: 35
+    width: 51
+    height: 51
     color: "#00000000"
     border.color: "#00000000"
     property alias reqfail_item: isa_reqfail

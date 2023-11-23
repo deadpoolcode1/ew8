@@ -57,6 +57,7 @@
         ,"INFO_ISA_PARTIAL"
         ,"ALERT_ISA_HIGHWAY"
         ,"INFO_ISA_VERSION"
+        ,"INFO_ISA_BUNDLE"
         ,"STATE_ISA_NOT_TSR"
 
 
@@ -136,10 +137,12 @@
                 ,{"name": "Legal_Speed_Validity", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": 2}
                 ,{"name": "Legal_Speed_Validity", "action": "ALERT_ISA_HIGHWAY", "type": "GraphicItem", "Set": 3}
 
-                ,{"name": "IMS_ISA_version", "action": "INFO_ISA_VERSION", "type": "GraphicItem", "Set": ["ge", 0]}
-                ,{"name": "IMS_ISA_version", "action": "INFO_ISA_VERSION", "type": "IntArgument", "index": 0}
-                ,{"name": "Bundle_year", "action": "INFO_ISA_VERSION", "type": "IntArgument", "index": 1}
-                ,{"name": "Bundle_mounth", "action": "INFO_ISA_VERSION", "type": "IntArgument", "index": 2}
+                ,{"name": "ISA_Minor_version", "action": "INFO_ISA_VERSION", "type": "GraphicItem", "Set": ["ge", 0]}
+                ,{"name": "ISA_Major_version", "action": "INFO_ISA_VERSION", "type": "IntArgument", "index": 0}
+                ,{"name": "ISA_Minor_version", "action": "INFO_ISA_VERSION", "type": "IntArgument", "index": 1}
+                ,{"name": "Bundle_year", "action": "INFO_ISA_BUNDLE", "type": "GraphicItem", "Set": ["ge", 0]}
+                ,{"name": "Bundle_year", "action": "INFO_ISA_BUNDLE", "type": "IntArgument", "index": 0}
+                ,{"name": "Bundle_mounth", "action": "INFO_ISA_BUNDLE", "type": "IntArgument", "index": 1}
             ]
         }
         ,

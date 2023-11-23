@@ -76,11 +76,10 @@ Rectangle {
         Image {
             id: actual_value_image
 
-
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: 0
             anchors.horizontalCenter: parent.horizontalCenter
-            source: mnemonicsModel.get(displayedValue).bigIcon
+            source:  mnemonicsModel.get(isDisplayedValueAnImage ? displayedValue : 0).bigIcon
             visible: isDisplayedValueAnImage
         }
     }
@@ -167,10 +166,10 @@ Rectangle {
 
                     property int value: index + lowerLimit
 
-                    source:  smallIcon
+                    source:  isDisplayedValueAnImage ? smallIcon : "images/isa-menu/ISA_full_deact_big.png"
 
                     anchors.horizontalCenter: progress_point_stick.horizontalCenter
-                    anchors.horizontalCenterOffset: centerOffset
+                    anchors.horizontalCenterOffset: isDisplayedValueAnImage ? centerOffset : 0
                     anchors.verticalCenter: progress_point_stick.bottom
                     anchors.verticalCenterOffset: progress_point_stick.height * 3
 
