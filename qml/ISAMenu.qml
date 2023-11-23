@@ -13,6 +13,7 @@ ProgressBarMenu {
 
     mnemonicsModel: isa_model
     isDisplayedValueAnImage: true
+    property alias pages: footer.quantity
 
 
     ListModel {
@@ -59,7 +60,8 @@ ProgressBarMenu {
     }
 
     BallsFooter {
-      current: 1
+      id: footer
+      current: quantity - 2
       quantity: 3
       anchors.bottom: parent.bottom
       anchors.horizontalCenter: parent.horizontalCenter

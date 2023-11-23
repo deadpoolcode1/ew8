@@ -1150,6 +1150,10 @@ Window {
 
             function setVisibleSlotStr(Arg) {
                 ewinfo.mesn = Arg;
+
+                about_menu.mesn = Arg
+                about_menu.is_available_mesn = true
+
                 qr_code_core.request = "sn="+Arg+"&ew_sn="+ewinfo.sn+"&ew_fw="+ewinfo.bin.replace(/\./g,"-")+"&ew_cfg="+ewinfo.cfg.replace(/\./g,"-")+"&snv="+ewinfo.snv
                 qr_code.is_active = true;
             }
@@ -1665,27 +1669,27 @@ Window {
 
                     if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
                     {
-                        if(!brightness.visible && !isa_menu.visible && !isa_version.visible)
+                        if(!brightness.visible && !isa_menu.visible && !about_menu.visible)
                         {
                             brightness.visible = true
                         }
                         else if (brightness.visible && state_isa.state === "isa" && !isa_menu.is_in_error && is_remote_menu_request_enabled)
                         {
                             brightness.visible = false
-                            isa_version.visible = false
+                            about_menu.visible = false
                             isa_menu.visible = true
                         }
-                        else if (!isa_version.visible && isa_version.is_available)
+                        else if (!about_menu.visible)
                         {
                             brightness.visible = false
                             isa_menu.deactivate()
                             isa_menu.visible = false
-                            isa_version.visible = true
+                            about_menu.visible = true
                         }
                         else
                         {
                             brightness.visible = false
-                            isa_version.visible = false
+                            about_menu.visible = false
                             isa_menu.deactivate()
                             isa_menu.visible = false
                         }
@@ -1750,6 +1754,7 @@ Window {
            id: brightness
            font_family: intelFont.name
            visible: false
+           pages: state_isa.state === "isa" ? 3 : 2
         }
 
 
@@ -1803,11 +1808,17 @@ Window {
             }
         }
 
-        ISAVersion {
+        AboutMenu {
             z: 20
-            id: isa_version
+            id: about_menu
             font_family: intelFont.name
             visible: false
+            pages:  state_isa.state === "isa" ? 3 : 2
+            ewsn: ewinfo.sn
+            engineVersion: ewinfo.bin
+            configVersion: ewinfo.cfg
+            osbuild: ewinfo.osbuild
+            is_isa_enabled: state_isa.state === "isa"
         }
 
 

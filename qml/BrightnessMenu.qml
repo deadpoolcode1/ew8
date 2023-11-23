@@ -22,6 +22,8 @@ ProgressBarMenu {
         property alias brightness: bar_menu.displayedValue
     }
 
+    property alias pages: footer.quantity
+
     displayedValue: 5
 
     lowerLimit: 1
@@ -58,6 +60,7 @@ ProgressBarMenu {
     }
 
     BallsFooter {
+      id: footer
       current: 0
       quantity: 3
       anchors.bottom: parent.bottom
