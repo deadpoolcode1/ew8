@@ -15,6 +15,12 @@ ProgressBarMenu {
     isDisplayedValueAnImage: true
     property alias pages: footer.quantity
 
+    property bool isRequestGuardArmed: false
+
+    onDisplayedValueChanged: {
+        isRequestGuardArmed = false
+    }
+
 
     ListModel {
      id: isa_model
@@ -35,7 +41,6 @@ ProgressBarMenu {
     signal forwardReqfailDeactToMain()
 
     function setVisibleSlot(){hide_timer.start()}
-    //function setInvisibleSlot(){visible = false}
 
     function hide_timer_restart(){hide_timer.restart()}
 
@@ -48,6 +53,10 @@ ProgressBarMenu {
     ISAIndicator {
         id: isa_indicator
 
+
+        onDisarmRequestGuard: {
+            isRequestGuardArmed = false
+        }
 
 
         anchors.horizontalCenter: mnemonicIconSlot.horizontalCenter

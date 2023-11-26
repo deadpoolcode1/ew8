@@ -23,7 +23,7 @@ Rectangle {
     property int numOfSegments: (upperLimit - lowerLimit + 1)
     property int usedSegments: (displayedValue - lowerLimit + 1)
 
-    property int progressBarSegmentFillDuration: 350
+    property int progressBarSegmentFillDuration: 150
 
     
     property int canEntityType: Alert.QtQG

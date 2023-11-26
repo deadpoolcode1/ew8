@@ -36,11 +36,11 @@ RowLayout {
         color: black
         Text {
             id: version_label
-            color: gray
+            color: white
             text: label + ":"
             font.pixelSize: pixelsize
             font.family: font_family
-            font.weight: Font.Light
+            font.weight: Font.Medium
         }
     }
 
@@ -54,7 +54,7 @@ RowLayout {
             text: value
             font.pixelSize: pixelsize
             font.family: font_family
-            font.weight: Font.Light
+            font.weight: Font.Medium
         }
     }
 }

@@ -15,6 +15,7 @@ Rectangle
     color: "#00000000"
     border.color: "#00000000"
     property alias reqfail_item: isa_reqfail
+    signal disarmRequestGuard()
     signal forwardReqfailDeactivate()
 
 
@@ -61,7 +62,7 @@ Rectangle
 
         visible: false
 
-        function setVisibleSlot(arg){visible = true; isa_reqfail_timer.start()}
+        function setVisibleSlot(arg){visible = true; isa_reqfail_timer.start();  disarmRequestGuard()}
         function setInvisibleSlot(){visible = false; isa_reqfail_timer.stop()}
         signal  itemSelfDeactivate()
 
@@ -87,7 +88,7 @@ Rectangle
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
 
-        function setVisibleSlot(){visible = true}
+        function setVisibleSlot(){visible = true;  disarmRequestGuard()}
         function setInvisibleSlot(){visible = false}
         signal itemActionDeactivate()
 

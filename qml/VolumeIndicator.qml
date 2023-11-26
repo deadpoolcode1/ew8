@@ -17,6 +17,9 @@ Rectangle
     color: "#00000000"
     border.color: "#00000000"
     property alias reqfail_item: volume_reqfail
+    property alias volume_done_item: volume_done
+    property alias volume_fail_item: volume_fail
+    signal disarmRequestGuard()
     signal forwardReqfailDeactivate()
 
 
@@ -52,7 +55,7 @@ Image {
 
     visible: false
 
-    function setVisibleSlot(arg){visible = true; volume_reqfail_timer.start()}
+    function setVisibleSlot(arg){visible = true; volume_reqfail_timer.start(); disarmRequestGuard()}
 
     function setInvisibleSlot(){visible = false; volume_reqfail_timer.stop()}
     signal  itemSelfDeactivate()
@@ -78,7 +81,7 @@ Image {
     anchors.verticalCenter: parent.verticalCenter
     anchors.horizontalCenter: parent.horizontalCenter
 
-    function setVisibleSlot(arg){visible = true}
+    function setVisibleSlot(arg){visible = true; disarmRequestGuard()}
     function setInvisibleSlot(){visible = false}
     signal itemActionDeactivate()
 
@@ -111,7 +114,7 @@ Image {
     
     source: "images/master-volume/m_mute.png"
     
-    function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2;}
+    function setVisibleSlot(arg0,arg1,arg2){visible= true; canEntityArg = arg0; canEntityArg1 = arg1; canEntityArg2 = arg2; disarmRequestGuard()}
     function setInvisibleSlot(){visible = false; isLimitFail = false}
     signal itemActionDeactivate()
     

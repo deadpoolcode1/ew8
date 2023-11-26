@@ -19,6 +19,58 @@ Window {
     signal isaPartialDeactivationRequest()
     signal isaFullActivationRequest()
 
+    onVolumeKeySend: {
+        volume_menu.isRequestGuardArmed = true
+        volume_requestGuardTimeoutTimer.restart()
+    }
+
+    onIsaFullActivationRequest: { isa_menu.isRequestGuardArmed = true; isa_requestGuardTimeoutTimer.restart()}
+
+    onIsaFullDeactivationRequest: {isa_menu.isRequestGuardArmed = true; isa_requestGuardTimeoutTimer.restart()}
+
+    onIsaPartialDeactivationRequest: {isa_menu.isRequestGuardArmed = true; isa_requestGuardTimeoutTimer.restart()}
+
+    Timer {
+       id: isa_requestGuardTimeoutTimer
+       interval: 1100
+       running: false
+       repeat: false
+       onTriggered: {
+             isa_menu.isRequestGuardArmed = false
+       }
+    }
+
+    Timer {
+       id: volume_requestGuardTimeoutTimer
+       interval: 1100
+       running: false
+       repeat: false
+       onTriggered: {
+             volume_menu.isRequestGuardArmed = false
+       }
+    }
+
+
+    onIsDisplayOfMenusEnabledChanged: {
+        if (! isDisplayOfMenusEnabled)
+        {
+            brightness.visible = false
+            about_menu.visible = false
+            if(isa_menu.isRequestGuardArmed)
+            {
+                menusOffGAPTimer.start()
+            }
+            isa_menu.deactivate()
+            isa_menu.visible = false
+        }
+    }
+
+    Timer {
+        id: menusOffGAPTimer
+        running: false
+        repeat: false
+        interval: 1100
+    }
 
     signal brightnessChanged(int newLevel);
     signal alertsReportSend(bool b1, bool b2, bool b3, bool b4)
@@ -29,8 +81,10 @@ Window {
 
     property color white: "#ffffff"
 
-
     signal debugMessagesConnect(bool On);
+
+    property bool isDisplayOfMenusEnabled: (((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
+
 
     //flags: Qt.FramelessWindowHint
 
@@ -1458,7 +1512,7 @@ Window {
                     }
                 }
 
-            property bool is_volume_enabled: (! (brightness.visible|| isa_menu.visible)) && is_remote_menu_request_enabled
+            property bool is_volume_enabled: (! (brightness.visible|| isa_menu.visible || about_menu.visible)) && is_remote_menu_request_enabled
 
             property bool is_remote_menu_request_enabled: !(discon_panel.visible || alert_err.visible || groupFCW.visible)
 
@@ -1665,26 +1719,42 @@ Window {
                 }
                 else if (Qt.Key_Return === eventkey)
                 {
-                    console.log("Enter released")
-
-                    if(((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
+                    if (!(volume_menu.isRequestGuardArmed || isa_menu.isRequestGuardArmed))
                     {
-                        if(!brightness.visible && !isa_menu.visible && !about_menu.visible)
+
+
+                        if (volume_menu.visible)
                         {
-                            brightness.visible = true
+                            volume_menu.volume_done_ref.itemActionDeactivate()
+                            volume_menu.volume_fail_ref.itemActionDeactivate()
+                            volume_menu.reqfail_ref.itemSelfDeactivate()
                         }
-                        else if (brightness.visible && state_isa.state === "isa" && !isa_menu.is_in_error && is_remote_menu_request_enabled)
+                        else if(isDisplayOfMenusEnabled)
                         {
-                            brightness.visible = false
-                            about_menu.visible = false
-                            isa_menu.visible = true
-                        }
-                        else if (!about_menu.visible)
-                        {
-                            brightness.visible = false
-                            isa_menu.deactivate()
-                            isa_menu.visible = false
-                            about_menu.visible = true
+                            if(!brightness.visible && !isa_menu.visible && !about_menu.visible)
+                            {
+                                brightness.visible = true
+                            }
+                            else if (brightness.visible && state_isa.state === "isa" && !isa_menu.is_in_error && is_remote_menu_request_enabled)
+                            {
+                                brightness.visible = false
+                                about_menu.visible = false
+                                isa_menu.visible = true
+                            }
+                            else if (!about_menu.visible)
+                            {
+                                brightness.visible = false
+                                isa_menu.deactivate()
+                                isa_menu.visible = false
+                                about_menu.visible = true
+                            }
+                            else
+                            {
+                                brightness.visible = false
+                                about_menu.visible = false
+                                isa_menu.deactivate()
+                                isa_menu.visible = false
+                            }
                         }
                         else
                         {
@@ -1693,12 +1763,7 @@ Window {
                             isa_menu.deactivate()
                             isa_menu.visible = false
                         }
-                    }
-                    else
-                    {
-                        brightness.visible = false
-                        isa_menu.deactivate()
-                        isa_menu.visible = false
+
                     }
                 }
             }
@@ -1737,7 +1802,7 @@ Window {
             z:21
             font_family: intelFont.name
             property int layer_pri: 2
-            is_suppressed: isa_menu.visible
+            is_suppressed: isa_menu.visible || isa_menu.isRequestGuardArmed || menusOffGAPTimer.running
 
             onForwardReqfailDeactToMain:
             {

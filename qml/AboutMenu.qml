@@ -165,7 +165,7 @@ Rectangle {
     Timer {
         id: hide_timer
         running: about_version.visible
-        interval: 10000
+        interval: 120000
         onTriggered: {
             about_version.visible = false
         }
