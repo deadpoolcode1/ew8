@@ -501,19 +501,15 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
     }
 #else
       stat = canOK;
-      unsigned int flags;
-      DWORD time;
+      unsigned int flags = canMSG_STD;
 
-      //NOTE: Waits up to LastArg msec for a message
-         stat = canReadWait(hnd, &(frame_ptr->can_id), (frame_ptr->data), &(frame_ptr->can_dlc), &flags, &time, 10);
-         if (stat == canOK){
-           if (flags & canMSG_ERROR_FRAME){
-             printf("**Transmitted frame is faulty***");
-           }
-         }
+      stat = canWriteWait(hnd, (frame_ptr->can_id), (frame_ptr->data), (frame_ptr->can_dlc), flags, 10);
+      if (stat != canOK){
+          if (stat & canMSG_ERROR_FRAME){
+              printf("**Transmitted frame is faulty***");
+          }
+      }
 #endif
-
-
 }
 
 void CanManager::process()

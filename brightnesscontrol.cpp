@@ -241,8 +241,11 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
             {
                 currentOutput--;
             }
+
+#ifndef WIN32
             outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
             outputFile->flush();
+#endif
         }
         else if(targetOutput > currentOutput)
         {
@@ -255,8 +258,10 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
             currentOutput++;
             }
 
+#ifndef WIN32
             outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
             outputFile->flush();
+#endif
         }
 
 
