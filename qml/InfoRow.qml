@@ -16,7 +16,7 @@ RowLayout {
     property string font_family
     property int pixelsize: 16
     property int cellwidth: 100
-    property int cellheight: 22
+    property int cellheight: 18
 
 
 
