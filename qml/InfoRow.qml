@@ -5,14 +5,19 @@ import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
 
 
-
-Row {
+RowLayout {
+    id: row_frame
+    width: parent.width
+    spacing: 0
 
     property string label: "Label";
     property string value: "Value";
     property bool condition: false
     property string font_family
-    property int pixelsize: 20
+    property int pixelsize: 16
+    property int cellwidth: 100
+    property int cellheight: 22
+
 
 
     property color black: "#ff191414"
@@ -20,23 +25,36 @@ Row {
     property color blue: "#ff00bfff"
     property color white: "#ffe1f1ff"
 
-    Text {
-        id: version_label
-        color: gray
-        text: label
-        font.pixelSize: pixelsize
-        font.family: font_family
-        font.weight: Font.Light
-        visible: condition
+    visible: condition
+
+
+
+    Rectangle {
+        id: label_rectangle
+        height: cellheight
+        width: cellwidth
+        color: black
+        Text {
+            id: version_label
+            color: gray
+            text: label + ":"
+            font.pixelSize: pixelsize
+            font.family: font_family
+            font.weight: Font.Light
+        }
     }
 
-    Text {
-        id: version_text
-        color: white
-        text: value
-        font.pixelSize: pixelsize
-        font.family: font_family
-        font.weight: Font.Light
-        visible: condition
+    Rectangle{
+        height: cellheight
+        width: cellwidth + 40
+        color: black
+        Text {
+            id: version_text
+            color: white
+            text: value
+            font.pixelSize: pixelsize
+            font.family: font_family
+            font.weight: Font.Light
+        }
     }
 }

@@ -7,7 +7,7 @@ import QtQml.Models 2.3
 
 Rectangle {
 
-    id: isa_version
+    id: about_version
 
     color: "#191414"
 
@@ -87,21 +87,69 @@ Rectangle {
 
         function setVisibleSlot(arg0,arg1){
             is_available_isa_bundle = true;
-            canEntityArg0 = arg0;
+            canEntityArg = arg0;
             canEntityArg1 = arg1;
         }
 
     }
 
-    Column {
+    Rectangle {
+
+        width: 220
+        height: inforows.height
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: 8
         anchors.left: parent.left
         anchors.leftMargin: 30
-        anchors.verticalCenter: parent.verticalCenter
-        InfoRow {
-            label: "ISA";
-            value: isa_version.canEntityArg+"."+isa_version.canEntityArg1+"."+isa_version.canEntityArg2+"."+isa_version.canEntityArg3;
-            condition: is_available_isa_info && is_isa_enabled
-            font_family: isa_version.font_family
+        color: black
+
+        ColumnLayout {
+            id: inforows
+
+            spacing: 3
+
+
+            InfoRow {
+                label: "ME version";
+                value: "No CAN Support"
+                condition: false
+                font_family: about_version.font_family
+            }
+            InfoRow {
+                label: "ME8 SN";
+                value: about_version.mesn
+                condition: about_version.is_available_mesn
+                font_family: about_version.font_family
+            }
+            InfoRow {
+                label: "EW8 Linux";
+                value: about_version.osbuild
+                condition: about_version.osbuild !== "NA"
+                font_family: about_version.font_family
+            }
+            InfoRow {
+                label: "EW8 App";
+                value: about_version.engineVersion
+                condition: true
+                font_family: about_version.font_family
+            }
+            InfoRow {
+                label: "EW8 Config";
+                value: about_version.configVersion
+                condition: true
+                font_family: about_version.font_family
+            }
+            InfoRow {
+                label: "EW8 SN";
+                value: about_version.ewsn
+                condition: about_version.ewsn !== "NA"
+            }
+            InfoRow {
+                label: "ISA";
+                value: about_version.canEntityArg+"."+about_version.canEntityArg1+"."+about_version.canEntityArg2+"."+about_version.canEntityArg3;
+                condition: about_version.is_available_isa_info && about_version.is_isa_enabled
+                font_family: about_version.font_family
+            }
         }
     }
 
@@ -116,10 +164,10 @@ Rectangle {
 
     Timer {
         id: hide_timer
-        running: isa_version.visible
-        interval: 5000
+        running: about_version.visible
+        interval: 10000
         onTriggered: {
-            isa_version.visible = false
+            about_version.visible = false
         }
     }
 }
