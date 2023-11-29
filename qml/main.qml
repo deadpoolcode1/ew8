@@ -197,7 +197,7 @@ Window {
             property int layer_pri: 2
 
             function setVisibleSlot() {
-                if (state !== "isa" && state !== "tsr")
+                if (state !== "isa")
                 {
                     state = "isa_init"
                 }
