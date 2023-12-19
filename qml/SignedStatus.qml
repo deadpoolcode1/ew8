@@ -12,10 +12,10 @@ Rectangle {
     height: auth_in.height
     color: "#00000000"
 
-    property bool is_in_err20: false
+    property bool is_in_err: false
     property bool is_active: false
 
-    opacity: (!is_in_err20 && is_active) ? 1.0 : 0.0
+    opacity: (!is_in_err && is_active) ? 1.0 : 0.0
 
     Image {
         property string canEntityType: "INFO_DRIVER_AUTH_IN"

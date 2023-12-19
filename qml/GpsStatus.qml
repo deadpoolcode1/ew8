@@ -15,8 +15,8 @@ Image {
     anchors.topMargin: 0
     source: "images/status-bar/status_no_GPS.png"   
     property bool is_active: false
-    property bool is_in_err20: false
-    opacity: ((!is_in_err20) && is_active)? 1.0 : 0.0
+    property bool is_in_err: false
+    opacity: ((!is_in_err) && is_active)? 1.0 : 0.0
     property int layer_pri: 0
 
 

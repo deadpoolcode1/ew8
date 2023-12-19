@@ -7,6 +7,7 @@ Rectangle {
 
     property bool is_error: false
     property  bool is_deactivated: false
+    property  bool is_part_deactivated: false
     property  bool is_available: true
     property bool is_forced: false
     property bool is_active: false
@@ -37,7 +38,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenterOffset: 0
         anchors.verticalCenter: parent.verticalCenter
-        source: "images/status-bar/ISA_part_deact.png"
+        source: "images/status-bar/ISA_full_act.png"
     }
 
 
@@ -56,6 +57,14 @@ Rectangle {
             PropertyChanges {
                 target: icon
                 source: "images/status-bar/ISA_full_deact.png"
+            }
+        }
+        ,   State {
+            name: "PART_INACTIVE"
+            when: is_part_deactivated
+            PropertyChanges {
+                target: icon
+                source: "images/status-bar/ISA_part_deact.png"
             }
         }
     ]

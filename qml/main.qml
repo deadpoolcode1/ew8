@@ -83,7 +83,7 @@ Window {
 
     signal debugMessagesConnect(bool On);
 
-    property bool isDisplayOfMenusEnabled: (((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err20))
+    property bool isDisplayOfMenusEnabled: (((!speed.speed_available) || (0 === speed.canEntityArg)) && !(status_error.is_in_err))
 
 
     //flags: Qt.FramelessWindowHint
@@ -325,7 +325,7 @@ Window {
                 layoutDirection: Qt.LeftToRight
                 spacing: 8
 
-                visible: ! (status_error.is_in_err20)
+                visible: ! (status_error.is_in_err)
 
                 Rectangle {
                     id: speed
@@ -455,138 +455,143 @@ Window {
                 anchors.right: parent.right
                 anchors.rightMargin: 0
 
-                Rectangle{
+                Rectangle {
+
                     width: 47
                     height: 35
+
+
                     color: "#00000000"
 
+                    id: isa_status
 
+                    visible: (! status_error.is_in_err)
 
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#00000000"
+                    property bool hasActiveChildren: alert_isa_error.to_be_displayed || info_isa_inactive.to_be_displayed || info_isa_partial.to_be_displayed
 
-                        id: isa_status
+                    z: 10
 
-                        visible: ((hasActiveChildren) &&  (! status_error.is_in_err20))
+                    property int canEntityType: Alert.QtQG
+                    property bool is_active: false
+                    property int layer_pri: 0
 
-                        property bool hasActiveChildren: alert_isa_error.to_be_displayed || info_isa_inactive.to_be_displayed || info_isa_partial.to_be_displayed
+                    function setVisibleSlot() {is_active = true}
+                    function setInvisibleSlot() {is_active = false}
 
-                        z: 10
-
-                        property int canEntityType: Alert.QtQG
-                        property bool is_active: false
+                    ISAStatus {
+                        id: alert_isa_error
+                        canEntityType: "ALERT_ISA_ERROR"
                         property int layer_pri: 1
-
-                        function setVisibleSlot() {is_active = true}
-                        function setInvisibleSlot() {is_active = false}
-
-                        ISAStatus {
-                            id: alert_isa_error
-                            canEntityType: "ALERT_ISA_ERROR"
-                            property int layer_pri: 0
-                            is_error: true
-                            anchors.fill: parent
-                            is_forced:  state_isa.state === "isa_init"
-                        }
-
-                        ISAStatus {
-                            id: info_isa_inactive
-                            canEntityType: "INFO_ISA_INACTIVE"
-                            property int layer_pri: 1
-                            is_deactivated: true
-                            anchors.fill: parent
-                            is_available: state_isa.state === "isa"
-                        }
-
-                        ISAStatus {
-                            id: info_isa_partial
-                            canEntityType: "INFO_ISA_PARTIAL"
-                            property int layer_pri: 2
-                            anchors.fill: parent
-                            is_available: state_isa.state === "isa"
-                        }
-
+                        is_error: true
+                        anchors.fill: parent
+                        is_forced:  state_isa.state === "isa_init"
                     }
 
-                    Rectangle {
+                    ISAStatus {
+                        id: info_isa_inactive
+                        canEntityType: "INFO_ISA_INACTIVE"
+                        property int layer_pri: 2
+                        is_deactivated: true
                         anchors.fill: parent
-                        color: "#00000000"
-
-                        property int canEntityType: Alert.QtQG
-                        property int layer_pri: 1
-
-                        property bool is_active: false
-                        opacity: (is_active && ! isa_status.hasActiveChildren)? 1.0 : 0.0
-
-                        function setVisibleSlot() {is_active = true}
-                        function setInvisibleSlot() {is_active = false}
-
-
-                        SignedStatus {
-                            id: signed_status
-
-                            is_in_err20: status_error.is_in_err20
-
-                            is_active: isInEdition
-                        }
-
-                        SadasStatus
-                        {
-                            id: sadas_status
-                            distance: 0
-
-                            function setVisibleSlot(Arg) {distance = Arg}
-                            function setInvisibleSlot() {distance = 0}
-                        }
-
-                        Rectangle {
-                            id: comm_info
-                            width: 23
-                            height: 35
-                            color: "#00000000"
-                            border.color: "#00000000"
-
-                            visible: ! sadas_status.visible
-
-                            opacity: (! status_error.is_in_err20)? 1.0 : 0.0
-
-                            Image {
-                                id: ota
-                                anchors.top: parent.top
-                                property int layer_pri: 1
-                                anchors.topMargin: 0
-                                source: "images/status-bar/status_OTA.png"
-                                opacity: isInEdition? 1.0 : 0.0
-                            }
-
-                            Image {
-                                id: gsm_status
-                                anchors.top: parent.top
-                                property string canEntityType: "INFO_NO_GSM"
-                                property int layer_pri: 0
-                                anchors.topMargin: 0
-                                source: "images/status-bar/status_no_GSM.png"
-
-                                function setVisibleSlot() {opacity = 1.0}
-                                function setInvisibleSlot() {opacity = 0.0}
-                                opacity: isInEdition? 1.0 : 0.0
-
-                            }
-                        }
+                        is_available: state_isa.state === "isa"
                     }
+
+                    ISAStatus {
+                        id: info_isa_partial
+                        canEntityType: "INFO_ISA_PARTIAL"
+                        property int layer_pri: 3
+                        is_part_deactivated: true
+                        anchors.fill: parent
+                        is_available: state_isa.state === "isa"
+                    }
+
+                    ISAStatus {
+                        id: info_isa_full
+                        canEntityType: "INFO_ISA_FULL_ACTIVE"
+                        property int layer_pri: 4
+                        anchors.fill: parent
+                        is_available: state_isa.state === "isa"
+                    }
+
+
+                    SadasStatus
+                    {
+                        id: sadas_status
+                        distance: 0
+
+                        property int layer_pri: 0
+
+                        function setVisibleSlot(Arg) {distance = Arg}
+                        function setInvisibleSlot() {distance = 0}
+                    }
+
                 }
 
-                GpsStatus {
-                    id: gps_status
+
+                SignedStatus {
+                    id: signed_status
+
+                    is_in_err: status_error.is_in_err
 
                     is_active: isInEdition
-
-                    visible: ! sadas_status.visible
-
-                    is_in_err20: status_error.is_in_err20
                 }
 
+                Rectangle {
+                    id: comm_info
+                    width: 23
+                    height: 35
+                    color: "#00000000"
+                    border.color: "#00000000"
+
+                    visible: true
+
+                    opacity: (! status_error.is_in_err)? 1.0 : 0.0
+
+                    Image {
+                        id: ota
+                        anchors.top: parent.top
+                        property int layer_pri: 2
+                        anchors.topMargin: 0
+                        source: "images/status-bar/status_OTA.png"
+                        opacity: isInEdition? 1.0 : 0.0
+                    }
+
+                    Image {
+                        id: gsm_status
+                        anchors.top: parent.top
+                        property string canEntityType: "INFO_NO_GSM"
+                        property int layer_pri: 0
+                        anchors.topMargin: 0
+                        source: "images/status-bar/status_no_GSM.png"
+
+                        function setVisibleSlot() {opacity = 1.0}
+                        function setInvisibleSlot() {opacity = 0.0}
+                        opacity: isInEdition? 1.0 : 0.0
+
+                    }
+
+                    GpsStatus {
+                        id: gps_status
+
+                         property int layer_pri: 1
+
+                        is_active: isInEdition
+
+                        visible: true
+
+                        is_in_err: status_error.is_in_err
+                    }
+                }
+
+                Rectangle {
+                    id: status_err_right_pad
+
+                     width: 16
+                     height: 35
+                     color: "#00000000"
+
+                     visible: status_error.is_in_err
+                }
 
                 Rectangle{
 
@@ -609,7 +614,7 @@ Window {
                         color: "#00000000"
                         border.color: "#00000000"
 
-                        property bool is_in_err20: (opacity === 1.0 && canEntityArg === 32)
+                        property bool is_in_err: (opacity === 1.0)
 
 
 
@@ -647,7 +652,7 @@ Window {
                         function setVisibleSlot() {vis_state = true}
                         function setInvisibleSlot() {vis_state = false}
                         source: "images/status-bar/status_mute.png"
-                        opacity: ((! status_error.is_in_err20) && vis_state)|| isInEdition? 1.0 : 0.0
+                        opacity: ((! status_error.is_in_err) && vis_state)|| isInEdition? 1.0 : 0.0
                     }
                 }
 

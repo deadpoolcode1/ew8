@@ -55,6 +55,7 @@
         ,"ALERT_ISA_ERROR"
         ,"INFO_ISA_INACTIVE"
         ,"INFO_ISA_PARTIAL"
+        ,"INFO_ISA_FULL_ACTIVE"
         ,"ALERT_ISA_HIGHWAY"
         ,"INFO_ISA_VERSION"
         ,"INFO_ISA_BUNDLE"
@@ -132,6 +133,7 @@
                 ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_ERROR", "type": "GraphicItem", "Set": 4}
                 ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_INACTIVE", "type": "GraphicItem", "Set": 1}
                 ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_PARTIAL", "type": "GraphicItem", "Set": 2}
+                ,{"name": "ISA_STATE_Value", "action": "INFO_ISA_FULL_ACTIVE", "type": "GraphicItem", "Set": 3}
                 ,{"name": "ISA_SLWF", "action": "ALERT_ISA_OVERSPEED", "type": "GraphicItem", "Set": [2,3]}
                 ,{"name": "ISA_Legal_Speed", "action": "ALERT_ISA_SPEED", "type": "IntArgument", "index": 0}
                 ,{"name": "Legal_Speed_Validity", "action": "ALERT_ISA_SPEED", "type": "GraphicItem", "Set": 2}
