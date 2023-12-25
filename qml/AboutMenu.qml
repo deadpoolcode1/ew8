@@ -146,7 +146,7 @@ Rectangle {
             }
             InfoRow {
                 label: "ISA";
-                value: about_version.canEntityArg+"."+about_version.canEntityArg1+"."+about_version.canEntityArg2+"."+about_version.canEntityArg3;
+                value: "4."+about_version.canEntityArg+"."+about_version.canEntityArg1+" V"+about_version.canEntityArg2+"."+about_version.canEntityArg3;
                 condition: about_version.is_available_isa_info && about_version.is_isa_enabled
                 font_family: about_version.font_family
             }
