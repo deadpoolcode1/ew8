@@ -291,8 +291,6 @@ Window {
 
             property int canEntityType: Alert.QtQG
             property int layer_pri: 2
-            //function setVisibleSlot(){visible= true; console.log("STATUS")}
-            //function setInvisibleSlot(){visible = false; console.log("STATUS OFF")}
 
             anchors.right: parent.right
             anchors.rightMargin: 8
@@ -583,15 +581,6 @@ Window {
                     }
                 }
 
-                Rectangle {
-                    id: status_err_right_pad
-
-                     width: 16
-                     height: 35
-                     color: "#00000000"
-
-                     visible: status_error.is_in_err
-                }
 
                 Rectangle{
 
@@ -599,46 +588,6 @@ Window {
                     height: 35
                     color: "#00000000"
                     border.color: "#00000000"
-
-                    Rectangle {
-                        id: status_error
-
-                        width: 28
-                        height: 35
-
-                        opacity: isInEdition? 1.0 : 0.0
-
-                        property string canEntityType: "ALERT_ERROR"
-                        property int canEntityArg: 0
-                        property int layer_pri: 0
-                        color: "#00000000"
-                        border.color: "#00000000"
-
-                        property bool is_in_err: (opacity === 1.0)
-
-
-
-                        function setVisibleSlot(Arg, isTamperAlert){
-                            opacity = 1.0
-                            canEntityArg = isTamperAlert? 0xda : Arg
-                        }
-                        function setInvisibleSlot(){opacity = 0.0}
-
-
-                        Text {
-                            id: err_code
-                            color: white
-                            text: status_error.canEntityArg.toString(16).toUpperCase()
-                            font.letterSpacing: 0
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            topPadding: 4
-                            font.family: intelFont.name
-                            font.weight: Font.Medium
-                            font.pixelSize: 24
-                        }
-
-
-                    }
 
                     Image {
                         id: om_mute
@@ -680,31 +629,6 @@ Window {
             anchors.bottomMargin: 0
 
 
-            //TODO: replace with Image
-            Image {
-                id: alert_err
-                visible: isInEdition
-                z: 20
-                source: "images/error/error_full_display_general.jpg"
-                property string canEntityType: "ALERT_ERROR"
-                property int canEntityArg: 0x00
-                property int layer_pri: 0
-                fillMode: Image.PreserveAspectCrop
-                width:324
-                height:240
-                anchors.bottomMargin: -20
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.leftMargin: -2
-
-
-
-                function setVisibleSlot(Arg){
-                    visible= true;
-                    canEntityArg = Arg
-                }
-                function setInvisibleSlot(){visible = false}
-            }
 
             Rectangle {
                 id: left_panel
@@ -1322,6 +1246,137 @@ Window {
 
             antialiasing: true
             smooth: true
+
+            Rectangle {
+                id: discon_status_panel
+                height: 43
+                color: "#00000000"
+                border.color: "#00000000"
+                z: 21
+
+                property int canEntityType: Alert.QtQG
+                property int layer_pri: 0
+
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                anchors.top: parent.top
+                anchors.topMargin: 8
+                visible: true
+
+                Image {
+                    id: discon_logo
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    clip: true
+                    visible: true
+                    fillMode: Image.PreserveAspectCrop
+                    source: "images/logo/ME_status_logo.png"
+                }
+
+
+                Row {
+                    id: discon_right_row
+                    height: 42
+                    layoutDirection: Qt.RightToLeft
+                    anchors.left: discon_logo.right
+                    anchors.leftMargin: 8
+                    spacing: 7
+                    anchors.right: parent.right
+                    anchors.rightMargin: 0
+
+
+                    Rectangle {
+                        id: status_err_right_pad
+
+                         width: 71
+                         height: 35
+                         color: "#00000000"
+
+                         visible: status_error.is_in_err
+                    }
+
+                    Rectangle{
+
+                        width: 28
+                        height: 35
+                        color: "#00000000"
+                        border.color: "#00000000"
+
+                        Rectangle {
+                            id: status_error
+
+                            width: 28
+                            height: 35
+
+                            opacity: isInEdition? 1.0 : 0.0
+
+                            property string canEntityType: "ALERT_ERROR"
+                            property int canEntityArg: 0
+                            property int layer_pri: 0
+                            color: "#00000000"
+                            border.color: "#00000000"
+
+                            property bool is_in_err: (opacity === 1.0)
+
+
+
+                            function setVisibleSlot(Arg, isTamperAlert){
+                                opacity = 1.0
+                                canEntityArg = isTamperAlert? 0xda : Arg
+                            }
+                            function setInvisibleSlot(){opacity = 0.0}
+
+
+                            Text {
+                                id: err_code
+                                color: white
+                                text: status_error.canEntityArg.toString(16).toUpperCase()
+                                font.letterSpacing: 0
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                topPadding: 4
+                                font.family: intelFont.name
+                                font.weight: Font.Medium
+                                font.pixelSize: 24
+                            }
+
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+
+            Image {
+                id: alert_err
+                visible: isInEdition
+                z: 20
+                source: "images/error/error_full_display_general.jpg"
+                property string canEntityType: "ALERT_ERROR"
+                property int canEntityArg: 0x00
+                property int layer_pri: 0
+                fillMode: Image.PreserveAspectCrop
+                width:324
+                height:240
+                anchors.bottomMargin: -20
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.leftMargin: -2
+
+
+
+                function setVisibleSlot(Arg){
+                    visible= true;
+                    canEntityArg = Arg
+                }
+                function setInvisibleSlot(){visible = false}
+            }
+
 
 
             Item {
