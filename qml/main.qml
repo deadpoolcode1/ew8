@@ -8,7 +8,6 @@ import QtQml.Models 2.3
 import MyQMLenums 0.1
 import builtin.mobileye.QRCode 0.1
 import builtin.mobileye.EWInfo 0.1
-import Qt.labs.settings 1.0
 
 
 Window {
@@ -187,7 +186,6 @@ Window {
                 if (state_isa.state !== "isa" && state_isa.state !== "isa_init")
                 {
                     state_isa.state = "tsr"
-                    alert_err_setting.isa_scheme = false
                 }
             }
         }
@@ -202,7 +200,6 @@ Window {
                 if (state !== "isa")
                 {
                     state = "isa_init"
-                    alert_err_setting.isa_scheme = true
                 }
             }
 
@@ -232,7 +229,6 @@ Window {
                 onTriggered:
                 {
                     state_isa.state = "tsr"
-                    alert_err_setting.isa_scheme = false
                 }
             }
 
@@ -245,7 +241,6 @@ Window {
                 onTriggered:
                 {
                     state_isa.state = "isa"
-                    alert_err_setting.isa_scheme = true
                 }
             }
 
@@ -1361,7 +1356,7 @@ Window {
                 id: alert_err
                 visible: isInEdition
                 z: 20
-                source: "images/error/error_full_display_general.jpg"
+                source: "images/error/error_full_display_general_yellow.png"
                 property string canEntityType: "ALERT_ERROR"
                 property int canEntityArg: 0x00
                 property int layer_pri: 0
@@ -1380,25 +1375,6 @@ Window {
                     canEntityArg = Arg
                 }
                 function setInvisibleSlot(){visible = false}
-
-                Settings
-                {
-                    id: alert_err_setting
-
-                    category: "ColorScheme"
-                    property bool isa_scheme: false
-                }
-
-
-                states: [
-                   State {name: "yellow"; when:  alert_err_setting.isa_scheme 
-                           PropertyChanges {
-                             target: alert_err
-                             source: "images/error/error_full_display_general_yellow.png"
-                           }
-                   }
-                ]
-
             }
 
 
