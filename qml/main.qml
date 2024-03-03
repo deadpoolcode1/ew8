@@ -1394,7 +1394,6 @@ Window {
                 visible: false
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                //source: "images/error/red_alert-01.png"
 
                 Text {
                     id: om_pwroff_label
@@ -1424,7 +1423,6 @@ Window {
                 visible: false
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                //source: "images/error/red_alert-01.png"
 
                 Text {
                     id: om_keeppwr_label
@@ -1457,7 +1455,6 @@ Window {
                 visible: false
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                //source: "images/error/red_alert-01.png"
 
                 Text {
                     id: om_pilot_label
@@ -1489,7 +1486,7 @@ Window {
                 visible: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                source: "images/error/red_alert-01.png"
+                source: "images/error/disconnect-alert.png"
 
                 Text {
                     id: discon_label
