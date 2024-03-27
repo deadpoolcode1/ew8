@@ -484,7 +484,7 @@
         {
             "protocol": "IMS_Connectivity",
             "signals":[
-                {"name":"CellularCommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [1, 2 , 3, 4]}
+                {"name":"CellularCommunicationStatus", "action": "INFO_NO_GSM", "type": "GraphicItem", "Set": [2, 3, 4]}
             ]
         }
         ,
