@@ -1,0 +1,23 @@
+[submodule "meta-mobileye"]
+	path = meta-mobileye
+	url = git@gitlab.mobileye.com:ims-sw-tools/embedded/ew8-yocto/meta-mobileye.git
+[submodule "poky"]
+	path = poky
+	url = https://git.yoctoproject.org/git/poky
+	branch = sumo
+[submodule "meta-atmel"]
+	path = meta-atmel
+	url = https://github.com/linux4sam/meta-atmel.git
+  branch = sumo
+[submodule "meta-openembedded"]
+	path = meta-openembedded
+	url = https://git.openembedded.org/meta-openembedded
+	branch = sumo
+[submodule "meta-qt5"]
+	path = meta-qt5
+	url = https://code.qt.io/yocto/meta-qt5.git
+	branch = 5.9
+[submodule "meta-swupdate"]
+	path = meta-swupdate
+	url = git@gitlab.mobileye.com:ims-sw-tools/embedded/ew8-yocto/meta-swupdate.git
+	branch = warrior-innowave

@@ -1,0 +1,46 @@
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index cef803e3977c..97c7cefe1156 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -1963,6 +1963,31 @@ static const struct panel_desc winstar_wf35ltiacd = {
+ 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+ };
+ 
++static const struct drm_display_mode tianma_tm035kdgp01_mode = {
++	.clock = 6000,
++	.hdisplay = 320,
++	.hsync_start = 320 + 8,
++	.hsync_end = 320 + 8 + 4,
++	.htotal = 320 + 8 + 4 + 43,
++	.vdisplay = 240,
++	.vsync_start = 240 + 8,
++	.vsync_end = 240 + 8 + 4,
++	.vtotal = 240 + 4 + 4 + 12,
++	.vrefresh = 60,
++	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
++};
++
++static const struct panel_desc tianma_tm035kdgp01 = {
++	.modes = &tianma_tm035kdgp01_mode,
++	.num_modes = 1,
++	.bpc = 8,
++	.size = {
++		.width = 70,
++		.height = 53,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
++};
++
+ static const struct of_device_id platform_of_match[] = {
+ 	{
+ 		.compatible = "ampire,am-480272h3tmqw-t01h",
+@@ -2168,6 +2193,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "winstar,wf35ltiacd",
+ 		.data = &winstar_wf35ltiacd,
++	}, {
++		.compatible = "tianma,tm035kdgp01",
++		.data = &tianma_tm035kdgp01,
+ 	}, {
+ 		/* sentinel */
+ 	}

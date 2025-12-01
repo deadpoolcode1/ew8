@@ -1,0 +1,35 @@
+#ifndef VERSIONMSG_H
+#define VERSIONMSG_H
+
+#include "canmanager.h"
+
+class CanManager;
+
+class VersionMsg
+{
+public:
+    //Single time fired
+    static void create(CanManager * aCanManager);
+    static void singleShot(void);
+private:
+
+    static VersionMsg * instance;
+
+    VersionMsg(CanManager * aCanManager);
+
+    void sendAll(void);
+
+    CanManager * itsCanManager;
+    struct can_frame version2send;
+    void readVersionInfo(void);
+#ifndef WIN32
+    void readServiceNumber(void);
+    void enableDisableSFC(quint32 * wr_ptr, bool On);
+    quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+
+    struct can_frame sn2send_LSB;
+    struct can_frame sn2send_MSB;
+#endif
+};
+
+#endif // VERSIONMSG_H

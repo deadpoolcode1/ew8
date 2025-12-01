@@ -1,0 +1,66 @@
+VERSION "HIPBNYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY/4/%%%/4/'%**4YYY///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+VAL_TABLE_ Driver_mode 15 "Invalid value" 14 "Description for the value '0xE'" 13 "Description for the value '0xD'" 12 "Description for the value '0xC'" 11 "Description for the value '0xB'" 10 "Description for the value '0xA'" 9 "Description for the value '0x9'" 8 "Description for the value '0x8'" 7 "Description for the value '0x7'" 6 "Description for the value '0x6'" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Description for the value '0x3'" 2 "Way to/from work drive" 1 "Personal drive" 0 "Work drive" ;
+VAL_TABLE_ Driver_assignment 7 "invalid value" 6 "Description for the value '0x6'" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Description for the value '0x3'" 2 "assigned" 1 "in process" 0 "not assigned" ;
+VAL_TABLE_ Validity 1 "invalid" 0 "valid" ;
+VAL_TABLE_ Running_mode 15 "Invalid value" 14 "Description for the value '0xE'" 13 "Description for the value '0xD'" 12 "Description for the value '0xC'" 11 "Description for the value '0xB'" 10 "Description for the value '0xA'" 9 "Description for the value '0x9'" 8 "Description for the value '0x8'" 7 "Description for the value '0x7'" 6 "Description for the value '0x6'" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Normal mode" 2 "Keep power on mode" 1 "Airplane mode" 0 "Pilot mode" ;
+VAL_TABLE_ Present_app 15 "Invalid value" 14 "Description for the value '0xE'" 13 "Description for the value '0xD'" 12 "Description for the value '0xC'" 11 "Description for the value '0xB'" 10 "Description for the value '0xA'" 9 "Description for the value '0x9'" 8 "Description for the value '0x8'" 7 "Description for the value '0x7'" 6 "Description for the value '0x6'" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "Description for the value '0x1'" 0 "Description for the value '0x0'" ;
+
+
+BO_ 1042 IMS_Status_Protocol_System: 8 Vector__XXX
+ SG_ Driver_mode : 56|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Driver_assignment : 60|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ Validity : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Present_app : 52|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ RunningMode : 48|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ SessionId1 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SessionId0 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Uptime3 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Uptime2 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Uptime1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Uptime0 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+
+
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 1042 Driver_mode 15 "Invalid value" 3 "To_or_from_wrok_drive" 2 "Personal_drive" 1 "Work_drive" 0 "Disabled_drive" ;
+VAL_ 1042 Driver_assignment 7 "invalid_assigned" 3 "assigned" 2 "in_process" 1 "not_assigned" 0 "disabled" ;
+VAL_ 1042 Validity 1 "invalid" 0 "valid" ;
+VAL_ 1042 Present_app 15 "Invalid value" 3 "Peripherals_Test" 2 "Signals_Test" 1 "SP_TAC" 0 "AWS2" ;
+VAL_ 1042 RunningMode 15 "Invalid value" 4 "Pilot_mode" 3 "Keep_power_on_mode" 2 "Mute_mode" 1 "Normal_mode" 0 "Power_off_mode" ;
+

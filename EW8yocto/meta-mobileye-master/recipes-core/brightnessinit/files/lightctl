@@ -1,0 +1,87 @@
+#!/bin/sh +x
+
+#@author: Nochum Linczewski
+#@company: Mobileye, an Intel Company
+#@date: 17.11.2019
+#license: commercial
+
+readonly LEVELDIR="/sys/class/backlight/backlight"
+readonly LEVEL="${LEVELDIR}/brightness"
+readonly MEASURE="/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
+readonly LEVELMAX="$(cat ${LEVELDIR}/max_brightness)"
+readonly LEVELMIN=1
+#readonly MESMAX=16500
+readonly MESMAX=8500
+readonly MESMIN=300
+
+readonly SPLASH_IMG="/home/root/me_splash_320x240.raw.lz4"
+
+splash()
+{
+  lz4cat ${SPLASH_IMG} | /opt/ew8_splash/bin/ew8_splash
+}
+
+
+premodules()
+{
+  /sbin/modprobe panel-sitronix-st7789v
+  /sbin/modprobe atmel-hlcdc-dc
+  echo 0 > /sys/class/graphics/fb0/blank
+  splash &
+}
+
+start()
+{
+
+ if [ -r ${MEASURE} ] && [ -w ${LEVEL} ]
+ then
+
+
+   levels=$((${LEVELMAX} - ${LEVELMIN}))
+   interval=$((${MESMAX} - ${MESMIN}))
+   messtep=$((${interval}/${levels}))
+
+
+   curlevel=$(cat ${LEVEL})
+
+     measure=$(cat ${MEASURE})
+
+
+     if ((${measure} >= ${MESMAX}))
+     then
+       measure=${MESMAX}
+     fi
+
+     if ((${measure} <= ${MESMIN}))
+     then
+       measure=${MESMIN}
+     fi
+
+     calclevel=$(((${measure}-${MESMIN})/${messtep} + ${LEVELMIN}))
+
+     if [ ${curlevel} -eq 0 ]
+     then
+       curlevel=${calclevel}
+       echo ${curlevel} > ${LEVEL}
+     fi
+
+ fi
+
+}
+
+stop()
+{
+killall $(basename $0)
+}
+
+case "$1" in
+  start)
+    premodules
+    start &
+  ;;
+  stop)
+    stop
+  ;;
+  *)
+  ;;
+esac

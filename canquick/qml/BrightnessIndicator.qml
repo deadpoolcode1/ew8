@@ -1,0 +1,90 @@
+import QtQuick 2.9
+//import QtQuick.Window 2.2
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
+import QtQml.Models 2.3
+
+//Custom modules:
+import MyQMLenums 0.1
+import builtin.mobileye.QRCode 0.1
+
+Rectangle
+{
+    width: 51
+    height: 51
+    color: "#00000000"
+    border.color: "#00000000"
+
+    property int level: 0x0
+
+Image {
+    id: level_icon
+
+
+    anchors.fill: parent
+
+    fillMode: Image.PreserveAspectFit
+
+    source: "images/brightness/brightness-5.png"
+
+
+}
+
+states: [
+    State {
+        name: "VeryLow"
+        when: level === 1
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-1.png"
+        }
+    },
+    State {
+        name: "Low"
+        when:  level === 1
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-1.png"
+        }
+    },
+    State {
+        name: "Low2"
+        when:  level === 2
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-2.png"
+        }
+    },
+    State {
+        name: "Low3"
+        when:  level === 3
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-3.png"
+        }
+    },
+    State {
+        name: "Half"
+        when:  level === 4
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-4.png"
+        }
+    },
+    State {
+        name: "High"
+        when:  level === 5
+
+        PropertyChanges {
+            target: level_icon
+            source: "images/brightness/brightness-5.png"
+        }
+    }
+]
+
+}

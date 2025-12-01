@@ -1,0 +1,79 @@
+#ifndef MAINPROCESS_H
+#define MAINPROCESS_H
+
+#include <QObject>
+#include "canmanager.h"
+#include "ialertdisplay.h"
+#include <QQmlApplicationEngine>
+#include "rootedtree.h"
+#include "brightnesscontrol.h"
+
+class MainProcess : public QObject, IAlertDisplay
+{
+    Q_OBJECT
+
+public:
+
+    explicit MainProcess(QObject *aComponentObject, QObject * parent = nullptr);
+
+    int launchEverything(void);
+
+    void updateDisplay(void);
+
+    void setBrightnessControl(BrightnessControl * aBrightnessControl);
+
+    //alerts display:
+    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, quint8 unit);
+    virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
+    virtual void deactivate(DISPLAY_ITEM_ID at);
+    virtual void forceUpdate(void);
+    virtual void message(QString aStrMsg);
+
+    static MainProcess* getInstance(QObject * aComponentObject);
+
+signals:
+    void startUpdateDisplayWindow();
+
+    void messageDisplayWindow(QVariant aStrMsg);
+
+public slots:
+
+    void debugMessagesConnected(bool On);
+
+    void volumeKeySent(qint32);
+
+    void isaFullActivationRequestSend();
+    void isaPartialDeactivationRequestSend();
+    void isaFullDeactivationRequestSend();
+
+
+
+    void process();
+
+private:
+    void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
+
+    bool isDataComplete;
+
+    static MainProcess* instance;
+
+    //Objects for signals connection:
+    BrightnessControl * theBrightnessControl;
+
+//    MainWindow * mw;
+    CanManager * canmgr;
+
+// pointers to display static panels trees
+    RootedTree* generalPanelTree;
+
+// pointer to QML defining trees for all panels.
+    QObject *componentObject;
+
+    QTimer * updateDisplayTimeWindow;
+
+    QThread * itsThread;
+
+    bool flag_tree_changed;
+};
+
+#endif // MAINPROCESS_H

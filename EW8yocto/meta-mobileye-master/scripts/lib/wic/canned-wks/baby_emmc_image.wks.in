@@ -1,0 +1,10 @@
+# short-description: Create SD card image
+# long-description: Creates a partitioned SD card image.
+
+# NOTE: /boot mounting point removed in order to avoid fsck fix warnings
+part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 20M --extra-space 0 --fsoptions="defaults,noauto"
+part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label root --align 4 --exclude-path=opt/canquick/
+part /opt/canquick --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/opt/canquick --ondisk mmcblk0 --fstype=ext4 --label media0 --align 4 --size 36M --exclude-path=bin/ --fsoptions="defaults,noauto"
+part /opt/canquick/bin --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/opt/canquick/bin --ondisk mmcblk0 --fstype=ext4 --label fw0 --align 4 --size 36M --fsoptions="defaults,noauto"
+part /opt/canquick --ondisk mmcblk0 --fstype=ext4 --label media1 --align 4 --size 36M --fsoptions="defaults,noauto" --exclude-path=*
+part /opt/canquick/bin --ondisk mmcblk0 --fstype=ext4 --label fw1 --align 4 --size 36M --fsoptions="defaults,noauto" --exclude-path=*

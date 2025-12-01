@@ -1,0 +1,17 @@
+diff --git a/drivers/pinctrl/pinctrl-at91-pio4.c b/drivers/pinctrl/pinctrl-at91-pio4.c
+index 2ec1cd2..89da17b 100644
+--- a/drivers/pinctrl/pinctrl-at91-pio4.c
++++ b/drivers/pinctrl/pinctrl-at91-pio4.c
+@@ -1165,4 +1165,12 @@ static struct platform_driver atmel_pinctrl_driver = {
+ 	},
+ 	.probe = atmel_pinctrl_probe,
+ };
++#if 0
+ builtin_platform_driver(atmel_pinctrl_driver);
++#else
++static int __init atmel_pinctrl_init(void)
++{
++	return platform_driver_register(&atmel_pinctrl_driver);
++}
++arch_initcall(atmel_pinctrl_init);
++#endif

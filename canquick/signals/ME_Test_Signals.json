@@ -1,0 +1,152 @@
+{
+    "GraphicItems": [
+         "ALERT_LEFT_LDWOFF"
+        ,"ALERT_RIGHT_LDWOFF"
+        ,"ALERT_LEFT_LDWON"
+        ,"ALERT_RIGHT_LDWON"
+        ,"ALERT_FCW"
+        ,"ALERT_PDZ"
+        ,"ALERT_PCW"
+        ,"ALERT_LLDW"
+        ,"ALERT_RLDW"
+        ,"ALERT_BLINKERS"
+        ,"ALERT_HMW_DISTANCE"
+        ,"ALERT_HMW_ALERT"
+        ,"ALERT_HMW_MONITOR"
+        ,"ALERT_HI_BEAM"
+        ,"ALERT_LOW_BEAM"
+        ,"ALERT_ERROR"
+        ,"INFO_QRCODE"
+        ,"ALERT_END_ALL_RESTR"
+        ,"ALERT_MOTORWAY"
+        ,"ALERT_NO_PASS"
+        ,"ALERT_PLAYGROUND"
+        ,"ALERT_SLI"
+        ,"ALERT_SLI_END"
+        ,"ALERT_EXPRESSWAY"
+
+        ,"ALERT_MOTORWAY_END"
+        ,"ALERT_NO_PASS_END"
+        ,"ALERT_PLAYGROUND_END"
+        ,"ALERT_EXPRESSWAY_END"
+
+        ,"ALERT_RTW_WARN"
+        ,"ALERT_RTW_ALERT"
+
+        ,"INFO_VEH_SPEED"
+        ,"INFO_FAILSAFE"
+        ,"SHAPE_USA"
+        ,"INFO_SPEED_SHOW"
+        ,"ALERT_SLI_SHOW"
+        ,"INFO_NO_GPS"
+        ,"INFO_GPS_OK"
+        ,"INFO_NO_GSM"
+        ,"INFO_TEST_SIGNALS"
+
+        ,"INFO_DRIVER_AUTH_IN"
+        ,"INFO_DRIVER_AUTH_OUT"
+        ,"INFO_DRIVER_AUTH_PROCESS"
+
+        ,"TEST_BRAKES"
+        ,"TEST_SPEED"
+        ,"TEST_SPEED_VALUE"
+        ,"TEST_HIGH_BEAM"
+        ,"TEST_BLINKER_LEFT"
+        ,"TEST_BLINKER_RIGHT"
+        ,"TEST_REVERSE"
+        ,"TEST_WIPERS"
+
+        ,"INFO_TEST_PERIPHERALS"
+        ,"INFO_TEST_GYRO"
+        ,"INFO_TEST_GSM"
+        ,"INFO_TEST_GPS"
+
+        ,"SMART_CROWDED"
+        ,"SMART_PED_HWY"
+        ,"SMART_CYC_HWY"
+        ,"SMART_WEA_ROAD"
+        ,"SMART_WEA_HYDRO"
+        ,"SMART_WEA_FG"
+        ,"SMART_WEA_WND"
+        ,"SMART_WEA_HAIL"
+        ,"SMART_WEA_TSTM"
+        ,"SMART_FATIGUE"
+        ,"SMART_BUMPERS"
+        ,"SMART_HARSH_DZ"
+        ,"VOLUME_FAIL"
+        ,"VOLUME_DONE"
+        ,"RGB_RED"
+        ,"RGB_GREEN"
+        ,"RGB_BLUE"
+        ,"RGB_WHITE"
+        ,"TV_PATTERN"
+        ,"OM_POWEROFF"
+        ,"OM_NORMAL"
+        ,"OM_MUTE"
+        ,"OM_KEEPPWR"
+        ,"OM_PILOT"
+    ],
+
+
+    "Protocols": [
+        {
+            "protocol": "CarInfo_protocol",
+            "signals":[
+                {"name": "Speed_availabled", "action": "TEST_SPEED", "type": "GraphicItem"}
+                ,{"name": "Reverse_Gear_availabled", "action": "TEST_REVERSE", "type": "GraphicItem"}
+                ,{"name": "Left_blink_availabled", "action": "TEST_BLINKER_LEFT","type": "GraphicItem"}
+                ,{"name": "Right_blink_availabled", "action": "TEST_BLINKER_RIGHT","type": "GraphicItem"}
+                ,{"name": "HighBeam_availabled", "action": "TEST_HIGH_BEAM","type": "GraphicItem"}
+                ,{"name": "Brakes_availabled", "action": "TEST_BRAKES","type": "GraphicItem"}
+                ,{"name": "Speed", "action": "TEST_SPEED", "type": "IntArgument", "index": 1}
+                ,{"name": "Reverse_Gear", "action": "TEST_REVERSE", "type": "IntArgument", "index": 1}
+                ,{"name": "Left_blink", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 1}
+                ,{"name": "Right_blink", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 1}
+                ,{"name": "HighBeam", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 1}
+                ,{"name": "Brakes", "action": "TEST_BRAKES", "type": "IntArgument", "index": 1}
+                ,{"name": "Wipers", "action": "TEST_WIPERS", "type": "IntArgument", "index": 1}
+                ,{"name": "Wipers_availabled", "action": "TEST_WIPERS", "type": "GraphicItem"}
+            ]
+        }
+        ,
+        {
+            "protocol": "IMS_Status_Protocol_System",
+            "keepAlive": "IMS_Status_Protocol_System",
+            "timeout": 20000,
+            "signals":[
+                {"name":"Validity", "action": ["", "inverted"], "type": "Validator"}
+                ,{"name":"Present_app", "action": "SwitchModeAWS", "type": "SystemRequest", "Set": 1}
+                ,{"name":"Present_app", "action": "INFO_TEST_SIGNALS", "type": "GraphicItem", "Set": 2}
+                ,{"name":"Present_app", "action": "INFO_TEST_PERIPHERALS", "type": "GraphicItem", "Set": 3}
+            ]
+        }
+        ,
+        {
+            "protocol": "IMS_Connectivity",
+            "signals":[
+                {"name":"GyroTestResult", "action": "INFO_TEST_GYRO", "type": "GraphicItem", "Set": [0, 1 , 2]}
+                ,{"name":"GSMTestResult", "action": "INFO_TEST_GSM", "type": "GraphicItem", "Set": [0, 1 , 2]}
+                ,{"name":"GPSTestResult", "action": "INFO_TEST_GPS", "type": "GraphicItem", "Set": [0, 1 , 2]}
+                ,{"name":"GyroTestResult", "action": "INFO_TEST_GYRO", "type": "IntArgument", "index": 0}
+                ,{"name":"GSMTestResult", "action": "INFO_TEST_GSM", "type": "IntArgument", "index": 0}
+                ,{"name":"GPSTestResult", "action": "INFO_TEST_GPS", "type": "IntArgument", "index": 0}
+                ,{"name":"GyroTestStatus", "action": "INFO_TEST_GYRO", "type": "IntArgument", "index": 1}
+                ,{"name":"GSMTestStatus", "action": "INFO_TEST_GSM", "type": "IntArgument", "index": 1}
+                ,{"name":"GPSTestStatus", "action": "INFO_TEST_GPS", "type": "IntArgument", "index": 1}
+            ]
+        }
+        ,
+        {
+            "protocol": "SignalsTest",
+            "signals": [
+                {"name": "Speed_Test_Status", "action": "TEST_SPEED", "type": "IntArgument", "index": 0}
+                ,{"name": "Reverse_Test_Status", "action": "TEST_REVERSE", "type": "IntArgument", "index": 0}
+                ,{"name": "Blinker_Left_Test_Status", "action": "TEST_BLINKER_LEFT", "type": "IntArgument", "index": 0}
+                ,{"name": "Blinker_Right_Test_Status", "action": "TEST_BLINKER_RIGHT", "type": "IntArgument", "index": 0}
+                ,{"name": "High_Beam_Test_Status", "action": "TEST_HIGH_BEAM", "type": "IntArgument", "index": 0}
+                ,{"name": "Brake_Test_Status", "action": "TEST_BRAKES", "type": "IntArgument", "index":  0}
+                ,{"name": "Wipers_Test_Status", "action": "TEST_WIPERS", "type": "IntArgument", "index": 0}
+            ]
+        }
+    ]
+}

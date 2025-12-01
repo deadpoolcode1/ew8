@@ -1,0 +1,23 @@
+diff --git a/canquick.pro b/canquick.pro
+index e07ac34..eabe59c 100644
+--- a/canquick.pro
++++ b/canquick.pro
+@@ -1,6 +1,6 @@
+ MAJOR_VERSION = 3
+ MINOR_VERSION = 0
+-OTA_TEST_VERSION = 0
++OTA_TEST_VERSION = 2
+ 
+ VERSION = $${MAJOR_VERSION}"."$${MINOR_VERSION}"."$${OTA_TEST_VERSION}
+ message(Version $${VERSION})
+diff --git a/configs/EW8_Config.json b/configs/EW8_Config.json
+index 84755c8..13b079c 100644
+--- a/configs/EW8_Config.json
++++ b/configs/EW8_Config.json
+@@ -1,5 +1,5 @@
+ {
+-    "ConfigVersion":[5,0,0],
++    "ConfigVersion":[5,0,2],
+     "Illuminance": {
+         "points": [1500,2000,2500,3000]
+         ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"

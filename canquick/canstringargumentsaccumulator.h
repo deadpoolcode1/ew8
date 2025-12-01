@@ -1,0 +1,39 @@
+#ifndef CANSTRINGARGUMENTSACCUMULATOR_H
+#define CANSTRINGARGUMENTSACCUMULATOR_H
+
+#include "defs.h"
+#include <QMap>
+#include <QStringBuilder>
+#include <QObject>
+#include <QVector>
+
+#include "canargumentsaccumulator.h"
+
+class CanArgumentsAccumulator;
+
+class CanStringArgumentsAccumulator : public CanArgumentsAccumulator
+{
+    Q_OBJECT
+public:
+    static CanStringArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
+
+    void insertValueFromSignal(size_t anIndex, qint8 aChar);
+
+    virtual const char * getArgumentsTypeName() {return argumentsTypeName;}
+
+
+private:
+    static const char * argumentsTypeName;
+
+    explicit CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
+
+    QMap<size_t,char> charactersMap;
+
+signals:
+
+    void argumentComplete(QString result);
+
+public slots:
+};
+
+#endif // CANSTRINGARGUMENTSACCUMULATOR_H

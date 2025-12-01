@@ -1,0 +1,60 @@
+#ifndef QQUICKQRCODE_H
+#define QQUICKQRCODE_H
+
+#include <QQuickPaintedItem>
+
+#include <QPainter>
+
+#include "defs.h"
+
+class QPainter;
+
+class QQuickQRCode : public QQuickPaintedItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
+    Q_PROPERTY(QString request  WRITE setRequest)
+#if 0
+    Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
+#endif
+    //TODO add encoded string propert
+    //TODO add scale property
+    //TODO add margin property
+    //TODO add readonly width, height properties
+
+
+
+public:
+    explicit QQuickQRCode(QQuickPaintedItem * parentQQuickItem = nullptr);
+    void paint(QPainter * painter);
+
+    static void declareQML();
+
+    void setRequest(QString aRequest);
+
+    void setBaseUrl(QString aUrl);
+
+signals:
+
+
+public slots:
+
+private:
+    const quint8 whiteBlackBitMask = 0x01;
+
+
+    static QString  baseurl;
+    static QString  request;
+
+    qint32 margin;
+
+    QImage * qimage;
+    qint32  width;
+
+    DISPLAY_ITEM_ID type;
+
+    void snUpdate(QString arg);
+    void reqUpdate(QString arg);
+};
+
+#endif // QQUICKQRCODE_H

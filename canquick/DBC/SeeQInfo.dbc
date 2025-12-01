@@ -1,0 +1,63 @@
+VERSION "HIPBNYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY/4/%%%/4/'%**4YYY///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 1040 SN_System_Part1: 8 Vector__XXX
+ SG_ ManufacturerCode0 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product2 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product1 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Product0 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateYear1 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateYear0 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateWeek1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ProductionDateWeek0 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1041 SN_System_Part2: 8 Vector__XXX
+ SG_ SerialNumber4 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber3 : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber2 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber1 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SerialNumber0 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Reserved411_2 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Reserved411_1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ManufacturerCode1 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+
+
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+

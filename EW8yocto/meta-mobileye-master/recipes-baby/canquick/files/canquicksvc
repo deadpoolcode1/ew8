@@ -1,0 +1,47 @@
+#!/bin/sh
+
+start_core()
+{
+  echo "Starting Canquick..."
+
+  . /etc/profile
+
+  LAUNCHER_ARGS="-multifile -platform linuxfb"
+
+  export QT_LOGGING_RULES="*.debug=false"
+
+  #WARNING: causes big latencies when run on startup
+  #export QT_LOGGING_RULES="*.debug=true"
+
+  cd /home/root
+
+  (/opt/canquick/bin/canquick -- ${LAUNCHER_ARGS};) &
+
+  [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+start()
+{
+    start_core
+    # TODO check the nice level required
+    renice 0 $( pidof canquick )
+    # TODO interrupt the sleep, when application enters into its main loop
+    sleep 10
+}
+
+stop()
+{
+  echo "Killing Canquick Application..."
+  killall -USR2 canquick
+}
+
+case "$1" in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  *)
+  ;;
+esac

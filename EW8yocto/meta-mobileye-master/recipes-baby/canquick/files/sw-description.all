@@ -1,0 +1,29 @@
+software =
+{
+    version = "0.1.0";
+
+    description = "Firmware update for EW8";
+    ew8 = {
+        hardware-compatibility: [ "1.0" ];
+
+        images: (
+            {
+                filename = "firmware.img.gz";
+                compressed = true;
+                device = "/dev/fwupdate";
+            },
+            {
+                filename = "media.img.gz";
+                compressed = true;
+                device = "/dev/mediaupdate";
+            }
+        );
+
+        scripts: (
+            {
+                filename = "update.sh";
+                type = "shellscript";
+            }
+        );
+    }
+}

@@ -1,0 +1,173 @@
+diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+index 358c64e..a2f1ac7 100644
+--- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
++++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+@@ -45,10 +45,18 @@
+ 
+ #define ST7789V_VCOMS_CMD		0xbb
+ 
++#define ST7789V_MADCTL_CMD 0x36
++#define ST7789V_MADCTL_RGB BIT(3)
++#define ST7789V_MADCTL_MV BIT(5)
++#define ST7789V_MADCTL_MX BIT(6)
++#define ST7789V_MADCTL_MY BIT(7)
++
+ #define ST7789V_LCMCTRL_CMD		0xc0
++#define ST7789V_LCMCTRL_XMY			BIT(6)
+ #define ST7789V_LCMCTRL_XBGR			BIT(5)
+ #define ST7789V_LCMCTRL_XMX			BIT(3)
+ #define ST7789V_LCMCTRL_XMH			BIT(2)
++#define ST7789V_LCMCTRL_XMV			BIT(1)
+ 
+ #define ST7789V_VDVVRHEN_CMD		0xc2
+ #define ST7789V_VDVVRHEN_CMDEN			BIT(0)
+@@ -156,6 +164,7 @@ static int st7789v_write_data(struct st7789v *ctx, u8 cmd)
+ 	return st7789v_spi_write(ctx, ST7789V_DATA, cmd);
+ }
+ 
++#if 0
+ static const struct drm_display_mode default_mode = {
+ 	.clock = 7000,
+ 	.hdisplay = 240,
+@@ -169,6 +178,26 @@ static const struct drm_display_mode default_mode = {
+ 	.vrefresh = 60,
+ };
+ 
++static const u32 bus_format = MEDIA_BUS_FMT_RGB666_1X18;
++static const u32 bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_POSEDGE;
++#else
++static const struct drm_display_mode default_mode = {
++	.clock = 7000,
++	.hdisplay = 320,
++	.hsync_start = 320 + 8,
++	.hsync_end = 320 + 8 + 4,
++	.htotal = 320 + 8 + 4 + 4,
++	.vdisplay = 240,
++	.vsync_start = 240 + 38,
++	.vsync_end = 240 + 38 + 10,
++	.vtotal = 240 + 38 + 10 + 10,
++	.vrefresh = 70,
++};
++
++static const u32 bus_format = MEDIA_BUS_FMT_RGB666_1X18;
++static const u32 bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_POSEDGE;
++#endif
++
+ static int st7789v_get_modes(struct drm_panel *panel)
+ {
+ 	struct drm_connector *connector = panel->connector;
+@@ -187,8 +216,19 @@ static int st7789v_get_modes(struct drm_panel *panel)
+ 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+ 	drm_mode_probed_add(connector, mode);
+ 
++#if 0
+ 	panel->connector->display_info.width_mm = 61;
+ 	panel->connector->display_info.height_mm = 103;
++#else
++	panel->connector->display_info.width_mm = 65;
++	panel->connector->display_info.height_mm = 49;
++
++  drm_display_info_set_bus_formats(&panel->connector->display_info,
++						 &bus_format, 1);
++
++  panel->connector->display_info.bus_flags = bus_flags;
++  panel->connector->display_info.bpc = 18;
++ #endif
+ 
+ 	return 1;
+ }
+@@ -219,7 +259,9 @@ static int st7789v_prepare(struct drm_panel *panel)
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx,
+ 						MIPI_DCS_SET_PIXEL_FORMAT));
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx,
++#if 0
+ 					     (MIPI_DCS_PIXEL_FMT_18BIT << 4) |
++#endif
+ 					     (MIPI_DCS_PIXEL_FMT_18BIT)));
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_PORCTRL_CMD));
+@@ -239,10 +281,36 @@ static int st7789v_prepare(struct drm_panel *panel)
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_VCOMS_CMD));
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, 0x2b));
+ 
++  ST7789V_TEST(ret, st7789v_write_command(ctx, 0x2a)); // column set
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x01));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x3F));
++  ST7789V_TEST(ret, st7789v_write_command(ctx, 0x2b)); // page address set
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++  ST7789V_TEST(ret, st7789v_write_data(ctx, 0xEF));
++
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_LCMCTRL_CMD));
++#if 0
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_LCMCTRL_XMH |
+ 					     ST7789V_LCMCTRL_XMX |
+ 					     ST7789V_LCMCTRL_XBGR));
++#else
++	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_LCMCTRL_XMV |
++					     ST7789V_LCMCTRL_XMX |
++					     ST7789V_LCMCTRL_XMY |
++					     ST7789V_LCMCTRL_XBGR ));
++#endif
++
++#if 0
++	ST7789V_TEST(ret, st7789v_write_command(ctx, MIPI_DCS_SET_ADDRESS_MODE));
++	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_MADCTL_RGB |
++                                       ST7789V_MADCTL_MV |
++                                       ST7789V_MADCTL_MY));
++#endif
++
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_VDVVRHEN_CMD));
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_VDVVRHEN_CMDEN));
+@@ -298,22 +366,45 @@ static int st7789v_prepare(struct drm_panel *panel)
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_NVGAMCTRL_VN61(0x1b)));
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_NVGAMCTRL_VN62(0x28)));
+ 
++#if 0
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, MIPI_DCS_ENTER_INVERT_MODE));
++#endif
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_RAMCTRL_CMD));
++#if 1
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RAMCTRL_DM_RGB |
+ 					     ST7789V_RAMCTRL_RM_RGB));
++#else
++	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RAMCTRL_RM_RGB
++					     ));
++#endif
++
++#if 1
++  //WARNING: EFP irrelevant on RGB666 : 18 datalines
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RAMCTRL_EPF(3) |
+ 					     ST7789V_RAMCTRL_MAGIC));
++#else
++	ST7789V_TEST(ret, st7789v_write_data(ctx, 0x00));
++#endif
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_RGBCTRL_CMD));
++#if 0
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RGBCTRL_WO |
++#else
++	ST7789V_TEST(ret, st7789v_write_data(ctx,
++#endif
+ 					     ST7789V_RGBCTRL_RCM(2) |
+ 					     ST7789V_RGBCTRL_VSYNC_HIGH |
+ 					     ST7789V_RGBCTRL_HSYNC_HIGH |
+ 					     ST7789V_RGBCTRL_PCLK_HIGH));
+-	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RGBCTRL_VBP(8)));
+-	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RGBCTRL_HBP(20)));
++	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RGBCTRL_VBP(20)));
++	ST7789V_TEST(ret, st7789v_write_data(ctx, ST7789V_RGBCTRL_HBP(8)));
++
++
++
++#if 1
++	ST7789V_TEST(ret, st7789v_write_command(ctx, 0x35));//TEARING_LINE_OFF
++#endif
+ 
+ 	return 0;
+ }

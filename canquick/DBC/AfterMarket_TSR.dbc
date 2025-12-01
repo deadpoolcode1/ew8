@@ -1,0 +1,528 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Position_X : 0|12@1+ (0.05,0) [0|204.75] "meter" Vector__XXX
+ SG_ Sign_Position_Y : 0|11@1- (0.05,0) [-51.2|51.15] "meters" Vector__XXX
+ SG_ Sign_Position_Z : 0|8@1- (0.5,0) [-16|16] "meters" Vector__XXX
+ SG_ reserved0 : 0|33@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Internal_ID0 : 0|32@1+ (1,0) [0|4294967295] "NA" Vector__XXX
+ SG_ Internal_ID1 : 0|32@1+ (1,0) [0|4294967295] "NA" Vector__XXX
+
+BO_ 1840 TSR_Coordinates_7: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1839 TSR_Coordinates_6: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1838 TSR_Coordinates_5: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1837 TSR_Coordinates_4: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1836 TSR_Coordinates_3: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1835 TSR_Coordinates_2: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1830 TSR6: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1829 TSR5: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1828 TSR4: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1827 TSR3: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1826 TSR2: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1825 TSR1: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1834 TSR_Coordinates_1: 8 Vector__XXX
+ SG_ Reserved_72A_2 : 32|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ Reserved_72A_1 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Z_MSB : 24|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Z_LSB : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Sign_Position_Y_MSB : 16|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ Sign_Position_Y_LSB : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_MSB : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Sign_Position_X_LSB : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1818 TFL_Message7: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1817 TFL_Message6: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1816 TFL_Message5: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1815 TFL_Message4: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1814 TFL_Message3: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1811 TFL_Message0: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1812 TFL_Message1: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1813 TFL_Message2: 8 Vector__XXX
+ SG_ TFL_PosY : 0|8@1+ (0.125,0) [0|31.875] "m" Vector__XXX
+ SG_ TFL_PosX : 8|12@1+ (0.125,-256) [-256|255.875] "m" Vector__XXX
+ SG_ TFL_PosZ : 20|12@1+ (0.0625,0) [0|255.9375] "m" Vector__XXX
+ SG_ TFL_Color : 32|3@1+ (1,0) [0|4] "Enum" Vector__XXX
+ SG_ TFL_Width : 35|5@1+ (0.03125,0) [0|0.96875] "m" Vector__XXX
+ SG_ TFL_Type : 40|2@1+ (1,0) [0|2] "Enum" Vector__XXX
+ SG_ TFL_Supp1_Arrow : 42|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp2_Arrow : 46|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_Supp3_Arrow : 50|4@1+ (1,0) [0|9] "Enum" Vector__XXX
+ SG_ TFL_assignment : 54|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ Object_ID : 57|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ is_TFL_Blinking : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ reserved_8 : 62|2@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1810 TFL_Header: 8 Vector__XXX
+ SG_ Number_Of_TFL_Objects : 0|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ Main_Object_ID : 4|4@1+ (1,0) [0|8] "NA" Vector__XXX
+ SG_ Reserved_1 : 8|1@1+ (1,0) [0|0] "uint" Vector__XXX
+ SG_ TFL_TTC : 9|8@1+ (0.02,0) [0|5.1] "sec" Vector__XXX
+ SG_ StopSign_TTC : 17|8@1+ (0.02,0) [0|5.1] "sec" Vector__XXX
+ SG_ Stop_Line_Dist : 25|11@1+ (0.1,-50) [-50|102.3] "m" Vector__XXX
+ SG_ Junction_Status : 36|3@1+ (1,0) [0|7] "Enum" Vector__XXX
+ SG_ JNC_Distance : 39|10@1+ (0.25,-50) [-50|205.75] "m" Vector__XXX
+ SG_ Stop_Line_Valid : 49|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ TFL_Warning_Supression_By_Vision : 50|4@1+ (1,0) [0|15] "ENUM" Vector__XXX
+ SG_ TFL_Warning_Supression_By_Driver : 54|3@1+ (1,0) [0|7] "ENUM" Vector__XXX
+ SG_ SS_Warning_Supression : 57|3@1+ (1,0) [0|7] "ENUM" Vector__XXX
+ SG_ StopSign_notification : 60|1@1+ (1,0) [0|1] "bool" Vector__XXX
+ SG_ StopSign_Warning : 61|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+ SG_ TFL_notification : 62|1@1+ (1,0) [0|1] "bool" Vector__XXX
+ SG_ TFL_Warning : 63|1@1+ (1,0) [0|1] "boolean" Vector__XXX
+
+BO_ 1824 TSR0: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Supp_Sign_Type : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Sign_Height : 16|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_0 : 22|2@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Sign_Width : 24|6@1+ (0.1,0) [0|6.3] "meters" Vector__XXX
+ SG_ reserved_1 : 30|10@1+ (1,0) [0|0] "NA" Vector__XXX
+ SG_ Filter_type : 40|7@1+ (1,0) [0|127] "ENUM" Vector__XXX
+ SG_ Approved_Flag : 47|1@1+ (1,0) [0|1] "NA" Vector__XXX
+ SG_ No_Entry_Vision_Status : 48|3@1+ (1,0) [0|5] "Enum" Vector__XXX
+ SG_ reserved_2 : 51|13@1+ (1,0) [0|0] "NA" Vector__XXX
+
+BO_ 1831 Vision_Only_TSR_continuous: 8 Vector__XXX
+ SG_ Vision_only_Sign_Type_D1 : 0|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_supp_Sign_Type_D1 : 8|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Sign_Type_D2 : 16|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_supp_Sign_Type_D2 : 24|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Sign_Type_D3 : 32|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_supp_Sign_Type_D3 : 40|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_Sign_Type_D4 : 48|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+ SG_ Vision_only_supp_Sign_Type_D4 : 56|8@1+ (1,0) [0|255] "ENUM" Vector__XXX
+
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 Sign_Position_X "longitudinal distance to sign, from cameralongitudinal distance to sign, from cameralongitudinal distance to sign, from cameralongitudinal distance to sign, from cameralongitudinal distance to sign, from cameralongitudinal distance to sign, from cameralongitudinal distance to sign, from camera";
+CM_ SG_ 3221225472 Sign_Position_Y "lateral distance to sign, from camera  lateral distance to sign, from camera  lateral distance to sign, from camera  lateral distance to sign, from camera  lateral distance to sign, from camera  lateral distance to sign, from camera  lateral distance to sign, from camera  ";
+CM_ SG_ 1830 Filter_type "Filter";
+CM_ SG_ 1818 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1818 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1818 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1818 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1818 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1818 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1818 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1817 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1817 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1817 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1817 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1817 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1817 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1817 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1816 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1816 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1816 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1816 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1816 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1816 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1816 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1815 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1815 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1815 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1815 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1815 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1815 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1815 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1814 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1814 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1814 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1814 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1814 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1814 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1814 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1811 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1811 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1811 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1811 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1811 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1811 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1811 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1812 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1812 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1812 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1812 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1812 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1812 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1812 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1813 TFL_PosY "Height of TFL with respect to ground";
+CM_ SG_ 1813 TFL_PosX "Lateral distance with respect to camera. Positive values for detections right of the camera.";
+CM_ SG_ 1813 TFL_PosZ "Longitudinal distance with respect to the camera. ";
+CM_ SG_ 1813 TFL_Supp1_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1813 TFL_Supp2_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1813 TFL_Supp3_Arrow "Relevant only for Japan TFL";
+CM_ SG_ 1813 TFL_assignment "arrow direction inside the TFL";
+CM_ SG_ 1810 Number_Of_TFL_Objects "0 - no traffic light detected";
+CM_ SG_ 1810 Main_Object_ID "The ID that represents the TFL which is the most relevant for the host vehicle";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_DEF_  "BusType" "CAN";
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+BA_ "BusType" "CAN";
+VAL_ 1830 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1830 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1829 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1829 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1828 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1828 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1827 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1827 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1826 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1826 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1825 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1825 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1818 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1818 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1818 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1818 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1818 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1818 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1817 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1817 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1817 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1817 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1817 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1817 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1816 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1816 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1816 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1816 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1816 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1816 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1815 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1815 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1815 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1815 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1815 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1815 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1814 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1814 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1814 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1814 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1814 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1814 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1811 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1811 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1811 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1811 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1811 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1811 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1812 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1812 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1812 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1812 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1812 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1812 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1813 TFL_Color 4 "Red + Yellow '0x4'" 3 "Green '0x3'" 2 "Yellow '0x2'" 1 "Red '0x1'" 0 "Unknown '0x0'" ;
+VAL_ 1813 TFL_Type 2 "Horizontal 3-light" 1 "Vertical 3-light" 0 "Unknown/Unsupported" ;
+VAL_ 1813 TFL_Supp1_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1813 TFL_Supp2_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1813 TFL_Supp3_Arrow 9 "Diagonal Right(not yet supported" 8 "Diagonal Left(not yet supported)" 7 "Forward&Right (not yet supported" 6 "Forward&Left (not yet supported)" 5 "Bent Right (not yet supported)" 4 "Bent Left (not yet supported)" 3 "Right" 2 "Left" 1 "Forward" 0 "Unknown/Unsupported" ;
+VAL_ 1813 TFL_assignment 7 "reserved" 6 "reserved" 5 "reserved" 4 "reserved" 3 "reserved" 2 "left" 1 "right" 0 "unknown" ;
+VAL_ 1810 Junction_Status 6 "green" 5 "orange" 4 "red+orange" 3 "red" 2 "unknown" 1 "reserved" 0 "none" ;
+VAL_ 1810 TFL_Warning_Supression_By_Vision 15 "unused" 14 "unused" 13 "VIS_TOLL_GATE" 12 "VIS_JNC_PASSED" 11 "VIS_JPN_NO_STOPLINE_APPROVED" 10 "VIS_JPN_SUPP_ARROWS_APPROVED" 9 "VIS_BLINKING_NOT_DETERMINED" 8 "VIS_BLINKING " 7 "VIS_NO_GROUP   " 6 "VIS_CLOSE_CIPV  " 5 "VIS_FAR_JUNCTION  " 4 "VIS_SINGLE_TFL" 3 "VIS_TFL_COLOR_CONFLICT " 2 "VIS_TFL_TOO_RIGHT," 1 "VIS_TFL_TOO_LEFT" 0 "VIS_NO_SUPPRESS" ;
+VAL_ 1810 TFL_Warning_Supression_By_Driver 7 "unused" 6 "unused" 5 "unused" 4 "unused" 3 "RTW_DRIVER_HIGH_YAW" 2 "RTW_DRIVER_BLINKING " 1 "RTW_DRIVER_BRAKE_PRESSED" 0 "RTW_DRIVER_NO_SUPPRESS" ;
+VAL_ 1810 SS_Warning_Supression 7 "SSW_MIN_WARNING_DIST" 6 "SSW_DISABLE_AFTER_WARNING" 5 "SSW_LOW_ACC_OR_SPEED_SUPPRESS" 4 "SSW_SUPPRESS_BY_RELEVANCE" 3 "SSW_DRIVER_HIGH_YAW" 2 "SSW_EU_RTW_SUPPRESS" 1 "SSW_CIPV_STOPPED" 0 "SSW_NO_SUPPRESS" ;
+VAL_ 1810 StopSign_notification 1 "true" 0 "false" ;
+VAL_ 1810 TFL_notification 1 "true" 0 "false" ;
+VAL_ 1824 Filter_type 3 "Embedded" 2 "On vehicle/Truck" 1 "Irrelevant to the host driver" 0 "Not filtered" ;
+VAL_ 1824 No_Entry_Vision_Status 5 "Default" 4 "Second_Alert" 3 "Alert" 2 "Reject_Vision_Only " 1 "Delay" 0 "Notification" ;
+VAL_ 1831 Vision_only_Sign_Type_D1 255 "e_invalid_sign " 254 "No sign detected" 221 "standard elect end of no passing" 220 "standard electr no passing start" 201 "regular end of no passing" 200 "regular no passing start" 176 "regular End of playground area" 175 "regular Playground area begin" 174 "standard regular end of ExprWay" 173 "standard regular exprWay begin" 172 "standard regular end of MotorWay" 171 "standard regular motorWay begin" 129 "standard electronic 145 kph" 128 "standard electronic 135 kph" 127 "standard electronic 125 kph" 126 "standard electronic 115 kph" 125 "standard electronic 105 kph" 124 "standard electronic 95 kph" 123 "standard electronic 85 kph" 122 "standard electronic 75 kph" 121 "standard electronic 65 kph" 120 "standard electronic 55 kph" 119 "standard electronic 45 kph" 118 "standard electronic 35 kph" 117 "standard electronic 25 kph" 116 "standard electronic 15 kph" 115 "standard electronic 5 kph" 114 "standard regular 145 kph" 113 "standard regular 135 kph" 112 "standard regular 125 kph" 111 "standard regular 115 kph" 110 "standard regular 105 kph" 109 "standard regular 95 kph" 108 "standard regular 85 kph" 107 "standard regular 75 kph" 106 "standard regular 65 kph" 105 "standard regular 55 kph" 104 "standard regular 45 kph" 103 "standard regular 35 kph" 102 "standard regular 25 kph" 101 "standard regular 15 kph" 100 "standard regular 5 kph" 65 "electric gen end all restriction" 64 "regular gen end all restrict" 50 "electronic end of num restrict" 41 "standard electronic 140 kph" 40 "standard electronic 130 kph" 39 "standard electronic 120 kph" 38 "standard electronic 110 kph" 37 "standard electronic 100 kph" 36 "standard electronic 90 kph" 35 "standard electronic 80 kph" 34 "standard electronic 70 kph" 33 "standard electronic 60 kph" 32 "standard electronic 50 kph" 31 "standard electronic 40 kph" 30 "standard electronic 30 kph" 29 "standard electronic 20 kph" 28 "standard electronic 10 kph" 20 "standard end of num restriction" 13 "standard regular 140 kph" 12 "standard regular 130 kph" 11 "standard regular 120 kph" 10 "standard regular 110 kph" 9 "standard regular 100 kph" 8 "standard regular 90 kph" 7 "standard regular 80 kph" 6 "standard regular 70 kph" 5 "standard regular 60 kph" 4 "standard regular 50 kph" 3 "standard regular 40 kph" 2 "standard regular 30 kph" 1 "standard regular 20 kph" 0 "Standard regular 10 kph" ;
+VAL_ 1831 Vision_only_supp_Sign_Type_D1 255 "Invalid_supp" 22 "e_zone" 21 "e_rappel" 20 "Supp_sign_generic" 19 "Night" 18 "Hazardous_materials" 17 "Fog" 16 "Rain_cloud" 15 "School" 14 "Snow_rain" 13 "Tractor" 12 "Distance_in" 11 "Weight" 10 "Distance_arrow ( distance for)" 9 "Truck" 8 "BendArrow_right" 7 "BendArrow_left" 6 "Arrow_right" 5 "Arrow_left" 4 "Time" 3 "Trailer" 2 "Snow" 1 "Rain" 0 "None" ;
+VAL_ 1831 Vision_only_Sign_Type_D2 255 "e_invalid_sign " 254 "No sign detected" 221 "standard elect end of no passing" 220 "standard electr no passing start" 201 "regular end of no passing" 200 "regular no passing start" 176 "regular End of playground area" 175 "regular Playground area begin" 174 "standard regular end of ExprWay" 173 "standard regular exprWay begin" 172 "standard regular end of MotorWay" 171 "standard regular motorWay begin" 129 "standard electronic 145 kph" 128 "standard electronic 135 kph" 127 "standard electronic 125 kph" 126 "standard electronic 115 kph" 125 "standard electronic 105 kph" 124 "standard electronic 95 kph" 123 "standard electronic 85 kph" 122 "standard electronic 75 kph" 121 "standard electronic 65 kph" 120 "standard electronic 55 kph" 119 "standard electronic 45 kph" 118 "standard electronic 35 kph" 117 "standard electronic 25 kph" 116 "standard electronic 15 kph" 115 "standard electronic 5 kph" 114 "standard regular 145 kph" 113 "standard regular 135 kph" 112 "standard regular 125 kph" 111 "standard regular 115 kph" 110 "standard regular 105 kph" 109 "standard regular 95 kph" 108 "standard regular 85 kph" 107 "standard regular 75 kph" 106 "standard regular 65 kph" 105 "standard regular 55 kph" 104 "standard regular 45 kph" 103 "standard regular 35 kph" 102 "standard regular 25 kph" 101 "standard regular 15 kph" 100 "standard regular 5 kph" 65 "electric gen end all restriction" 64 "regular gen end all restrict" 50 "electronic end of num restrict" 41 "standard electronic 140 kph" 40 "standard electronic 130 kph" 39 "standard electronic 120 kph" 38 "standard electronic 110 kph" 37 "standard electronic 100 kph" 36 "standard electronic 90 kph" 35 "standard electronic 80 kph" 34 "standard electronic 70 kph" 33 "standard electronic 60 kph" 32 "standard electronic 50 kph" 31 "standard electronic 40 kph" 30 "standard electronic 30 kph" 29 "standard electronic 20 kph" 28 "standard electronic 10 kph" 20 "standard end of num restriction" 13 "standard regular 140 kph" 12 "standard regular 130 kph" 11 "standard regular 120 kph" 10 "standard regular 110 kph" 9 "standard regular 100 kph" 8 "standard regular 90 kph" 7 "standard regular 80 kph" 6 "standard regular 70 kph" 5 "standard regular 60 kph" 4 "standard regular 50 kph" 3 "standard regular 40 kph" 2 "standard regular 30 kph" 1 "standard regular 20 kph" 0 "Standard regular 10 kph" ;
+VAL_ 1831 Vision_only_supp_Sign_Type_D2 255 "Invalid_supp" 22 "e_zone" 21 "e_rappel" 20 "Supp_sign_generic" 19 "Night" 18 "Hazardous_materials" 17 "Fog" 16 "Rain_cloud" 15 "School" 14 "Snow_rain" 13 "Tractor" 12 "Distance_in" 11 "Weight" 10 "Distance_arrow ( distance for)" 9 "Truck" 8 "BendArrow_right" 7 "BendArrow_left" 6 "Arrow_right" 5 "Arrow_left" 4 "Time" 3 "Trailer" 2 "Snow" 1 "Rain" 0 "None" ;
+VAL_ 1831 Vision_only_Sign_Type_D3 255 "e_invalid_sign " 254 "No sign detected" 221 "standard elect end of no passing" 220 "standard electr no passing start" 201 "regular end of no passing" 200 "regular no passing start" 176 "regular End of playground area" 175 "regular Playground area begin" 174 "standard regular end of ExprWay" 173 "standard regular exprWay begin" 172 "standard regular end of MotorWay" 171 "standard regular motorWay begin" 129 "standard electronic 145 kph" 128 "standard electronic 135 kph" 127 "standard electronic 125 kph" 126 "standard electronic 115 kph" 125 "standard electronic 105 kph" 124 "standard electronic 95 kph" 123 "standard electronic 85 kph" 122 "standard electronic 75 kph" 121 "standard electronic 65 kph" 120 "standard electronic 55 kph" 119 "standard electronic 45 kph" 118 "standard electronic 35 kph" 117 "standard electronic 25 kph" 116 "standard electronic 15 kph" 115 "standard electronic 5 kph" 114 "standard regular 145 kph" 113 "standard regular 135 kph" 112 "standard regular 125 kph" 111 "standard regular 115 kph" 110 "standard regular 105 kph" 109 "standard regular 95 kph" 108 "standard regular 85 kph" 107 "standard regular 75 kph" 106 "standard regular 65 kph" 105 "standard regular 55 kph" 104 "standard regular 45 kph" 103 "standard regular 35 kph" 102 "standard regular 25 kph" 101 "standard regular 15 kph" 100 "standard regular 5 kph" 65 "electric gen end all restriction" 64 "regular gen end all restrict" 50 "electronic end of num restrict" 41 "standard electronic 140 kph" 40 "standard electronic 130 kph" 39 "standard electronic 120 kph" 38 "standard electronic 110 kph" 37 "standard electronic 100 kph" 36 "standard electronic 90 kph" 35 "standard electronic 80 kph" 34 "standard electronic 70 kph" 33 "standard electronic 60 kph" 32 "standard electronic 50 kph" 31 "standard electronic 40 kph" 30 "standard electronic 30 kph" 29 "standard electronic 20 kph" 28 "standard electronic 10 kph" 20 "standard end of num restriction" 13 "standard regular 140 kph" 12 "standard regular 130 kph" 11 "standard regular 120 kph" 10 "standard regular 110 kph" 9 "standard regular 100 kph" 8 "standard regular 90 kph" 7 "standard regular 80 kph" 6 "standard regular 70 kph" 5 "standard regular 60 kph" 4 "standard regular 50 kph" 3 "standard regular 40 kph" 2 "standard regular 30 kph" 1 "standard regular 20 kph" 0 "Standard regular 10 kph" ;
+VAL_ 1831 Vision_only_supp_Sign_Type_D3 255 "Invalid_supp" 22 "e_zone" 21 "e_rappel" 20 "Supp_sign_generic" 19 "Night" 18 "Hazardous_materials" 17 "Fog" 16 "Rain_cloud" 15 "School" 14 "Snow_rain" 13 "Tractor" 12 "Distance_in" 11 "Weight" 10 "Distance_arrow ( distance for)" 9 "Truck" 8 "BendArrow_right" 7 "BendArrow_left" 6 "Arrow_right" 5 "Arrow_left" 4 "Time" 3 "Trailer" 2 "Snow" 1 "Rain" 0 "None" ;
+VAL_ 1831 Vision_only_Sign_Type_D4 255 "e_invalid_sign " 254 "No sign detected" 221 "standard elect end of no passing" 220 "standard electr no passing start" 201 "regular end of no passing" 200 "regular no passing start" 176 "regular End of playground area" 175 "regular Playground area begin" 174 "standard regular end of ExprWay" 173 "standard regular exprWay begin" 172 "standard regular end of MotorWay" 171 "standard regular motorWay begin" 129 "standard electronic 145 kph" 128 "standard electronic 135 kph" 127 "standard electronic 125 kph" 126 "standard electronic 115 kph" 125 "standard electronic 105 kph" 124 "standard electronic 95 kph" 123 "standard electronic 85 kph" 122 "standard electronic 75 kph" 121 "standard electronic 65 kph" 120 "standard electronic 55 kph" 119 "standard electronic 45 kph" 118 "standard electronic 35 kph" 117 "standard electronic 25 kph" 116 "standard electronic 15 kph" 115 "standard electronic 5 kph" 114 "standard regular 145 kph" 113 "standard regular 135 kph" 112 "standard regular 125 kph" 111 "standard regular 115 kph" 110 "standard regular 105 kph" 109 "standard regular 95 kph" 108 "standard regular 85 kph" 107 "standard regular 75 kph" 106 "standard regular 65 kph" 105 "standard regular 55 kph" 104 "standard regular 45 kph" 103 "standard regular 35 kph" 102 "standard regular 25 kph" 101 "standard regular 15 kph" 100 "standard regular 5 kph" 65 "electric gen end all restriction" 64 "regular gen end all restrict" 50 "electronic end of num restrict" 41 "standard electronic 140 kph" 40 "standard electronic 130 kph" 39 "standard electronic 120 kph" 38 "standard electronic 110 kph" 37 "standard electronic 100 kph" 36 "standard electronic 90 kph" 35 "standard electronic 80 kph" 34 "standard electronic 70 kph" 33 "standard electronic 60 kph" 32 "standard electronic 50 kph" 31 "standard electronic 40 kph" 30 "standard electronic 30 kph" 29 "standard electronic 20 kph" 28 "standard electronic 10 kph" 20 "standard end of num restriction" 13 "standard regular 140 kph" 12 "standard regular 130 kph" 11 "standard regular 120 kph" 10 "standard regular 110 kph" 9 "standard regular 100 kph" 8 "standard regular 90 kph" 7 "standard regular 80 kph" 6 "standard regular 70 kph" 5 "standard regular 60 kph" 4 "standard regular 50 kph" 3 "standard regular 40 kph" 2 "standard regular 30 kph" 1 "standard regular 20 kph" 0 "Standard regular 10 kph" ;
+VAL_ 1831 Vision_only_supp_Sign_Type_D4 255 "Invalid_supp" 22 "e_zone" 21 "e_rappel" 20 "Supp_sign_generic" 19 "Night" 18 "Hazardous_materials" 17 "Fog" 16 "Rain_cloud" 15 "School" 14 "Snow_rain" 13 "Tractor" 12 "Distance_in" 11 "Weight" 10 "Distance_arrow ( distance for)" 9 "Truck" 8 "BendArrow_right" 7 "BendArrow_left" 6 "Arrow_right" 5 "Arrow_left" 4 "Time" 3 "Trailer" 2 "Snow" 1 "Rain" 0 "None" ;
+

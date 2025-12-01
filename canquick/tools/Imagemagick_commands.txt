@@ -1,0 +1,27 @@
+#Add side alpha colored field to an image:
+
+convert Circle_L@80.png -alpha set -background none -gravity west -splice 10x0 Circle_L@brd.png
+convert Circle_R@80.png -alpha set -background none -gravity east -splice 10x0 Circle_R@brd.png
+
+#Convert color from 'red' to 'green'
+
+convert Vehicle@2x.png -fuzz 30% -fill "#00ff00" -opaque red Vehicle_green@2x.png
+
+#Convert color 'green' to 'red'
+
+convert Strips@2x.png -fuzz 90% -fill "#ff0000" -opaque green Strips_red@2x.png
+
+#draw lanes:
+
+convert Lane_R_off@2x.png -fuzz 90% -fill white -opaque yellow Lane_R_on@2x.png
+convert Lane_L_off@2x.png -fuzz 90% -fill white -opaque yellow Lane_L_on@2x.png
+
+
+
+convert Lane_R_on@2x.png -stroke "#000000" -strokewidth 4 -fill "#000000" -draw "path 'M 0,104 L 81,104 M 0,74 L 81,74 M 0,44 L 81,44 M 0,14 L 81,14'" Lane_R_al@2x.png
+convert Lane_R_al@2x.png -fuzz 70% -fill none -opaque "#000000" Lane_R_alert@2x.png
+convert Lane_L_on@2x.png -stroke "#000000" -strokewidth 4 -fill "#000000" -draw "path 'M 0,104 L 81,104 M 0,74 L 81,74 M 0,44 L 81,44 M 0,14 L 81,14'" Lane_L_al@2x.png
+convert Lane_L_al@2x.png -fuzz 70% -fill none -opaque "#000000" Lane_L_alert@2x.png
+rm Lane_?_al@2x.png
+
+convert sli_bg-01.png -filter spline -resize 50x -unsharp 0x1  sli_bg_small-01.png

@@ -1,0 +1,6 @@
+#pragma once
+
+const char candbgrammar[] =
+"R\"peg($$CANDBGRAMMAR)peg\"";
+
+

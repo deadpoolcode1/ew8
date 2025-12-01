@@ -1,0 +1,52 @@
+VERSION "HIPBNYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY/4/%%%/4/'%**4YYY///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+
+BS_:
+
+BU_: EW_CAN0
+
+
+BO_ 1968 EW8SensorsReport: 8 EW_CAN0
+ SG_ LightSensor : 0|13@1+ (1,0) [0|8191] "mV" Vector__XXX
+ SG_ isBrightnessReported : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BrightnessScheme : 13|3@1+ (1,0) [0|7] "level" Vector__XXX
+ SG_ ActualBrightness : 16|6@1+ (1,0) [0|41] "level" Vector__XXX
+ SG_ isButtonsStateReported : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Down : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Return : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ButtonsState_Up : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ areAlertsReported : 32|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ped_DZ_Front_State : 33|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ped_DZ_Rear_State : 34|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ped_CW_Front_State : 35|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ped_CW_Rear_State : 36|1@1+ (1,0) [0|0] "" Vector__XXX
+
+
+CM_ BU_ EW_CAN0 "";
+VAL_ 1968 isBrightnessReported 0 "off" 1 "on" ;
+VAL_ 1968 isButtonsStateReported 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Down 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Return 0 "off" 1 "on" ;
+VAL_ 1968 ButtonsState_Up 0 "off" 1 "on" ;

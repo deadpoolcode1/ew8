@@ -1,0 +1,45 @@
+#!/bin/sh
+
+UPDATER_SCRIPT_DIR=/opt/updater/scripts
+# Load updater_init.sh that supports multi-partition layout for SWUpdate
+source $UPDATER_SCRIPT_DIR/updater_init.sh
+
+start_canupdate()
+{
+
+  #NOTE: in interval between the canquick start and update complete watchdog
+  sleep 20
+
+  if [ -n "$(pidof canquick)" ]
+  then
+    echo "Starting Canupdate..."
+    cd /opt/canupdate
+    bin/canupdate 2>&1 | logger &
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+  fi
+}
+
+start()
+{
+  # Mount firmware and media partitions
+  swupdate_mount_partitions
+  #Postponed canupdate
+  start_canupdate &
+}
+
+stop()
+{
+  echo "Killing Canupdate Application..."
+  killall canupdate
+}
+
+case "$1" in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  *)
+  ;;
+esac

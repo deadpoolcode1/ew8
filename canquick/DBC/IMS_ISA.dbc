@@ -1,0 +1,92 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+VAL_TABLE_ ISA_Error_type 2 "Legal Speed is invalid" 4 "Validity not accessible" 1 "ISA is disabled" 0 "No Error" ;
+VAL_TABLE_ Bundle_Mounth 12 "December" 11 "November" 10 "October" 9 "September" 8 "August" 7 "July" 6 "June" 5 "May" 4 "April" 3 "March" 2 "February" 1 "January" 0 "NA" ;
+VAL_TABLE_ ISA_Legal_Speed_validity 0 "Validity not accessible" 1 "Legal Speed is invalid" 2 "Legal speed is valid and has limitation" 3 "Legal speed is valid and has not limitation" ;
+VAL_TABLE_ vehicleClass 3 "Class-III" 2 "Class-II" 1 "Class-I" 0 "NA" ;
+VAL_TABLE_ vehicleType 33 "SD Hearse" 32 "SB Armoured vehicle" 31 "SA Motor caravan" 30 "Special purpose vehicles (M1)" 29 "G Off-road vehicles[Cat 8][Cat 9]" 28 "Non-road mobile machinery[Cat 7]" 27 "T Agricultural and Forestry tractors[Cat 6]" 26 "Hearse[Cat 5]" 25 "Ambulance[Cat 4]" 24 "Armored car (VIP), Armored car (valuables)[Cat 3]" 23 "Motor caravan,[Cat 2] also Campervan, Motorhome." 22 "Special purpose vehicle[Cat 1]" 21 "O4 Trailers with a maximum mass exceeding 10 tonnes." 20 "O3 Trailers with a maximum mass exceeding 3.5 tonnes, but not exceeding 10 tonnes." 19 "O2 Trailers with a maximum mass exceeding 0.75 tonnes, but not exceeding 3.5 tonnes." 18 "O1 Trailers with a maximum mass not exceeding 0.75 tonnes." 17 "O Trailers (including semi–trailers)" 16 "N3 Vehicles used for the carriage of goods and having a maximum mass exceeding 12 tonnes. (Commercial Truck)" 15 "N2 Vehicles used for the carriage of goods and having a maximum mass exceeding 3.5 tonnes but not exceeding 12 tonnes. (Commercial Truck)" 14 "N1 Vehicles used for the carriage of goods and having a maximum mass not exceeding 3.5 tonnes. (Pick-up Truck, Van)" 13 "N Power-driven vehicles having at least four wheels and used for the carriage of goods" 12 "M3 Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass exceeding 5 tonnes. (Bus)" 11 "M2 Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass not exceeding 5 tonnes. (Bus)" 10 "M1 Vehicles used for carriage of passengers, comprising not more than eight seats in addition to the driver's = 9.( Larger Than Standard Car e.g.: London Cab / E7 Type Vehicle 8 seat + Driver.)" 9 "M Vehicles having at least four wheels and used for the carriage of passengers (e.g., standard car with 2, 3, 4 doors)." 8 "L7 A vehicle with four wheels, other than that classified for the category L6, whose unladen mass is not more than 400 kg (550 kg for vehicles intended for carrying goods), not including the mass of batteries in the case of electric vehicles and whose maxi" 7 "L6 A vehicle with four wheels whose unladen mass is not more than 350 kg, not including the mass of the batteries in case of electric vehicles, whose maximum design speed is not more than 45 km/h, and whose engine cylinder capacity does not exceed 50 cm³ " 6 "L5 A vehicle with three wheels symmetrically arranged in relation to the longitudinal median plane with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 km" 5 "L4 A vehicle with three wheels asymmetrically arranged in relation to the longitudinal median plane with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 k" 4 "L3 A two-wheeled vehicle with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 km/h. (Motorcycle)" 3 "L2 A three-wheeled vehicle of any wheel arrangement with an engine cylinder capacity in the case of a thermic engine not exceeding 50 cm³ and whatever the means of propulsion a maximum design speed not exceeding 50 km/h. (Auto rickshaw)" 2 "L1 A two-wheeled vehicle with an engine cylinder capacity in the case of a thermic engine not exceeding 50 cm³ and whatever the means of propulsion a maximum design speed not exceeding 50 km/h. (Electric bicycle)" 1 "L Motor vehicles with less than four wheels [but does include light four-wheelers]" 0 "NA" ;
+VAL_TABLE_ ISA_SLWF_Value 3 "E_ISA_SLWF_OVERSPEED_SOUND" 2 "E_ISA_SLWF_OVERSPEED" 1 "E_ISA_SLWF_LEGAL_SPEED" 0 "E_ISA_SLWF_NONE" ;
+VAL_TABLE_ ISA_SLIF_Value 2 "E_ISA_SLIF_CONSTANT" 1 "E_ISA_SLIF_INITIAL" 0 "E_ISA_SLIF_NONE" ;
+VAL_TABLE_ ISA_State 4 "E_ISA_STATE_ERROR" 3 "E_ISA_STATE_ACTIVE" 2 "E_ISA_STATE_PARTIAL_DEACTIVATION" 1 "E_ISA_STATE_FULL_DEACTIVATION" 0 "E_ISA_STATE_DISABLED" ;
+
+
+BO_ 1981 IMS_ISA_Version: 3 Vector__XXX
+ SG_ ISA_Minor_version : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ ISA_Major_version : 5|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ Bundle_year : 8|8@1+ (1,0) [22|99] "" Vector__XXX
+ SG_ Bundle_mounth : 16|4@1+ (1,0) [0|12] "" Vector__XXX
+
+BO_ 1980 IMS_ISA: 6 Vector__XXX
+ SG_ Reserved4_1b : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Reserved3_1b : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Reserved2_2b : 18|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ Reserved1_1b : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VehicleType : 8|6@1+ (1,0) [0|63] "" Vector__XXX
+ SG_ Legal_Speed_Validity : 16|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ VehicleClass : 14|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ suspenededSpeed : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ IMS_ISA_Error : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ISA_Legal_Speed : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ ISA_SLWF : 24|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ ISA_SLIF : 28|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ ISA_STATE_Value : 20|3@1+ (1,0) [0|7] "" Vector__XXX
+
+
+
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+VAL_ 1981 Bundle_mounth 12 "December" 11 "November" 10 "October" 9 "September" 8 "August" 7 "July" 6 "June" 5 "May" 4 "April" 3 "March" 2 "February" 1 "January" 0 "NA" ;
+VAL_ 1980 VehicleType 17 "O4 Trailers with a maximum mass exceeding 10 tonnes." 9 "M2 Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass not exceeding 5 tonnes. (Bus)" 2 "L2 A three-wheeled vehicle of any wheel arrangement with an engine cylinder capacity in the case of a thermic engine not exceeding 50 cm³ and whatever the means of propulsion a maximum design speed not exceeding 50 km/h. (Auto rickshaw)" 30 "SD Hearse" 29 "SC Ambulance" 28 "SB Armoured vehicle" 27 "SA Motor caravan" 26 "Special purpose vehicles (M1)" 25 "G Off-road vehicles[Cat 8][Cat 9]" 24 "Non-road mobile machinery[Cat 7]" 23 "T Agricultural and Forestry tractors[Cat 6]" 22 "Hearse[Cat 5]" 21 "Ambulance[Cat 4]" 20 "Armored car (VIP), Armored car (valuables)[Cat 3]" 19 "Motor caravan,[Cat 2] also Campervan, Motorhome." 18 "Special purpose vehicle[Cat 1]" 16 "O3 Trailers with a maximum mass exceeding 3.5 tonnes, but not exceeding 10 tonnes." 15 "O2 Trailers with a maximum mass exceeding 0.75 tonnes, but not exceeding 3.5 tonnes." 14 "O1 Trailers with a maximum mass not exceeding 0.75 tonnes." 13 "N3 Vehicles used for the carriage of goods and having a maximum mass exceeding 12 tonnes. (Commercial Truck)" 12 "N2 Vehicles used for the carriage of goods and having a maximum mass exceeding 3.5 tonnes but not exceeding 12 tonnes. (Commercial Truck)" 11 "N1 Vehicles used for the carriage of goods and having a maximum mass not exceeding 3.5 tonnes. (Pick-up Truck, Van)" 10 "M3 Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass exceeding 5 tonnes. (Bus)" 8 "M1 Vehicles used for carriage of passengers, comprising not more than eight seats in addition to the driver's = 9.( Larger Than Standard Car e.g.: London Cab / E7 Type Vehicle 8 seat + Driver.)" 7 "L7 A vehicle with four wheels, other than that classified for the category L6, whose unladen mass is not more than 400 kg (550 kg for vehicles intended for carrying goods), not including the mass of batteries in the case of electric vehicles and whose max" 6 "L6 A vehicle with four wheels whose unladen mass is not more than 350 kg, not including the mass of the batteries in case of electric vehicles, whose maximum design speed is not more than 45 km/h, and whose engine cylinder capacity does not exceed 50 cm³" 5 "L5 A vehicle with three wheels symmetrically arranged in relation to the longitudinal median plane with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 k" 4 "L4 A vehicle with three wheels asymmetrically arranged in relation to the longitudinal median plane with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 " 3 "L3 A two-wheeled vehicle with an engine cylinder capacity in the case of a thermic engine exceeding 50 cm³ or whatever the means of propulsion a maximum design speed exceeding 50 km/h. (Motorcycle)" 1 "L1 A two-wheeled vehicle with an engine cylinder capacity in the case of a thermic engine not exceeding 50 cm³ and whatever the means of propulsion a maximum design speed not exceeding 50 km/h. (Electric bicycle)" 0 "NA" ;
+VAL_ 1980 Legal_Speed_Validity 0 "NA" 1 "Legal Speed is unknown" 2 "Legal speed is valid and has limitation" 3 "Legal speed is valid and has not limitation" ;
+VAL_ 1980 VehicleClass 3 "Class-III" 2 "Class-II" 1 "Class-I" 0 "NA" ;
+VAL_ 1980 IMS_ISA_Error 3 "Technology is invalid " 2 "Speed converter invallid" 1 "FFS fields invalid " 0 "No Error" ;
+VAL_ 1980 ISA_SLWF 3 "E_ISA_SLWF_OVERSPEED_SOUND" 2 "E_ISA_SLWF_OVERSPEED" 1 "E_ISA_SLWF_LEGAL_SPEED" 0 "E_ISA_SLWF_NONE" ;
+VAL_ 1980 ISA_SLIF 4 "E_ISA_SLIF_NEW" 2 "E_ISA_SLIF_CONSTANT" 1 "E_ISA_SLIF_INITIAL" 0 "E_ISA_SLIF_NONE" ;
+VAL_ 1980 ISA_STATE_Value 4 "E_ISA_STATE_ERROR" 3 "E_ISA_STATE_ACTIVE" 2 "E_ISA_STATE_PARTIAL_DEACTIVATION" 1 "E_ISA_STATE_FULL_DEACTIVATION" 0 "E_ISA_STATE_DISABLED" ;
+
