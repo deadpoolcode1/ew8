@@ -195,8 +195,6 @@ bool CanRxMsg::loadFromStorage(void)
     {
         QFile configDump("config.dat");
 
-        QByteArray blob;
-
         if(!configDump.open(QFile::ReadOnly))
         {
             coreDebug() << "Error: Can not read config.dat!";
@@ -204,7 +202,7 @@ bool CanRxMsg::loadFromStorage(void)
         }
         else{
 
-            blob = configDump.readAll();
+            auto blob = configDump.readAll();
 
             QDataStream configStream(blob);
             configStream.setByteOrder(QDataStream::BigEndian);
