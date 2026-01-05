@@ -13,20 +13,20 @@
 
 // Qt type compatibility layer
 // These typedefs provide drop-in replacements for Qt integer types
-// Only define if Qt's types are not already defined (e.g., when QtGlobal is not included)
+// Only define if Qt is NOT present
 
-#ifndef QT_CORE_LIB
-// Only define Qt-like types when not building with Qt
-typedef int8_t   qint8;
-typedef uint8_t  quint8;
-typedef int16_t  qint16;
-typedef uint16_t quint16;
-typedef int32_t  qint32;
-typedef uint32_t quint32;
-typedef int64_t  qint64;
-typedef uint64_t quint64;
-typedef ssize_t  qsizetype;
-#endif // QT_CORE_LIB
+#ifndef QT_VERSION
+// Qt-compatible integer types
+using qint8 = int8_t;
+using quint8 = uint8_t;
+using qint16 = int16_t;
+using quint16 = uint16_t;
+using qint32 = int32_t;
+using quint32 = uint32_t;
+using qint64 = int64_t;
+using quint64 = uint64_t;
+using qsizetype = ssize_t;
+#endif // QT_VERSION
 
 // QString replacement - use std::string
 using String = std::string;
@@ -61,21 +61,15 @@ bool variantCanConvert(const Variant& v) {
     return v.type() == typeid(T);
 }
 
-// Q_LIKELY / Q_UNLIKELY macros - only define if not already defined (Qt compatibility)
-#ifndef Q_LIKELY
+// Q_LIKELY / Q_UNLIKELY macros - only define if Qt is NOT present
+#ifndef QT_VERSION
 #ifdef __GNUC__
 #define Q_LIKELY(x)   __builtin_expect(!!(x), 1)
-#else
-#define Q_LIKELY(x)   (x)
-#endif
-#endif
-
-#ifndef Q_UNLIKELY
-#ifdef __GNUC__
 #define Q_UNLIKELY(x) __builtin_expect(!!(x), 0)
 #else
+#define Q_LIKELY(x)   (x)
 #define Q_UNLIKELY(x) (x)
 #endif
-#endif
+#endif // QT_VERSION
 
 #endif // CORE_TYPES_H
