@@ -9,10 +9,10 @@
 
 #include "graphicitemsenummap.h"
 
-AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameAndType, QObject * parent) : QObject(parent)
+AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent) : QObject(parent)
 {
-    QJsonValue protocolNameValue;
-    QJsonValue protocolTypeValue;
+    core::JsonValue protocolNameValue;
+    core::JsonValue protocolTypeValue;
 
     itsModel = aModel;
 
@@ -22,7 +22,7 @@ AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameA
     if(isNotDefaultProtocolType)
     {
 
-        QJsonArray protocol_array = protocolNameAndType.toArray();
+        core::JsonArray protocol_array = protocolNameAndType.toArray();
 
        protocolNameValue = protocol_array.at(0);
 
@@ -35,7 +35,7 @@ AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameA
         protocolNameValue = protocolNameAndType;
     }
 
-    name = protocolNameValue.toString();
+    name = QString::fromStdString(protocolNameValue.toString());
     qDebug("JSON: new protocol extracted: %s",qPrintable(name));
 
     if(isNotDefaultProtocolType)
@@ -62,22 +62,22 @@ void AMJsonProtocol::append(AMJsonSignal * signal)
 }
 
 
-void AMJsonProtocol::collectValueTables(QJsonValue protocolValueTables)
+void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 {
     //fetch the current protocol's value tables:
-     QJsonArray jsonValueTablesArray = protocolValueTables.toArray();
+     core::JsonArray jsonValueTablesArray = protocolValueTables.toArray();
 
       QString vt_name;
       QString vt_type;
-      QJsonArray vt_rows;
+      core::JsonArray vt_rows;
 
      //collect the value tables names:
-     foreach (const QJsonValue & vt_raw, jsonValueTablesArray) {
-            QJsonObject vt_obj = vt_raw.toObject();
+     for (const core::JsonValue & vt_raw : jsonValueTablesArray) {
+            core::JsonObject vt_obj = vt_raw.toObject();
 
             //take the name and create an empty corresponding multiplexor entry.
-          vt_name = vt_obj["name"].toString();
-          vt_type = vt_obj["type"].toString();
+          vt_name = QString::fromStdString(vt_obj["name"].toString());
+          vt_type = QString::fromStdString(vt_obj["type"].toString());
           vt_rows = vt_obj["rows"].toArray();
 
           AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows, vt_type);
@@ -95,13 +95,13 @@ QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(QString aName)
     return ret;
 }
 
-void AMJsonProtocol::setType(QJsonValue typeValue)
+void AMJsonProtocol::setType(core::JsonValue typeValue)
 {
 
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("protocol_type_e"));
 
-    type = (protocol_type_e)metaEnum.keyToValue(typeValue.toString().toLatin1());
+    type = (protocol_type_e)metaEnum.keyToValue(typeValue.toString().c_str());
 }
 
 
