@@ -15,7 +15,7 @@ public:
 
     virtual const char * getArgumentsTypeName() = 0;
 
-    virtual void insertValueFromSignal(size_t anIndex, qint8 anArg) = 0;
+    virtual void insertValueFromSignal(size_t anIndex, int8_t anArg) = 0;
 
 protected:
     explicit CanArgumentsAccumulator(QObject *parent = nullptr);

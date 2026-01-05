@@ -15,7 +15,7 @@ class QQuickQRCode : public QQuickPaintedItem
     Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
     Q_PROPERTY(QString request  WRITE setRequest)
 #if 0
-    Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
+    Q_PROPERTY(uint32_t margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
     //TODO add encoded string propert
     //TODO add scale property
@@ -40,16 +40,16 @@ signals:
 public slots:
 
 private:
-    const quint8 whiteBlackBitMask = 0x01;
+    const uint8_t whiteBlackBitMask = 0x01;
 
 
     static QString  baseurl;
     static QString  request;
 
-    qint32 margin;
+    int32_t margin;
 
     QImage * qimage;
-    qint32  width;
+    int32_t  width;
 
     DISPLAY_ITEM_ID type;
 

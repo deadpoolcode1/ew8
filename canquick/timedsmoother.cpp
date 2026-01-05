@@ -4,10 +4,10 @@
 #include "timedsmoother.h"
 
 //TODO: try to use time lap instead of fixed buffer length, storing the timestamps of the measures.
-TimedSmoother::TimedSmoother(quint32 aSmoothingTimeInterval, quint32 aSkipSmoothingDelta)
+TimedSmoother::TimedSmoother(uint32_t aSmoothingTimeInterval, uint32_t aSkipSmoothingDelta)
 {
 
-    smoothingTimeInterval = (qint64)aSmoothingTimeInterval;
+    smoothingTimeInterval = (int64_t)aSmoothingTimeInterval;
     skipSmoothingDelta = aSkipSmoothingDelta;
     sum = 0;
     items_count = 0;
@@ -21,15 +21,15 @@ void TimedSmoother::cleanBuffer(void)
     timestampsQueue.clear();
 }
 
-void TimedSmoother::addMeasure(quint32 measure)
+void TimedSmoother::addMeasure(uint32_t measure)
 {
 
-    qint64 curTimestamp = QDateTime::currentMSecsSinceEpoch();
+    int64_t curTimestamp = QDateTime::currentMSecsSinceEpoch();
 
     if(skipSmoothingDelta > 0)
     {
-        quint32 prevAverage = getAverage();
-        quint32 delta = prevAverage>measure?(prevAverage - measure):(measure - prevAverage);
+        uint32_t prevAverage = getAverage();
+        uint32_t delta = prevAverage>measure?(prevAverage - measure):(measure - prevAverage);
 
         if(delta > skipSmoothingDelta)
         {
@@ -57,18 +57,18 @@ void TimedSmoother::addMeasure(quint32 measure)
     sum+=measure;
 }
 
-quint32 TimedSmoother::getSmoothedValue(void)
+uint32_t TimedSmoother::getSmoothedValue(void)
 {
    return getAverage();
 }
 
-quint32 TimedSmoother::getAverage(void)
+uint32_t TimedSmoother::getAverage(void)
 {
-    quint32 ret = 0;
+    uint32_t ret = 0;
 
     if(items_count > 0)
     {
-        ret = (quint32)qRound((double)sum/items_count);
+        ret = (uint32_t)qRound((double)sum/items_count);
     }
 
     return ret; ;

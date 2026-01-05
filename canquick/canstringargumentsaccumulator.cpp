@@ -31,7 +31,7 @@ CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPL
 }
 
 
-void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 aChar)
+void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t aChar)
 {
 
     QString * result =   nullptr;

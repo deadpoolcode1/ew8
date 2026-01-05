@@ -34,7 +34,7 @@ void QQuickQRCode::paint(QPainter * painter)
     QRcode *qrcode = QRcode_encodeString8bit(m_encoded.toLatin1(), 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
-    quint8 * data = qrcode->data;
+    uint8_t * data = qrcode->data;
 
     qDebug("qrencode geometry is = %d,%d",qrcode->width,qrcode->width);
 
@@ -50,9 +50,9 @@ void QQuickQRCode::paint(QPainter * painter)
      qimage->fill(whiteColor);
 
 
-    for (qint32 y = 0; y < width; y++)
+    for (int32_t y = 0; y < width; y++)
     {
-        for (qint32 x = 0; x < width; x++)
+        for (int32_t x = 0; x < width; x++)
         {
                 if(*(data+x+(y*width)) & (whiteBlackBitMask))
                 {

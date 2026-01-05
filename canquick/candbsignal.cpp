@@ -30,12 +30,12 @@ core::DataStream & operator<< (core::DataStream & out, const Signal & any)
      sesig.startByte = any.startByte;
      sesig.startBit = any.startBit;
      sesig.numOfBits = any.numOfBits;
-     sesig.sign = static_cast<quint8>(any.sign);
+     sesig.sign = static_cast<uint8_t>(any.sign);
      sesig.factor = any.factor;
      sesig.offset = any.offset;
      sesig.min = any.min;
      sesig.max = any.max;
-     sesig.enumValueType = static_cast<qint8>(any.valueType);
+     sesig.enumValueType = static_cast<int8_t>(any.valueType);
      sesig.AMJsonSignalIdx = any.AMJsonSignalIdx;
 
      out.writeRawData((const char*) (& sesig), sizeof(SerializedSignal_t));
@@ -127,7 +127,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
        c_identifiers = new std::vector<std::string>();
        signs  = new std::vector<std::string>();
        ecu_tokens  = new std::vector<std::string>();
-       numbers  = new std::vector<qint64>();//TODO think about floats implementation
+       numbers  = new std::vector<int64_t>();//TODO think about floats implementation
        cansignals = new std::vector<Signal *>();
 #if 0
        //NOTE: is not actually used, defined at Json
@@ -179,7 +179,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
       (* pParser)["number"] = [this](const SemanticValues & sv)
       {
           try {
-              qint64 number = std::stoull(sv.token(), nullptr, 10);
+              int64_t number = std::stoull(sv.token(), nullptr, 10);
               numbers->push_back(number);
           } catch (const std::exception& ex)
           {
@@ -206,18 +206,18 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           c_identifiers->pop_back();
 #endif
         /*std::string unit =*/ phrases->back(); phrases->pop_back();
-          qint64 max = numbers->back(); numbers->pop_back();
-          qint64 min = numbers->back(); numbers->pop_back();
-          qint64 offset = numbers->back(); numbers->pop_back();
-          qint64 factor = numbers->back(); numbers->pop_back();
+          int64_t max = numbers->back(); numbers->pop_back();
+          int64_t min = numbers->back(); numbers->pop_back();
+          int64_t offset = numbers->back(); numbers->pop_back();
+          int64_t factor = numbers->back(); numbers->pop_back();
           std::string sign = signs->back(); signs->pop_back();
 
-        /*qint64 byteOrder =*/ numbers->back(); numbers->pop_back();
-          qint64 signalSize = numbers->back(); numbers->pop_back();
-          qint64 startBit = numbers->back(); numbers->pop_back();
+        /*int64_t byteOrder =*/ numbers->back(); numbers->pop_back();
+          int64_t signalSize = numbers->back(); numbers->pop_back();
+          int64_t startBit = numbers->back(); numbers->pop_back();
           std::string name = c_identifiers->back(); c_identifiers->pop_back();
 
-          const qint8 OctetBitLen = 8;
+          const int8_t OctetBitLen = 8;
 
           cansig->name = name;
           cansig->startByte = startBit /  OctetBitLen ;
@@ -252,7 +252,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           coreDebug() << "name:" << name;
 
           coreDebug() << "dlc:" << numbers->back(); numbers->pop_back();
-          quint64 id = numbers->back(); numbers->pop_back();
+          uint64_t id = numbers->back(); numbers->pop_back();
           coreDebug() << "id:" << id;
 
 
@@ -261,7 +261,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           //WARNING: VECTOR__INDEPENDENT_SIG_MSG id is not supported
           if (id <= 0xFFFFFFFF)
           {
-              rxmsg = CanRxMsg::createInstance((quint32)id, QString::fromStdString(name));
+              rxmsg = CanRxMsg::createInstance((uint32_t)id, QString::fromStdString(name));
               // Convert std::vector<Signal*> to QList<Signal*>
               QList<Signal *> * qlistSignals = new QList<Signal *>();
               for (Signal * sig : *cansignals) {
@@ -311,7 +311,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
       {
 
 
-          /*qint64 message_num =*/ numbers->back(); numbers->pop_back();
+          /*int64_t message_num =*/ numbers->back(); numbers->pop_back();
           /*std::string name =*/ c_identifiers->back(); c_identifiers->pop_back();
  #if 0
           coreDebug() << "Value For Signal:";
@@ -375,8 +375,8 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
      {
          //Extract the signal value
 
-         quint8 cut_mask = 0xFF>>(0x08 - (canSignal->numOfBits));
-         quint8 raw_val =
+         uint8_t cut_mask = 0xFF>>(0x08 - (canSignal->numOfBits));
+         uint8_t raw_val =
                  frame->data[(canSignal->startByte)]>>(canSignal->startBit)&cut_mask;
 
          switch(canSignal->valueType)
@@ -397,7 +397,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
              }
              else
              {
-                  ret = (qint32)raw_val;
+                  ret = (int32_t)raw_val;
              }
              break;
 

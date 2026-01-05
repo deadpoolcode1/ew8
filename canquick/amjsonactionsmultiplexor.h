@@ -26,7 +26,7 @@ public:
 
     std::unordered_map<double, IAMJsonProcessable *> * getItsValueTable();
 
-    qint32 getItsValuesType(void);
+    int32_t getItsValuesType(void);
 
 private:
     action_type_e  type;

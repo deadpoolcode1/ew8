@@ -48,8 +48,8 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
 
     frame_to_send.can_id = 0x7e0;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[4] = (quint8)((sessionId >> 000) & 0xff);;
-    frame_to_send.data[5] = (quint8)((sessionId >> 010) & 0xff);
+    frame_to_send.data[4] = (uint8_t)((sessionId >> 000) & 0xff);;
+    frame_to_send.data[5] = (uint8_t)((sessionId >> 010) & 0xff);
     frame_to_send.data[6] = (system_type << 4);//TODO add Operational Mode
 
     triggerTimer->setSingleShot(false);
@@ -79,9 +79,9 @@ void KeepAliveMsg::triggerTimeout(void)
 {
     //NOTE: fetch uptime at a moment close to send
     uptimeReference.start();
-    quint64 uptime64 = uptimeReference.msecsSinceReference();
+    uint64_t uptime64 = uptimeReference.msecsSinceReference();
 
-    if(Q_UNLIKELY(uptime64 >= std::numeric_limits<quint32>::max()))
+    if(Q_UNLIKELY(uptime64 >= std::numeric_limits<uint32_t>::max()))
     {
         frame_to_send.data[0] = 0xff;
         frame_to_send.data[1] = 0xff;
@@ -90,13 +90,13 @@ void KeepAliveMsg::triggerTimeout(void)
     }
     else
     {
-        frame_to_send.data[0] = (quint8)((uptime64 >> 000) & 0xff);
-        frame_to_send.data[1] = (quint8)((uptime64 >> 010) & 0xff);
-        frame_to_send.data[2] = (quint8)((uptime64 >> 020) & 0xff);
-        frame_to_send.data[3] = (quint8)((uptime64 >> 030) & 0xff);
+        frame_to_send.data[0] = (uint8_t)((uptime64 >> 000) & 0xff);
+        frame_to_send.data[1] = (uint8_t)((uptime64 >> 010) & 0xff);
+        frame_to_send.data[2] = (uint8_t)((uptime64 >> 020) & 0xff);
+        frame_to_send.data[3] = (uint8_t)((uptime64 >> 030) & 0xff);
     }
 
-    frame_to_send.data[7] = (isValid? (quint8)(0x80 | errorId) : (quint8)(0x7f & errorId));
+    frame_to_send.data[7] = (isValid? (uint8_t)(0x80 | errorId) : (uint8_t)(0x7f & errorId));
 
     wdt->toggle();
 

@@ -3,7 +3,7 @@
 #include "bufferedsmoother.h"
 
 //TODO: try to use time lap instead of fixed buffer length, storing the timestamps of the measures.
-BufferedSmoother::BufferedSmoother(quint32 aSmoothingLength, quint32 aSkipSmoothingDelta)
+BufferedSmoother::BufferedSmoother(uint32_t aSmoothingLength, uint32_t aSkipSmoothingDelta)
 {
 
     smoothingBufferLength = aSmoothingLength;
@@ -19,13 +19,13 @@ void BufferedSmoother::cleanBuffer(void)
     bufferQueue.clear();
 }
 
-void BufferedSmoother::addMeasure(quint32 measure)
+void BufferedSmoother::addMeasure(uint32_t measure)
 {
 
     if(skipSmoothingDelta > 0)
     {
-        quint32 prevAverage = getAverage();
-        quint32 delta = prevAverage>measure?(prevAverage - measure):(measure - prevAverage);
+        uint32_t prevAverage = getAverage();
+        uint32_t delta = prevAverage>measure?(prevAverage - measure):(measure - prevAverage);
 
         if(delta > skipSmoothingDelta)
         {
@@ -47,18 +47,18 @@ void BufferedSmoother::addMeasure(quint32 measure)
     sum+=measure;
 }
 
-quint32 BufferedSmoother::getSmoothedValue(void)
+uint32_t BufferedSmoother::getSmoothedValue(void)
 {
    return getAverage();
 }
 
-quint32 BufferedSmoother::getAverage(void)
+uint32_t BufferedSmoother::getAverage(void)
 {
-    quint32 ret = 0;
+    uint32_t ret = 0;
 
     if(items_count > 0)
     {
-        ret = (quint32)qRound((double)sum/items_count);
+        ret = (uint32_t)qRound((double)sum/items_count);
     }
 
     return ret; ;

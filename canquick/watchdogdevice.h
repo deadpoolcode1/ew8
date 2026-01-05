@@ -15,8 +15,8 @@ public:
 
 private:
 
-    static void sighandler(qint32 signum);
-    static qint32 fd;
+    static void sighandler(int32_t signum);
+    static int32_t fd;
 };
 
 #endif // WATCHDOGDEVICE_H

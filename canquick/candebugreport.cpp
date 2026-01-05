@@ -39,7 +39,7 @@ void CANDebugReport::setCanManager(CanManager *aCanManager)
     itsCanManager = aCanManager;
 }
 
-void CANDebugReport::sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput)
+void CANDebugReport::sendBrightness(uint32_t illuminance_measure_mV, int32_t currentMenuLevel, int32_t currentOutput)
 {
     struct can_frame debugFrame;
 
@@ -48,12 +48,12 @@ void CANDebugReport::sendBrightness(quint32 illuminance_measure_mV, qint32 curre
     debugFrame.can_id = 0x7b0;
     debugFrame.can_dlc = 8;
     //Actual brightness
-    debugFrame.data[0] =  (quint8)(illuminance_measure_mV & 0xff);
-    debugFrame.data[1] =  (quint8)((illuminance_measure_mV & 0x1f00) >> 010);
+    debugFrame.data[0] =  (uint8_t)(illuminance_measure_mV & 0xff);
+    debugFrame.data[1] =  (uint8_t)((illuminance_measure_mV & 0x1f00) >> 010);
     //Menu Level selected:
-    debugFrame.data[1] = debugFrame.data[1] | (quint8)((currentMenuLevel & 0x7) << 5);
+    debugFrame.data[1] = debugFrame.data[1] | (uint8_t)((currentMenuLevel & 0x7) << 5);
     //Output brightness
-    debugFrame.data[2] = (quint8)(currentOutput & 0x3f);
+    debugFrame.data[2] = (uint8_t)(currentOutput & 0x3f);
     debugFrame.data[2] = debugFrame.data[2] | 0x80; //brighness debug reported indicator
     if(nullptr != itsCanManager)
     {
@@ -71,7 +71,7 @@ void CANDebugReport::sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, 
 
         memset(&debugFrame,  0 , sizeof(struct can_frame));
 
-        debugFrame.data[4] = (quint8)0x1;
+        debugFrame.data[4] = (uint8_t)0x1;
 
         if(PDZFstate) {debugFrame.data[4] |= 0x2;}
         if(PDZRstate) {debugFrame.data[4] |= 0x4;}
@@ -102,10 +102,10 @@ void CANDebugReport::sendButtonsReport(void)
 
         memset(&debugFrame,  0 , sizeof(struct can_frame));
 
-        debugFrame.data[3] = (quint8)true << 0
-                                             | ((quint8)keyDown) << 1
-                                             | ((quint8)keyReturn) << 2
-                                             | ((quint8)keyUp) << 3
+        debugFrame.data[3] = (uint8_t)true << 0
+                                             | ((uint8_t)keyDown) << 1
+                                             | ((uint8_t)keyReturn) << 2
+                                             | ((uint8_t)keyUp) << 3
                                              ;
 
         debugFrame.can_id = 0x7b0;
@@ -120,7 +120,7 @@ void CANDebugReport::sendButtonsReport(void)
 
 
 
-void CANDebugReport::sendButtonPressed(qint32 qtKey)
+void CANDebugReport::sendButtonPressed(int32_t qtKey)
 {
 
     switch(qtKey)
@@ -155,7 +155,7 @@ void CANDebugReport::sendButtonPressed(qint32 qtKey)
 }
 
 
-void CANDebugReport::sendButtonReleased(qint32 qtKey)
+void CANDebugReport::sendButtonReleased(int32_t qtKey)
 {
     switch(qtKey)
     {

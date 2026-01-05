@@ -39,7 +39,7 @@ public:
     void deactivateItemInMutexGroup();
     void handleMutexGroup();
 
-    void setCanEntityArgs(quint8 valueInt, quint8 valueFrac, quint8 unit);
+    void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
     void setCanEntityArg(QString stringArg);
 
 
@@ -74,9 +74,9 @@ private:
     //TODO add alert type
 
     //Invoke arguments:
-    quint8 valueInt;
-    quint8 valueFrac;
-    quint8 unit;
+    uint8_t valueInt;
+    uint8_t valueFrac;
+    uint8_t unit;
     QString stringArg;
 };
 

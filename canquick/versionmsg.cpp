@@ -91,11 +91,11 @@ void VersionMsg::readVersionInfo(void)
     version2send.can_dlc = 8;
 
     //NOTE: Engine version:
-    version2send.data[0] = (quint8)MAJOR_VERSION;
-    version2send.data[1] = (((quint8)MINOR_VERSION) << 2)|(((qint8)OTA_TEST_VERSION) & (quint8)0x3);
+    version2send.data[0] = (uint8_t)MAJOR_VERSION;
+    version2send.data[1] = (((uint8_t)MINOR_VERSION) << 2)|(((int8_t)OTA_TEST_VERSION) & (uint8_t)0x3);
 
-    version2send.data[2] = (quint8)(0xff);
-    version2send.data[3] = (quint8)(0xff);
+    version2send.data[2] = (uint8_t)(0xff);
+    version2send.data[3] = (uint8_t)(0xff);
 
 
     //NOTE: Config version:
@@ -103,8 +103,8 @@ void VersionMsg::readVersionInfo(void)
     core::JsonArray jsonArray = configVersion.toArray();
     if(!jsonArray.isEmpty())
     {
-        version2send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
-        version2send.data[3] = (((quint8)jsonArray.at(1).toInt(0x3f)) << 2)|(((qint8)jsonArray.at(2).toInt(0x3)) & (quint8)0x3);
+        version2send.data[2] = (uint8_t)jsonArray.at(0).toInt(0xff);
+        version2send.data[3] = (((uint8_t)jsonArray.at(1).toInt(0x3f)) << 2)|(((int8_t)jsonArray.at(2).toInt(0x3)) & (uint8_t)0x3);
     }
 
     //NOTE: System build version:
@@ -129,19 +129,19 @@ void VersionMsg::readVersionInfo(void)
     else
     {
 
-        version2send.data[4] = (quint8)buildId.right(2).toUInt(&success,16);
-        if(success) version2send.data[5] = (quint8)buildId.mid(4,2).toUInt(&success,16);
-        if(success) version2send.data[6] = (quint8)buildId.mid(2,2).toUInt(&success,16);
-        if(success) version2send.data[7] = (quint8)buildId.left(2).toUInt(&success,16);
+        version2send.data[4] = (uint8_t)buildId.right(2).toUInt(&success,16);
+        if(success) version2send.data[5] = (uint8_t)buildId.mid(4,2).toUInt(&success,16);
+        if(success) version2send.data[6] = (uint8_t)buildId.mid(2,2).toUInt(&success,16);
+        if(success) version2send.data[7] = (uint8_t)buildId.left(2).toUInt(&success,16);
     }
 #endif
 
     if(!success)
     {
-        version2send.data[4] = (quint8)(0xff);
-        version2send.data[5] = (quint8)(0xff);
-        version2send.data[6] = (quint8)(0xff);
-        version2send.data[7] = (quint8)(0xff);
+        version2send.data[4] = (uint8_t)(0xff);
+        version2send.data[5] = (uint8_t)(0xff);
+        version2send.data[6] = (uint8_t)(0xff);
+        version2send.data[7] = (uint8_t)(0xff);
     }
 }
 
@@ -156,13 +156,13 @@ void VersionMsg::readServiceNumber(void)
     sn2send_MSB.can_dlc = 8;
 
     //TODO read the SN and verify:
-    qint32 mem_fd = open("/dev/mem",O_RDWR);
+    int32_t mem_fd = open("/dev/mem",O_RDWR);
 
-    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(quint32), PROT_WRITE,
+    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t), PROT_WRITE,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_PMC);
 
 
-    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32), PROT_READ,
+    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t), PROT_READ,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_SFC);
 
 
@@ -170,20 +170,20 @@ void VersionMsg::readServiceNumber(void)
     close(mem_fd);
 
 
-    enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),true);
+    enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),true);
 
 
-    quint32 readRegister;
-    quint32 emptyRegisters = 0;
-    quint8 byteLSB;
+    uint32_t readRegister;
+    uint32_t emptyRegisters = 0;
+    uint8_t byteLSB;
     bool regIntegrity = true;
 
-    for(qint32 i = 0; i<16 && regIntegrity;i++)
+    for(int32_t i = 0; i<16 && regIntegrity;i++)
     {
-        readRegister = readDataSFC((quint32*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(quint32)),i);
+        readRegister = readDataSFC((uint32_t*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(uint32_t)),i);
 
 
-        byteLSB = (quint8)(readRegister & 0xff);
+        byteLSB = (uint8_t)(readRegister & 0xff);
 
         if(0 == readRegister)
         {
@@ -191,17 +191,17 @@ void VersionMsg::readServiceNumber(void)
         }
         else
         {
-            quint8 byteMSB = (quint8)((readRegister >> 010)& 0xff);
+            uint8_t byteMSB = (uint8_t)((readRegister >> 010)& 0xff);
 
 
 
-            regIntegrity = (byteLSB == (quint8)(~ byteMSB));
+            regIntegrity = (byteLSB == (uint8_t)(~ byteMSB));
 
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (uint32_t)byteLSB << " Control:" << Qt::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #else
-            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (uint32_t)byteLSB << " Control:" << std::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #endif
 
  }
@@ -216,11 +216,11 @@ void VersionMsg::readServiceNumber(void)
         }
     }
 
-     enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),false);
+     enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),false);
 
      if(!regIntegrity | ((0 != emptyRegisters) && (16 != emptyRegisters)))
      {
-         for(qint32 i = 0; i<16;i++)
+         for(int32_t i = 0; i<16;i++)
          {
              if(i < 8)
              {
@@ -233,20 +233,20 @@ void VersionMsg::readServiceNumber(void)
          }
      }
 
-    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32));
+    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t));
 
-    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(quint32));
+    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t));
 }
 
-void VersionMsg::enableDisableSFC(quint32* wr_ptr, bool On)
+void VersionMsg::enableDisableSFC(uint32_t* wr_ptr, bool On)
 {
     *wr_ptr = On ? (AT91C_ID_SFC | AT91C_PMC_PCR_CMD | AT91C_PMC_PCR_EN) :
                    (AT91C_ID_SFC | AT91C_PMC_PCR_CMD);
 }
 
-quint32 VersionMsg::readDataSFC(quint32* rd_ptr, quint32 index)
+uint32_t VersionMsg::readDataSFC(uint32_t* rd_ptr, uint32_t index)
 {
-   quint32 ret;
+   uint32_t ret;
    ret = *(rd_ptr+index);
    return ret;
 }

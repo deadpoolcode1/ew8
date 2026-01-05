@@ -40,13 +40,13 @@ private:
 
     void readOSBuildInfo(void);
     void readServiceNumber(void);
-    void enableDisableSFC(quint32 * wr_ptr, bool On);
-    quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+    void enableDisableSFC(uint32_t * wr_ptr, bool On);
+    uint32_t readDataSFC(uint32_t * rd_ptr, uint32_t index);
 
 
 
-    quint8 ewsn_lsb[8];
-    quint8 ewsn_msb[8];
+    uint8_t ewsn_lsb[8];
+    uint8_t ewsn_msb[8];
 #endif
 
     QString ewsn_str;

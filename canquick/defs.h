@@ -10,7 +10,7 @@
 
 #include "candbsignal.h"
 
-typedef quint32 CanStdId_t;
+typedef uint32_t CanStdId_t;
 
 // Use core::ElapsedTimer instead of QElapsedTimer
 extern core::ElapsedTimer bootUpTimer;
@@ -24,14 +24,14 @@ extern core::ElapsedTimer bootUpTimer;
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else
 //Enables usage of JSON enums unlisted in C++
-    typedef qint32 DISPLAY_ITEM_ID;
+    typedef int32_t DISPLAY_ITEM_ID;
 #endif
 
 #ifdef WIN32
 struct can_frame{
       long can_id;
-      quint32    can_dlc;
-      quint8    data[8];
+      uint32_t    can_dlc;
+      uint8_t    data[8];
 };
 
 #endif

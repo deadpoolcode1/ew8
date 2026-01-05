@@ -76,14 +76,14 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant)));
-         coreDebug() << "setVisibleSlot(quint8) connected to" << this->qmlItem->property("objectName").toString();
+         coreDebug() << "setVisibleSlot(uint8_t) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant, QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant, QVariant)));
-         coreDebug() << "setVisibleSlot(quint8, quint8) connected to" << this->qmlItem->property("objectName").toString();
+         coreDebug() << "setVisibleSlot(uint8_t, uint8_t) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant,QVariant, QVariant)")))
@@ -254,7 +254,7 @@ void RootedTreeNode::setCanEntityArg(QString stringArg)
     this->stringArg = stringArg;
 }
 
- void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, quint8 unit)
+ void RootedTreeNode::setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
  {
      this->valueInt = valueInt;
      this->valueFrac = valueFrac;

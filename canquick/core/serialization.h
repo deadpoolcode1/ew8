@@ -66,20 +66,20 @@ public:
     }
 
     // Write operators
-    DataStream& operator<<(qint8 val) { writeRaw(&val, 1); return *this; }
-    DataStream& operator<<(quint8 val) { writeRaw(&val, 1); return *this; }
-    DataStream& operator<<(qint16 val) { writeWithOrder(&val, 2); return *this; }
-    DataStream& operator<<(quint16 val) { writeWithOrder(&val, 2); return *this; }
-    DataStream& operator<<(qint32 val) { writeWithOrder(&val, 4); return *this; }
-    DataStream& operator<<(quint32 val) { writeWithOrder(&val, 4); return *this; }
-    DataStream& operator<<(qint64 val) { writeWithOrder(&val, 8); return *this; }
-    DataStream& operator<<(quint64 val) { writeWithOrder(&val, 8); return *this; }
+    DataStream& operator<<(int8_t val) { writeRaw(&val, 1); return *this; }
+    DataStream& operator<<(uint8_t val) { writeRaw(&val, 1); return *this; }
+    DataStream& operator<<(int16_t val) { writeWithOrder(&val, 2); return *this; }
+    DataStream& operator<<(uint16_t val) { writeWithOrder(&val, 2); return *this; }
+    DataStream& operator<<(int32_t val) { writeWithOrder(&val, 4); return *this; }
+    DataStream& operator<<(uint32_t val) { writeWithOrder(&val, 4); return *this; }
+    DataStream& operator<<(int64_t val) { writeWithOrder(&val, 8); return *this; }
+    DataStream& operator<<(uint64_t val) { writeWithOrder(&val, 8); return *this; }
     DataStream& operator<<(float val) { writeWithOrder(&val, 4); return *this; }
     DataStream& operator<<(double val) { writeWithOrder(&val, 8); return *this; }
-    DataStream& operator<<(bool val) { quint8 v = val ? 1 : 0; return *this << v; }
+    DataStream& operator<<(bool val) { uint8_t v = val ? 1 : 0; return *this << v; }
 
     DataStream& operator<<(const std::string& val) {
-        quint32 len = val.size();
+        uint32_t len = val.size();
         *this << len;
         writeRaw(val.data(), len);
         return *this;
@@ -91,7 +91,7 @@ public:
 
     template<typename T>
     DataStream& operator<<(const std::vector<T>& vec) {
-        quint32 size = vec.size();
+        uint32_t size = vec.size();
         *this << size;
         for (const auto& item : vec) {
             *this << item;
@@ -100,20 +100,20 @@ public:
     }
 
     // Read operators
-    DataStream& operator>>(qint8& val) { readRaw(&val, 1); return *this; }
-    DataStream& operator>>(quint8& val) { readRaw(&val, 1); return *this; }
-    DataStream& operator>>(qint16& val) { readWithOrder(&val, 2); return *this; }
-    DataStream& operator>>(quint16& val) { readWithOrder(&val, 2); return *this; }
-    DataStream& operator>>(qint32& val) { readWithOrder(&val, 4); return *this; }
-    DataStream& operator>>(quint32& val) { readWithOrder(&val, 4); return *this; }
-    DataStream& operator>>(qint64& val) { readWithOrder(&val, 8); return *this; }
-    DataStream& operator>>(quint64& val) { readWithOrder(&val, 8); return *this; }
+    DataStream& operator>>(int8_t& val) { readRaw(&val, 1); return *this; }
+    DataStream& operator>>(uint8_t& val) { readRaw(&val, 1); return *this; }
+    DataStream& operator>>(int16_t& val) { readWithOrder(&val, 2); return *this; }
+    DataStream& operator>>(uint16_t& val) { readWithOrder(&val, 2); return *this; }
+    DataStream& operator>>(int32_t& val) { readWithOrder(&val, 4); return *this; }
+    DataStream& operator>>(uint32_t& val) { readWithOrder(&val, 4); return *this; }
+    DataStream& operator>>(int64_t& val) { readWithOrder(&val, 8); return *this; }
+    DataStream& operator>>(uint64_t& val) { readWithOrder(&val, 8); return *this; }
     DataStream& operator>>(float& val) { readWithOrder(&val, 4); return *this; }
     DataStream& operator>>(double& val) { readWithOrder(&val, 8); return *this; }
-    DataStream& operator>>(bool& val) { quint8 v; *this >> v; val = (v != 0); return *this; }
+    DataStream& operator>>(bool& val) { uint8_t v; *this >> v; val = (v != 0); return *this; }
 
     DataStream& operator>>(std::string& val) {
-        quint32 len;
+        uint32_t len;
         *this >> len;
         if (len > 0 && status_ == Ok) {
             val.resize(len);
@@ -126,11 +126,11 @@ public:
 
     template<typename T>
     DataStream& operator>>(std::vector<T>& vec) {
-        quint32 size;
+        uint32_t size;
         *this >> size;
         vec.clear();
         vec.reserve(size);
-        for (quint32 i = 0; i < size && status_ == Ok; ++i) {
+        for (uint32_t i = 0; i < size && status_ == Ok; ++i) {
             T item;
             *this >> item;
             vec.push_back(item);
@@ -155,7 +155,7 @@ private:
             const uint8_t* bytes = static_cast<const uint8_t*>(data);
             buffer_->insert(buffer_->end(), bytes, bytes + len);
         } else if (file_) {
-            if (file_->write(static_cast<const char*>(data), len) != static_cast<qint64>(len)) {
+            if (file_->write(static_cast<const char*>(data), len) != static_cast<int64_t>(len)) {
                 status_ = WriteFailed;
             }
         }

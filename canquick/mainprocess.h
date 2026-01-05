@@ -23,7 +23,7 @@ public:
     void setBrightnessControl(BrightnessControl * aBrightnessControl);
 
     //alerts display (IAlertDisplay interface implementation):
-    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt = 0, quint8 valueFrac = 0, quint8 unit = 0) override;
+    virtual void activate(DISPLAY_ITEM_ID at, uint8_t valueInt = 0, uint8_t valueFrac = 0, uint8_t unit = 0) override;
     virtual void activate(DISPLAY_ITEM_ID at, const std::string& stringArg) override;
     virtual void deactivate(DISPLAY_ITEM_ID at) override;
     virtual void forceUpdate(void) override;
@@ -40,18 +40,18 @@ public slots:
 
     void debugMessagesConnected(bool On);
 
-    void volumeKeySent(qint32);
+    void volumeKeySent(int32_t);
 
     void isaFullActivationRequestSend();
     void isaPartialDeactivationRequestSend();
     void isaFullDeactivationRequestSend();
 
-    void forwardBrightnessChanged(qint32 newLevel);
+    void forwardBrightnessChanged(int32_t newLevel);
 
     void process();
 
 private:
-    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const QString& strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
+    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
 
     bool isDataComplete;
 

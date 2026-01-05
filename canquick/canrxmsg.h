@@ -27,10 +27,10 @@ public:
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static void completeInitCanRxMsgsPool(void);
     static void setItsDisconnectionReport(MeDisconnectionReport * aDisconnectionReport);
-    static void setKeepAliveMsg(QString keepAliveMsgName, qint32 aKeepAliveTimeout);
+    static void setKeepAliveMsg(QString keepAliveMsgName, int32_t aKeepAliveTimeout);
 
-    static CanRxMsg * createInstance(quint32 StdId, QString itsName);
-    static CanRxMsg * getMsgByCanId(quint32 std_id);
+    static CanRxMsg * createInstance(uint32_t StdId, QString itsName);
+    static CanRxMsg * getMsgByCanId(uint32_t std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
     void applyCanDBSignalsArray(QList<Signal *> * canDBSignals);
@@ -48,13 +48,13 @@ public:
     static bool saveToStorage(void);
     static bool loadFromStorage(void);
     static void forceDBCParsing(void);
-    static void expectRequestId(quint16 requestId);
-    static void receiveRequestIdByteLSB(quint8 aByte);
-    static void receiveRequestIdByteMSB(quint8 aByte);
+    static void expectRequestId(uint16_t requestId);
+    static void receiveRequestIdByteLSB(uint8_t aByte);
+    static void receiveRequestIdByteMSB(uint8_t aByte);
     static void discardRequestId(void);
 
     static bool isKeepAliveMsg(CanStdId_t canId){return (canId == keepAliveMsgId);};
-    static qint32 getKeepAliveMsgTimeout(void){return keepAliveTimeout;}
+    static int32_t getKeepAliveMsgTimeout(void){return keepAliveTimeout;}
 
     //TODO: make readonly property
     static bool isAlreadyLoaded;
@@ -63,7 +63,7 @@ public:
 
 private:
   static bool isRequestSent;
-  static quint16 requestId;
+  static uint16_t requestId;
   static bool isRequestIdLSBByteReceived;
   static bool isDBCParsingForced;
   //Uses StdId as the key
@@ -85,9 +85,9 @@ protected:
 
   static QString keepAliveMsgName;
   static CanStdId_t keepAliveMsgId;
-  static qint32 keepAliveTimeout;
+  static int32_t keepAliveTimeout;
 
-  quint32 getCanID(void);
+  uint32_t getCanID(void);
 
   QString itsJsonProtocolName;
   QString itsName;//NOTE: Used during Jason Parsing
