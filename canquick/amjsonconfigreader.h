@@ -1,11 +1,13 @@
 #ifndef AMJSONCONFIGREADER_H
 #define AMJSONCONFIGREADER_H
 
-#include <QJsonDocument>
+// Use core library instead of Qt
+#include "core/json.h"
+#include "core/mutex.h"
+#include "core/types.h"
 
-#include <QMutex>
-
-#include <QMap>
+#include <string>
+#include <map>
 
 class AMJsonConfigReader
 {
@@ -13,17 +15,17 @@ public:
 
     static AMJsonConfigReader * getInstance(void);
 
-    void readJsonDocument(QString arg);
+    void readJsonDocument(const std::string& arg);
 
-    QJsonValue getJsonTopEntry(QString entryKey);
+    core::JsonValue getJsonTopEntry(const std::string& entryKey);
 
 private:
 
-    static QMutex instanceMutex;
+    static core::Mutex instanceMutex;
 
     static AMJsonConfigReader * instance;
 
-    QMap <QString,QJsonValue> jsonEntriesList;
+    std::map<std::string, core::JsonValue> jsonEntriesList;
 
     explicit AMJsonConfigReader(void);
 };
