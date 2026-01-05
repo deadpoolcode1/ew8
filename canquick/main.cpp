@@ -52,6 +52,16 @@ int main(int argc, char *argv[])
 {
     bootUpTimer.start();
 
+#ifdef REMOVE_EW8_HW
+    // Auto-setup virtual CAN for desktop builds
+    if (system("ip link show can0 > /dev/null 2>&1") != 0) {
+        qDebug() << "Setting up virtual CAN interface...";
+        system("sudo /usr/sbin/modprobe vcan 2>/dev/null");
+        system("sudo /usr/sbin/ip link add dev can0 type vcan 2>/dev/null");
+        system("sudo /usr/sbin/ip link set up can0 2>/dev/null");
+    }
+#endif
+
     qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
@@ -156,11 +166,15 @@ int main(int argc, char *argv[])
     }
     else
     {
-        mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/")+mainQmlFileName);
+        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/")+mainQmlFileName);
     }
 
-    QQmlComponent component(&engine, mainQmlUrl);
-
+	QQmlComponent component(&engine, mainQmlUrl);
+qDebug() << "Loading QML from:" << mainQmlUrl;
+	qDebug() << "Component status:" << component.status();
+if (component.status() != QQmlComponent::Ready) {
+    qDebug() << "QML errors:" << component.errorString();
+}
 
     QObject * componentObject = component.create();
 
