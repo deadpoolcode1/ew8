@@ -25,7 +25,7 @@ DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
 
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    auto it = myInstance->graphicItemsIDsMap.find(name);
+    auto it = myInstance->graphicItemsIDsMap.find(name.toStdString());
     DISPLAY_ITEM_ID ret = (it != myInstance->graphicItemsIDsMap.end()) ? it->second : (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE;
 
     return ret;
@@ -36,7 +36,7 @@ QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
     GraphicItemsEnumMap * myInstance = getInstance();
 
     auto it = myInstance->graphicItemsNamesMap.find(id);
-    QString ret = (it != myInstance->graphicItemsNamesMap.end()) ? QString(it->second) : QString("");
+    QString ret = (it != myInstance->graphicItemsNamesMap.end()) ? QString::fromStdString(it->second) : QString("");
 
     return ret;
 }

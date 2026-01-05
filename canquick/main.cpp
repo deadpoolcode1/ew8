@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     coreDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
 #endif
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    // Qt::AA_EnableHighDpiScaling is deprecated in Qt 6 - High-DPI scaling is always enabled
 #ifdef REMOVE_EW8_HW
     QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 #endif
