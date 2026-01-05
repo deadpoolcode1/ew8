@@ -18,7 +18,7 @@ void AMJsonStringArgumentAction::process(QObject * /*sender*/, QVariant extracte
 }
 
 
-bool AMJsonStringArgumentAction::isItsArgumentsType(qint32 type)
+bool AMJsonStringArgumentAction::isItsArgumentsType(int32_t type)
 {
     return (type == StringArgument);
 }

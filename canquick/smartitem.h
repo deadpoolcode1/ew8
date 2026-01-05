@@ -15,14 +15,14 @@ class SmartItem : public QObject
 
 public:
 
-    static SmartItem * getInstance(quint8 aVisId);
+    static SmartItem * getInstance(uint8_t aVisId);
 
     typedef struct smart_params_s{
      visual_item_unit_t visUnits;
-     quint8 paramInt;
-     quint8 paramFrac;
-     quint32 minDurationMs;
-     quint32 maxDurationMs;
+     uint8_t paramInt;
+     uint8_t paramFrac;
+     uint32_t minDurationMs;
+     uint32_t maxDurationMs;
     } smart_params_t;
 
 
@@ -35,7 +35,7 @@ public:
     void setInactive(void);
 
 protected:
-    explicit SmartItem(quint8 aVisId, QObject * parent = nullptr);
+    explicit SmartItem(uint8_t aVisId, QObject * parent = nullptr);
     static SmartItem * smartItemsPool[MAX_SMART_ITEMS_NUM];
     static size_t  smartItemsPoolNumOfObjects;
 
@@ -44,7 +44,7 @@ protected:
     //TODO addTimers:
     //QDateTime qdt;
     bool isActived;
-    quint8 visId;
+    uint8_t visId;
 
     DISPLAY_ITEM_ID itsAlert;
 
@@ -57,8 +57,8 @@ public slots:
     void fireItsMaxActiveTime();
 
 private:
-    quint32 minDurationTime;
-    quint32 maxDurationTime;
+    uint32_t minDurationTime;
+    uint32_t maxDurationTime;
 
     QTimer * minDurationQtimer;
     QTimer * maxDurationQtimer;

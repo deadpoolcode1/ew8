@@ -12,7 +12,7 @@
 
 #include "watchdogdevice.h"
 
-qint32 WatchDogDevice::fd = 0;
+int32_t WatchDogDevice::fd = 0;
 
 int WatchDogDevice::disarm(void)
 {
@@ -30,7 +30,7 @@ int WatchDogDevice::disarm(void)
     return ret;
 }
 
-void WatchDogDevice::sighandler(qint32 signum)
+void WatchDogDevice::sighandler(int32_t signum)
 {
 #ifndef WIN32
     int ret;
@@ -69,7 +69,7 @@ WatchDogDevice::WatchDogDevice()
      coreDebug()<<"Starting WDT Monitoring";
    }
 
-   qint32 timeout = 1;
+   int32_t timeout = 1;
 
    ioctl(fd, WDIOC_SETTIMEOUT, &timeout);
 #endif

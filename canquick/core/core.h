@@ -4,7 +4,7 @@
 // Main include file for core library
 // This provides Qt-free replacements for common Qt functionality
 
-// Basic types (qint32, quint8, QString, QList, QMap, etc.)
+// Basic types (int32_t, uint8_t, QString, QList, QMap, etc.)
 #include "types.h"
 
 // Logging (replaces QDebug)

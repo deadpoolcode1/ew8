@@ -29,7 +29,7 @@ public:
     }
 
     // Returns elapsed time in milliseconds
-    qint64 elapsed() const {
+    int64_t elapsed() const {
         if (!started_) return 0;
         auto now = std::chrono::steady_clock::now();
         return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -37,7 +37,7 @@ public:
     }
 
     // Returns elapsed time in nanoseconds
-    qint64 nsecsElapsed() const {
+    int64_t nsecsElapsed() const {
         if (!started_) return 0;
         auto now = std::chrono::steady_clock::now();
         return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -45,18 +45,18 @@ public:
     }
 
     // Check if specified number of milliseconds have passed
-    bool hasExpired(qint64 timeout) const {
+    bool hasExpired(int64_t timeout) const {
         return elapsed() >= timeout;
     }
 
     // Returns milliseconds remaining until timeout (or 0 if expired)
-    qint64 remainingTime(qint64 timeout) const {
-        qint64 remaining = timeout - elapsed();
+    int64_t remainingTime(int64_t timeout) const {
+        int64_t remaining = timeout - elapsed();
         return remaining > 0 ? remaining : 0;
     }
 
     // Get time since epoch in milliseconds (equivalent to QDateTime::currentMSecsSinceEpoch)
-    static qint64 currentMSecsSinceEpoch() {
+    static int64_t currentMSecsSinceEpoch() {
         auto now = std::chrono::system_clock::now();
         return std::chrono::duration_cast<std::chrono::milliseconds>(
             now.time_since_epoch()).count();

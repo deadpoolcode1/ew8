@@ -24,17 +24,17 @@
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
-QMap<quint32,AMJsonSignal *> AMJsonSignal::objectsPool;
+QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
 
-QList<qint32> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
+QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
 {
 
-      QList<qint32> * trueValues = nullptr;
+      QList<int32_t> * trueValues = nullptr;
       * a_set_op = set_op_na;
 
     if(signal_obj.contains(fieldName.toStdString()))
     {
-        trueValues = new QList<qint32>();
+        trueValues = new QList<int32_t>();
 
         if (signal_obj[fieldName.toStdString()].isArray()){
 
@@ -82,7 +82,7 @@ QList<qint32> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
         }
         else
         {
-            qint32 sigTrueValue = signal_obj["Set"].toInt(0);
+            int32_t sigTrueValue = signal_obj["Set"].toInt(0);
             * a_set_op = set_op_or;
             trueValues->append(sigTrueValue);
         }
@@ -100,7 +100,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     QString sigAction;
     QString sigType;
     bool polarity = true;
-    qint32 sigIndex = -1;
+    int32_t sigIndex = -1;
     bool isValueTable = false;
 
     activatedAction = nullptr;
@@ -108,7 +108,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     core::JsonValue sigNameJsonValue = signal_obj["name"];
 
     isSupplementedSignalEntry = (sigNameJsonValue.isArray());
-     QList<qint32> * domainTrueValues = nullptr;
+     QList<int32_t> * domainTrueValues = nullptr;
      set_ops_t a_domain_set_op = set_op_na;
 
     if(isSupplementedSignalEntry)
@@ -145,8 +145,8 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
 
     sigIndex = signal_obj["index"].toInt(-1);
 
-    quint32 bufferLength = 0;
-    quint32 skipSmoothingDelta = 0;
+    uint32_t bufferLength = 0;
+    uint32_t skipSmoothingDelta = 0;
     QString smoothingType;
 
     //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
@@ -155,8 +155,8 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     if( !smoothedVal.isUndefined() && smoothedVal.isArray())
     {
             core::JsonArray sigSmoothed_Array = smoothedVal.toArray();
-            bufferLength = (quint32)sigSmoothed_Array.at(0).toInt(0);
-            skipSmoothingDelta = (quint32)sigSmoothed_Array.at(1).toInt(0);
+            bufferLength = (uint32_t)sigSmoothed_Array.at(0).toInt(0);
+            skipSmoothingDelta = (uint32_t)sigSmoothed_Array.at(1).toInt(0);
             smoothingType = QString::fromStdString(sigSmoothed_Array.at(2).toString("items"));
             coreDebug()<<"smoothing type: "<< smoothingType;
     }
@@ -205,7 +205,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     {
 
         set_ops_t a_set_op = set_op_na;
-        QList<qint32> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
+        QList<int32_t> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
         init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, a_set_op, sigTrueValues,   a_domain_set_op, domainTrueValues, false);
     }
 
@@ -213,14 +213,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     objectsPool.insert(poolIndex,this);
 }
 
-AMJsonSignal * AMJsonSignal::getByIndex(quint32 idx)
+AMJsonSignal * AMJsonSignal::getByIndex(uint32_t idx)
 {
     AMJsonSignal * ret;
     ret = objectsPool.value(idx, nullptr);
     return ret;
 }
 
-quint32 AMJsonSignal::getItsIndex(void)
+uint32_t AMJsonSignal::getItsIndex(void)
 {
     return poolIndex;
 }
@@ -230,7 +230,7 @@ QString AMJsonSignal::getItsSupName(void)
     return itsSupName;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<qint32> * aTrueValues,  set_ops_t trueDomainOp, QList<qint32> * trueDomainValues, bool isValueTable)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 
@@ -284,7 +284,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupN
     //TODO use actions map
 }
 
-void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString aSmoothingType)
+void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString aSmoothingType)
 {
     if(IntArgument == type)
     {
@@ -426,7 +426,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
      if(extractedSupCANsignal.typeId() == QMetaType::Int && nullptr != (itsDomainTrueValues))
      {
-         qint32 desired = extractedSupCANsignal.toInt();
+         int32_t desired = extractedSupCANsignal.toInt();
          switch (itsDomainSetOp)
          {
          case set_op_or:
@@ -466,7 +466,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
      }
      else if (extractedCANsignal.typeId() == QMetaType::Int && nullptr != (trueValues))
      {
-         qint32 desired = extractedCANsignal.toInt();
+         int32_t desired = extractedCANsignal.toInt();
          switch (trueValuesOp)
          {
          case set_op_or:

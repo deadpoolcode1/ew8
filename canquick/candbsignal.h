@@ -45,23 +45,23 @@ typedef struct Signal_s
     double min;
     double max;
     SignalValueType valueType;
-    quint32 AMJsonSignalIdx;
+    uint32_t AMJsonSignalIdx;
 }
 Signal;
 
 typedef struct SerializedSignal_s
 {
 public:
-    quint32 startByte;
-    quint32 startBit;
-    quint32 numOfBits;
-    quint8 sign;
+    uint32_t startByte;
+    uint32_t startBit;
+    uint32_t numOfBits;
+    uint8_t sign;
     double factor;
     double offset;
     double min;
     double max;
-    qint32 enumValueType;
-    quint32 AMJsonSignalIdx;
+    int32_t enumValueType;
+    uint32_t AMJsonSignalIdx;
 } SerializedSignal_t;
 
 
@@ -105,7 +105,7 @@ private:
      std::vector<std::string> * c_identifiers;
      std::vector<std::string> * signs;
      std::vector<std::string> * ecu_tokens;
-     std::vector<qint64> * numbers;//TODO think about floats implementation
+     std::vector<int64_t> * numbers;//TODO think about floats implementation
      std::vector<Signal *> * cansignals;
      std::vector<Value> * vtRows;
 };

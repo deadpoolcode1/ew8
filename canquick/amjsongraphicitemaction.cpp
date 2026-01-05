@@ -113,7 +113,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
             else
             {
-                itsDisplay->activate(itsGraphicItemID,(quint8)itsSupplimentary.toInt());
+                itsDisplay->activate(itsGraphicItemID,(uint8_t)itsSupplimentary.toInt());
             }
 
         }
@@ -127,7 +127,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
                 }
                 else
                 {
-                     itsDisplay->activate(itsGraphicItemID, argInt, (quint8)itsSupplimentary.toInt());
+                     itsDisplay->activate(itsGraphicItemID, argInt, (uint8_t)itsSupplimentary.toInt());
                 }
 
             }
@@ -184,9 +184,9 @@ void AMJsonGraphicItemAction::argumentComplete(QString anArg)
 }
 
 //TODO in same frame arguments must be handled before GraphicItems
-void AMJsonGraphicItemAction::argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)
+void AMJsonGraphicItemAction::argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)
 {
-   qDebug("argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)");
+   qDebug("argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)");
    bool areChanged =
            (argInt != intArg ||
            argFrac != fracArg ||
@@ -232,7 +232,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
             if(intAcc)
             {
-                connect(intAcc, SIGNAL(argumentComplete(quint8,quint8,quint8)),this,SLOT(argumentComplete(quint8,quint8,quint8)));
+                connect(intAcc, SIGNAL(argumentComplete(uint8_t,uint8_t,uint8_t)),this,SLOT(argumentComplete(uint8_t,uint8_t,uint8_t)));
                 hasArguments = true;
                 isArgOfStringType = false;
             }

@@ -14,16 +14,16 @@ AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, QSt
 void AMJsonRequestIdAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
 {
     bool status;
-       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((qint32)extractedCANsignal.toInt(&status));
+       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((int32_t)extractedCANsignal.toInt(&status));
 
        if(itsIndex == 0)
        {
-           CanRxMsg::receiveRequestIdByteLSB((quint8)extractedCANsignal.toInt(&status));
+           CanRxMsg::receiveRequestIdByteLSB((uint8_t)extractedCANsignal.toInt(&status));
        }
 
        if(itsIndex == 1)
        {
-           CanRxMsg::receiveRequestIdByteMSB((quint8)extractedCANsignal.toInt(&status));
+           CanRxMsg::receiveRequestIdByteMSB((uint8_t)extractedCANsignal.toInt(&status));
        }
 }
 

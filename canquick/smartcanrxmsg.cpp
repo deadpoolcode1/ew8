@@ -103,9 +103,9 @@ void SmartCanRxMsg::ack(CanManager * canMngr)
 
 }
 
-quint32 SmartCanRxMsg::convert2msec (duration_unit_t unit)
+uint32_t SmartCanRxMsg::convert2msec (duration_unit_t unit)
 {
-    quint32 ret = 0;
+    uint32_t ret = 0;
 
     for (size_t i=0; i < du_units_table_size; i++)
     {

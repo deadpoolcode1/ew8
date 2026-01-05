@@ -44,7 +44,7 @@ CanIntArgumentsAccumulator * CanIntArgumentsAccumulator::getInstance(DISPLAY_ITE
 }
 
 
-void CanIntArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 anArg)
+void CanIntArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t anArg)
 {
 
     intValue[anIndex] = anArg;
@@ -65,8 +65,8 @@ void CanIntArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 anA
     {
         if(nullptr != smoother)
         {
-            smoother->addMeasure((quint32)intValue[0]);
-            intValue[0] = (quint8)((smoother->getSmoothedValue())&0xff);
+            smoother->addMeasure((uint32_t)intValue[0]);
+            intValue[0] = (uint8_t)((smoother->getSmoothedValue())&0xff);
         }
 
         argumentComplete(intValue[0], intValue[1], intValue[2]);

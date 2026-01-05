@@ -32,9 +32,9 @@ private:
     AMJsonProtocol * itsProtocol;
 
 
-    quint32 poolIndex;
+    uint32_t poolIndex;
     action_type_e type;
-    static QMap<quint32, AMJsonAction *> objectsPool;
+    static QMap<uint32_t, AMJsonAction *> objectsPool;
 
 signals:
 
