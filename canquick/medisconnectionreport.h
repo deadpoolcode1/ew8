@@ -1,31 +1,34 @@
 #ifndef MEDISCONNECTIONREPORT_H
 #define MEDISCONNECTIONREPORT_H
 
-#include <QObject>
-#include <QTimer>
+// Use core library instead of Qt
+#include "core/core.h"
+#include "core/timer.h"
+#include "core/thread.h"
+#include "core/signal.h"
+
 #include "ialertdisplay.h"
 
-class MeDisconnectionReport : public QObject
+class MeDisconnectionReport
 {
-    Q_OBJECT
 public:
-    explicit MeDisconnectionReport(IAlertDisplay * itsDisplay, QObject *parent = nullptr);
+    explicit MeDisconnectionReport(IAlertDisplay * itsDisplay);
     void launch(void);
 
-signals:
-    void startRequestTimeoutTimer();
-    void stopRequestTimeoutTimer();
+    // Signals (using core::Signal)
+    core::Signal<> startRequestTimeoutTimer;
+    core::Signal<> stopRequestTimeoutTimer;
 
-public slots:
+    // Slot replacements - now regular methods
     void resetConnectionTimeout(void);
     void fireConnectionTimeout(void);
     void fireRequestTimeout(void);
 
 private:
  bool isInDisconnectionAlert;
- QThread * itsThread;
- QTimer * connectionTimeoutTimer;
- QTimer * requestTimeoutTimer;
+ core::Thread * itsThread;
+ core::Timer * connectionTimeoutTimer;
+ core::Timer * requestTimeoutTimer;
  IAlertDisplay * itsDisplay;
  //TODO set
 };

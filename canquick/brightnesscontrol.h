@@ -1,33 +1,34 @@
 #ifndef BRIGHTNESSCONTROL_H
 #define BRIGHTNESSCONTROL_H
 
-#include <QObject>
-#include <QFile>
-#include <QTimer>
-#include <QMap>
-#include <QFileSystemWatcher>
-#include <QSettings>
+// Use core library instead of Qt
+#include "core/core.h"
+#include "core/file_utils.h"
+#include "core/timer.h"
+#include "core/signal.h"
+#include "core/settings.h"
+
+#include <string>
+#include <map>
+
 #include "canmanager.h"
 
 class CanManager;
 
-class BrightnessControl : public QObject
+class BrightnessControl
 {
-    Q_OBJECT
 public:
-    explicit BrightnessControl(QObject *parent = nullptr);
+    explicit BrightnessControl();
     ~BrightnessControl();
 
      static void setCANDebugReport(bool doReport);
 
      void setItsDisplay(IAlertDisplay * aDisplay);
 
+    // Signal replacement for Qt signal
+    core::Signal<quint32, qint32, qint32> sendBrightness;
 
-signals:
-
-   void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
-
-public slots:
+    // Slot replacements - now just regular methods
     void fireIlluminanceMeasure(void);
     void brightnessLevelChanged(qint32 newLevel);
 
@@ -39,26 +40,26 @@ private:
 
 
 
-    QTimer * triggerTimer;
-    QFile * measureFile;
-    QString measureFileName;
-    QFile * outputFile;
-    QString outputFileName;
+    core::Timer * triggerTimer;
+    core::File * measureFile;
+    std::string measureFileName;
+    core::File * outputFile;
+    std::string outputFileName;
     qint32 currentOutput;
     qint32 currentMenuLevel;
     double scale;
 
     qint32 * lowerPoints;
     qint32 lowerPointsSize;
-    //COONTAINS: menuLevel,Size,PtrToValuesArray
-    QMap<qint32, qint32 *> outputLevels;
+    //CONTAINS: menuLevel,Size,PtrToValuesArray
+    std::map<qint32, qint32 *> outputLevels;
     qint32 * currentMenuLevelOutputs;
     static bool doCANDebugReport;
     quint32 illuminance_measure_mV;
     IAlertDisplay * itsAlertDisplay;
 
 #if 0
-    QFileSystemWatcher * settingsWatcher;
+    core::FileSystemWatcher * settingsWatcher;
 #endif
 };
 
