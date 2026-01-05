@@ -1,8 +1,13 @@
 #ifndef CANDBSIGNAL_H
 #define CANDBSIGNAL_H
 
-#include <QObject>
-#include <QDataStream>
+// Use core library instead of Qt
+#include "core/types.h"
+#include "core/serialization.h"
+
+#include <string>
+#include <vector>
+#include <any>
 
 #include "peglib.h"
 using namespace peg;
@@ -30,7 +35,7 @@ SignalValueType;
 
 typedef struct Signal_s
 {
-    QString name;
+    std::string name;
     unsigned int startByte;
     unsigned int startBit;
     unsigned int numOfBits;
@@ -64,15 +69,15 @@ public:
 
 typedef struct Value_s
 {
-    QString name;
+    std::string name;
     double value;
 }
 Value;
 
 
 
-QDataStream & operator<< (QDataStream &out, const Signal & any);
-QDataStream & operator>> (QDataStream &in, Signal & any);
+core::DataStream & operator<< (core::DataStream &out, const Signal & any);
+core::DataStream & operator>> (core::DataStream &in, Signal & any);
 
 class CanDBSignal {
 public:
@@ -83,24 +88,24 @@ public:
 
 private:
 
-     bool parseDBCFileString(QString extractedFile);
-     bool readDBCFile(QString protocolName, QString & extractedFile);
+     bool parseDBCFileString(const std::string& extractedFile);
+     bool readDBCFile(const std::string& protocolName, std::string& extractedFile);
      void init_parser(void);
 
      AMJsonProtocol * curParsedProtocol;
 
      parser * pParser;
 
-     QList<QString> * phrases;
-     QList<QString> * c_identifiers;
-     QList<QString> *  signs;
-     QList<QString> * ecu_tokens;
-     QList<qint64> * numbers;//TODO think about floats implementation
-     QList<Signal *> * cansignals;
-     QList<Value> * vtRows;
+     std::vector<std::string> * phrases;
+     std::vector<std::string> * c_identifiers;
+     std::vector<std::string> * signs;
+     std::vector<std::string> * ecu_tokens;
+     std::vector<qint64> * numbers;//TODO think about floats implementation
+     std::vector<Signal *> * cansignals;
+     std::vector<Value> * vtRows;
 };
 
-QVariant extractSignal(Signal * canSignal, struct can_frame *frame);
+std::any extractSignal(Signal * canSignal, struct can_frame *frame);
 
 
 #endif //CANDBSIGNAL_H
