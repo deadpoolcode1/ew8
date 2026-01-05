@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -66,6 +67,25 @@ bool variantCanConvert(const Variant& v) {
 #include <algorithm>
 #include <functional>
 
+// QChar replacement - simple character wrapper
+class QChar {
+public:
+    QChar() : ch_(0) {}
+    QChar(char c) : ch_(c) {}
+    QChar(int c) : ch_(static_cast<char>(c)) {}
+
+    char toLatin1() const { return ch_; }
+    bool isNull() const { return ch_ == 0; }
+    bool isDigit() const { return ch_ >= '0' && ch_ <= '9'; }
+    bool isLetter() const { return (ch_ >= 'A' && ch_ <= 'Z') || (ch_ >= 'a' && ch_ <= 'z'); }
+    bool isSpace() const { return ch_ == ' ' || ch_ == '\t' || ch_ == '\n' || ch_ == '\r'; }
+
+    operator char() const { return ch_; }
+
+private:
+    char ch_;
+};
+
 // QByteArray replacement - defined first so QString::toLocal8Bit() can use it
 class QByteArray : public std::vector<uint8_t> {
 public:
@@ -122,6 +142,121 @@ public:
     QByteArray toLocal8Bit() const { return QByteArray(*this); }
     QByteArray toLatin1() const { return QByteArray(*this); }
     QByteArray toUtf8() const { return QByteArray(*this); }
+
+    // QString::arg() - replaces %1, %2, etc. with provided arguments
+    template<typename T>
+    QString arg(const T& value) const {
+        QString result = *this;
+        // Find lowest placeholder %1-%9
+        for (int i = 1; i <= 9; ++i) {
+            std::string placeholder = "%" + std::to_string(i);
+            size_t pos = result.find(placeholder);
+            if (pos != std::string::npos) {
+                std::ostringstream oss;
+                oss << value;
+                result.replace(pos, placeholder.length(), oss.str());
+                return result;
+            }
+        }
+        return result;
+    }
+
+    // Overload for int with zero-padding width
+    QString arg(int value, int fieldWidth, int base = 10, char fillChar = ' ') const {
+        QString result = *this;
+        for (int i = 1; i <= 9; ++i) {
+            std::string placeholder = "%" + std::to_string(i);
+            size_t pos = result.find(placeholder);
+            if (pos != std::string::npos) {
+                std::ostringstream oss;
+                if (base == 16) oss << std::hex;
+                else if (base == 8) oss << std::oct;
+                if (fieldWidth > 0) {
+                    oss.width(fieldWidth);
+                    oss.fill(fillChar);
+                }
+                oss << value;
+                result.replace(pos, placeholder.length(), oss.str());
+                return result;
+            }
+        }
+        return result;
+    }
+
+    // toUInt for parsing strings as unsigned integers
+    unsigned int toUInt(bool* ok = nullptr, int base = 10) const {
+        try {
+            size_t pos;
+            unsigned long val = std::stoul(*this, &pos, base);
+            if (ok) *ok = (pos == size());
+            return static_cast<unsigned int>(val);
+        } catch (...) {
+            if (ok) *ok = false;
+            return 0;
+        }
+    }
+
+    // toInt for parsing strings as integers
+    int toInt(bool* ok = nullptr, int base = 10) const {
+        try {
+            size_t pos;
+            long val = std::stol(*this, &pos, base);
+            if (ok) *ok = (pos == size());
+            return static_cast<int>(val);
+        } catch (...) {
+            if (ok) *ok = false;
+            return 0;
+        }
+    }
+
+    // toDouble for parsing strings as doubles
+    double toDouble(bool* ok = nullptr) const {
+        try {
+            size_t pos;
+            double val = std::stod(*this, &pos);
+            if (ok) *ok = (pos == size());
+            return val;
+        } catch (...) {
+            if (ok) *ok = false;
+            return 0.0;
+        }
+    }
+
+    // contains - check if string contains substring
+    bool contains(const QString& str) const {
+        return find(str) != std::string::npos;
+    }
+    bool contains(const char* str) const {
+        return find(str) != std::string::npos;
+    }
+    bool contains(char ch) const {
+        return find(ch) != std::string::npos;
+    }
+
+    // append methods for Qt compatibility
+    QString& append(const QString& str) {
+        std::string::append(str);
+        return *this;
+    }
+    QString& append(const char* str) {
+        if (str) std::string::append(str);
+        return *this;
+    }
+    QString& append(char ch) {
+        std::string::push_back(ch);
+        return *this;
+    }
+    QString& append(const QChar& ch) {
+        std::string::push_back(static_cast<char>(ch));
+        return *this;
+    }
+
+    // number() overloads for additional types
+    static QString number(long n) { return QString(std::to_string(n)); }
+    static QString number(unsigned int n) { return QString(std::to_string(n)); }
+    static QString number(unsigned long n) { return QString(std::to_string(n)); }
+    static QString number(long long n) { return QString(std::to_string(n)); }
+    static QString number(unsigned long long n) { return QString(std::to_string(n)); }
 };
 
 // qPrintable macro for QString

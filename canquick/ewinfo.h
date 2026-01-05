@@ -2,6 +2,7 @@
 #define EWINFO_H
 
 #include <QObject>
+#include "core/types.h"
 
 
 class EWInfo: public QObject
