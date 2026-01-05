@@ -3,7 +3,7 @@
 
 // Workaround for Qt 6.9.x qfloat16 operator redefinition bug on 64-bit Linux
 // On 64-bit Linux (LP64 ABI), 'long' and 'long long' are both 64 bits.
-// Qt's qfloat16.h declares comparison operators for both 'long' and 'qint64',
+// Qt's qfloat16.h declares comparison operators for both 'long' and 'int64_t',
 // causing redefinition errors since they resolve to the same type.
 //
 // Solution: Define QT_NO_FLOAT16_OPERATORS before including Qt headers.

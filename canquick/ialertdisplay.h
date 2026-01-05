@@ -15,7 +15,7 @@ class IAlertDisplay
 
   public:
 
-    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt = 0, quint8 valueFrac = 0, quint8 unit = 0) = 0;
+    virtual void activate(DISPLAY_ITEM_ID at, uint8_t valueInt = 0, uint8_t valueFrac = 0, uint8_t unit = 0) = 0;
     virtual void activate(DISPLAY_ITEM_ID at, const std::string& stringArg) = 0;
     virtual void deactivate(DISPLAY_ITEM_ID at) = 0;
 

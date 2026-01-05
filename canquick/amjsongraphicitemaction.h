@@ -40,7 +40,7 @@ public:
 
 
 public slots:
-    void argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg);
+    void argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg);
     void argumentComplete(QString strArg);
     void forceDeactivation(void);
 
@@ -61,9 +61,9 @@ private:
     QVariant itsSupplimentary;
     QList<QVariant> itsSuppDomain;
 
-    quint8 argInt;
-    quint8 argFrac;
-    quint8 argUnits;
+    uint8_t argInt;
+    uint8_t argFrac;
+    uint8_t argUnits;
     QString argStr;
 
     bool isArgOfStringType;

@@ -19,7 +19,7 @@ bool AMJsonFixedArgumentsActionInvoker::setSupplimentary (QVariant extractedCanS
     return ret;
 }
 
-AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<qint32> intArgs)
+AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<int32_t> intArgs)
 {
     itsAction =  anAction;
     itsStringArg = "";
@@ -42,14 +42,14 @@ void AMJsonFixedArgumentsActionInvoker::process(QObject *sender, QVariant extrac
             switch(itsIntArgs.length())
             {
             case 1:
-                itsAction->argumentComplete((quint8)itsIntArgs.at(0), 0, 0);
+                itsAction->argumentComplete((uint8_t)itsIntArgs.at(0), 0, 0);
                 break;
             case 2:
-                itsAction->argumentComplete((quint8)itsIntArgs.at(0),(quint8)itsIntArgs.at(1), 0);
+                itsAction->argumentComplete((uint8_t)itsIntArgs.at(0),(uint8_t)itsIntArgs.at(1), 0);
                 break;
 
             case 3:
-                itsAction->argumentComplete((quint8)itsIntArgs.at(0),(quint8)itsIntArgs.at(1),(quint8)itsIntArgs.at(2));
+                itsAction->argumentComplete((uint8_t)itsIntArgs.at(0),(uint8_t)itsIntArgs.at(1),(uint8_t)itsIntArgs.at(2));
                 break;
             }
         }

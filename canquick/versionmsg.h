@@ -24,8 +24,8 @@ private:
     void readVersionInfo(void);
 #ifndef WIN32
     void readServiceNumber(void);
-    void enableDisableSFC(quint32 * wr_ptr, bool On);
-    quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+    void enableDisableSFC(uint32_t * wr_ptr, bool On);
+    uint32_t readDataSFC(uint32_t * rd_ptr, uint32_t index);
 
     struct can_frame sn2send_LSB;
     struct can_frame sn2send_MSB;

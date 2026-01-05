@@ -15,7 +15,7 @@ class CanStringArgumentsAccumulator : public CanArgumentsAccumulator
 public:
     static CanStringArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
 
-    void insertValueFromSignal(size_t anIndex, qint8 aChar);
+    void insertValueFromSignal(size_t anIndex, int8_t aChar);
 
     virtual const char * getArgumentsTypeName() {return argumentsTypeName;}
 

@@ -96,26 +96,26 @@ void EWInfo::setMeSn(QString aMeSn)
     //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
     {
-    quint64 A = (quint64)ew[me[15]%16];//4:0:48
-    quint64 B = (quint64)ew[me[14]%16] ;//2:2:50
-    quint64 C = (quint64)ew[me[13]%16] ;//5:1:49
-    quint64 D = (quint64)ew[me[12]%16] ;//0:3:51
-    quint64 E = (quint64)ew[me[11]%16] ;//0:3:51
+    uint64_t A = (uint64_t)ew[me[15]%16];//4:0:48
+    uint64_t B = (uint64_t)ew[me[14]%16] ;//2:2:50
+    uint64_t C = (uint64_t)ew[me[13]%16] ;//5:1:49
+    uint64_t D = (uint64_t)ew[me[12]%16] ;//0:3:51
+    uint64_t E = (uint64_t)ew[me[11]%16] ;//0:3:51
 
-    quint64 F = (quint64)me[ew[0]%16] ;
-    quint64 G = (quint64)me[ew[1]%16] ;
-    quint64 H = (quint64)me[ew[11]%16] ;
-    quint64 I = (quint64)me[ew[12]%16] ;
-    quint64 J = (quint64)me[ew[13]%16] ;
+    uint64_t F = (uint64_t)me[ew[0]%16] ;
+    uint64_t G = (uint64_t)me[ew[1]%16] ;
+    uint64_t H = (uint64_t)me[ew[11]%16] ;
+    uint64_t I = (uint64_t)me[ew[12]%16] ;
+    uint64_t J = (uint64_t)me[ew[13]%16] ;
 
-    quint64 SNV = (quint64)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
+    uint64_t SNV = (uint64_t)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
 
 #if 0
     qDebug () << " A:" << A << " B:" << B << " C:" << C
               << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
                  " I:" << I << " J:"<< J;
 
-    coreDebug()<< "quint64 SNV=" << SNV;
+    coreDebug()<< "uint64_t SNV=" << SNV;
 #endif
 
     snv_str = QString::number(SNV);
@@ -183,7 +183,7 @@ void EWInfo::readOSBuildInfo(void)
     else
     {
        bool ok;
-       quint32 tstamp = buildId.toUInt(&ok, 16);
+       uint32_t tstamp = buildId.toUInt(&ok, 16);
        if(ok)
        {
            ewosbuild_str = QString::number(tstamp);
@@ -197,13 +197,13 @@ void EWInfo::readOSBuildInfo(void)
 void EWInfo::readServiceNumber(void)
 {
     //TODO read the SN and verify:
-    qint32 mem_fd = open("/dev/mem",O_RDWR);
+    int32_t mem_fd = open("/dev/mem",O_RDWR);
 
-    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(quint32), PROT_WRITE,
+    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t), PROT_WRITE,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_PMC);
 
 
-    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32), PROT_READ,
+    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t), PROT_READ,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_SFC);
 
 
@@ -211,22 +211,22 @@ void EWInfo::readServiceNumber(void)
     close(mem_fd);
 
 
-    enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),true);
+    enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),true);
 
 
-    quint32 readRegister;
-    quint32 emptyRegisters = 0;
-    quint8 byteLSB;
+    uint32_t readRegister;
+    uint32_t emptyRegisters = 0;
+    uint8_t byteLSB;
     bool regIntegrity = true;
 
     ewsn_str = "";
 
-    for(qint32 i = 0; i<16 && regIntegrity;i++)
+    for(int32_t i = 0; i<16 && regIntegrity;i++)
     {
-        readRegister = readDataSFC((quint32*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(quint32)),i);
+        readRegister = readDataSFC((uint32_t*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(uint32_t)),i);
 
 
-        byteLSB = (quint8)(readRegister & 0xff);
+        byteLSB = (uint8_t)(readRegister & 0xff);
 
         if(0 == readRegister)
         {
@@ -234,16 +234,16 @@ void EWInfo::readServiceNumber(void)
         }
         else
         {
-            quint8 byteMSB = (quint8)((readRegister >> 010)& 0xff);
+            uint8_t byteMSB = (uint8_t)((readRegister >> 010)& 0xff);
 
 
 
-            regIntegrity = (byteLSB == (quint8)(~ byteMSB));
+            regIntegrity = (byteLSB == (uint8_t)(~ byteMSB));
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (uint32_t)byteLSB << " Control:" << Qt::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #else
-            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (uint32_t)byteLSB << " Control:" << std::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #endif
         }
 
@@ -266,11 +266,11 @@ void EWInfo::readServiceNumber(void)
         }
     }
 
-     enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),false);
+     enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),false);
 
      if(!regIntegrity | ((0 != emptyRegisters) && (16 != emptyRegisters)))
      {
-         for(qint32 i = 0; i<16;i++)
+         for(int32_t i = 0; i<16;i++)
          {
              if(i < 8)
              {
@@ -292,20 +292,20 @@ void EWInfo::readServiceNumber(void)
          ewsn_str = "NA";
      }
 
-    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32));
+    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t));
 
-    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(quint32));
+    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t));
 }
 
-void EWInfo::enableDisableSFC(quint32* wr_ptr, bool On)
+void EWInfo::enableDisableSFC(uint32_t* wr_ptr, bool On)
 {
     *wr_ptr = On ? (AT91C_ID_SFC | AT91C_PMC_PCR_CMD | AT91C_PMC_PCR_EN) :
                    (AT91C_ID_SFC | AT91C_PMC_PCR_CMD);
 }
 
-quint32 EWInfo::readDataSFC(quint32* rd_ptr, quint32 index)
+uint32_t EWInfo::readDataSFC(uint32_t* rd_ptr, uint32_t index)
 {
-   quint32 ret;
+   uint32_t ret;
    ret = *(rd_ptr+index);
    return ret;
 }

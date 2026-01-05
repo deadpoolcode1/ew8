@@ -22,22 +22,22 @@ public:
 protected:
 
     typedef struct can_msg_content_s{
-     quint8 msgId;
-     quint8 visId;
+     uint8_t msgId;
+     uint8_t visId;
      visual_item_unit_t visUnits;
      duration_unit_t minDurUnits;
      duration_unit_t maxDurUnits;
      bool activation;
-     quint8 paramInt;
-     quint8 paramFrac;
-     quint8 minDuration;
-     quint8 maxDuration;
+     uint8_t paramInt;
+     uint8_t paramFrac;
+     uint8_t minDuration;
+     uint8_t maxDuration;
     } can_msg_content_t;
 
 
     can_msg_content_t parse(struct can_frame *frame);
 
-     quint32 convert2msec (duration_unit_t unit);
+     uint32_t convert2msec (duration_unit_t unit);
 
 private:
 

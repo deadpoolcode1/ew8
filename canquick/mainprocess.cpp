@@ -140,8 +140,8 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(debugMessagesConnect(bool)),
                       this, SLOT(debugMessagesConnected(bool)));
 
-    QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
-                      this, SLOT(volumeKeySent(qint32)));
+    QObject::connect(appWindow, SIGNAL(volumeKeySend(int32_t)),
+                      this, SLOT(volumeKeySent(int32_t)));
 
     QObject::connect(appWindow, SIGNAL(isaFullActivationRequest()),
                       this, SLOT(isaFullActivationRequestSend()));
@@ -159,8 +159,8 @@ int MainProcess::launchEverything()
     if(nullptr != theBrightnessControl)
     {
         // BrightnessControl doesn't inherit QObject, so use MainProcess as intermediary
-        QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
-                         this, SLOT(forwardBrightnessChanged(qint32)));
+        QObject::connect(appWindow, SIGNAL(brightnessChanged(int32_t)),
+                         this, SLOT(forwardBrightnessChanged(int32_t)));
     }
     else
     {
@@ -173,14 +173,14 @@ int MainProcess::launchEverything()
     {
         CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
         // BrightnessControl::sendBrightness is a core::Signal, connect it to CANDebugReport's slot
-        theBrightnessControl->sendBrightness.connect([](quint32 a, qint32 b, qint32 c) {
+        theBrightnessControl->sendBrightness.connect([](uint32_t a, int32_t b, int32_t c) {
             CANDebugReport::getInstance()->sendBrightness(a, b, c);
         });
 
-        QObject::connect(appWindow, SIGNAL(keyPressedReportSend(qint32)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(qint32)));
-        QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(qint32)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(qint32)));
+        QObject::connect(appWindow, SIGNAL(keyPressedReportSend(int32_t)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(int32_t)));
+        QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(int32_t)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(int32_t)));
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool,bool,bool,bool)),
                           CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
@@ -227,7 +227,7 @@ void MainProcess::updateDisplay(void)
     }
 }
 
-void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, quint8 unit)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
      activateInternal(alert, false, "", valueInt, valueFrac, unit);
 }
@@ -238,7 +238,7 @@ void MainProcess::activate(DISPLAY_ITEM_ID alert, const std::string& stringArg)
 }
 
 
-void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const QString& strArg, quint8 valueInt, quint8 valueFrac, quint8 unit)
+void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)
@@ -347,7 +347,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 }
 
 
-void MainProcess::volumeKeySent(qint32 qtKey)
+void MainProcess::volumeKeySent(int32_t qtKey)
 {
 
   coreDebug() << "volumeKeySent";
@@ -396,7 +396,7 @@ void MainProcess::isaFullDeactivationRequestSend()
     canmgr->sendISAFullDeact();
 }
 
-void MainProcess::forwardBrightnessChanged(qint32 newLevel)
+void MainProcess::forwardBrightnessChanged(int32_t newLevel)
 {
     if (theBrightnessControl != nullptr) {
         theBrightnessControl->brightnessLevelChanged(newLevel);

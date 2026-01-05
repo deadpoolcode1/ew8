@@ -26,17 +26,17 @@ public:
      void setItsDisplay(IAlertDisplay * aDisplay);
 
     // Signal replacement for Qt signal
-    core::Signal<quint32, qint32, qint32> sendBrightness;
+    core::Signal<uint32_t, int32_t, int32_t> sendBrightness;
 
     // Slot replacements - now just regular methods
     void fireIlluminanceMeasure(void);
-    void brightnessLevelChanged(qint32 newLevel);
+    void brightnessLevelChanged(int32_t newLevel);
 
 private:
 
     void assignMappings(void);
-    void assignBrightness(quint32 outputLevel, bool forceBrightness = false);
-    qint32 measureIlluminanceLevel(void);
+    void assignBrightness(uint32_t outputLevel, bool forceBrightness = false);
+    int32_t measureIlluminanceLevel(void);
 
 
 
@@ -45,17 +45,17 @@ private:
     std::string measureFileName;
     core::File * outputFile;
     std::string outputFileName;
-    qint32 currentOutput;
-    qint32 currentMenuLevel;
+    int32_t currentOutput;
+    int32_t currentMenuLevel;
     double scale;
 
-    qint32 * lowerPoints;
-    qint32 lowerPointsSize;
+    int32_t * lowerPoints;
+    int32_t lowerPointsSize;
     //CONTAINS: menuLevel,Size,PtrToValuesArray
-    std::map<qint32, qint32 *> outputLevels;
-    qint32 * currentMenuLevelOutputs;
+    std::map<int32_t, int32_t *> outputLevels;
+    int32_t * currentMenuLevelOutputs;
     static bool doCANDebugReport;
-    quint32 illuminance_measure_mV;
+    uint32_t illuminance_measure_mV;
     IAlertDisplay * itsAlertDisplay;
 
 #if 0

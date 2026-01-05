@@ -11,7 +11,7 @@
 SmartItem * SmartItem::smartItemsPool[];
 size_t  SmartItem::smartItemsPoolNumOfObjects = 0;
 
-SmartItem::SmartItem(quint8 aVisId, QObject * parent) : QObject(parent)
+SmartItem::SmartItem(uint8_t aVisId, QObject * parent) : QObject(parent)
 {
    visId = aVisId;
    //TODO ensure  SMART_BASE < range < ALERT_END_OF_TYPE
@@ -36,7 +36,7 @@ SmartItem::SmartItem(quint8 aVisId, QObject * parent) : QObject(parent)
    qDebug("SmartItem with VisId %d connected to max timer with status %d @%s:%d", aVisId, status, __func__, __LINE__);
 }
 
-SmartItem * SmartItem::getInstance(quint8 aVisId)
+SmartItem * SmartItem::getInstance(uint8_t aVisId)
 {
     SmartItem * ret = nullptr;
 
