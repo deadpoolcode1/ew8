@@ -126,11 +126,11 @@ private:
 #define LOG_ERROR(fmt, ...) core::Logger::instance().log(core::LogLevel::Error, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
 
 // Qt-compatible macros - only define if Qt is NOT present
-#ifndef QT_VERSION
+#ifndef QT_CORE_LIB
 #define qDebug() core::LogStream(core::LogLevel::Debug)
 #define qInfo() core::LogStream(core::LogLevel::Info)
 #define qWarning() core::LogStream(core::LogLevel::Warning)
 #define qCritical() core::LogStream(core::LogLevel::Critical)
-#endif // QT_VERSION
+#endif // QT_CORE_LIB
 
 #endif // CORE_LOGGER_H
