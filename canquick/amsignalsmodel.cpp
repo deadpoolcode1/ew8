@@ -52,10 +52,10 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("Protocols").toArray();
+    core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("Protocols").toArray();
 
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject protocol_obj = value.toObject();
+    for (const core::JsonValue& value : jsonArray) {
+        core::JsonObject protocol_obj = value.toObject();
 
         AMJsonProtocol *amjp = new AMJsonProtocol(this, protocol_obj["protocol"]);
 
@@ -78,9 +78,9 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
         QString keepAliveMsgName = "";
         qint32 keepAliveTimeout;
 
-        if(protocol_obj.find("keepAlive") != protocol_obj.end())//TODO check necessity of the check
+        if(protocol_obj.contains("keepAlive"))//TODO check necessity of the check
         {
-            keepAliveMsgName = protocol_obj["keepAlive"].toString("");
+            keepAliveMsgName = QString::fromStdString(protocol_obj["keepAlive"].toString(""));
             keepAliveTimeout = protocol_obj["timeout"].toInt(500);
             CanRxMsg::setKeepAliveMsg(keepAliveMsgName, keepAliveTimeout);
         }
@@ -89,9 +89,9 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         // //////////////////////////////////////
 
-        QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
+        core::JsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
 
-        foreach (const QJsonValue & signal_value, jsonSignalsArray) {
+        for (const core::JsonValue& signal_value : jsonSignalsArray) {
 
                // /////////////////////////////////////////////////////////////////
 

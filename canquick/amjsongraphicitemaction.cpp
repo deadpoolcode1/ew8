@@ -133,7 +133,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
             else
             {
-                itsDisplay->activate(itsGraphicItemID, argStr);
+                itsDisplay->activate(itsGraphicItemID, argStr.toStdString());
             }
         }
         itsDisplay->mutex.unlock();
