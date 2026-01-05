@@ -1,8 +1,7 @@
 #include "amsignalsmodel.h"
 #include <QFile>
 
-#include <QJsonArray>
-#include <QJsonObject>
+#include "core/json.h"
 
 #include <QObject>
 
