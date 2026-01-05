@@ -540,15 +540,15 @@ void CanManager::read_frame(void)
     else
     {
 #if 1
-        coreDebug() << "can interface:" << (void*) (quint32) frame.can_id << ":" <<
-                   (void*) (quint32) frame.data[0] <<
-                   (void*) (quint32) frame.data[1] <<
-                   (void*) (quint32) frame.data[2] <<
-                   (void*) (quint32) frame.data[3] <<
-                   (void*) (quint32) frame.data[4] <<
-                   (void*) (quint32) frame.data[5] <<
-                   (void*) (quint32) frame.data[6] <<
-                   (void*) (quint32) frame.data[7] <<
+        coreDebug() << "can interface:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":" <<
+                   (void*) static_cast<uintptr_t>(frame.data[0]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[1]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[2]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[3]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[4]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[5]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[6]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[7]) <<
                    "ts:" << QDateTime::currentMSecsSinceEpoch();
 #endif
 

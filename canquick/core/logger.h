@@ -37,7 +37,7 @@ public:
     void setLevel(LogLevel level) { minLevel_ = level; }
     LogLevel level() const { return minLevel_; }
 
-    void log(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...) {
+    void log(LogLevel level, const char* /*file*/, int /*line*/, const char* /*func*/, const char* fmt, ...) {
         if (level < minLevel_) return;
 
         std::lock_guard<std::mutex> lock(mutex_);
