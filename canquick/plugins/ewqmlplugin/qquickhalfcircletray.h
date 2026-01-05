@@ -2,6 +2,7 @@
 #define QQUICKHALFCIRCLETRAY_H
 
 #include <QQuickItem>
+#include "../../core/types.h"
 
 class QQuickHalfCircleTray : public QQuickItem
 {

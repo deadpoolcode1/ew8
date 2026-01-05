@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include "core/types.h"
 
 #ifndef ACTION_TYPE_ENUM_DEFINITION
 #define ACTION_TYPE_ENUM_DEFINITION \

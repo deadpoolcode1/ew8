@@ -2,6 +2,7 @@
 #define AMJSONACTION_H
 
 #include <QObject>
+#include "core/types.h"
 #include "actiontype.h"
 #include "iamjsonprocessable.h"
 

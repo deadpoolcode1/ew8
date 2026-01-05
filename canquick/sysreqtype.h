@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include "core/types.h"
 
 #ifndef SYSREQ_TYPE_ENUM_DEFINITION
 #define SYSREQ_TYPE_ENUM_DEFINITION \
