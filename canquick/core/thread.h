@@ -29,11 +29,11 @@ public:
         running_ = true;
         finished_ = false;
         thread_ = std::thread([this]() {
-            started.emit();
+            started.fire();
             run();
             running_ = false;
             finished_ = true;
-            this->finished.emit();
+            this->finished.fire();
         });
     }
 
@@ -184,7 +184,14 @@ private:
 
 } // namespace core
 
-// Compatibility typedef
+// Core-prefixed typedef (always available, no conflicts)
+using CoreThread = core::Thread;
+using CoreWorkerThread = core::WorkerThread;
+using CoreThreadPool = core::ThreadPool;
+
+// Qt-compatible typedef - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QThread = core::Thread;
+#endif
 
 #endif // CORE_THREAD_H

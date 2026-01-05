@@ -69,7 +69,12 @@ private:
 
 } // namespace core
 
-// Compatibility typedef
+// Core-prefixed typedef (always available, no conflicts)
+using CoreElapsedTimer = core::ElapsedTimer;
+
+// Qt-compatible typedef - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QElapsedTimer = core::ElapsedTimer;
+#endif
 
 #endif // CORE_ELAPSED_TIMER_H

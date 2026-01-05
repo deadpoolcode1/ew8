@@ -521,13 +521,29 @@ private:
 
 } // namespace core
 
-// Compatibility typedefs
+// Core-prefixed typedefs (always available, no conflicts)
+using CoreFile = core::File;
+using CoreDir = core::Dir;
+using CoreFileInfo = core::FileInfo;
+using CoreTextStream = core::TextStream;
+
+// IODevice constants (Core-prefixed namespace)
+namespace CoreIODevice {
+    const int ReadOnly = core::File::ReadOnly;
+    const int WriteOnly = core::File::WriteOnly;
+    const int ReadWrite = core::File::ReadWrite;
+    const int Append = core::File::Append;
+    const int Truncate = core::File::Truncate;
+    const int Text = core::File::Text;
+}
+
+// Qt-compatible typedefs - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QFile = core::File;
 using QDir = core::Dir;
 using QFileInfo = core::FileInfo;
 using QTextStream = core::TextStream;
 
-// IODevice constants
 namespace QIODevice {
     const int ReadOnly = core::File::ReadOnly;
     const int WriteOnly = core::File::WriteOnly;
@@ -536,5 +552,6 @@ namespace QIODevice {
     const int Truncate = core::File::Truncate;
     const int Text = core::File::Text;
 }
+#endif // QT_CORE_LIB
 
 #endif // CORE_FILE_UTILS_H

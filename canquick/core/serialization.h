@@ -250,8 +250,14 @@ private:
 
 } // namespace core
 
-// Compatibility typedefs
+// Core-prefixed typedefs (always available, no conflicts)
+using CoreDataStream = core::DataStream;
+using CoreSaveFile = core::SaveFile;
+
+// Qt-compatible typedefs - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QDataStream = core::DataStream;
 using QSaveFile = core::SaveFile;
+#endif
 
 #endif // CORE_SERIALIZATION_H
