@@ -40,68 +40,37 @@
 // Settings (replaces QSettings)
 #include "settings.h"
 
-// Compatibility macros for easier migration (guard with #ifndef for Qt compatibility)
+// Compatibility macros for easier migration
+// Only define these if Qt is NOT present
 
+#include <cassert>
+
+#ifndef QT_VERSION
 // Q_UNUSED equivalent
-#ifndef Q_UNUSED
 #define Q_UNUSED(x) (void)(x)
-#endif
 
 // Q_ASSERT equivalent
-#include <cassert>
-#ifndef Q_ASSERT
 #define Q_ASSERT(x) assert(x)
-#endif
 
 // nullptr check
-#ifndef Q_NULLPTR
 #define Q_NULLPTR nullptr
-#endif
 
-// For Qt compatibility - these need to be defined somewhere
-#ifndef Q_OBJECT
+// Qt meta-object system macros
 #define Q_OBJECT
-#endif
-
-#ifndef Q_PROPERTY
 #define Q_PROPERTY(...)
-#endif
-
-#ifndef Q_ENUM
 #define Q_ENUM(x)
-#endif
-
-#ifndef Q_GADGET
 #define Q_GADGET
-#endif
-
-#ifndef Q_INVOKABLE
 #define Q_INVOKABLE
-#endif
-
-#ifndef Q_SLOT
-#define Q_SLOT
-#endif
-
-#ifndef Q_SIGNAL
 #define Q_SIGNAL
-#endif
-
-#ifndef Q_EMIT
+#define Q_SLOT
 #define Q_EMIT
-#endif
 
-#ifndef emit
-#define emit
-#endif
-
-#ifndef signals
+// Signal/slot keywords
 #define signals public
-#endif
-
-#ifndef slots
 #define slots
-#endif
+#define emit
+
+#endif // QT_VERSION
 
 // Process (replaces QProcess - simplified version using fork/exec)
 #include <cstdlib>
