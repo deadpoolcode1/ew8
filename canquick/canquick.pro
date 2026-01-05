@@ -30,7 +30,7 @@ QT += quick
 CONFIG += c++11
 
 # Workaround for Qt 6.9.x qfloat16 bug on 64-bit Linux
-# Qt declares comparison operators for both 'long' and 'qint64', but on 64-bit Linux
+# Qt declares comparison operators for both 'long' and 64-bit integer types, but on LP64
 # they are the same type, causing redefinition errors in qfloat16.h
 # See: https://doc.qt.io/qt-6/qfloat16.html
 linux {
