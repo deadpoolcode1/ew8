@@ -2,8 +2,8 @@
 #define GRAPHICITEMSENUMMAP_H
 
 #include "defs.h"
-
-#include <QMutex>
+#include "core/types.h"
+#include "core/mutex.h"
 
 class GraphicItemsEnumMap
 {
@@ -18,7 +18,7 @@ private:
 
     static GraphicItemsEnumMap * getInstance(void);
 
-    static QMutex instanceMutex;
+    static core::Mutex instanceMutex;
 
     static GraphicItemsEnumMap * instance;
 
@@ -26,9 +26,9 @@ private:
 
     GraphicItemsEnumMap();
 
-    QHash<QString, DISPLAY_ITEM_ID> graphicItemsIDsMap;
+    std::unordered_map<std::string, DISPLAY_ITEM_ID> graphicItemsIDsMap;
 
-    QHash<DISPLAY_ITEM_ID, QString> graphicItemsNamesMap;
+    std::unordered_map<DISPLAY_ITEM_ID, std::string> graphicItemsNamesMap;
 
 };
 
