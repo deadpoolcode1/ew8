@@ -17,9 +17,7 @@
 
 #include <QMetaEnum>
 
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
+#include "core/json.h"
 
 #include <QObject>
 
@@ -28,23 +26,23 @@ class CanIntArgumentsAccumulator;
 
 QMap<quint32,AMJsonSignal *> AMJsonSignal::objectsPool;
 
-QList<qint32> * AMJsonSignal::extractSetValuesField( QJsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
+QList<qint32> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
 {
 
       QList<qint32> * trueValues = nullptr;
       * a_set_op = set_op_na;
 
-    if(signal_obj.find(fieldName) != signal_obj.end())
+    if(signal_obj.contains(fieldName.toStdString()))
     {
         trueValues = new QList<qint32>();
 
-        if (signal_obj[fieldName].isArray()){
+        if (signal_obj[fieldName.toStdString()].isArray()){
 
-            QJsonArray trueValues_Array = signal_obj[fieldName].toArray();
+            core::JsonArray trueValues_Array = signal_obj[fieldName.toStdString()].toArray();
 
             if (trueValues_Array[0].isString())
             {
-                QString opString = trueValues_Array[0].toString();
+                QString opString = QString::fromStdString(trueValues_Array[0].toString());
                 if("gt" == opString)
                 {
                     * a_set_op = set_op_gt;
@@ -74,7 +72,7 @@ QList<qint32> * AMJsonSignal::extractSetValuesField( QJsonObject signal_obj, QSt
             {
                    * a_set_op = set_op_or;
 
-                foreach(QJsonValue value, trueValues_Array)
+                for(const core::JsonValue & value : trueValues_Array)
                 {
                     trueValues->append(value.toInt(0));
                 }
@@ -92,11 +90,11 @@ QList<qint32> * AMJsonSignal::extractSetValuesField( QJsonObject signal_obj, QSt
     return trueValues;
 }
 
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
 {
 
     //Signal row parsing:
-    QJsonObject signal_obj = singleSignalsEntry.toObject();
+    core::JsonObject signal_obj = singleSignalsEntry.toObject();
     QString sigName;
     QString supName = "";
     QString sigAction;
@@ -107,43 +105,43 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
 
     activatedAction = nullptr;
 
-    QJsonValue sigNameQJsonValue = signal_obj["name"];
+    core::JsonValue sigNameJsonValue = signal_obj["name"];
 
-    isSupplementedSignalEntry = (sigNameQJsonValue.isArray());
+    isSupplementedSignalEntry = (sigNameJsonValue.isArray());
      QList<qint32> * domainTrueValues = nullptr;
      set_ops_t a_domain_set_op = set_op_na;
 
     if(isSupplementedSignalEntry)
     {
-        sigName = sigNameQJsonValue.toArray().at(0).toString();
-        supName = sigNameQJsonValue.toArray().at(1).toString();
+        sigName = QString::fromStdString(sigNameJsonValue.toArray().at(0).toString());
+        supName = QString::fromStdString(sigNameJsonValue.toArray().at(1).toString());
         domainTrueValues = extractSetValuesField(signal_obj, "Domain", & a_domain_set_op);
     }
     else
     {
 
-        sigName = sigNameQJsonValue.toString();
+        sigName = QString::fromStdString(sigNameJsonValue.toString());
     }
 
 
     //Action parsing:
     if (signal_obj["action"].isArray())
     {
-        QJsonArray actionArray = signal_obj["action"].toArray();
+        core::JsonArray actionArray = signal_obj["action"].toArray();
 
-        sigAction = actionArray[0].toString();
-        if ("inverted" == actionArray[1].toString())
+        sigAction = QString::fromStdString(actionArray[0].toString());
+        if ("inverted" == QString::fromStdString(actionArray[1].toString()))
         {
             polarity = false;
         }
     }
     else
     {
-        sigAction = signal_obj["action"].toString();
+        sigAction = QString::fromStdString(signal_obj["action"].toString());
     }
     //end of Action parsing
 
-    sigType =  signal_obj["type"].toString();
+    sigType =  QString::fromStdString(signal_obj["type"].toString());
 
     sigIndex = signal_obj["index"].toInt(-1);
 
@@ -152,14 +150,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
     QString smoothingType;
 
     //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
-    QJsonObject::iterator smoothedQObj = signal_obj.find("smoothed");
+    core::JsonValue smoothedVal = signal_obj["smoothed"];
 
-    if( smoothedQObj != signal_obj.end() && smoothedQObj.value().isArray())
+    if( !smoothedVal.isUndefined() && smoothedVal.isArray())
     {
-            QJsonArray sigSmoothed_Array = smoothedQObj.value().toArray();
+            core::JsonArray sigSmoothed_Array = smoothedVal.toArray();
             bufferLength = (quint32)sigSmoothed_Array.at(0).toInt(0);
             skipSmoothingDelta = (quint32)sigSmoothed_Array.at(1).toInt(0);
-            smoothingType = sigSmoothed_Array.at(2).toString("items");
+            smoothingType = QString::fromStdString(sigSmoothed_Array.at(2).toString("items"));
             qDebug()<<"smoothing type: "<< smoothingType;
     }
 
@@ -176,7 +174,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsE
                 //Find is a value table:
 
 
-                if(signal_obj.find("isValueTable") == signal_obj.end())
+                if(!signal_obj.contains("isValueTable"))
                 {
                    isValueTable = false;
                 }
