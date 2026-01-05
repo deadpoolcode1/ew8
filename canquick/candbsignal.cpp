@@ -17,9 +17,7 @@ using namespace peg;
 #include <algorithm>
 
 #include "amjsonprotocol.h"
-
-#include <QString>
-#include <QList>
+#include "core/types.h"
 
 class CanRxMsg;
 class AMJsonProtocol;

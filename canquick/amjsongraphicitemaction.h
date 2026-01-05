@@ -1,8 +1,8 @@
 #ifndef AMJSONGRAPHICITEMACTION_H
 #define AMJSONGRAPHICITEMACTION_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QMap>
 
 #include "defs.h"
 #include "amjsonaction.h"

@@ -2,6 +2,7 @@
 #define AMJSONSIGNAL_H
 
 #include "defs.h"
+#include "core/types.h"
 
 #include <QObject>
 
@@ -13,8 +14,6 @@
 #include "amjsonaction.h"
 
 #include "iamjsonactionfactory.h"
-
-#include <QHash>
 
 class AMJsonAction;
 
@@ -90,7 +89,7 @@ private:
 
   AMJsonAction * itsAction;
 
-  QHash<double, IAMJsonProcessable *> * itsValueTable;
+  std::unordered_map<double, IAMJsonProcessable *> * itsValueTable;
   IAMJsonProcessable * activatedAction;
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}

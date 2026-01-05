@@ -1,8 +1,8 @@
 #ifndef EDSMOOTHER_H
 #define EDSMOOTHER_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 #include "ismoother.h"
 
 class ISmoother;
