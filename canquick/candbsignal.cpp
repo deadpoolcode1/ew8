@@ -18,6 +18,9 @@ using namespace peg;
 
 #include "amjsonprotocol.h"
 
+#include <QString>
+#include <QList>
+
 class CanRxMsg;
 class AMJsonProtocol;
 
@@ -260,12 +263,19 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           //WARNING: VECTOR__INDEPENDENT_SIG_MSG id is not supported
           if (id <= 0xFFFFFFFF)
           {
-              rxmsg = CanRxMsg::createInstance((quint32)id, name);
-              rxmsg->applyCanDBSignalsArray(cansignals);
+              rxmsg = CanRxMsg::createInstance((quint32)id, QString::fromStdString(name));
+              // Convert std::vector<Signal*> to QList<Signal*>
+              QList<Signal *> * qlistSignals = new QList<Signal *>();
+              for (Signal * sig : *cansignals) {
+                  qlistSignals->append(sig);
+              }
+              rxmsg->applyCanDBSignalsArray(qlistSignals);
 
               rxmsg->setItsJsonProtocol(curParsedProtocol);
           }
 
+          // Clean up the std::vector (QList now owns the signals)
+          delete cansignals;
           cansignals = new std::vector<Signal *>();
 
           numbers->clear();
@@ -342,7 +352,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
   bool CanDBSignal::processDBCFile(AMJsonProtocol * prot)
   {
       bool status = true;
-      std::string protocolName = prot->getName();
+      std::string protocolName = prot->getName().toStdString();
       std::string dbcString;
       status = readDBCFile(protocolName, dbcString);
       if(status)
