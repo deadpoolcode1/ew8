@@ -1,15 +1,18 @@
 #include "brightnesscontrol.h"
 
-#include <QFileSystemWatcher>
-#include <QDebug>
-#include <QTimer>
-#include "amjsonconfigreader.h"
-#include <QJsonValue>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QSettings>
+// Use core library instead of Qt
+#include "core/core.h"
+#include "core/file_watcher.h"
+#include "core/logger.h"
+#include "core/timer.h"
+#include "core/json.h"
+#include "core/settings.h"
 
+#include "amjsonconfigreader.h"
 #include "candebugreport.h"
+
+#include <sstream>
+#include <cmath>
 
 //Static methods and variables
 
@@ -23,47 +26,55 @@ void BrightnessControl::setCANDebugReport(bool doReport)
 };
 //end of static methods and variables
 
-BrightnessControl::BrightnessControl(QObject *parent) : QObject(parent)
+BrightnessControl::BrightnessControl()
 {
     itsAlertDisplay =  nullptr;
 
     assignMappings();
 
-    QSettings settings;
+    core::Settings settings;
 
-    currentMenuLevel = settings.value("Brightness/brightness",QVariant(5)).toInt();
+    currentMenuLevel = settings.valueInt("Brightness/brightness", 5);
 
     qDebug() << "Selected Brightness Level:" << currentMenuLevel;
 
 #if 0
-    settingsWatcher = new QFileSystemWatcher(parent);
+    settingsWatcher = new core::FileSystemWatcher();
 
-    qDebug()<<"Watch the Settings file:"<< settings.fileName();
+    qDebug() << "Watch the Settings file:" << settings.fileName();
 
     settingsWatcher->addPath(settings.fileName());
 
-    connect (settingsWatcher, SIGNAL(fileChanged(QString)),this, SLOT(settingsChanged(void)));
+    settingsWatcher->fileChanged.connect([this](const std::string&) {
+        // settingsChanged() handler
+    });
 #endif
 
-    triggerTimer = new QTimer(this);
+    triggerTimer = new core::Timer();
     triggerTimer->setSingleShot(false);
     triggerTimer->setInterval(1000);
 
-    connect(triggerTimer, SIGNAL(timeout()), this, SLOT(fireIlluminanceMeasure()));
+    triggerTimer->timeout.connect([this]() {
+        fireIlluminanceMeasure();
+    });
 
     currentOutput = 0;
 #ifndef WIN32
-    measureFile = new QFile(measureFileName);
-    measureFile->open(QFile::ReadOnly | QFile::Text);
-    outputFile = new QFile(outputFileName);
-    outputFile->open(QFile::ReadWrite | QFile::Text);
-    currentOutput = QString(outputFile->readLine()).toInt();
-    qDebug() << "Inititial current output: " << currentOutput;
+    measureFile = new core::File(measureFileName);
+    measureFile->open(core::File::ReadOnly);
+    outputFile = new core::File(outputFileName);
+    outputFile->open(core::File::ReadWrite);
+    std::string line = outputFile->readLine();
+    currentOutput = line.empty() ? 0 : std::stoi(line);
+    qDebug() << "Initial current output: " << currentOutput;
 #endif
 
-    currentMenuLevelOutputs = outputLevels.value(currentMenuLevel,nullptr);
-    qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
-             << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
+    auto it = outputLevels.find(currentMenuLevel);
+    currentMenuLevelOutputs = (it != outputLevels.end()) ? it->second : nullptr;
+    if (currentMenuLevelOutputs) {
+        qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
+                 << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
+    }
 
     triggerTimer->start();
 }
@@ -75,44 +86,45 @@ void BrightnessControl::setItsDisplay(IAlertDisplay * aDisplay)
 
 void BrightnessControl::assignMappings(void)
 {
-    QJsonValue illum = AMJsonConfigReader::getInstance()->getJsonTopEntry("Illuminance");
-    QJsonValue bright = AMJsonConfigReader::getInstance()->getJsonTopEntry("Brightness");
+    core::JsonValue illum = AMJsonConfigReader::getInstance()->getJsonTopEntry("Illuminance");
+    core::JsonValue bright = AMJsonConfigReader::getInstance()->getJsonTopEntry("Brightness");
 
-    QJsonObject illum_jobj = illum.toObject();
-    QJsonObject bright_jobj = bright.toObject();
+    core::JsonObject illum_jobj = illum.toObject();
+    core::JsonObject bright_jobj = bright.toObject();
 
     //Illuminance:
     measureFileName = illum_jobj["measure"].toString();
-    QString scaleFileName = illum_jobj["scale"].toString();
-    QJsonArray jarr_points = illum_jobj["points"].toArray();
+    std::string scaleFileName = illum_jobj["scale"].toString();
+    core::JsonArray jarr_points = illum_jobj["points"].toArray();
 
-    if(measureFileName.isEmpty())
+    if(measureFileName.empty())
     {
         measureFileName = "/sys/bus/iio/devices/iio:device0/in_voltage0_raw";
     }
 
-    if(scaleFileName.isEmpty())
+    if(scaleFileName.empty())
     {
         scaleFileName = "/sys/bus/iio/devices/iio:device0/in_voltage_scale";
     }
 
     #ifndef WIN32
-    QFile scaleFile(scaleFileName);
-    scaleFile.open(QFile::ReadOnly | QFile::Text);
-    scale = QString(scaleFile.readLine()).toDouble();
+    core::File scaleFile(scaleFileName);
+    scaleFile.open(core::File::ReadOnly);
+    std::string scaleLine = scaleFile.readLine();
+    scale = scaleLine.empty() ? 0.2014 : std::stod(scaleLine);
     scaleFile.close();
     #else
     scale = 0.2014;
     #endif
 
 
-    lowerPointsSize =  jarr_points.count();
+    lowerPointsSize = jarr_points.size();
 
     lowerPoints = new qint32[lowerPointsSize];
 
     quint32 pointscounter = 0;
 
-    foreach (const QJsonValue & val, jarr_points)
+    for (const auto& val : jarr_points)
     {
         lowerPoints[pointscounter++] = val.toInt() / scale;
     }
@@ -123,44 +135,44 @@ void BrightnessControl::assignMappings(void)
 
 
     //Brightness:
-    QJsonArray brightnessMap_jarr = bright_jobj["map"].toArray();
+    core::JsonArray brightnessMap_jarr = bright_jobj["map"].toArray();
 
     outputFileName = bright_jobj["output"].toString();
 
 
-    if(outputFileName.isEmpty())
+    if(outputFileName.empty())
     {
         outputFileName = "/sys/class/backlight/backlight/brightness";
     }
 
 
 
-    foreach (const QJsonValue & val, brightnessMap_jarr)
+    for (const auto& val : brightnessMap_jarr)
     {
 
         qint32 menuEntry = val.toObject()["menu"].toInt();
 
-        QJsonArray entryOutputs_jarr = val.toObject()["outputs"].toArray();
-        qint32 entryOutputsSize =  entryOutputs_jarr.count();
+        core::JsonArray entryOutputs_jarr = val.toObject()["outputs"].toArray();
+        qint32 entryOutputsSize = entryOutputs_jarr.size();
 
         qint32 * entryOutputs = new qint32[entryOutputsSize];
 
         quint32 entrycounter = 0;
 
-        foreach (const QJsonValue & val, entryOutputs_jarr)
+        for (const auto& outVal : entryOutputs_jarr)
         {
-            entryOutputs[entrycounter++] = val.toInt();
+            entryOutputs[entrycounter++] = outVal.toInt();
         }
 
         if(entryOutputsSize != lowerPointsSize+1)
         {
-            qDebug()<<"Brightness menu entry " << menuEntry << ": Outputs array size is not valid";
+            qDebug() << "Brightness menu entry " << menuEntry << ": Outputs array size is not valid";
         }
         else
         {
             qDebug() << "Menu entry: " << menuEntry << "outputs: " << entryOutputs[0] << ","<< entryOutputs[1] << "," << entryOutputs[2]
                      << "," << entryOutputs[3] << "," << entryOutputs[4]  << "...";
-            outputLevels.insert(menuEntry, entryOutputs);
+            outputLevels.insert({menuEntry, entryOutputs});
         }
     }
 
@@ -171,23 +183,34 @@ void BrightnessControl::assignMappings(void)
 BrightnessControl::~BrightnessControl()
 {
     #ifndef WIN32
-    measureFile->close();
-    outputFile->close();
-    delete measureFile;
-    delete outputFile;
+    if (measureFile) {
+        measureFile->close();
+        delete measureFile;
+    }
+    if (outputFile) {
+        outputFile->close();
+        delete outputFile;
+    }
     #endif
+    if (triggerTimer) {
+        triggerTimer->stop();
+        delete triggerTimer;
+    }
 }
 
 void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
 {
    //TODO select the new outputs level and force illuminanceMeasure+assignBrightness(WARNING: The hand can be over the sensor)
-    qDebug()<< "Brightness control: level change notify received!" ;
+    qDebug() << "Brightness control: level change notify received!" ;
     currentMenuLevel = newLevel;
-    currentMenuLevelOutputs = outputLevels.value(currentMenuLevel,nullptr);
+    auto it = outputLevels.find(currentMenuLevel);
+    currentMenuLevelOutputs = (it != outputLevels.end()) ? it->second : nullptr;
     //Threadsafe: in slots executed in the same event loop
     assignBrightness(measureIlluminanceLevel(), true);
-    qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
-             << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
+    if (currentMenuLevelOutputs) {
+        qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
+                 << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
+    }
 }
 
 qint32 BrightnessControl::measureIlluminanceLevel(void)
@@ -195,9 +218,10 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
     qint32 illuminanceLevel = lowerPointsSize;
 #ifndef WIN32
     measureFile->seek(0);
-    qint32 currMeasure =  QString(measureFile->readLine()).toInt();
-    illuminance_measure_mV = (quint32)qRound(currMeasure*scale);
-    qDebug()<< "Illuminance ADC (mV): " << currMeasure*scale;
+    std::string line = measureFile->readLine();
+    qint32 currMeasure = line.empty() ? 0 : std::stoi(line);
+    illuminance_measure_mV = (quint32)std::round(currMeasure*scale);
+    qDebug() << "Illuminance ADC (mV): " << currMeasure*scale;
 
 
 
@@ -210,7 +234,7 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
         }
     }
 
-    qDebug()<< "illuminaceLevel: " << illuminanceLevel;
+    qDebug() << "illuminaceLevel: " << illuminanceLevel;
 #endif
     return illuminanceLevel;
 }
@@ -243,8 +267,9 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
             }
 
 #ifndef WIN32
-            outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
-            outputFile->flush();
+            std::string outStr = std::to_string(currentOutput) + "\n";
+            outputFile->write(outStr);
+            // flush by close/reopen or use direct write
 #endif
         }
         else if(targetOutput > currentOutput)
@@ -259,8 +284,8 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
             }
 
 #ifndef WIN32
-            outputFile->write((QString::number(currentOutput)+"\n").toLocal8Bit());
-            outputFile->flush();
+            std::string outStr = std::to_string(currentOutput) + "\n";
+            outputFile->write(outStr);
 #endif
         }
 
@@ -269,15 +294,14 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
 
         if(doCANDebugReport)
         {
-            sendBrightness(illuminance_measure_mV, currentMenuLevel, currentOutput);
+            sendBrightness.emit(illuminance_measure_mV, currentMenuLevel, currentOutput);
         }
 
         if (nullptr != itsAlertDisplay)
         {
-            QString str;
-            QTextStream out(&str);
-            out << "ill:" << illuminance_measure_mV << "  brt:" << currentOutput;
-            itsAlertDisplay->message(str);
+            std::ostringstream oss;
+            oss << "ill:" << illuminance_measure_mV << "  brt:" << currentOutput;
+            itsAlertDisplay->message(oss.str());
         }
     }
 
