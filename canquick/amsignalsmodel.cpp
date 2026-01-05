@@ -2,6 +2,7 @@
 #include <QFile>
 
 #include "core/json.h"
+#include "core/logger.h"
 
 #include <QObject>
 
@@ -115,7 +116,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         }
         else {
-            qDebug("Skip CAN Protocol:%s", qPrintable(amjp->getName()));
+            LOG_DEBUG("Skip CAN Protocol:%s", qPrintable(amjp->getName()));
             //TODO clean the allocated memory
         }
 
