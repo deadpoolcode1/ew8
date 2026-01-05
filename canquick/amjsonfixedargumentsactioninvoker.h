@@ -2,6 +2,7 @@
 #define AMJSONFIXEDARGUMENTSACTIONINVOKER_H
 
 #include "iamjsonprocessable.h"
+#include "core/types.h"
 
 //class AMJsonAction;
 //class AMJsonGraphicItemAction;
