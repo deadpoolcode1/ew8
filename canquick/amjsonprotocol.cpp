@@ -1,9 +1,7 @@
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QObject>
 
-
 #include "amjsonprotocol.h"
+#include "core/json.h"
 
 #include "amjsonsignal.h"
 
