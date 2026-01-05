@@ -51,7 +51,7 @@ public:
         while (!finished_) {
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - start).count();
-            if (elapsed >= timeMs) return false;
+            if (static_cast<unsigned long>(elapsed) >= timeMs) return false;
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         if (thread_.joinable()) thread_.join();
