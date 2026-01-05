@@ -8,11 +8,6 @@
 #include "core/json.h"
 #include "core/settings.h"
 
-// When Qt is present, include QDebug for coreDebug() macro
-#ifdef QT_CORE_LIB
-#include <QDebug>
-#endif
-
 #include "amjsonconfigreader.h"
 #include "candebugreport.h"
 

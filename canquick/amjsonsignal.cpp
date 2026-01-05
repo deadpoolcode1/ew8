@@ -445,7 +445,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
              ret = ((itsDomainTrueValues->constFirst() <= desired) == polarity);
              break;
          default:
-             qDebug () << "Domain set operation in not defined.";
+             coreDebug() << "Domain set operation in not defined.";
              break;
          }
 
@@ -485,7 +485,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
              * do_active = ((trueValues->constFirst() <= desired) == polarity);
              break;
          default:
-             qDebug () << "Set operation in not defined.";
+             coreDebug() << "Set operation in not defined.";
              break;
          }
      }
@@ -517,12 +517,12 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
      if(is_pre_enabled && !is_post_enabled)
      {
-         qDebug ("Signal %s is %s",qPrintable(itsName), "disabled");
+         LOG_DEBUG("Signal %s is %s", qPrintable(itsName), "disabled");
          deactivateAllGraphicItems();
      }
      else if (!is_pre_enabled && is_post_enabled)
      {
-         qDebug ("Signal %s is %s",qPrintable(itsName), "enabled");
+         LOG_DEBUG("Signal %s is %s", qPrintable(itsName), "enabled");
      }
  }
 

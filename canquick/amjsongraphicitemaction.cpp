@@ -1,5 +1,6 @@
 #include "amjsongraphicitemaction.h"
 #include "graphicitemsenummap.h"
+#include "core/logger.h"
 
 #include "amjsonargumentaction.h"
 
@@ -186,7 +187,7 @@ void AMJsonGraphicItemAction::argumentComplete(QString anArg)
 //TODO in same frame arguments must be handled before GraphicItems
 void AMJsonGraphicItemAction::argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)
 {
-   qDebug("argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)");
+   LOG_DEBUG("argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)");
    bool areChanged =
            (argInt != intArg ||
            argFrac != fracArg ||

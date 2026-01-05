@@ -3,6 +3,7 @@
 #include "amjsonactionfactory.h"
 #include "amjsonfixedargumentsactioninvoker.h"
 #include "defs.h"
+#include "core/logger.h"
 
 AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
 {
@@ -31,7 +32,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
         if (!valueStatus)
         {
-            qDebug ("Value Table: broken value");
+            LOG_DEBUG("Value Table: broken value");
         }
         else
         {

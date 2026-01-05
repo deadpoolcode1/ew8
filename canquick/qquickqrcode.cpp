@@ -1,6 +1,7 @@
 #include "qquickqrcode.h"
 #include "canstringargumentsaccumulator.h"
 #include "amsignalsmodel.h"
+#include "core/logger.h"
 
 #include <qrencode.h>
 
@@ -36,7 +37,7 @@ void QQuickQRCode::paint(QPainter * painter)
     width = (qrcode->width);
     uint8_t * data = qrcode->data;
 
-    qDebug("qrencode geometry is = %d,%d",qrcode->width,qrcode->width);
+    LOG_DEBUG("qrencode geometry is = %d,%d", qrcode->width, qrcode->width);
 
 
      qimage = new QImage(width+(margin*2),width+(margin*2),QImage::Format_RGB888);
@@ -65,7 +66,7 @@ void QQuickQRCode::paint(QPainter * painter)
 
     }
 
-    qDebug("QImage geometry is = %d,%d",qimage->width(),qimage->height());
+    LOG_DEBUG("QImage geometry is = %d,%d", qimage->width(), qimage->height());
 
     //QImage scaledImage = * qimage->scaled(156, 156, Qt::KeepAspectRatio);
 
@@ -94,7 +95,7 @@ void QQuickQRCode::reqUpdate(QString arg)
     if(request != arg)
     {
         request =  arg;
-        qDebug("New qr request: %s", qPrintable(arg));
+        LOG_DEBUG("New qr request: %s", qPrintable(arg));
         update();
     }
 }

@@ -1,4 +1,5 @@
 #include "qquickhalfcircletray.h"
+#include "core/logger.h"
 
 QQuickHalfCircleTray::QQuickHalfCircleTray(QQuickItem *parent):
     QQuickItem(parent)
@@ -24,14 +25,14 @@ QString QQuickHalfCircleTray::getSide(void)
 void QQuickHalfCircleTray::setSide(QString aSide)
 {
     is_left = (aSide == "left");
-    if(!is_left) qDebug("it is right!");
+    if(!is_left) LOG_DEBUG("it is right!");
 }
 
 void QQuickHalfCircleTray::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    qDebug("QQuickHalfCircleTray component completed");
+    LOG_DEBUG("QQuickHalfCircleTray component completed");
 
     foreach(QQuickItem * qi, childItems())
     {
@@ -61,7 +62,7 @@ void QQuickHalfCircleTray::childrenPositionsUpdate()
     {
 
         if(bgItem == nullptr)
-        {qDebug("background not found");}
+        {LOG_DEBUG("background not found");}
         else
         {
 

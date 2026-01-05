@@ -1,4 +1,5 @@
 #include "amjsonactionfactory.h"
+#include "core/logger.h"
 
 #include "amjsongraphicitemaction.h"
 #include "amjsonenableraction.h"
@@ -59,7 +60,7 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
 
     default:
 
-        qDebug("Unsupported AMJsonActionType");
+        LOG_DEBUG("Unsupported AMJsonActionType");
         break;
 
     }
