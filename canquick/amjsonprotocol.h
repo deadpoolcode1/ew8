@@ -5,6 +5,7 @@
 #include "amjsonactionsmultiplexor.h"
 #include "canrxmsg.h"
 #include "core/json.h"
+#include "core/types.h"
 #include <QMultiMap>
 #include <QObject>
 
