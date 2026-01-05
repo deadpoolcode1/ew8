@@ -45,7 +45,7 @@
 
 #include <cassert>
 
-#ifndef QT_VERSION
+#ifndef QT_CORE_LIB
 // Q_UNUSED equivalent
 #define Q_UNUSED(x) (void)(x)
 
@@ -70,7 +70,7 @@
 #define slots
 #define emit
 
-#endif // QT_VERSION
+#endif // QT_CORE_LIB
 
 // Process (replaces QProcess - simplified version using fork/exec)
 #include <cstdlib>
