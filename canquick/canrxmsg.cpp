@@ -6,6 +6,64 @@
 #include <QDataStream>
 #include <QSaveFile>
 #include <QDebug>
+#include <QVariant>
+#include <any>
+
+// Helper function to convert std::any to QVariant
+static QVariant anyToVariant(const std::any& val)
+{
+    if (!val.has_value()) {
+        return QVariant();
+    }
+    if (val.type() == typeid(bool)) {
+        return QVariant(std::any_cast<bool>(val));
+    }
+    if (val.type() == typeid(qint32)) {
+        return QVariant(std::any_cast<qint32>(val));
+    }
+    if (val.type() == typeid(double)) {
+        return QVariant(std::any_cast<double>(val));
+    }
+    if (val.type() == typeid(float)) {
+        return QVariant(static_cast<double>(std::any_cast<float>(val)));
+    }
+    return QVariant();
+}
+
+// QDataStream operators for Signal type
+QDataStream & operator<< (QDataStream &out, const Signal &sig)
+{
+    SerializedSignal_t sesig;
+    sesig.startByte = sig.startByte;
+    sesig.startBit = sig.startBit;
+    sesig.numOfBits = sig.numOfBits;
+    sesig.sign = static_cast<quint8>(sig.sign);
+    sesig.factor = sig.factor;
+    sesig.offset = sig.offset;
+    sesig.min = sig.min;
+    sesig.max = sig.max;
+    sesig.enumValueType = static_cast<qint8>(sig.valueType);
+    sesig.AMJsonSignalIdx = sig.AMJsonSignalIdx;
+    out.writeRawData((const char*)(&sesig), sizeof(SerializedSignal_t));
+    return out;
+}
+
+QDataStream & operator>> (QDataStream &in, Signal &sig)
+{
+    SerializedSignal_t sesig;
+    in.readRawData((char*)&sesig, sizeof(SerializedSignal_t));
+    sig.startByte = sesig.startByte;
+    sig.startBit = sesig.startBit;
+    sig.numOfBits = sesig.numOfBits;
+    sig.sign = sesig.sign ? true : false;
+    sig.factor = sesig.factor;
+    sig.offset = sesig.offset;
+    sig.min = sesig.min;
+    sig.max = sesig.max;
+    sig.valueType = static_cast<SignalValueType>(sesig.enumValueType);
+    sig.AMJsonSignalIdx = sesig.AMJsonSignalIdx;
+    return in;
+}
 
 QMap <quint32, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
@@ -270,7 +328,7 @@ Signal * CanRxMsg::getCANSignalByName(QString name)
 
     foreach (Signal * cansig, * canSignalsArray)
     {
-        if (cansig->name == name)
+        if (QString::fromStdString(cansig->name) == name)
         {
             ret = cansig;
         }
@@ -367,7 +425,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
             //JSON Driven Alerts Triggering:
 
 
-            QString currSignalStr = curSignal->name;
+            QString currSignalStr = QString::fromStdString(curSignal->name);
 
             //TODO single return point
 
@@ -385,7 +443,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 {
                     foreach (Signal * iSignal, *canSignalsArray)
                     {
-                        if(iSignal->name == supSignalName)
+                        if(QString::fromStdString(iSignal->name) == supSignalName)
                         {
                             jsonsig->setItsCanSecDbSignal(iSignal);
                         }
@@ -508,7 +566,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
         {
             Signal tmp = *it;
 
-            arg = extractSignal(&tmp, frame);
+            arg = anyToVariant(extractSignal(&tmp, frame));
 
             if(jsonsig->type == Validator)
             {
@@ -553,7 +611,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
                     else
                     {
                         Signal supSig =  * (++it);
-                        supArg =  extractSignal(&supSig, frame);
+                        supArg =  anyToVariant(extractSignal(&supSig, frame));
                         jsonsig->process(arg, supArg);
 
                     }

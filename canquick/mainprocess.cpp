@@ -119,9 +119,9 @@ void MainProcess::process()
 #endif
 }
 
-void MainProcess::message(QString aStrMsg)
+void MainProcess::message(const std::string& stringMessage)
 {
-   emit messageDisplayWindow(QVariant(aStrMsg));
+   emit messageDisplayWindow(QVariant(QString::fromStdString(stringMessage)));
 }
 
 
@@ -158,9 +158,9 @@ int MainProcess::launchEverything()
 
     if(nullptr != theBrightnessControl)
     {
+        // BrightnessControl doesn't inherit QObject, so use MainProcess as intermediary
         QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
-                         theBrightnessControl, SLOT(brightnessLevelChanged(qint32)));
-
+                         this, SLOT(forwardBrightnessChanged(qint32)));
     }
     else
     {
@@ -172,7 +172,10 @@ int MainProcess::launchEverything()
     if(nullptr != theBrightnessControl)
     {
         CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
-        connect(theBrightnessControl, SIGNAL(sendBrightness(quint32,qint32,qint32)), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32,qint32,qint32)));
+        // BrightnessControl::sendBrightness is a core::Signal, connect it to CANDebugReport's slot
+        theBrightnessControl->sendBrightness.connect([](quint32 a, qint32 b, qint32 c) {
+            CANDebugReport::getInstance()->sendBrightness(a, b, c);
+        });
 
         QObject::connect(appWindow, SIGNAL(keyPressedReportSend(qint32)),
                           CANDebugReport::getInstance(), SLOT(sendButtonPressed(qint32)));
@@ -226,16 +229,16 @@ void MainProcess::updateDisplay(void)
 
 void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, quint8 unit)
 {
-     activate(alert, false, "", valueInt, valueFrac, unit);
+     activateInternal(alert, false, "", valueInt, valueFrac, unit);
 }
 
-void MainProcess::activate(DISPLAY_ITEM_ID alert, QString arg)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, const std::string& stringArg)
 {
-    activate(alert, true, arg, 0, 0, 0);
+    activateInternal(alert, true, QString::fromStdString(stringArg), 0, 0, 0);
 }
 
 
-void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit)
+void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const QString& strArg, quint8 valueInt, quint8 valueFrac, quint8 unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)
@@ -393,5 +396,10 @@ void MainProcess::isaFullDeactivationRequestSend()
     canmgr->sendISAFullDeact();
 }
 
-
+void MainProcess::forwardBrightnessChanged(qint32 newLevel)
+{
+    if (theBrightnessControl != nullptr) {
+        theBrightnessControl->brightnessLevelChanged(newLevel);
+    }
+}
 
