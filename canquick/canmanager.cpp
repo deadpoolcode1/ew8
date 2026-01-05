@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "defs.h"
 
-#include <QDebug>
+#include "core/core.h"
 
 #include "candbsignal.h"
 
@@ -307,7 +307,7 @@ void CanManager::init(void)
 
     if (canbus_jtop.isUndefined())
     {
-        qDebug() << "CANBusParameters entry is not found, using default values.";
+        coreDebug() << "CANBusParameters entry is not found, using default values.";
     }
     else
     {
@@ -321,7 +321,7 @@ void CanManager::init(void)
 
         if (baudrate_entry.isUndefined())
         {
-            qDebug() << "Baudrate entry is not found, using default value.";
+            coreDebug() << "Baudrate entry is not found, using default value.";
         }
         else
         {
@@ -332,7 +332,7 @@ void CanManager::init(void)
 
         if (samplepoint_entry.isUndefined())
         {
-            qDebug() << "Sample point entry is not found, using default value.";
+            coreDebug() << "Sample point entry is not found, using default value.";
         }
         else
         {
@@ -340,7 +340,7 @@ void CanManager::init(void)
 
             if (samplepoint_tmp > 100 or samplepoint_tmp < 0)
             {
-                qDebug() << "CAN samplepoint in config file is not valid, using default value";
+                coreDebug() << "CAN samplepoint in config file is not valid, using default value";
             }
             else
             {
@@ -350,7 +350,7 @@ void CanManager::init(void)
     }
 
 
-    qDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
+    coreDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
 #ifndef WIN32
 
@@ -362,7 +362,7 @@ void CanManager::init(void)
 
     if(can_err_status)
     {
-        qDebug() << "failed can interface stop";
+        coreDebug() << "failed can interface stop";
     }
     else
     {
@@ -370,21 +370,21 @@ void CanManager::init(void)
         switch (bdr)
         {
         case 1000:
-             qDebug() << "CAN Baudrate:" << bdr << "kbps";
+             coreDebug() << "CAN Baudrate:" << bdr << "kbps";
              break;
         case 500:
-            qDebug() << "CAN Baudrate:" << bdr << "kbps";
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
         case 250:
-            qDebug() << "CAN Baudrate:" << bdr << "kbps";
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
 
         case 125:
-            qDebug() << "CAN Baudrate:" << bdr << "kbps";
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
 
         default:
-            qDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+            coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
             bdr = 500;
         }
 
@@ -403,7 +403,7 @@ void CanManager::init(void)
 
         if(can_err_status)
         {
-            qDebug() << "can parameters configuration failed";
+            coreDebug() << "can parameters configuration failed";
         }
         else
         {
@@ -411,14 +411,14 @@ void CanManager::init(void)
 
             if(can_err_status)
             {
-                qDebug() << "failed can interface start";
+                coreDebug() << "failed can interface start";
             }
         }
     }
 
     if(!can_err_status)
     {
-      qDebug() << "Can interface configuration succeed";
+      coreDebug() << "Can interface configuration succeed";
     }
 
 
@@ -456,7 +456,7 @@ void CanManager::init(void)
 
     if(-1 == status)
     {
-        qDebug() << "Unsuccess on NONBLOCKINK CAN socket configure";
+        coreDebug() << "Unsuccess on NONBLOCKINK CAN socket configure";
     }
 #endif
 
@@ -470,7 +470,7 @@ void CanManager::init(void)
     addr.can_ifindex = ifr.ifr_ifindex;
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
-    qDebug() << "can interface initiated";
+    coreDebug() << "can interface initiated";
 #else
       canInitializeLibrary();
 
@@ -484,26 +484,26 @@ void CanManager::init(void)
       switch (bdr)
       {
       case 1000:
-           qDebug() << "CAN Baudrate:" << bdr << "kbps";
+           coreDebug() << "CAN Baudrate:" << bdr << "kbps";
                 canBITRATE = canBITRATE_1M;
                 break;
       case 500:
-          qDebug() << "CAN Baudrate:" << bdr << "kbps";
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_500K;
           break;
       case 250:
-          qDebug() << "CAN Baudrate:" << bdr << "kbps";
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_250K;
           break;
 
       case 125:
-          qDebug() << "CAN Baudrate:" << bdr << "kbps";
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_125K;
           break;
 
 
       default:
-          qDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+          coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
           canBITRATE = canBITRATE_500K;
       }
 
@@ -540,7 +540,7 @@ void CanManager::read_frame(void)
     else
     {
 #if 1
-        qDebug() << "can interface:" << (void*) (quint32) frame.can_id << ":" <<
+        coreDebug() << "can interface:" << (void*) (quint32) frame.can_id << ":" <<
                    (void*) (quint32) frame.data[0] <<
                    (void*) (quint32) frame.data[1] <<
                    (void*) (quint32) frame.data[2] <<
@@ -611,7 +611,7 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
     nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
 
     if (nbytes < 0) {
-         qDebug() << "Can not write to the CAN bus socket!";
+         coreDebug() << "Can not write to the CAN bus socket!";
     }
 #else
       stat = canOK;
@@ -657,7 +657,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
               curr->ack(this);
               itsDisplay->forceUpdate();
 #if 0
-              qDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
+              coreDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
 #endif
           }
 

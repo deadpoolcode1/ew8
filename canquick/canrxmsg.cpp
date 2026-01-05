@@ -5,7 +5,7 @@
 
 #include <QDataStream>
 #include <QSaveFile>
-#include <QDebug>
+#include "core/core.h"
 #include <QVariant>
 #include <any>
 
@@ -90,7 +90,7 @@ void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName, qint32 aKeepAliveTimeo
   }
   else
   {
-    qDebug() << "Abmiguous keep alive message definition. Must  be only one";
+    coreDebug() << "Abmiguous keep alive message definition. Must  be only one";
   }
 }
 
@@ -132,7 +132,7 @@ bool CanRxMsg::saveToStorage(void)
 
         if(!configDump.open(QFile::WriteOnly))
         {
-            qDebug() << "Error: Can not write config.dat!";
+            coreDebug() << "Error: Can not write config.dat!";
         }
         else{
             QDataStream configStream( & configDump);
@@ -160,7 +160,7 @@ bool CanRxMsg::saveToStorage(void)
                 if(msgsWhiteList.contains(id))
                 {
                     configStream << q32Id;
-                    qDebug() << "saving Msg Number:" << q32Id;
+                    coreDebug() << "saving Msg Number:" << q32Id;
                     configStream << *msg;
                     configStream.commitTransaction();
                     configDump.flush();
@@ -199,7 +199,7 @@ bool CanRxMsg::loadFromStorage(void)
 
         if(!configDump.open(QFile::ReadOnly))
         {
-            qDebug() << "Error: Can not read config.dat!";
+            coreDebug() << "Error: Can not read config.dat!";
             status = false;
         }
         else{
@@ -222,7 +222,7 @@ bool CanRxMsg::loadFromStorage(void)
 
             configStream >> msgNum;
 
-            qDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
+            coreDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
 
             quint32 stdId;
 
@@ -236,7 +236,7 @@ bool CanRxMsg::loadFromStorage(void)
 
                 CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, QString(""));
 
-                qDebug() << "StdId:" << (qint32)stdId;
+                coreDebug() << "StdId:" << (qint32)stdId;
 
                 if(rxmsg)
                 {
@@ -344,7 +344,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignal
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
     CanRxMsg::itsAMSignalsModel = amSignalsModel;
     CanRxMsg::loadFromStorage();
-    qDebug() << "CanRxMsgsPool is ready for usage";
+    coreDebug() << "CanRxMsgsPool is ready for usage";
 }
 
 const QList<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
@@ -393,7 +393,7 @@ void CanRxMsg::applyCanDBSignalsArray(QList<Signal *> * signalsList)
 
     canSignalsArray = signalsList;
 
-    qDebug() << "Added signal list to the message";
+    coreDebug() << "Added signal list to the message";
 }
 
 CanRxMsg * CanRxMsg::getMsgByCanId(quint32 StdId)
@@ -560,7 +560,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
         if(!jsonsig)
         {
-            qDebug() << "Unknown signal id:";
+            coreDebug() << "Unknown signal id:";
         }
         else
         {
