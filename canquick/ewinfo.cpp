@@ -111,7 +111,7 @@ void EWInfo::setMeSn(QString aMeSn)
     uint64_t SNV = (uint64_t)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
 
 #if 0
-    qDebug () << " A:" << A << " B:" << B << " C:" << C
+    coreDebug() << " A:" << A << " B:" << B << " C:" << C
               << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
                  " I:" << I << " J:"<< J;
 
@@ -178,7 +178,7 @@ void EWInfo::readOSBuildInfo(void)
 
     if(buildId.length() != 8)
     {
-       qDebug("System Build ID is not found is not found.");
+       LOG_DEBUG("System Build ID is not found is not found.");
     }
     else
     {

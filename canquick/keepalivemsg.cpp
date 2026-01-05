@@ -2,7 +2,6 @@
 
 #include "keepalivemsg.h"
 #include "defs.h"
-#include <QDebug>
 
 //NOTE: Next header is used for random()
 //TODO: replace with QRandomGenerator, when passing to qt 5.12

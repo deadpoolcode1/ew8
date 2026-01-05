@@ -281,7 +281,7 @@ void RootedTreeNode::activate()
     }
     else
     {
-       qDebug("Mode Group: Skip activation");
+       LOG_DEBUG("Mode Group: Skip activation");
     }
 }
 
@@ -304,7 +304,7 @@ void RootedTreeNode::deactivate()
         }
         else
         {
-           qDebug("Mode Group: Skip deactivation");
+           LOG_DEBUG("Mode Group: Skip deactivation");
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "candebugreport.h"
 #include "canmanager.h"
+#include "core/logger.h"
 
 CANDebugReport * CANDebugReport::instance = nullptr;
 bool CANDebugReport::doSendKeyReport = false;
@@ -65,7 +66,7 @@ void CANDebugReport::sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, 
 {
     if (doSendAlertsReport)
     {
-        qDebug("Alerts report sent");
+        LOG_DEBUG("Alerts report sent");
 
         struct can_frame debugFrame;
 
@@ -96,7 +97,7 @@ void CANDebugReport::sendButtonsReport(void)
     if (doSendKeyReport)
     {
 
-        qDebug("Key report sent");
+        LOG_DEBUG("Key report sent");
 
         struct can_frame debugFrame;
 
@@ -144,7 +145,7 @@ void CANDebugReport::sendButtonPressed(int32_t qtKey)
 
     default:
 
-        qDebug("Unsupported key to report");
+        LOG_DEBUG("Unsupported key to report");
 
         break;
     }
@@ -178,7 +179,7 @@ void CANDebugReport::sendButtonReleased(int32_t qtKey)
 
     default:
 
-        qDebug("Unsupported key to report");
+        LOG_DEBUG("Unsupported key to report");
 
         break;
     }
