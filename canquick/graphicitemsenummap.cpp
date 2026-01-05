@@ -8,9 +8,7 @@
 
 #include "entitytype.h"
 
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonValue>
+#include "core/json.h"
 #include <QDebug>
 
 QMutex GraphicItemsEnumMap::instanceMutex;

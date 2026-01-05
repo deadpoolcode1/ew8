@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "amjsonconfigreader.h"
-#include <QJsonArray>
+#include "core/json.h"
 
 #ifndef WIN32
 //TODO remove unused:
