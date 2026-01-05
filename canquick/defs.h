@@ -1,15 +1,18 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+// Use core types instead of Qt
+#include "core/types.h"
+#include "core/elapsed_timer.h"
+
 #include <alerttypes.h>
 
 #include "candbsignal.h"
 
 typedef quint32 CanStdId_t;
 
-#include <QElapsedTimer>
-
-extern QElapsedTimer bootUpTimer;
+// Use core::ElapsedTimer instead of QElapsedTimer
+extern core::ElapsedTimer bootUpTimer;
 
 #define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
 #define DEFAULT_EW_KEEP_ALIVE_TIMEOUT (200)
