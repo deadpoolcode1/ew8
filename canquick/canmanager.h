@@ -56,7 +56,7 @@ public:
     void launch(void);
 
 signals:
-    void resetConnectionTimeout(void);
+    void resetConnectionTimeoutSignal(void);
 
 public slots:
     void process();

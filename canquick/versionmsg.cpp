@@ -4,8 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "amjsonconfigreader.h"
-#include <QJsonObject>
-#include <QJsonArray>
+#include "core/json.h"
 
 #ifndef WIN32
 //TODO remove unused:
@@ -100,7 +99,8 @@ void VersionMsg::readVersionInfo(void)
 
 
     //NOTE: Config version:
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
+    core::JsonValue configVersion = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion");
+    core::JsonArray jsonArray = configVersion.toArray();
     if(!jsonArray.isEmpty())
     {
         version2send.data[2] = (quint8)jsonArray.at(0).toInt(0xff);
