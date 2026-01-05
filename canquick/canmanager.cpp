@@ -304,7 +304,7 @@ void CanManager::init(void)
 
     if (canbus_jtop.isUndefined())
     {
-        qDebug ("CANBusParameters entry is not found, using default values.");
+        qDebug() << "CANBusParameters entry is not found, using default values.";
     }
     else
     {
@@ -318,7 +318,7 @@ void CanManager::init(void)
 
         if (baudrate_entry.isUndefined())
         {
-            qDebug ("Baudrate entry is not found, using default value.");
+            qDebug() << "Baudrate entry is not found, using default value.";
         }
         else
         {
@@ -329,7 +329,7 @@ void CanManager::init(void)
 
         if (samplepoint_entry.isUndefined())
         {
-            qDebug ("Sample point entry is not found, using default value.");
+            qDebug() << "Sample point entry is not found, using default value.";
         }
         else
         {
@@ -337,7 +337,7 @@ void CanManager::init(void)
 
             if (samplepoint_tmp > 100 or samplepoint_tmp < 0)
             {
-                qDebug ("CAN samplepoint in config file is not valid, using default value");
+                qDebug() << "CAN samplepoint in config file is not valid, using default value";
             }
             else
             {
@@ -347,7 +347,7 @@ void CanManager::init(void)
     }
 
 
-    qDebug ("CAN SamplePoint: %2.1f%% (Linux Only)", samplepnt);
+    qDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
 #ifndef WIN32
 
@@ -359,7 +359,7 @@ void CanManager::init(void)
 
     if(can_err_status)
     {
-        qDebug("failed can interface stop");
+        qDebug() << "failed can interface stop";
     }
     else
     {
@@ -367,21 +367,21 @@ void CanManager::init(void)
         switch (bdr)
         {
         case 1000:
-             qDebug ("CAN Baudrate:%d kbps", bdr);
+             qDebug() << "CAN Baudrate:" << bdr << "kbps";
              break;
         case 500:
-            qDebug ("CAN Baudrate:%d kbps", bdr);
+            qDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
         case 250:
-            qDebug ("CAN Baudrate:%d kbps", bdr);
+            qDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
 
         case 125:
-            qDebug ("CAN Baudrate:%d kbps", bdr);
+            qDebug() << "CAN Baudrate:" << bdr << "kbps";
             break;
 
         default:
-            qDebug ("CAN Baudrate in config file is not valid, set to 500K");
+            qDebug() << "CAN Baudrate in config file is not valid, set to 500K";
             bdr = 500;
         }
 
@@ -400,7 +400,7 @@ void CanManager::init(void)
 
         if(can_err_status)
         {
-            qDebug("can parameters configuration failed");
+            qDebug() << "can parameters configuration failed";
         }
         else
         {
@@ -408,14 +408,14 @@ void CanManager::init(void)
 
             if(can_err_status)
             {
-                qDebug("failed can interface start");
+                qDebug() << "failed can interface start";
             }
         }
     }
 
     if(!can_err_status)
     {
-      qDebug("Can interface configuration succeed\n");
+      qDebug() << "Can interface configuration succeed";
     }
 
 
@@ -453,7 +453,7 @@ void CanManager::init(void)
 
     if(-1 == status)
     {
-        qDebug("Unsuccess on NONBLOCKINK CAN socket configure");
+        qDebug() << "Unsuccess on NONBLOCKINK CAN socket configure";
     }
 #endif
 
@@ -467,7 +467,7 @@ void CanManager::init(void)
     addr.can_ifindex = ifr.ifr_ifindex;
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
-    qDebug("can interface initiated");
+    qDebug() << "can interface initiated";
 #else
       canInitializeLibrary();
 
@@ -481,26 +481,26 @@ void CanManager::init(void)
       switch (bdr)
       {
       case 1000:
-           qDebug ("CAN Baudrate:%d kbps", bdr);
+           qDebug() << "CAN Baudrate:" << bdr << "kbps";
                 canBITRATE = canBITRATE_1M;
                 break;
       case 500:
-          qDebug ("CAN Baudrate:%d kbps", bdr);
+          qDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_500K;
           break;
       case 250:
-          qDebug ("CAN Baudrate:%d kbps", bdr);
+          qDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_250K;
           break;
 
       case 125:
-          qDebug ("CAN Baudrate:%d kbps", bdr);
+          qDebug() << "CAN Baudrate:" << bdr << "kbps";
           canBITRATE = canBITRATE_125K;
           break;
 
 
       default:
-          qDebug ("CAN Baudrate in config file is not valid, set to 500K");
+          qDebug() << "CAN Baudrate in config file is not valid, set to 500K";
           canBITRATE = canBITRATE_500K;
       }
 
@@ -608,7 +608,7 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
     nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
 
     if (nbytes < 0) {
-         qDebug("Can not write to the CAN bus socket!");
+         qDebug() << "Can not write to the CAN bus socket!";
     }
 #else
       stat = canOK;

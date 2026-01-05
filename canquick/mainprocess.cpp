@@ -164,7 +164,7 @@ int MainProcess::launchEverything()
     }
     else
     {
-        qDebug("Please set brightness control!");
+        qDebug() << "Please set brightness control!";
     }
 
     canmgr->launch();
@@ -244,8 +244,8 @@ void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 v
         return;
     }
 #if 1
-    qDebug("function:%s alert: %d\n", __func__, alert);
-    qDebug()<< " activated at:" << QDateTime::currentMSecsSinceEpoch();
+    qDebug() << "function:" << __func__ << "alert:" << alert;
+    qDebug() << " activated at:" << QDateTime::currentMSecsSinceEpoch();
 
 #endif
 
@@ -305,8 +305,8 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
         return;
     }
 
-    qDebug("function:%s alert: %d\n", __func__, alert);
-    qDebug()<< "deactivated at:" << QDateTime::currentMSecsSinceEpoch();
+    qDebug() << "function:" << __func__ << "alert:" << alert;
+    qDebug() << "deactivated at:" << QDateTime::currentMSecsSinceEpoch();
 
     RootedTreeNode* nodeCGRT = nullptr;
 
@@ -347,7 +347,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 void MainProcess::volumeKeySent(qint32 qtKey)
 {
 
-  qDebug("volumeKeySent");
+  qDebug() << "volumeKeySent";
   switch(qtKey)
   {
   case Qt::Key_Return:
@@ -370,7 +370,7 @@ void MainProcess::volumeKeySent(qint32 qtKey)
 
   default:
 
-      qDebug("Unsupported Volume key");
+      qDebug() << "Unsupported Volume key";
 
       break;
   }

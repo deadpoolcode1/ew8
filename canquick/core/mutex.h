@@ -121,11 +121,19 @@ private:
 
 } // namespace core
 
-// Compatibility typedefs
+// Core-prefixed typedefs (always available, no conflicts)
+using CoreMutex = core::Mutex;
+using CoreMutexLocker = core::MutexLocker;
+using CoreReadWriteLock = core::ReadWriteLock;
+using CoreWaitCondition = core::WaitCondition;
+
+// Qt-compatible typedefs - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QMutex = core::Mutex;
 using QMutexLocker = core::MutexLocker;
 using QReadWriteLock = core::ReadWriteLock;
 using QWaitCondition = core::WaitCondition;
+#endif
 
 // Global mutex for convenience (replaces static QMutex usage)
 static core::Mutex globalMutex;

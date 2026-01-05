@@ -66,7 +66,7 @@ void VersionMsg::singleShot()
     }
     else
     {
-        qDebug("WARNING: Version Message is not constructed yet.");
+        qDebug() << "WARNING: Version Message is not constructed yet.";
     }
 }
 
@@ -79,7 +79,7 @@ void VersionMsg::create(CanManager *aCanManager)
     }
     else
     {
-        qDebug("WARNING: Version Message is already constructed.");
+        qDebug() << "WARNING: Version Message is already constructed.";
     }
 }
 
@@ -124,7 +124,7 @@ void VersionMsg::readVersionInfo(void)
 
     if(buildId.length() != 8)
     {
-       qDebug("System Build ID is not found is not found.");
+       qDebug() << "System Build ID is not found.";
     }
     else
     {
