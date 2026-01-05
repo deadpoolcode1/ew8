@@ -172,9 +172,9 @@ private:
 
                     if (!path.empty()) {
                         if (event->mask & IN_ISDIR) {
-                            directoryChanged.emit(path);
+                            directoryChanged.fire(path);
                         } else {
-                            fileChanged.emit(path);
+                            fileChanged.fire(path);
                         }
                     }
 
@@ -204,7 +204,12 @@ private:
 
 } // namespace core
 
-// Compatibility typedef
+// Core-prefixed typedef (always available, no conflicts)
+using CoreFileSystemWatcher = core::FileSystemWatcher;
+
+// Qt-compatible typedef - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QFileSystemWatcher = core::FileSystemWatcher;
+#endif
 
 #endif // CORE_FILE_WATCHER_H

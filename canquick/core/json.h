@@ -806,11 +806,20 @@ private:
 
 } // namespace core
 
-// Compatibility typedefs
+// Core-prefixed typedefs (always available, no conflicts)
+using CoreJsonValue = core::JsonValue;
+using CoreJsonObject = core::JsonObject;
+using CoreJsonArray = core::JsonArray;
+using CoreJsonDocument = core::JsonDocument;
+using CoreJsonParseError = core::JsonParseError;
+
+// Qt-compatible typedefs - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QJsonValue = core::JsonValue;
 using QJsonObject = core::JsonObject;
 using QJsonArray = core::JsonArray;
 using QJsonDocument = core::JsonDocument;
 using QJsonParseError = core::JsonParseError;
+#endif
 
 #endif // CORE_JSON_H
