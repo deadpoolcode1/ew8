@@ -94,7 +94,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
                 }
             }
 
-            itsValueTable.insert(triggerValue,anActionTableItem);
+            itsValueTable[triggerValue] = anActionTableItem;
 
             itsProtocol->itsModel->storeCollectedAction(anAction);
 
@@ -102,7 +102,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
     }
 }
 
-QHash<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::getItsValueTable()
+std::unordered_map<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::getItsValueTable()
 {
     return &itsValueTable;
 }

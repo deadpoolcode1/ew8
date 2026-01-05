@@ -370,7 +370,13 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
            bool is_domain_valid = getDomainValidity(extractedSupCANsignal);
 
-           IAMJsonProcessable * toActivate = is_domain_valid ? itsValueTable->value(extractedCANsignal.toInt()) : nullptr;
+           IAMJsonProcessable * toActivate = nullptr;
+           if (is_domain_valid) {
+               auto it = itsValueTable->find(extractedCANsignal.toInt());
+               if (it != itsValueTable->end()) {
+                   toActivate = it->second;
+               }
+           }
 
            IAMJsonProcessable * toDeactivate = getActivatedAction();
 
@@ -533,9 +539,9 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          }
          else
          {
-             foreach (IAMJsonProcessable * anAction, *itsValueTable)
+             for (const auto& pair : *itsValueTable)
              {
-                 emit ((AMJsonEnablerAction *)anAction)-> enableDisableConnected(false);
+                 emit ((AMJsonEnablerAction *)pair.second)-> enableDisableConnected(false);
              }
          }
      }
@@ -565,9 +571,9 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
              else
              {
 # if 0
-                 foreach (AMJsonAction * anAction, *itsValueTable)
+                 for (const auto& pair : *itsValueTable)
                  {
-                     anAction -> process(this, QVariant(false));
+                     pair.second -> process(this, QVariant(false));
                  }
 #endif
              }

@@ -1,8 +1,8 @@
 #ifndef BUFFEREDSMOOTHER_H
 #define BUFFEREDSMOOTHER_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 #include "ismoother.h"
 
 class ISmoother;

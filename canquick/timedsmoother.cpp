@@ -1,5 +1,5 @@
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 #include <QDateTime>
 #include "timedsmoother.h"
 

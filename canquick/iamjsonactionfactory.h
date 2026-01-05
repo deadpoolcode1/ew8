@@ -4,8 +4,7 @@
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
 #include "defs.h"
-
-#include <QString>
+#include "core/types.h"
 
 class AMJsonAction;
 class AMJsonProtocol;

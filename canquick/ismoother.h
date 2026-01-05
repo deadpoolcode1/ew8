@@ -1,8 +1,8 @@
 #ifndef ISMOOTHER_H
 #define ISMOOTHER_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 
 class ISmoother
 {

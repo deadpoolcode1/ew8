@@ -2,10 +2,8 @@
 #define CANARGUMENTSACCUMULATOR_H
 
 #include "defs.h"
-#include <QMap>
-#include <QStringBuilder>
+#include "core/types.h"
 #include <QObject>
-#include <QVector>
 
 class CanArgumentsAccumulator : public QObject
 {

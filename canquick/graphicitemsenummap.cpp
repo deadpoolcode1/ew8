@@ -11,7 +11,7 @@
 #include "core/json.h"
 #include "core/core.h"
 
-QMutex GraphicItemsEnumMap::instanceMutex;
+core::Mutex GraphicItemsEnumMap::instanceMutex;
 
 GraphicItemsEnumMap * GraphicItemsEnumMap::instance;
 
@@ -25,7 +25,8 @@ DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
 
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    DISPLAY_ITEM_ID ret = myInstance->graphicItemsIDsMap.value(name, (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE);
+    auto it = myInstance->graphicItemsIDsMap.find(name);
+    DISPLAY_ITEM_ID ret = (it != myInstance->graphicItemsIDsMap.end()) ? it->second : (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE;
 
     return ret;
 }
@@ -34,7 +35,8 @@ QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 {
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    QString ret = myInstance->graphicItemsNamesMap.value(id,"");
+    auto it = myInstance->graphicItemsNamesMap.find(id);
+    QString ret = (it != myInstance->graphicItemsNamesMap.end()) ? QString(it->second) : QString("");
 
     return ret;
 }
@@ -53,17 +55,17 @@ void GraphicItemsEnumMap::init(void)
 
     for (const core::JsonValue& value : jsonArray) {
 
-        QString name = QString::fromStdString(value.toString());
+        std::string name = value.toString();
 
         id++;
 
         //TODO verify NAME and ID are unique
 
-        coreDebug() << "name: " <<  qPrintable(name) << "id:" << id;
+        coreDebug() << "name: " <<  name.c_str() << "id:" << id;
 
 
-        graphicItemsIDsMap.insert(name,id);
-        graphicItemsNamesMap.insert(id, name);
+        graphicItemsIDsMap[name] = id;
+        graphicItemsNamesMap[id] = name;
 
 
         //TODO verify that those values are presented also in JSON signals
