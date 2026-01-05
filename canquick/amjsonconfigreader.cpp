@@ -5,11 +5,6 @@
 #include "core/file_utils.h"
 #include "core/logger.h"
 
-// When Qt is present, include QDebug for coreDebug() macro
-#ifdef QT_CORE_LIB
-#include <QDebug>
-#endif
-
 #include <string>
 #include <map>
 

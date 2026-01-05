@@ -2,6 +2,7 @@
 
 #include "amjsonprotocol.h"
 #include "core/json.h"
+#include "core/logger.h"
 
 #include "amjsonsignal.h"
 
@@ -34,7 +35,7 @@ AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocol
     }
 
     name = QString::fromStdString(protocolNameValue.toString());
-    qDebug("JSON: new protocol extracted: %s",qPrintable(name));
+    LOG_DEBUG("JSON: new protocol extracted: %s", qPrintable(name));
 
     if(isNotDefaultProtocolType)
     {
@@ -55,7 +56,7 @@ void AMJsonProtocol::append(AMJsonSignal * signal)
     }
     else
     {
-        qDebug("uninitialized signal");
+        LOG_DEBUG("uninitialized signal");
     }
 }
 
@@ -175,7 +176,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
 
     if(is_pre_enabled && !is_post_enabled)
     {
-        qDebug ("Protocol %s is %s",qPrintable(name), "disabled");
+        LOG_DEBUG("Protocol %s is %s", qPrintable(name), "disabled");
 
 
         foreach (AMJsonSignal * jsonsig , jsonSignals)
@@ -197,7 +198,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
     }
     else if (!is_pre_enabled && is_post_enabled)
     {
-        qDebug ("Protocol %s is %s",qPrintable(name), "enabled");
+        LOG_DEBUG("Protocol %s is %s", qPrintable(name), "enabled");
     }
 }
 
