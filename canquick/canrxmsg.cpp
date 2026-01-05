@@ -74,7 +74,7 @@ bool CanRxMsg::saveToStorage(void)
 
         if(!configDump.open(QFile::WriteOnly))
         {
-            qDebug("Error: Can not write config.dat!");
+            qDebug() << "Error: Can not write config.dat!";
         }
         else{
             QDataStream configStream( & configDump);
@@ -141,7 +141,7 @@ bool CanRxMsg::loadFromStorage(void)
 
         if(!configDump.open(QFile::ReadOnly))
         {
-            qDebug("Error: Can not read config.dat!");
+            qDebug() << "Error: Can not read config.dat!";
             status = false;
         }
         else{
@@ -286,7 +286,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignal
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
     CanRxMsg::itsAMSignalsModel = amSignalsModel;
     CanRxMsg::loadFromStorage();
-    qDebug("CanRxMsgsPool is ready for usage");
+    qDebug() << "CanRxMsgsPool is ready for usage";
 }
 
 const QList<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
@@ -335,7 +335,7 @@ void CanRxMsg::applyCanDBSignalsArray(QList<Signal *> * signalsList)
 
     canSignalsArray = signalsList;
 
-    qDebug ("Added signal list to the message");
+    qDebug() << "Added signal list to the message";
 }
 
 CanRxMsg * CanRxMsg::getMsgByCanId(quint32 StdId)

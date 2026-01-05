@@ -61,13 +61,21 @@ bool variantCanConvert(const Variant& v) {
     return v.type() == typeid(T);
 }
 
-// Q_LIKELY / Q_UNLIKELY macros
+// Q_LIKELY / Q_UNLIKELY macros - only define if not already defined (Qt compatibility)
+#ifndef Q_LIKELY
 #ifdef __GNUC__
 #define Q_LIKELY(x)   __builtin_expect(!!(x), 1)
-#define Q_UNLIKELY(x) __builtin_expect(!!(x), 0)
 #else
 #define Q_LIKELY(x)   (x)
+#endif
+#endif
+
+#ifndef Q_UNLIKELY
+#ifdef __GNUC__
+#define Q_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
 #define Q_UNLIKELY(x) (x)
+#endif
 #endif
 
 #endif // CORE_TYPES_H

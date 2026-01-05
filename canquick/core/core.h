@@ -40,17 +40,23 @@
 // Settings (replaces QSettings)
 #include "settings.h"
 
-// Compatibility macros for easier migration
+// Compatibility macros for easier migration (guard with #ifndef for Qt compatibility)
 
 // Q_UNUSED equivalent
+#ifndef Q_UNUSED
 #define Q_UNUSED(x) (void)(x)
+#endif
 
 // Q_ASSERT equivalent
 #include <cassert>
+#ifndef Q_ASSERT
 #define Q_ASSERT(x) assert(x)
+#endif
 
 // nullptr check
+#ifndef Q_NULLPTR
 #define Q_NULLPTR nullptr
+#endif
 
 // For Qt compatibility - these need to be defined somewhere
 #ifndef Q_OBJECT
@@ -180,6 +186,12 @@ private:
 
 } // namespace core
 
+// Core-prefixed typedef (always available, no conflicts)
+using CoreProcess = core::Process;
+
+// Qt-compatible typedef - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QProcess = core::Process;
+#endif
 
 #endif // CORE_CORE_H

@@ -61,49 +61,49 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignalStr(QVariant)),
                          this->qmlItem, SLOT(setVisibleSlotStr(QVariant)));
-        qDebug("setVisibleSlotStr(QVariant) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+        qDebug() << "setVisibleSlotStr(QVariant) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(void)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(void)));
-         qDebug("setVisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         qDebug() << "setVisibleSlot(void) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant)));
-         qDebug("setVisibleSlot(quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         qDebug() << "setVisibleSlot(quint8) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant, QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant, QVariant)));
-         qDebug("setVisibleSlot(quint8, quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         qDebug() << "setVisibleSlot(quint8, quint8) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant,QVariant, QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant,QVariant, QVariant)));
-         qDebug("setVisibleSlot(all arguments) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         qDebug() << "setVisibleSlot(all arguments) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setInvisibleSlot(void)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setInvisibleSignal(void)),
                          this->qmlItem, SLOT(setInvisibleSlot(void)));
-        qDebug("setInvisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+        qDebug() << "setInvisibleSlot(void) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSignal(QMetaObject::normalizedSignature("itemSelfDeactivate()")))
     {
         QObject::connect(this->qmlItem, SIGNAL(itemSelfDeactivate(void)),
                          this->qmlSignalizer, SLOT(forceItemSelfDeactivation(void)));
-        qDebug("itemSelfDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
+        qDebug() << "itemSelfDeactivate() of object" << this->qmlItem->property("objectName").toString() << "connected";
     }
 
 
@@ -162,7 +162,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
                 {
                     QObject::connect(this->qmlItem, SIGNAL(itemActionDeactivate(void)),
                                      action, SLOT(forceDeactivation(void)));
-                    qDebug("itemActionDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
+                    qDebug() << "itemActionDeactivate() of object" << this->qmlItem->property("objectName").toString() << "connected";
                 }
             }
 

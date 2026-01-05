@@ -67,7 +67,7 @@ public:
                 }
 
                 if (!stopRequested_) {
-                    timeout.emit();
+                    timeout.fire();
 
                     if (singleShot_) {
                         active_ = false;
@@ -194,7 +194,14 @@ private:
 
 } // namespace core
 
-// Compatibility typedef
+// Core-prefixed typedefs (always available, no conflicts)
+using CoreTimer = core::Timer;
+using CorePeriodicTimer = core::PeriodicTimer;
+using CoreDelayedCallback = core::DelayedCallback;
+
+// Qt-compatible typedef - only define if not using Qt
+#ifndef QT_CORE_LIB
 using QTimer = core::Timer;
+#endif
 
 #endif // CORE_TIMER_H

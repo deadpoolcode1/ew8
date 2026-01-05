@@ -32,7 +32,7 @@ private:
 // Usage:
 //   Signal<int, std::string> mySignal;
 //   auto conn = mySignal.connect([](int a, std::string b) { ... });
-//   mySignal.emit(42, "hello");
+//   mySignal.fire(42, "hello");  // or mySignal(42, "hello");
 //   mySignal.disconnect(conn);
 template<typename... Args>
 class Signal {
@@ -74,8 +74,8 @@ public:
         slots_.clear();
     }
 
-    // Emit the signal
-    void emit(Args... args) {
+    // Fire the signal (renamed from emit to avoid Qt keyword conflict)
+    void fire(Args... args) {
         std::vector<Slot> slotsCopy;
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -89,9 +89,9 @@ public:
         }
     }
 
-    // Operator() as alias for emit
+    // Operator() as alias for fire
     void operator()(Args... args) {
-        emit(std::forward<Args>(args)...);
+        fire(std::forward<Args>(args)...);
     }
 
     // Check if any slots are connected
@@ -139,7 +139,7 @@ using VoidSignal = Signal<>;
         (receiver)->slot(std::forward<decltype(args)>(args)...); \
     })
 
-// Emit macro
-#define CORE_EMIT(signal, ...) signal.emit(__VA_ARGS__)
+// Fire macro (renamed from emit to avoid Qt keyword conflict)
+#define CORE_EMIT(signal, ...) signal.fire(__VA_ARGS__)
 
 #endif // CORE_SIGNAL_H
