@@ -90,23 +90,23 @@ void EWInfo::setMeSn(QString aMeSn)
 
 //TODO compute the snv value
 
-    QByteArray ew = ewsn_str.toLocal8Bit();
-    QByteArray me = aMeSn.toLocal8Bit();
+    std::string ew = ewsn_str.toStdString();
+    std::string me = aMeSn.toStdString();
 
     //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
     {
-    uint64_t A = (uint64_t)ew[me[15]%16];//4:0:48
-    uint64_t B = (uint64_t)ew[me[14]%16] ;//2:2:50
-    uint64_t C = (uint64_t)ew[me[13]%16] ;//5:1:49
-    uint64_t D = (uint64_t)ew[me[12]%16] ;//0:3:51
-    uint64_t E = (uint64_t)ew[me[11]%16] ;//0:3:51
+    uint64_t A = (uint64_t)(uint8_t)ew[me[15]%16];//4:0:48
+    uint64_t B = (uint64_t)(uint8_t)ew[me[14]%16] ;//2:2:50
+    uint64_t C = (uint64_t)(uint8_t)ew[me[13]%16] ;//5:1:49
+    uint64_t D = (uint64_t)(uint8_t)ew[me[12]%16] ;//0:3:51
+    uint64_t E = (uint64_t)(uint8_t)ew[me[11]%16] ;//0:3:51
 
-    uint64_t F = (uint64_t)me[ew[0]%16] ;
-    uint64_t G = (uint64_t)me[ew[1]%16] ;
-    uint64_t H = (uint64_t)me[ew[11]%16] ;
-    uint64_t I = (uint64_t)me[ew[12]%16] ;
-    uint64_t J = (uint64_t)me[ew[13]%16] ;
+    uint64_t F = (uint64_t)(uint8_t)me[ew[0]%16] ;
+    uint64_t G = (uint64_t)(uint8_t)me[ew[1]%16] ;
+    uint64_t H = (uint64_t)(uint8_t)me[ew[11]%16] ;
+    uint64_t I = (uint64_t)(uint8_t)me[ew[12]%16] ;
+    uint64_t J = (uint64_t)(uint8_t)me[ew[13]%16] ;
 
     uint64_t SNV = (uint64_t)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
 
