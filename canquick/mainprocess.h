@@ -22,12 +22,12 @@ public:
 
     void setBrightnessControl(BrightnessControl * aBrightnessControl);
 
-    //alerts display:
-    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, quint8 unit);
-    virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
-    virtual void deactivate(DISPLAY_ITEM_ID at);
-    virtual void forceUpdate(void);
-    virtual void message(QString aStrMsg);
+    //alerts display (IAlertDisplay interface implementation):
+    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt = 0, quint8 valueFrac = 0, quint8 unit = 0) override;
+    virtual void activate(DISPLAY_ITEM_ID at, const std::string& stringArg) override;
+    virtual void deactivate(DISPLAY_ITEM_ID at) override;
+    virtual void forceUpdate(void) override;
+    virtual void message(const std::string& stringMessage) override;
 
     static MainProcess* getInstance(QObject * aComponentObject);
 
@@ -46,12 +46,12 @@ public slots:
     void isaPartialDeactivationRequestSend();
     void isaFullDeactivationRequestSend();
 
-
+    void forwardBrightnessChanged(qint32 newLevel);
 
     void process();
 
 private:
-    void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
+    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const QString& strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
 
     bool isDataComplete;
 
