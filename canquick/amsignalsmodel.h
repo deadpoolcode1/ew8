@@ -2,7 +2,7 @@
 #define AMSIGNALSMODEL_H
 
 #include <QFile>
-#include <QJsonDocument>
+#include "core/json.h"
 #include <defs.h>
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"

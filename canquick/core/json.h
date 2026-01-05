@@ -814,7 +814,7 @@ using CoreJsonDocument = core::JsonDocument;
 using CoreJsonParseError = core::JsonParseError;
 
 // Qt-compatible typedefs - only define if not using Qt
-#ifndef QT_CORE_LIB
+#ifndef QT_VERSION
 using QJsonValue = core::JsonValue;
 using QJsonObject = core::JsonObject;
 using QJsonArray = core::JsonArray;
