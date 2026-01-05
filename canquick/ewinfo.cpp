@@ -1,6 +1,6 @@
 #include "ewinfo.h"
 #include "defs.h"
-#include <QDebug>
+#include "core/core.h"
 #include <QFile>
 #include <QTextStream>
 #include "amjsonconfigreader.h"
@@ -75,7 +75,7 @@ QString EWInfo::getSnv(void)
 #if 0
     ewsn_str = "3021016070300013";
     setMeSn("0121011070P00524");
-    qDebug()<<"SNV property ="<<snv_str;
+    coreDebug()<<"SNV property ="<<snv_str;
 #endif
   return snv_str;
 }
@@ -115,7 +115,7 @@ void EWInfo::setMeSn(QString aMeSn)
               << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
                  " I:" << I << " J:"<< J;
 
-    qDebug()<< "quint64 SNV=" << SNV;
+    coreDebug()<< "quint64 SNV=" << SNV;
 #endif
 
     snv_str = QString::number(SNV);
@@ -127,7 +127,7 @@ void EWInfo::setMeSn(QString aMeSn)
     }
     else
     {
-        qDebug() << "SN number length is wrong";
+        coreDebug() << "SN number length is wrong";
     }
 }
 
@@ -146,7 +146,7 @@ void EWInfo::readEWInfo(void)
     .arg(MINOR_VERSION)
     .arg(OTA_TEST_VERSION);
 
-     qDebug() << "EWInfo:Engine version " << ewbin_str;
+     coreDebug() << "EWInfo:Engine version " << ewbin_str;
 
     //NOTE: Config version:
     core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
@@ -241,9 +241,9 @@ void EWInfo::readServiceNumber(void)
             regIntegrity = (byteLSB == (quint8)(~ byteMSB));
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
 #else
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
 #endif
         }
 

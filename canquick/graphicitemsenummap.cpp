@@ -9,7 +9,7 @@
 #include "entitytype.h"
 
 #include "core/json.h"
-#include <QDebug>
+#include "core/core.h"
 
 QMutex GraphicItemsEnumMap::instanceMutex;
 
@@ -49,7 +49,7 @@ void GraphicItemsEnumMap::init(void)
     id =  ((DISPLAY_ITEM_ID)AlertTypes::ALERT_END_OF_TYPE);
 #endif
 
-    qDebug() << "JSON: Graphic Items enum:";
+    coreDebug() << "JSON: Graphic Items enum:";
 
     for (const core::JsonValue& value : jsonArray) {
 
@@ -59,7 +59,7 @@ void GraphicItemsEnumMap::init(void)
 
         //TODO verify NAME and ID are unique
 
-        qDebug() << "name: " <<  qPrintable(name) << "id:" << id;
+        coreDebug() << "name: " <<  qPrintable(name) << "id:" << id;
 
 
         graphicItemsIDsMap.insert(name,id);

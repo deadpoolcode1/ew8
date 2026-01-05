@@ -13,7 +13,7 @@
 #include "bufferedsmoother.h"
 #include "timedsmoother.h"
 
-#include <qdebug.h>
+#include "core/core.h"
 
 #include <QMetaEnum>
 
@@ -61,7 +61,7 @@ QList<qint32> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
                 }
                 else
                 {
-                    qDebug() << "Set: operation type error";
+                    coreDebug() << "Set: operation type error";
                 }
 
                 trueValues->append(trueValues_Array[1].toInt(0));
@@ -158,7 +158,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
             bufferLength = (quint32)sigSmoothed_Array.at(0).toInt(0);
             skipSmoothingDelta = (quint32)sigSmoothed_Array.at(1).toInt(0);
             smoothingType = QString::fromStdString(sigSmoothed_Array.at(2).toString("items"));
-            qDebug()<<"smoothing type: "<< smoothingType;
+            coreDebug()<<"smoothing type: "<< smoothingType;
     }
 
 
@@ -279,7 +279,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupN
 
     itsProtocol->append(this);
 
-    qDebug() << "JSON: new signal with name" << itsName <<"action: "<< action << "type: "<< type <<" extracted.";
+    coreDebug() << "JSON: new signal with name" << itsName <<"action: "<< action << "type: "<< type <<" extracted.";
 
     //TODO use actions map
 }
@@ -302,7 +302,7 @@ void AMJsonSignal::setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta
         }
         else
         {
-            qDebug()<<"WARNING: unknown smoothing argument";
+            coreDebug()<<"WARNING: unknown smoothing argument";
         }
 
         if(nullptr != smoother)

@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
+#include "core/core.h"
 #include "qquickqrcode.h"
 
 #include "mainprocess.h"
@@ -55,14 +56,14 @@ int main(int argc, char *argv[])
 #ifdef REMOVE_EW8_HW
     // Auto-setup virtual CAN for desktop builds
     if (system("ip link show can0 > /dev/null 2>&1") != 0) {
-        qDebug() << "Setting up virtual CAN interface...";
+        coreDebug() << "Setting up virtual CAN interface...";
         system("sudo /usr/sbin/modprobe vcan 2>/dev/null");
         system("sudo /usr/sbin/ip link add dev can0 type vcan 2>/dev/null");
         system("sudo /usr/sbin/ip link set up can0 2>/dev/null");
     }
 #endif
 
-    qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
+    coreDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
     QFile kernMsgDev("/dev/kmsg");
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 
 
 #if 0
-    qDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
+    coreDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
 #endif
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -170,15 +171,15 @@ int main(int argc, char *argv[])
     }
 
 	QQmlComponent component(&engine, mainQmlUrl);
-qDebug() << "Loading QML from:" << mainQmlUrl;
-	qDebug() << "Component status:" << component.status();
+coreDebug() << "Loading QML from:" << mainQmlUrl;
+	coreDebug() << "Component status:" << component.status();
 if (component.status() != QQmlComponent::Ready) {
-    qDebug() << "QML errors:" << component.errorString();
+    coreDebug() << "QML errors:" << component.errorString();
 }
 
     QObject * componentObject = component.create();
 
-    qDebug() << "Component created, time" << bootUpTimer.elapsed();
+    coreDebug() << "Component created, time" << bootUpTimer.elapsed();
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
@@ -190,11 +191,11 @@ if (component.status() != QQmlComponent::Ready) {
         CanRxMsg::saveToStorage();
     }
 
-    qDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
+    coreDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
 
     mp->launchEverything();
 
-    qDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
+    coreDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
 
 
 

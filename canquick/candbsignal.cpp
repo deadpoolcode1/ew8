@@ -64,7 +64,7 @@ core::DataStream & operator>> (core::DataStream & in, Signal & any)
 
     if (in.status() != core::DataStream::Ok)
     {
-        qDebug() << "WARNING:" << any.AMJsonSignalIdx << "signal status" << in.status();
+        coreDebug() << "WARNING:" << any.AMJsonSignalIdx << "signal status" << in.status();
     }
 
     return in;
@@ -80,10 +80,10 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
 
     if(dbcFile.exists())
     {
-        qDebug() << "Found DBC files";
+        coreDebug() << "Found DBC files";
         if(dbcFile.open(core::File::ReadOnly))
         {
-            qDebug() << "signals JSON scheme successfully found and open.";
+            coreDebug() << "signals JSON scheme successfully found and open.";
 
             //TODO: evaluate json consistency
 
@@ -110,7 +110,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
     }
     else
     {
-        qDebug() << "dbc file read failed.";
+        coreDebug() << "dbc file read failed.";
         ret = false;
     }
 
@@ -153,7 +153,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           }
           else
           {
-              qDebug() << "Empty version";
+              coreDebug() << "Empty version";
           }
       };
 
@@ -185,7 +185,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
               numbers->push_back(number);
           } catch (const std::exception& ex)
           {
-              qDebug() << "Unable to parse number from " << sv.token().c_str();
+              coreDebug() << "Unable to parse number from " << sv.token().c_str();
           }
       };
 
@@ -204,7 +204,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           Signal * cansig = new Signal();
 
 #ifdef USE_ECU_NAME
-          qDebug() << "ecu_name:" << c_identifiers->back();
+          coreDebug() << "ecu_name:" << c_identifiers->back();
           c_identifiers->pop_back();
 #endif
         /*std::string unit =*/ phrases->back(); phrases->pop_back();
@@ -244,18 +244,18 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
 
       (* pParser)["message"] = [this](const SemanticValues &)
       {
-          qDebug() << "message:";
+          coreDebug() << "message:";
 
 #ifdef USE_ECU_NAME
-          qDebug() << "ecu:" << c_identifiers->back();
+          coreDebug() << "ecu:" << c_identifiers->back();
           c_identifiers->pop_back();
 #endif
           std::string name = c_identifiers->back(); c_identifiers->pop_back();
-          qDebug() << "name:" << name;
+          coreDebug() << "name:" << name;
 
-          qDebug() << "dlc:" << numbers->back(); numbers->pop_back();
+          coreDebug() << "dlc:" << numbers->back(); numbers->pop_back();
           quint64 id = numbers->back(); numbers->pop_back();
-          qDebug() << "id:" << id;
+          coreDebug() << "id:" << id;
 
 
           CanRxMsg * rxmsg;
@@ -295,14 +295,14 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
 
       (* pParser)["val_entry"] = [this](const SemanticValues &)
       {
-          qDebug() << "Value Table:";
+          coreDebug() << "Value Table:";
           std::string name = c_identifiers->back(); c_identifiers->pop_back();
-          qDebug() << "name:" << name;
+          coreDebug() << "name:" << name;
 
 #if 0
           for(const Value & vt_row : *vtRows)
           {
-              qDebug() << "row:" << vt_row.value << vt_row.name;
+              coreDebug() << "row:" << vt_row.value << vt_row.name;
           }
           vtRows->clear();
 #endif
@@ -316,12 +316,12 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           /*qint64 message_num =*/ numbers->back(); numbers->pop_back();
           /*std::string name =*/ c_identifiers->back(); c_identifiers->pop_back();
  #if 0
-          qDebug() << "Value For Signal:";
-          qDebug() << "message id:" << message_num;
-          qDebug() << "signal name:" << name;
+          coreDebug() << "Value For Signal:";
+          coreDebug() << "message id:" << message_num;
+          coreDebug() << "signal name:" << name;
           for(const Value & vt_row : *vtRows)
           {
-              qDebug() << "row:" << vt_row.value << "," << vt_row.name;
+              coreDebug() << "row:" << vt_row.value << "," << vt_row.name;
           }
           vtRows->clear();
 #endif
@@ -342,7 +342,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
 
      if (!pParser->parse(extractedFile.c_str()))
      {
-         qDebug() << "dbc syntax error...";
+         coreDebug() << "dbc syntax error...";
          status = false;
      }
 
@@ -404,7 +404,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
              break;
 
          default:
-             qDebug() << "Illegal signal value type";
+             coreDebug() << "Illegal signal value type";
              ret = std::any();
          }
 
