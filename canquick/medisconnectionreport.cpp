@@ -63,7 +63,7 @@ void MeDisconnectionReport::launch(void)
 void MeDisconnectionReport::fireRequestTimeout(void)
 {
     CanRxMsg::discardRequestId();
-    qDebug() << "RIT: Request Id timeout";
+    coreDebug() << "RIT: Request Id timeout";
 #if 1
     itsDisplay->activate(AlertTypes::ALERT_REQFAIL);
     itsDisplay->forceUpdate();
@@ -86,6 +86,6 @@ void MeDisconnectionReport::resetConnectionTimeout(void)
         isInDisconnectionAlert = false;
     }
 
-    qDebug() << "Disconnection timeout reset at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
+    coreDebug() << "Disconnection timeout reset at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
     connectionTimeoutTimer->start();
 }

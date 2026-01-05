@@ -147,6 +147,66 @@ public:
         return p.exitCode();
     }
 
+    // Replacement for QProcess::startDetached - launches a process detached from parent
+    static bool startDetached(const std::string& program, const std::vector<std::string>& args = {}) {
+        pid_t pid = fork();
+
+        if (pid == 0) {
+            // Child process - create new session to detach from parent
+            setsid();
+
+            // Fork again to prevent zombie processes
+            pid_t pid2 = fork();
+            if (pid2 > 0) {
+                _exit(0); // First child exits
+            } else if (pid2 < 0) {
+                _exit(127); // Fork failed
+            }
+
+            // Second child (grandchild) continues - now fully detached
+            std::vector<char*> argv;
+            argv.push_back(const_cast<char*>(program.c_str()));
+            for (const auto& arg : args) {
+                argv.push_back(const_cast<char*>(arg.c_str()));
+            }
+            argv.push_back(nullptr);
+
+            execvp(program.c_str(), argv.data());
+            _exit(127); // exec failed
+        } else if (pid > 0) {
+            // Parent waits for first child to exit
+            int status;
+            waitpid(pid, &status, 0);
+            return true;
+        }
+
+        return false; // fork failed
+    }
+
+    // Overload that takes a single string command (parses it)
+    static bool startDetached(const std::string& command) {
+        // Simple space-separated parsing for single command string
+        std::vector<std::string> parts;
+        std::string current;
+        for (char c : command) {
+            if (c == ' ' && !current.empty()) {
+                parts.push_back(current);
+                current.clear();
+            } else if (c != ' ') {
+                current += c;
+            }
+        }
+        if (!current.empty()) {
+            parts.push_back(current);
+        }
+
+        if (parts.empty()) return false;
+
+        std::string program = parts[0];
+        std::vector<std::string> args(parts.begin() + 1, parts.end());
+        return startDetached(program, args);
+    }
+
 private:
     pid_t pid_;
     ProcessState state_;

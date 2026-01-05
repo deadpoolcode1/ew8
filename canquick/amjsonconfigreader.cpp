@@ -5,7 +5,7 @@
 #include "core/file_utils.h"
 #include "core/logger.h"
 
-// When Qt is present, include QDebug for qDebug() macro
+// When Qt is present, include QDebug for coreDebug() macro
 #ifdef QT_CORE_LIB
 #include <QDebug>
 #endif
@@ -56,7 +56,7 @@ void AMJsonConfigReader::readJsonDocument(const std::string& arg)
 
     if(jsonFile.exists())
     {
-        qDebug() << "JSON file exists";
+        coreDebug() << "JSON file exists";
         if(jsonFile.open(core::File::ReadOnly))
         {
             //TODO evaluate json consistency
@@ -68,7 +68,7 @@ void AMJsonConfigReader::readJsonDocument(const std::string& arg)
 
             if(core::JsonParseError::NoError != errStatus.error())
             {
-                qDebug() << "Json reader reading file:" << arg << " Error status:" << errStatus.errorString();
+                coreDebug() << "Json reader reading file:" << arg << " Error status:" << errStatus.errorString();
             }
 
             jsonFile.close();
@@ -80,7 +80,7 @@ void AMJsonConfigReader::readJsonDocument(const std::string& arg)
     }
     else
     {
-        qDebug() << "signals JSON scheme file read failed.";
+        coreDebug() << "signals JSON scheme file read failed.";
         //TODO use some default scheme
         //TODO Error Alert
      }
