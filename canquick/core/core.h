@@ -184,7 +184,7 @@ public:
     }
 
     // Overload that takes a single string command (parses it)
-    static bool startDetached(const std::string& command) {
+    static bool startDetachedCommand(const std::string& command) {
         // Simple space-separated parsing for single command string
         std::vector<std::string> parts;
         std::string current;
