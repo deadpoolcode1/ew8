@@ -15,7 +15,7 @@
 // QString replacement - use std::string
 using String = std::string;
 
-// QByteArray replacement - use std::vector<uint8_t>
+// ByteArray type - use std::vector<uint8_t> for binary data
 using ByteArray = std::vector<uint8_t>;
 
 // Container aliases for easier migration
@@ -86,32 +86,6 @@ private:
     char ch_;
 };
 
-// QByteArray replacement - defined first so QString::toLocal8Bit() can use it
-class QByteArray : public std::vector<uint8_t> {
-public:
-    using std::vector<uint8_t>::vector;
-    QByteArray() : std::vector<uint8_t>() {}
-    QByteArray(const char* data, int len) {
-        if (data && len > 0) {
-            resize(len);
-            std::copy(data, data + len, begin());
-        }
-    }
-    QByteArray(const std::string& s) {
-        resize(s.size());
-        std::copy(s.begin(), s.end(), begin());
-    }
-
-    bool isEmpty() const { return empty(); }
-    int length() const { return static_cast<int>(size()); }
-    const char* constData() const { return reinterpret_cast<const char*>(data()); }
-    char* data_ptr() { return reinterpret_cast<char*>(data()); }
-
-    // Operator[] for char access (like Qt's QByteArray)
-    char operator[](int i) const { return static_cast<char>(std::vector<uint8_t>::operator[](i)); }
-    char& operator[](int i) { return reinterpret_cast<char&>(std::vector<uint8_t>::operator[](i)); }
-};
-
 // QString replacement with Qt-compatible API
 class QString : public std::string {
 public:
@@ -138,10 +112,10 @@ public:
     static QString number(int n) { return QString(std::to_string(n)); }
     static QString number(double n) { return QString(std::to_string(n)); }
 
-    // Returns QByteArray for compatibility with Qt code
-    QByteArray toLocal8Bit() const { return QByteArray(*this); }
-    QByteArray toLatin1() const { return QByteArray(*this); }
-    QByteArray toUtf8() const { return QByteArray(*this); }
+    // Returns std::string for byte-level access (replacement for Qt's QByteArray methods)
+    std::string toLocal8Bit() const { return *this; }
+    std::string toLatin1() const { return *this; }
+    std::string toUtf8() const { return *this; }
 
     // QString::arg() - replaces %1, %2, etc. with provided arguments
     template<typename T>
