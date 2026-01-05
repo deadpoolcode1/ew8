@@ -8,6 +8,11 @@
 #include "core/json.h"
 #include "core/settings.h"
 
+// When Qt is present, include QDebug for qDebug() macro
+#ifdef QT_CORE_LIB
+#include <QDebug>
+#endif
+
 #include "amjsonconfigreader.h"
 #include "candebugreport.h"
 
@@ -294,7 +299,7 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
 
         if(doCANDebugReport)
         {
-            sendBrightness.emit(illuminance_measure_mV, currentMenuLevel, currentOutput);
+            sendBrightness.fire(illuminance_measure_mV, currentMenuLevel, currentOutput);
         }
 
         if (nullptr != itsAlertDisplay)

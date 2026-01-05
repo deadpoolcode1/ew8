@@ -13,9 +13,12 @@
 
 // Qt type compatibility layer
 // These typedefs provide drop-in replacements for Qt integer types
-// Only define if Qt is NOT present
 
-#ifndef QT_CORE_LIB
+#ifdef QT_CORE_LIB
+// When Qt is present, include Qt's type definitions
+// This must be included early so types like qint64 are available
+#include <QtCore/qtypes.h>
+#else
 // Qt-compatible integer types - only define when Qt is NOT present
 using qint8 = int8_t;
 using quint8 = uint8_t;
