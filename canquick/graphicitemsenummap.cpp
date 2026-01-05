@@ -43,7 +43,7 @@ QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 
 void GraphicItemsEnumMap::init(void)
 {
-     QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("GraphicItems").toArray();
+     core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("GraphicItems").toArray();
 
     DISPLAY_ITEM_ID id;
 
@@ -53,9 +53,9 @@ void GraphicItemsEnumMap::init(void)
 
     qDebug() << "JSON: Graphic Items enum:";
 
-    foreach (const QJsonValue & value, jsonArray) { 
+    for (const core::JsonValue& value : jsonArray) {
 
-        QString name = value.toString();
+        QString name = QString::fromStdString(value.toString());
 
         id++;
 

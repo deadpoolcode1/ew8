@@ -149,7 +149,7 @@ void EWInfo::readEWInfo(void)
      qDebug() << "EWInfo:Engine version " << ewbin_str;
 
     //NOTE: Config version:
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
+    core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
     if(!jsonArray.isEmpty())
     {
         ewcfg_str = QString("%1.%2.%3")

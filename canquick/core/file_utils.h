@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
+#include <cstdint>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -110,26 +111,26 @@ public:
     }
 
     // Write data
-    qint64 write(const std::string& data) {
+    int64_t write(const std::string& data) {
         if (!isOpen_) return -1;
         stream_.write(data.data(), data.size());
         return stream_.good() ? data.size() : -1;
     }
 
-    qint64 write(const char* data, qint64 len) {
+    int64_t write(const char* data, int64_t len) {
         if (!isOpen_) return -1;
         stream_.write(data, len);
         return stream_.good() ? len : -1;
     }
 
-    qint64 write(const std::vector<uint8_t>& data) {
+    int64_t write(const std::vector<uint8_t>& data) {
         if (!isOpen_) return -1;
         stream_.write(reinterpret_cast<const char*>(data.data()), data.size());
         return stream_.good() ? data.size() : -1;
     }
 
     // Get file size
-    qint64 size() const {
+    int64_t size() const {
         struct stat st;
         if (stat(path_.c_str(), &st) == 0) {
             return st.st_size;
@@ -143,14 +144,14 @@ public:
     }
 
     // Seek
-    bool seek(qint64 pos) {
+    bool seek(int64_t pos) {
         if (!isOpen_) return false;
         stream_.seekg(pos);
         stream_.seekp(pos);
         return stream_.good();
     }
 
-    qint64 pos() const {
+    int64_t pos() const {
         if (!isOpen_) return -1;
         return const_cast<std::fstream&>(stream_).tellg();
     }
@@ -423,7 +424,7 @@ public:
         return Dir(path_).absolutePath();
     }
 
-    qint64 size() const {
+    int64_t size() const {
         struct stat st;
         if (stat(path_.c_str(), &st) == 0) {
             return st.st_size;
