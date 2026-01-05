@@ -13,7 +13,10 @@
 
 // Qt type compatibility layer
 // These typedefs provide drop-in replacements for Qt integer types
+// Only define if Qt's types are not already defined (e.g., when QtGlobal is not included)
 
+#ifndef QT_CORE_LIB
+// Only define Qt-like types when not building with Qt
 typedef int8_t   qint8;
 typedef uint8_t  quint8;
 typedef int16_t  qint16;
@@ -22,8 +25,8 @@ typedef int32_t  qint32;
 typedef uint32_t quint32;
 typedef int64_t  qint64;
 typedef uint64_t quint64;
-
-typedef ssize_t qsizetype;
+typedef ssize_t  qsizetype;
+#endif // QT_CORE_LIB
 
 // QString replacement - use std::string
 using String = std::string;

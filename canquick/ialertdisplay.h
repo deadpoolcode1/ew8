@@ -1,14 +1,14 @@
 #ifndef IALERTDISPLAY_H
 #define IALERTDISPLAY_H
 
-// Use core library instead of Qt
-#include "core/mutex.h"
-#include "core/types.h"
-
-#include <string>
-
+// Include Qt headers first via alerttypes.h and defs.h
 #include "alerttypes.h"
 #include "defs.h"
+
+// Then include core library (which will skip Qt-like types if Qt is present)
+#include "core/mutex.h"
+
+#include <string>
 
 class IAlertDisplay
 {

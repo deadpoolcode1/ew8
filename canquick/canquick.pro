@@ -29,6 +29,15 @@ QT += quick
 
 CONFIG += c++11
 
+# Workaround for Qt 6.9.x qfloat16 bug on 64-bit Linux
+# Qt declares comparison operators for both 'long' and 'qint64', but on 64-bit Linux
+# they are the same type, causing redefinition errors in qfloat16.h
+# See: https://doc.qt.io/qt-6/qfloat16.html
+linux {
+    # Disable qfloat16 arithmetic/comparison operators which cause conflicts on LP64
+    DEFINES += QT_NO_FLOAT16_OPERATORS
+}
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -138,6 +147,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES =
 
 HEADERS += \
+    qt_workarounds.h \
     bufferedsmoother.h \
     keepalivemsg.h \
     versionmsg.h \
