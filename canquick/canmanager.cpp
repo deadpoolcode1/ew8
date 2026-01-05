@@ -36,7 +36,7 @@
 #include <QMutex>
 #include <QTimer>
 #include <QDateTime>
-#include <QJsonObject>
+#include "core/json.h"
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -77,7 +77,10 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     this->moveToThread(itsThread);
 
-    connect(this, SIGNAL(resetConnectionTimeout()), itsDisconnectionReport, SLOT(resetConnectionTimeout()));
+    // Connect to MeDisconnectionReport using lambda since it doesn't inherit QObject
+    connect(this, &CanManager::resetConnectionTimeoutSignal, [this]() {
+        itsDisconnectionReport->resetConnectionTimeout();
+    });
 
     connect(itsThread,SIGNAL(started()),this,SLOT(process()));
 }
@@ -300,7 +303,7 @@ void CanManager::init(void)
     qint32 bdr = 500;
     double samplepnt = 87.5;
 
-    QJsonValue canbus_jtop = AMJsonConfigReader::getInstance()->getJsonTopEntry("CANBusParameters");
+    core::JsonValue canbus_jtop = AMJsonConfigReader::getInstance()->getJsonTopEntry("CANBusParameters");
 
     if (canbus_jtop.isUndefined())
     {
@@ -308,13 +311,13 @@ void CanManager::init(void)
     }
     else
     {
-        QJsonObject canbus_jobj = canbus_jtop.toObject();
+        core::JsonObject canbus_jobj = canbus_jtop.toObject();
 
 
-        QJsonValue baudrate_entry = canbus_jobj["baudrateKbps"];
+        core::JsonValue baudrate_entry = canbus_jobj["baudrateKbps"];
 
         //NOTE: sample point % configuration used in Linux only:
-        QJsonValue samplepoint_entry = canbus_jobj["samplePoint"];
+        core::JsonValue samplepoint_entry = canbus_jobj["samplePoint"];
 
         if (baudrate_entry.isUndefined())
         {
@@ -640,7 +643,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
           if(CanRxMsg::isKeepAliveMsg(frame->can_id))
           {
-             emit resetConnectionTimeout();
+             emit resetConnectionTimeoutSignal();
           }
 
           CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);

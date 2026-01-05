@@ -46,7 +46,7 @@ class QQuickQRCode;
 class EWInfo;
 class AMJsonConfigReader;
 
-QElapsedTimer bootUpTimer;
+core::ElapsedTimer bootUpTimer;
 
 int main(int argc, char *argv[])
 {
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("mobileye");
 
 #ifndef REMOVE_EW8_HW
-    BrightnessControl brightnessControl(&app);
+    BrightnessControl brightnessControl;
 #endif
 
     QCommandLineParser cmdLnParser;
