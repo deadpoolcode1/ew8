@@ -67,13 +67,13 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
-            core::Process::startDetached(std::string(BASE_TARGET_DIR) + "bin/canquick");
+            core::Process::startDetachedCommand(std::string(BASE_TARGET_DIR) + "bin/canquick");
 
 #elif ! defined(QT_DEBUG)
-            core::Process::startDetached("release/canquick");
+            core::Process::startDetachedCommand("release/canquick");
 
 #else
-            core::Process::startDetached("debug/canquick");
+            core::Process::startDetachedCommand("debug/canquick");
 #endif
             exit(0);
         }
