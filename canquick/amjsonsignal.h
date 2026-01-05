@@ -6,6 +6,7 @@
 #include <QObject>
 
 #include "amjsonprotocol.h"
+#include "core/json.h"
 
 #include "ialertdisplay.h"
 
@@ -33,7 +34,7 @@ public:
 
     //TODO split to oop-pattern
 
-    AMJsonSignal(AMJsonProtocol * aProtocol, QJsonValue singleSignalsEntry, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent = nullptr);
 
     QString getName(void);
 
@@ -94,7 +95,7 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  QList<qint32> * extractSetValuesField( QJsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
+  QList<qint32> * extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
 
   bool getDomainValidity(QVariant extractedSupCANsignal);
 
