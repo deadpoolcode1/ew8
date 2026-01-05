@@ -1,5 +1,5 @@
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 #include "bufferedsmoother.h"
 
 //TODO: try to use time lap instead of fixed buffer length, storing the timestamps of the measures.

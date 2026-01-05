@@ -1,10 +1,6 @@
 #include "canstringargumentsaccumulator.h"
-
 #include "canargumentsaccumulator.h"
-
-#include <QMap>
-
-#include <QStringBuilder>
+#include "core/types.h"
 
 #include <ctype.h>
 

@@ -6,7 +6,7 @@
 #include <QDataStream>
 #include <QSaveFile>
 #include "core/core.h"
-#include <QVariant>
+#include "core/types.h"
 #include <any>
 
 // Helper function to convert std::any to QVariant

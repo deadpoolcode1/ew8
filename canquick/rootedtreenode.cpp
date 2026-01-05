@@ -1,5 +1,5 @@
-#include <QVariant>
 #include "core/core.h"
+#include "core/types.h"
 #include "rootedtreenode.h"
 #include "alerttypes.h"
 #include "entitytype.h"
