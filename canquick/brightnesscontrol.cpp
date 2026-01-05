@@ -8,7 +8,7 @@
 #include "core/json.h"
 #include "core/settings.h"
 
-// When Qt is present, include QDebug for qDebug() macro
+// When Qt is present, include QDebug for coreDebug() macro
 #ifdef QT_CORE_LIB
 #include <QDebug>
 #endif
@@ -41,12 +41,12 @@ BrightnessControl::BrightnessControl()
 
     currentMenuLevel = settings.valueInt("Brightness/brightness", 5);
 
-    qDebug() << "Selected Brightness Level:" << currentMenuLevel;
+    coreDebug() << "Selected Brightness Level:" << currentMenuLevel;
 
 #if 0
     settingsWatcher = new core::FileSystemWatcher();
 
-    qDebug() << "Watch the Settings file:" << settings.fileName();
+    coreDebug() << "Watch the Settings file:" << settings.fileName();
 
     settingsWatcher->addPath(settings.fileName());
 
@@ -71,13 +71,13 @@ BrightnessControl::BrightnessControl()
     outputFile->open(core::File::ReadWrite);
     std::string line = outputFile->readLine();
     currentOutput = line.empty() ? 0 : std::stoi(line);
-    qDebug() << "Initial current output: " << currentOutput;
+    coreDebug() << "Initial current output: " << currentOutput;
 #endif
 
     auto it = outputLevels.find(currentMenuLevel);
     currentMenuLevelOutputs = (it != outputLevels.end()) ? it->second : nullptr;
     if (currentMenuLevelOutputs) {
-        qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
+        coreDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
                  << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
     }
 
@@ -135,7 +135,7 @@ void BrightnessControl::assignMappings(void)
     }
 
 
-    qDebug() << "PointsArray" << lowerPoints;
+    coreDebug() << "PointsArray" << lowerPoints;
 
 
 
@@ -171,11 +171,11 @@ void BrightnessControl::assignMappings(void)
 
         if(entryOutputsSize != lowerPointsSize+1)
         {
-            qDebug() << "Brightness menu entry " << menuEntry << ": Outputs array size is not valid";
+            coreDebug() << "Brightness menu entry " << menuEntry << ": Outputs array size is not valid";
         }
         else
         {
-            qDebug() << "Menu entry: " << menuEntry << "outputs: " << entryOutputs[0] << ","<< entryOutputs[1] << "," << entryOutputs[2]
+            coreDebug() << "Menu entry: " << menuEntry << "outputs: " << entryOutputs[0] << ","<< entryOutputs[1] << "," << entryOutputs[2]
                      << "," << entryOutputs[3] << "," << entryOutputs[4]  << "...";
             outputLevels.insert({menuEntry, entryOutputs});
         }
@@ -206,14 +206,14 @@ BrightnessControl::~BrightnessControl()
 void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
 {
    //TODO select the new outputs level and force illuminanceMeasure+assignBrightness(WARNING: The hand can be over the sensor)
-    qDebug() << "Brightness control: level change notify received!" ;
+    coreDebug() << "Brightness control: level change notify received!" ;
     currentMenuLevel = newLevel;
     auto it = outputLevels.find(currentMenuLevel);
     currentMenuLevelOutputs = (it != outputLevels.end()) ? it->second : nullptr;
     //Threadsafe: in slots executed in the same event loop
     assignBrightness(measureIlluminanceLevel(), true);
     if (currentMenuLevelOutputs) {
-        qDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
+        coreDebug() << "Current Menu level outputs:" << currentMenuLevelOutputs[0] << ","<< currentMenuLevelOutputs[1] << "," << currentMenuLevelOutputs[2]
                  << "," << currentMenuLevelOutputs[3] << "," << currentMenuLevelOutputs[4]  << "...";
     }
 }
@@ -226,7 +226,7 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
     std::string line = measureFile->readLine();
     qint32 currMeasure = line.empty() ? 0 : std::stoi(line);
     illuminance_measure_mV = (quint32)std::round(currMeasure*scale);
-    qDebug() << "Illuminance ADC (mV): " << currMeasure*scale;
+    coreDebug() << "Illuminance ADC (mV): " << currMeasure*scale;
 
 
 
@@ -239,7 +239,7 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
         }
     }
 
-    qDebug() << "illuminaceLevel: " << illuminanceLevel;
+    coreDebug() << "illuminaceLevel: " << illuminanceLevel;
 #endif
     return illuminanceLevel;
 }
@@ -295,7 +295,7 @@ void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightne
         }
 
 
-        qDebug() << "Brightness output - current:" << currentOutput << " target:" << targetOutput;
+        coreDebug() << "Brightness output - current:" << currentOutput << " target:" << targetOutput;
 
         if(doCANDebugReport)
         {

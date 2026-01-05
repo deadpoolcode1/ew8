@@ -1,6 +1,6 @@
 #include "amjsonrequestidaction.h"
 #include "canrxmsg.h"
-#include <QDebug>
+#include "core/core.h"
 #include <QObject>
 
 class CanRxMsg;
@@ -14,7 +14,7 @@ AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, QSt
 void AMJsonRequestIdAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
 {
     bool status;
-       qDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((qint32)extractedCANsignal.toInt(&status));
+       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((qint32)extractedCANsignal.toInt(&status));
 
        if(itsIndex == 0)
        {

@@ -1,6 +1,6 @@
 #include "versionmsg.h"
 #include "defs.h"
-#include <QDebug>
+#include "core/core.h"
 #include <QFile>
 #include <QTextStream>
 #include "amjsonconfigreader.h"
@@ -65,7 +65,7 @@ void VersionMsg::singleShot()
     }
     else
     {
-        qDebug() << "WARNING: Version Message is not constructed yet.";
+        coreDebug() << "WARNING: Version Message is not constructed yet.";
     }
 }
 
@@ -78,7 +78,7 @@ void VersionMsg::create(CanManager *aCanManager)
     }
     else
     {
-        qDebug() << "WARNING: Version Message is already constructed.";
+        coreDebug() << "WARNING: Version Message is already constructed.";
     }
 }
 
@@ -124,7 +124,7 @@ void VersionMsg::readVersionInfo(void)
 
     if(buildId.length() != 8)
     {
-       qDebug() << "System Build ID is not found.";
+       coreDebug() << "System Build ID is not found.";
     }
     else
     {
@@ -199,9 +199,9 @@ void VersionMsg::readServiceNumber(void)
 
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
 #else
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
 #endif
 
  }
