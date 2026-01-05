@@ -125,9 +125,9 @@ void BrightnessControl::assignMappings(void)
 
     lowerPointsSize = jarr_points.size();
 
-    lowerPoints = new qint32[lowerPointsSize];
+    lowerPoints = new int32_t[lowerPointsSize];
 
-    quint32 pointscounter = 0;
+    uint32_t pointscounter = 0;
 
     for (const auto& val : jarr_points)
     {
@@ -155,14 +155,14 @@ void BrightnessControl::assignMappings(void)
     for (const auto& val : brightnessMap_jarr)
     {
 
-        qint32 menuEntry = val.toObject()["menu"].toInt();
+        int32_t menuEntry = val.toObject()["menu"].toInt();
 
         core::JsonArray entryOutputs_jarr = val.toObject()["outputs"].toArray();
-        qint32 entryOutputsSize = entryOutputs_jarr.size();
+        int32_t entryOutputsSize = entryOutputs_jarr.size();
 
-        qint32 * entryOutputs = new qint32[entryOutputsSize];
+        int32_t * entryOutputs = new int32_t[entryOutputsSize];
 
-        quint32 entrycounter = 0;
+        uint32_t entrycounter = 0;
 
         for (const auto& outVal : entryOutputs_jarr)
         {
@@ -203,7 +203,7 @@ BrightnessControl::~BrightnessControl()
     }
 }
 
-void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
+void BrightnessControl::brightnessLevelChanged(int32_t newLevel)
 {
    //TODO select the new outputs level and force illuminanceMeasure+assignBrightness(WARNING: The hand can be over the sensor)
     coreDebug() << "Brightness control: level change notify received!" ;
@@ -218,19 +218,19 @@ void BrightnessControl::brightnessLevelChanged(qint32 newLevel)
     }
 }
 
-qint32 BrightnessControl::measureIlluminanceLevel(void)
+int32_t BrightnessControl::measureIlluminanceLevel(void)
 {
-    qint32 illuminanceLevel = lowerPointsSize;
+    int32_t illuminanceLevel = lowerPointsSize;
 #ifndef WIN32
     measureFile->seek(0);
     std::string line = measureFile->readLine();
-    qint32 currMeasure = line.empty() ? 0 : std::stoi(line);
-    illuminance_measure_mV = (quint32)std::round(currMeasure*scale);
+    int32_t currMeasure = line.empty() ? 0 : std::stoi(line);
+    illuminance_measure_mV = (uint32_t)std::round(currMeasure*scale);
     coreDebug() << "Illuminance ADC (mV): " << currMeasure*scale;
 
 
 
-    for (qint32 i = 0; i < lowerPointsSize ; i ++)
+    for (int32_t i = 0; i < lowerPointsSize ; i ++)
     {
         if(currMeasure < lowerPoints[i])
         {
@@ -248,14 +248,14 @@ qint32 BrightnessControl::measureIlluminanceLevel(void)
 void BrightnessControl::fireIlluminanceMeasure(void)
 {
 #ifndef WIN32
-    qint32 illuminanceLevel = measureIlluminanceLevel();
+    int32_t illuminanceLevel = measureIlluminanceLevel();
     assignBrightness(illuminanceLevel);
 #endif
 }
 
-void BrightnessControl::assignBrightness(quint32 outputLevel, bool forceBrightness)
+void BrightnessControl::assignBrightness(uint32_t outputLevel, bool forceBrightness)
 {
-    qint32 targetOutput;
+    int32_t targetOutput;
     if (nullptr != currentMenuLevelOutputs)
     {
         targetOutput = currentMenuLevelOutputs[outputLevel];

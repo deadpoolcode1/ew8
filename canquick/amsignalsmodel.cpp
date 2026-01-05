@@ -75,7 +75,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         //TODO find if exist
         QString keepAliveMsgName = "";
-        qint32 keepAliveTimeout;
+        int32_t keepAliveTimeout;
 
         if(protocol_obj.contains("keepAlive"))//TODO check necessity of the check
         {

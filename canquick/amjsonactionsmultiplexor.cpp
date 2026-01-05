@@ -65,7 +65,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
                     else
                     {
 
-                        QList<qint32> arglist;
+                        QList<int32_t> arglist;
 
                         if(arg_val.isArray())
                         {
@@ -107,7 +107,7 @@ std::unordered_map<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::get
     return &itsValueTable;
 }
 
-qint32 AmJsonActionsMultiplexor::getItsValuesType(void)
+int32_t AmJsonActionsMultiplexor::getItsValuesType(void)
 {
     return type;
 }

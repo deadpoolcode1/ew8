@@ -10,7 +10,7 @@ class KeepAliveMsg:  public QObject
 {
     Q_OBJECT
 
-    enum system_type_e: quint8
+    enum system_type_e: uint8_t
     {
         stypeLinux3_2inch = 0x0
         ,stypeAndroid = 0x1
@@ -35,11 +35,11 @@ private:
     QTimer * triggerTimer;
     static KeepAliveMsg * instance;
     QElapsedTimer uptimeReference;
-    quint16 sessionId;
+    uint16_t sessionId;
     system_type_e system_type;
     struct can_frame frame_to_send;
     bool isValid;
-    quint8 errorId;
+    uint8_t errorId;
 
     WatchDogDevice * wdt;
 

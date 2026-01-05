@@ -18,7 +18,7 @@ void AMJsonNumericArgumentAction::process(QObject * /*sender*/, QVariant extract
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toInt());
 }
 
-bool AMJsonNumericArgumentAction::isItsArgumentsType(qint32 type)
+bool AMJsonNumericArgumentAction::isItsArgumentsType(int32_t type)
 {
-    return (type == (qint32)IntArgument);
+    return (type == (int32_t)IntArgument);
 }

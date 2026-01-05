@@ -17,7 +17,7 @@ public:
 
    void process(QObject * sender, QVariant extractedCANsignal);
 
-   bool isItsArgumentsType(qint32 type);
+   bool isItsArgumentsType(int32_t type);
 
 private:
    CanIntArgumentsAccumulator * itsArgumentAccumulator;

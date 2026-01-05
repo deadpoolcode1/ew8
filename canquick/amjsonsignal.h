@@ -58,9 +58,9 @@ public:
 
     QString getItsSupName(void);
 
-    static  AMJsonSignal * getByIndex(quint32 idx);
+    static  AMJsonSignal * getByIndex(uint32_t idx);
 
-    quint32 getItsIndex(void);
+    uint32_t getItsIndex(void);
 
 
     //TODO: remove
@@ -69,7 +69,7 @@ public:
     //TODO: move two following statements to private section
     bool polarity;
     action_type_e type;
-    QList<qint32> * trueValues;//actual, when is not boolean
+    QList<int32_t> * trueValues;//actual, when is not boolean
     set_ops_t trueValuesOp;
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
@@ -84,8 +84,8 @@ public slots:
 
 private:
 
-  quint32 poolIndex;
-  static QMap<quint32, AMJsonSignal *> objectsPool;
+  uint32_t poolIndex;
+  static QMap<uint32_t, AMJsonSignal *> objectsPool;
 
   AMJsonAction * itsAction;
 
@@ -94,7 +94,7 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  QList<qint32> * extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
+  QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
 
   bool getDomainValidity(QVariant extractedSupCANsignal);
 
@@ -102,8 +102,8 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<qint32> * trueValues, set_ops_t trueDomainOp, QList<qint32> * trueDomainValues, bool isValueTable);
-  void setSmoothing(quint32 bufferLength, quint32 skipSmoothingDelta, QString smoothingType);
+  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<int32_t> * trueValues, set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable);
+  void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString smoothingType);
 
   QString itsName;
 
@@ -112,7 +112,7 @@ private:
   bool isSupplementedSignalEntry;
 
   set_ops_t itsDomainSetOp;
-  QList<qint32> * itsDomainTrueValues;
+  QList<int32_t> * itsDomainTrueValues;
 
 
   QList<QObject *> disablers;

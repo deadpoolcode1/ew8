@@ -97,7 +97,7 @@ void CanManager::launch(void)
 //TODO: unite volume functions
 void CanManager::sendVolumeDown(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -105,8 +105,8 @@ void CanManager::sendVolumeDown(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x0)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -123,7 +123,7 @@ void CanManager::sendVolumeDown(void)
 
 void CanManager::sendVolumeUp(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -131,8 +131,8 @@ void CanManager::sendVolumeUp(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x1)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -149,7 +149,7 @@ void CanManager::sendVolumeUp(void)
 
 void CanManager::sendVolumeGet(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -157,8 +157,8 @@ void CanManager::sendVolumeGet(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x2)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -174,7 +174,7 @@ void CanManager::sendVolumeGet(void)
 
 void CanManager::sendVolumeMute(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -182,8 +182,8 @@ void CanManager::sendVolumeMute(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x3)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -199,7 +199,7 @@ void CanManager::sendVolumeMute(void)
 
 void CanManager::sendISAFullDeact()
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -207,8 +207,8 @@ void CanManager::sendISAFullDeact()
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x5)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -224,7 +224,7 @@ void CanManager::sendISAFullDeact()
 
 void CanManager::sendISAPartDeact(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -232,8 +232,8 @@ void CanManager::sendISAPartDeact(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x4)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -249,7 +249,7 @@ void CanManager::sendISAPartDeact(void)
 
 void CanManager::sendISAFullActivate(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -257,8 +257,8 @@ void CanManager::sendISAFullActivate(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x6)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -300,7 +300,7 @@ void CanManager::init(void)
     //    "samplePoint": 87.5
     //}
 
-    qint32 bdr = 500;
+    int32_t bdr = 500;
     double samplepnt = 87.5;
 
     core::JsonValue canbus_jtop = AMJsonConfigReader::getInstance()->getJsonTopEntry("CANBusParameters");
@@ -440,9 +440,9 @@ void CanManager::init(void)
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
 #if 0
-    qint32 status = 0;
+    int32_t status = 0;
 
-    qint32 flags = fcntl(socknum, F_GETFL);
+    int32_t flags = fcntl(socknum, F_GETFL);
 
 
     if(-1 != flags)
@@ -657,7 +657,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
               curr->ack(this);
               itsDisplay->forceUpdate();
 #if 0
-              coreDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
+              coreDebug() << "message" << (void*)(uint32_t) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
 #endif
           }
 

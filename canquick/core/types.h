@@ -11,26 +11,6 @@
 #include <variant>
 #include <optional>
 
-// Qt type compatibility layer
-// These typedefs provide drop-in replacements for Qt integer types
-
-#ifdef QT_CORE_LIB
-// When Qt is present, include Qt's type definitions
-// This must be included early so types like qint64 are available
-#include <QtCore/qtypes.h>
-#else
-// Qt-compatible integer types - only define when Qt is NOT present
-using qint8 = int8_t;
-using quint8 = uint8_t;
-using qint16 = int16_t;
-using quint16 = uint16_t;
-using qint32 = int32_t;
-using quint32 = uint32_t;
-using qint64 = int64_t;
-using quint64 = uint64_t;
-using qsizetype = ssize_t;
-#endif // QT_CORE_LIB
-
 // QString replacement - use std::string
 using String = std::string;
 
