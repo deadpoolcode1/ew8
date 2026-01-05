@@ -1,6 +1,9 @@
 #ifndef ALERTTYPES_H
 #define ALERTTYPES_H
 
+// Include Qt workarounds before any Qt headers
+#include "qt_workarounds.h"
+
 #include <QtGlobal>
 
 #include <QObject>

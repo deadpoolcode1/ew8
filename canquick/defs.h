@@ -1,11 +1,12 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-// Use core types instead of Qt
+// Include Qt headers first (when building with Qt) to ensure Qt types are defined
+#include <alerttypes.h>
+
+// Then include core types (which will skip Qt-like types if Qt is present)
 #include "core/types.h"
 #include "core/elapsed_timer.h"
-
-#include <alerttypes.h>
 
 #include "candbsignal.h"
 

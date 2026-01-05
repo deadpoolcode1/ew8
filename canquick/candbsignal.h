@@ -1,8 +1,10 @@
 #ifndef CANDBSIGNAL_H
 #define CANDBSIGNAL_H
 
-// Use core library instead of Qt
-#include "core/types.h"
+// Include defs.h first (which includes Qt headers before core types)
+#include "defs.h"
+
+// Include core library after Qt headers are already included
 #include "core/serialization.h"
 
 #include <string>
@@ -20,8 +22,6 @@ using namespace peg;
 #else
 #include "canlib.h"
 #endif
-
-#include "defs.h"
 
 class AMJsonProtocol;
 
