@@ -4,7 +4,7 @@
 
 #include "defs.h"
 #include <QHash>
-#include <QJsonArray>
+#include "core/json.h"
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
 #include "iamjsonactionfactory.h"
@@ -12,7 +12,6 @@
 
 class AMJsonAction;
 class AMJsonSignal;
-class QJsonArray;
 class IAMJsonActionFactory;
 
 class AmJsonActionsMultiplexor: public QObject
@@ -22,7 +21,7 @@ class AmJsonActionsMultiplexor: public QObject
 
 public:
 
-    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, QString type, QObject * parent = nullptr);
+    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, QString type, QObject * parent = nullptr);
 
     QHash<double,IAMJsonProcessable *> * getItsValueTable();
 
@@ -30,7 +29,7 @@ public:
 
 private:
     action_type_e  type;
-    QJsonArray itsRawRows;
+    core::JsonArray itsRawRows;
     QHash<double, IAMJsonProcessable *> itsValueTable;
     void initByType(QString aType);
 

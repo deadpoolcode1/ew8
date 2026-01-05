@@ -4,6 +4,7 @@
 #include "amjsonsignal.h"
 #include "amjsonactionsmultiplexor.h"
 #include "canrxmsg.h"
+#include "core/json.h"
 #include <QMultiMap>
 #include <QObject>
 
@@ -26,7 +27,7 @@ public:
     Q_ENUM(protocol_type_e)
 
 
-    explicit AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameAndType, QObject * parent = nullptr);
+    explicit AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent = nullptr);
 
     void append(AMJsonSignal * signal);
 
@@ -34,7 +35,7 @@ public:
 
     QList<AMJsonSignal*> getSignalEntries(QString aName);
 
-    void setType(QJsonValue typeValue);
+    void setType(core::JsonValue typeValue);
     protocol_type_e getType(void);
     QString getTypeQString(void);
 
@@ -42,7 +43,7 @@ public:
 
      AMSignalsModel * itsModel;
 
-     void collectValueTables(QJsonValue protocolValueTables);
+     void collectValueTables(core::JsonValue protocolValueTables);
 
      //NOTE: fails when name already exists
      bool addMultiplexor(QString name, AmJsonActionsMultiplexor * mux);

@@ -1,11 +1,10 @@
 #include "amjsonactionsmultiplexor.h"
-#include <QJsonObject>
 #include "amjsonaction.h"
 #include "amjsonactionfactory.h"
 #include "amjsonfixedargumentsactioninvoker.h"
 #include "defs.h"
 
-AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
+AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
 {
     itsRawRows = vt_rows;
 
@@ -22,9 +21,9 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
     type = ActionType::fromString(aType);
 
     //TODO: convert raw rows to QHash values table
-    foreach (const QJsonValue & row_val, itsRawRows) {
+    for (const core::JsonValue & row_val : itsRawRows) {
 
-        QJsonObject row_obj = row_val.toObject();
+        core::JsonObject row_obj = row_val.toObject();
 
         bool valueStatus = row_obj["value"].isDouble();
 
@@ -39,7 +38,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
             double triggerValue = row_obj["value"].toDouble();
 
 
-            QString strAction = row_obj["action"].toString();
+            QString strAction = QString::fromStdString(row_obj["action"].toString());
 
 
 
@@ -53,14 +52,14 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
             if(GraphicItem == type)
             {
 
-                QJsonValue arg_val = row_obj["arg"];
+                core::JsonValue arg_val = row_obj["arg"];
 
                 if(!(arg_val.isUndefined()))
                 {
 
                     if(arg_val.isString())
                     {
-                        QString arg = arg_val.toString();
+                        QString arg = QString::fromStdString(arg_val.toString());
                         anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arg);
                     }
                     else
@@ -70,9 +69,9 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
                         if(arg_val.isArray())
                         {
-                            QJsonArray args_arr = arg_val.toArray();
+                            core::JsonArray args_arr = arg_val.toArray();
 
-                            foreach(const QJsonValue & arg_item, args_arr)
+                            for(const core::JsonValue & arg_item : args_arr)
                             {
                                 if(arg_item.isDouble())
                                 {
