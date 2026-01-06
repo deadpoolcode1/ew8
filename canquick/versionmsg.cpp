@@ -1,8 +1,7 @@
 #include "versionmsg.h"
 #include "defs.h"
 #include "core/core.h"
-#include <QFile>
-#include <QTextStream>
+#include "core/file_utils.h"
 #include "amjsonconfigreader.h"
 #include "core/json.h"
 
@@ -111,13 +110,13 @@ void VersionMsg::readVersionInfo(void)
     bool success = false;
 
     #if !((defined WIN32) || (defined REMOVE_EW8_HW))
-    QFile buildIdFile("/etc/version2epoch");
+    core::File buildIdFile("/etc/version2epoch");
 
-    QString buildId;
+    std::string buildId;
 
-    if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
+    if(buildIdFile.open(core::File::ReadOnly | core::File::Text))
     {
-      QTextStream buildIdStream(&buildIdFile);
+      core::TextStream buildIdStream(&buildIdFile);
       buildId = buildIdStream.readLine();
       buildIdFile.close();
     }
@@ -128,11 +127,15 @@ void VersionMsg::readVersionInfo(void)
     }
     else
     {
-
-        version2send.data[4] = (uint8_t)buildId.right(2).toUInt(&success,16);
-        if(success) version2send.data[5] = (uint8_t)buildId.mid(4,2).toUInt(&success,16);
-        if(success) version2send.data[6] = (uint8_t)buildId.mid(2,2).toUInt(&success,16);
-        if(success) version2send.data[7] = (uint8_t)buildId.left(2).toUInt(&success,16);
+        try {
+            version2send.data[4] = (uint8_t)std::stoul(buildId.substr(6, 2), nullptr, 16);
+            version2send.data[5] = (uint8_t)std::stoul(buildId.substr(4, 2), nullptr, 16);
+            version2send.data[6] = (uint8_t)std::stoul(buildId.substr(2, 2), nullptr, 16);
+            version2send.data[7] = (uint8_t)std::stoul(buildId.substr(0, 2), nullptr, 16);
+            success = true;
+        } catch (...) {
+            success = false;
+        }
     }
 #endif
 
