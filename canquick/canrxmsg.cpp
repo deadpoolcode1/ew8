@@ -66,7 +66,7 @@ QDataStream & operator>> (QDataStream &in, Signal &sig)
     return in;
 }
 
-QMap <uint32_t, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
+Map<uint32_t, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
 MeDisconnectionReport * CanRxMsg::itsDisconnectionReport = nullptr;
@@ -149,13 +149,13 @@ bool CanRxMsg::saveToStorage(void)
 #else
             configStream << (uint32_t)msgsWhiteList.size();
 #endif
-            QMap<CanStdId_t, CanRxMsg *>::iterator i;
+            Map<CanStdId_t, CanRxMsg *>::iterator i;
 
             for  (i = CanRxMsgsPool.begin(); i != CanRxMsgsPool.end(); i++)
             {
 
-                CanRxMsg * msg = i.value();
-                CanStdId_t id = i.key();
+                CanRxMsg * msg = i->second;
+                CanStdId_t id = i->first;
                 uint32_t q32Id = static_cast<uint32_t>(id);
 
                 if(std::find(msgsWhiteList.begin(), msgsWhiteList.end(), id) != msgsWhiteList.end())
@@ -312,7 +312,7 @@ CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, const String& aName)
         if(nullptr != ret)
         {
             ret->itsName = aName;
-            CanRxMsgsPool.insert(StdId, ret);
+            CanRxMsgsPool[StdId] = ret;
         }
     }
     return ret;
@@ -362,13 +362,13 @@ void CanRxMsg::completeInitCanRxMsgsPool()
 {
     if(!isAlreadyLoaded)
     {
-        QMap<CanStdId_t, CanRxMsg *>::iterator i;
+        Map<CanStdId_t, CanRxMsg *>::iterator i;
 
         for  (i = CanRxMsgsPool.begin(); i != CanRxMsgsPool.end(); i++)
         {
 
-            CanRxMsg * msg = i.value();
-            CanStdId_t id = i.key();
+            CanRxMsg * msg = i->second;
+            CanStdId_t id = i->first;
 
             if(keepAliveMsgName != "" && msg->itsName == keepAliveMsgName)
             {
@@ -406,7 +406,8 @@ CanRxMsg * CanRxMsg::getMsgByCanId(uint32_t StdId)
 {
     CanRxMsg * ret = nullptr;
 
-    ret = CanRxMsgsPool.value(StdId, nullptr);
+    auto it = CanRxMsgsPool.find(StdId);
+    ret = (it != CanRxMsgsPool.end()) ? it->second : nullptr;
 
     return ret;
 }

@@ -45,12 +45,12 @@ private:
 
     void jsonInitProtocolsAndSignalsVectors(void);
 
-    QMap<String,AMJsonProtocol*> jsonProtocols;
+    Map<String,AMJsonProtocol*> jsonProtocols;
 
     List<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
-    QMap<String,AMJsonGraphicItemAction *> jsonGraphicItemActions;
+    Map<String,AMJsonGraphicItemAction *> jsonGraphicItemActions;
     List<AMJsonArgumentAction *> jsonArgumentActions;
 
     CanManager * itsCanManager;

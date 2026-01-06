@@ -63,12 +63,12 @@ private:
 
     List<QObject *> disablers;
 
-    QMultiMap<String,AMJsonSignal*> jsonSignals;
+    MultiMap<String,AMJsonSignal*> jsonSignals;
 
-    QMap<String, AmJsonActionsMultiplexor*> jsonMultiplexors;
+    Map<String, AmJsonActionsMultiplexor*> jsonMultiplexors;
 
     uint32_t poolIndex;
-    static QMap<uint32_t, AMJsonProtocol *> objectsPool;
+    static Map<uint32_t, AMJsonProtocol *> objectsPool;
 
 };
 
