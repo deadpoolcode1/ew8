@@ -6,7 +6,7 @@
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
-#include <QFile>
+#include "core/file_utils.h"
 
 #include "mainprocess.h"
 #include "canmanager.h"

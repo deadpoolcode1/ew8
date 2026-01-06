@@ -1,7 +1,7 @@
 #ifndef AMSIGNALSMODEL_H
 #define AMSIGNALSMODEL_H
 
-#include <QFile>
+#include "core/file_utils.h"
 #include "core/json.h"
 #include <defs.h>
 #include "amjsonprotocol.h"

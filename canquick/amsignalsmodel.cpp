@@ -1,5 +1,5 @@
 #include "amsignalsmodel.h"
-#include <QFile>
+#include "core/file_utils.h"
 
 #include "core/json.h"
 #include "core/logger.h"

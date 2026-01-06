@@ -3,8 +3,8 @@
 #include "defs.h"
 #include "canrxmsg.h"
 
-#include <QDataStream>
-#include <QSaveFile>
+#include "core/serialization.h"
+#include "core/file_utils.h"
 #include "core/core.h"
 #include "core/types.h"
 #include <any>
@@ -31,8 +31,8 @@ static QVariant anyToVariant(const std::any& val)
     return QVariant();
 }
 
-// QDataStream operators for Signal type
-QDataStream & operator<< (QDataStream &out, const Signal &sig)
+// core::DataStream operators for Signal type
+core::DataStream & operator<< (core::DataStream &out, const Signal &sig)
 {
     SerializedSignal_t sesig;
     sesig.startByte = sig.startByte;
@@ -49,7 +49,7 @@ QDataStream & operator<< (QDataStream &out, const Signal &sig)
     return out;
 }
 
-QDataStream & operator>> (QDataStream &in, Signal &sig)
+core::DataStream & operator>> (core::DataStream &in, Signal &sig)
 {
     SerializedSignal_t sesig;
     in.readRawData((char*)&sesig, sizeof(SerializedSignal_t));
@@ -95,7 +95,7 @@ void CanRxMsg::setKeepAliveMsg(const String& aKeepAliveMsgName, int32_t aKeepAli
   }
 }
 
-QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
+core::DataStream & operator<< (core::DataStream &out, const CanRxMsg &any)
 {
     uint32_t listsize = any.canJsonSignalsPoolIdxInProcessOrder.size();
     out << listsize;
@@ -107,7 +107,7 @@ QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
     return out;
 }
 
-QDataStream & operator>> (QDataStream &in, CanRxMsg &any)
+core::DataStream & operator>> (core::DataStream &in, CanRxMsg &any)
 {
     uint32_t listsize;
 
@@ -129,17 +129,15 @@ bool CanRxMsg::saveToStorage(void)
 
     if(!isAlreadyLoaded)
     {
-        QSaveFile configDump("config.dat");
+        core::SaveFile configDump("config.dat");
 
-        if(!configDump.open(QFile::WriteOnly))
+        if(!configDump.open(core::File::WriteOnly))
         {
             coreDebug() << "Error: Can not write config.dat!";
         }
         else{
-            QDataStream configStream( & configDump);
-            configStream.setByteOrder(QDataStream::BigEndian);
-            configStream.setVersion(QDataStream::Qt_5_9);
-            configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
+            core::DataStream configStream(&configDump);
+            configStream.setByteOrder(core::DataStream::BigEndian);
 
 
             uint32_t keepAliveOutput = (uint32_t) keepAliveMsgId;
@@ -163,14 +161,11 @@ bool CanRxMsg::saveToStorage(void)
                     configStream << q32Id;
                     coreDebug() << "saving Msg Number:" << q32Id;
                     configStream << *msg;
-                    configStream.commitTransaction();
-                    configDump.flush();
                 }
             }
 
         }
 
-        configDump.flush();
         configDump.commit();
     }
     return status;
@@ -194,21 +189,19 @@ bool CanRxMsg::loadFromStorage(void)
 
     if(!isDBCParsingForced)
     {
-        QFile configDump("config.dat");
+        core::File configDump("config.dat");
 
-        if(!configDump.open(QFile::ReadOnly))
+        if(!configDump.open(core::File::ReadOnly))
         {
             coreDebug() << "Error: Can not read config.dat!";
             status = false;
         }
         else{
 
-            auto blob = configDump.readAll();
+            std::vector<uint8_t> blob = configDump.readAllBytes();
 
-            QDataStream configStream(blob);
-            configStream.setByteOrder(QDataStream::BigEndian);
-            configStream.setVersion(QDataStream::Qt_5_9);
-            configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
+            core::DataStream configStream(&blob);
+            configStream.setByteOrder(core::DataStream::BigEndian);
 
 
             uint32_t keepAliveInput;

@@ -1,8 +1,7 @@
 #include "ewinfo.h"
 #include "defs.h"
 #include "core/core.h"
-#include <QFile>
-#include <QTextStream>
+#include "core/file_utils.h"
 #include "amjsonconfigreader.h"
 #include "core/json.h"
 
@@ -159,13 +158,13 @@ void EWInfo::readEWInfo(void)
 void EWInfo::readOSBuildInfo(void)
 {
 
-    QFile buildIdFile("/etc/version2epoch");
+    core::File buildIdFile("/etc/version2epoch");
 
-    QString buildId;
+    std::string buildId;
 
-    if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
+    if(buildIdFile.open(core::File::ReadOnly | core::File::Text))
     {
-      QTextStream buildIdStream(&buildIdFile);
+      core::TextStream buildIdStream(&buildIdFile);
       buildId = buildIdStream.readLine();
       buildIdFile.close();
     }
@@ -176,11 +175,11 @@ void EWInfo::readOSBuildInfo(void)
     }
     else
     {
-       bool ok;
-       uint32_t tstamp = buildId.toUInt(&ok, 16);
-       if(ok)
-       {
+       try {
+           uint32_t tstamp = std::stoul(buildId, nullptr, 16);
            ewosbuild_str = std::to_string(tstamp);
+       } catch (...) {
+           // Conversion failed
        }
 
     }
@@ -252,11 +251,11 @@ void EWInfo::readServiceNumber(void)
 
         if(isprint(byteLSB))
         {
-            ewsn_str.append(QChar((char)byteLSB));
+            ewsn_str.push_back((char)byteLSB);
         }
         else
         {
-            ewsn_str.append("X");
+            ewsn_str.push_back('X');
         }
     }
 
