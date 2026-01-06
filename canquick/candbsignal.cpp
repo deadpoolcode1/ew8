@@ -265,7 +265,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
               // Convert std::vector<Signal*> to List<Signal*>
               List<Signal *> * qlistSignals = new List<Signal *>();
               for (Signal * sig : *cansignals) {
-                  qlistSignals->append(sig);
+                  qlistSignals->push_back(sig);
               }
               rxmsg->applyCanDBSignalsArray(qlistSignals);
 

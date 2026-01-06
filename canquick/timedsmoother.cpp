@@ -44,10 +44,10 @@ void TimedSmoother::addMeasure(uint32_t measure)
 
     while((items_count > 0) && ((curTimestamp - firstMeasureTimestamp) > smoothingTimeInterval))
     {
-        sum -= bufferQueue.first();
-        firstMeasureTimestamp = timestampsQueue.first();
-        bufferQueue.pop_front();
-        timestampsQueue.pop_front();
+        sum -= bufferQueue.front();
+        firstMeasureTimestamp = timestampsQueue.front();
+        bufferQueue.erase(bufferQueue.begin());
+        timestampsQueue.erase(timestampsQueue.begin());
         items_count--;
     }
 
