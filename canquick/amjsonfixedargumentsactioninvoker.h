@@ -13,7 +13,7 @@ class AMJsonFixedArgumentsActionInvoker: public IAMJsonProcessable
 public:
 
     AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, const String& aStringArg);
-    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<int32_t> intArgs);
+    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, List<int32_t> intArgs);
 
     void process(QObject *sender, QVariant extractedCANsignal);
 
@@ -24,7 +24,7 @@ public:
 private:
     AMJsonGraphicItemAction * itsAction;
     String itsStringArg;
-    QList <int32_t> itsIntArgs;
+    List <int32_t> itsIntArgs;
     bool isProcessedWithStringArg;
 };
 

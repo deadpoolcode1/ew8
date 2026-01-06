@@ -87,9 +87,9 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 }
 
 
-QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
+List<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
 {
-    QList<AMJsonSignal*> ret;
+    List<AMJsonSignal*> ret;
     ret = jsonSignals.values(aName);
     return ret;
 }

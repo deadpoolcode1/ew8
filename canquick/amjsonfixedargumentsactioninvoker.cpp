@@ -19,7 +19,7 @@ bool AMJsonFixedArgumentsActionInvoker::setSupplimentary (QVariant extractedCanS
     return ret;
 }
 
-AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<int32_t> intArgs)
+AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, List<int32_t> intArgs)
 {
     itsAction =  anAction;
     itsStringArg = "";

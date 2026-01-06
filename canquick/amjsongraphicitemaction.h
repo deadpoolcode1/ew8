@@ -59,7 +59,7 @@ private:
     bool areArgumentsReceived;
     bool isSupplemented;
     QVariant itsSupplimentary;
-    QList<QVariant> itsSuppDomain;
+    List<QVariant> itsSuppDomain;
 
     uint8_t argInt;
     uint8_t argFrac;
@@ -72,7 +72,7 @@ private:
 
     static QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
 
-    QList<QObject *> activators;
+    List<QObject *> activators;
 };
 
 #endif // AMJSONGRAPHICITEMACTION_H

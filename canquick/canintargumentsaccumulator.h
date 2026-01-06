@@ -3,6 +3,7 @@
 
 #include "canargumentsaccumulator.h"
 #include "ismoother.h"
+#include "core/types.h"
 
 #include <QObject>
 
@@ -35,7 +36,7 @@ private:
 
     //TODO replace with circular buffer
     uint32_t speedSmoothingBufferLength;
-    QList<uint8_t> smoothedArgBuffer;
+    List<uint8_t> smoothedArgBuffer;
 
 
 signals:
