@@ -35,8 +35,8 @@ void BufferedSmoother::addMeasure(uint32_t measure)
 
     if(items_count == smoothingBufferLength)
     {
-        sum -= bufferQueue.first();
-        bufferQueue.pop_front();
+        sum -= bufferQueue.front();
+        bufferQueue.erase(bufferQueue.begin());
     }
     else
     {
