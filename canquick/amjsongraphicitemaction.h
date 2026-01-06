@@ -70,7 +70,7 @@ private:
 
     IAlertDisplay * itsDisplay;
 
-    static QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
+    static Map<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
 
     List<QObject *> activators;
 };

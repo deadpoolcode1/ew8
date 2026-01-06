@@ -25,7 +25,7 @@ private:
 
     explicit CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 
-    QMap<size_t,char> charactersMap;
+    Map<size_t,char> charactersMap;
 
 signals:
 

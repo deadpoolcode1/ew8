@@ -3,7 +3,7 @@
 
 #include <ctype.h>
 
-QMap<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> CanArgumentsAccumulator::objectsMap;
+Map<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> CanArgumentsAccumulator::objectsMap;
 
 CanArgumentsAccumulator::CanArgumentsAccumulator(QObject *parent) : QObject(parent)
 {
@@ -15,9 +15,10 @@ CanArgumentsAccumulator * CanArgumentsAccumulator::getExistingInstance(DISPLAY_I
 
     CanArgumentsAccumulator * ret = nullptr;
 
-    if(objectsMap.contains(graphicItem))
+    auto it = objectsMap.find(graphicItem);
+    if(it != objectsMap.end())
     {
-         ret = objectsMap.find(graphicItem).value();
+         ret = it->second;
     }
 
     return ret;
