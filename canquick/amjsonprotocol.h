@@ -6,6 +6,7 @@
 #include "canrxmsg.h"
 #include "core/json.h"
 #include "core/types.h"
+#include "core/enum_utils.h"
 #include <QObject>
 
 class AMJsonSignal;
@@ -17,14 +18,7 @@ class AMJsonProtocol : public QObject
    Q_OBJECT
 
 public:
-
-    enum protocol_type_e
-    {
-         GPIO = 1,
-         CAN = 2,
-         Disabled = 3,
-    };
-    Q_ENUM(protocol_type_e)
+    // protocol_type_e is defined in core/enum_utils.h
 
 
     explicit AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent = nullptr);

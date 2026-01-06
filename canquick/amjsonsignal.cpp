@@ -15,8 +15,6 @@
 
 #include "core/core.h"
 
-#include <QMetaEnum>
-
 #include "core/json.h"
 
 #include <QObject>
