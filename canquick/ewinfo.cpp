@@ -85,7 +85,7 @@ String EWInfo::getOSBuildTimestamp(void)
   return ewosbuild_str;
 }
 
-void EWInfo::setMeSn(String aMeSn)
+void EWInfo::setMeSn(const String& aMeSn)
 {
 
 //TODO compute the snv value
