@@ -62,7 +62,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         bool status = true;
 
-        if (amjp->getType() == AMJsonProtocol::CAN)
+        if (amjp->getType() == CAN)
         {
 
             if(!CanRxMsg::isAlreadyLoaded)
