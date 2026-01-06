@@ -49,7 +49,9 @@ bool variantCanConvert(const Variant& v) {
 }
 
 // Q_LIKELY / Q_UNLIKELY macros - only define if Qt backend is NOT used
+// and Qt headers haven't already defined them
 #ifndef USE_QT_BACKEND
+#ifndef Q_LIKELY
 #ifdef __GNUC__
 #define Q_LIKELY(x)   __builtin_expect(!!(x), 1)
 #define Q_UNLIKELY(x) __builtin_expect(!!(x), 0)
@@ -57,15 +59,17 @@ bool variantCanConvert(const Variant& v) {
 #define Q_LIKELY(x)   (x)
 #define Q_UNLIKELY(x) (x)
 #endif
+#endif // Q_LIKELY
 #endif // USE_QT_BACKEND
 
 // =============================================================================
 // Qt-compatible container wrappers with Qt-like API
 // These provide drop-in replacements for Qt containers with familiar methods
-// Used by DEFAULT - only skipped when USE_QT_BACKEND is defined
+// Used by DEFAULT - only skipped when USE_QT_BACKEND is defined OR
+// when Qt headers have already been included (detected via QT_VERSION)
 // =============================================================================
 
-#ifndef USE_QT_BACKEND
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
 
 #include <algorithm>
 #include <functional>
@@ -236,14 +240,19 @@ public:
     static QString number(unsigned long long n) { return QString(std::to_string(n)); }
 };
 
-// qPrintable macro for QString
+// qPrintable macro for QString - only define if not already defined
+#ifndef qPrintable
 #define qPrintable(str) ((str).c_str())
+#endif
 
 // foreach macro replacement - Qt's foreach is equivalent to range-based for
 // Usage: foreach(Type item, container) { ... }
 // This simple implementation uses range-based for under the hood
+// Only define if not already defined
+#ifndef foreach
 #define foreach(variable, container) \
     for (variable : container)
+#endif
 
 // QList replacement with Qt-compatible API
 template<typename T>
@@ -520,9 +529,11 @@ private:
 // QStringList
 using QStringList = QList<QString>;
 
-// QStringBuilder compatibility
+// QStringBuilder compatibility - only define if not already defined
+#ifndef QStringBuilder
 #define QStringBuilder QString
+#endif
 
-#endif // USE_QT_BACKEND - end of Qt-compatible wrappers (these are the DEFAULT)
+#endif // !USE_QT_BACKEND && !QT_VERSION - end of Qt-compatible wrappers (these are the DEFAULT)
 
 #endif // CORE_TYPES_H

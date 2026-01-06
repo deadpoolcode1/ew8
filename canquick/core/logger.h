@@ -146,11 +146,12 @@ private:
 #define LOG_ERROR(fmt, ...) core::Logger::instance().log(core::LogLevel::Error, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
 
 // Qt-compatible macros - used by DEFAULT, skipped when USE_QT_BACKEND is defined
-#ifndef USE_QT_BACKEND
+// or when Qt headers have already been included (detected via QT_VERSION or qDebug already defined)
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION) && !defined(qDebug)
 #define qDebug() core::LogStream(core::LogLevel::Debug)
 #define qInfo() core::LogStream(core::LogLevel::Info)
 #define qWarning() core::LogStream(core::LogLevel::Warning)
 #define qCritical() core::LogStream(core::LogLevel::Critical)
-#endif // USE_QT_BACKEND
+#endif // !USE_QT_BACKEND && !QT_VERSION && !qDebug
 
 #endif // CORE_LOGGER_H

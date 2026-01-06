@@ -190,7 +190,8 @@ using CoreWorkerThread = core::WorkerThread;
 using CoreThreadPool = core::ThreadPool;
 
 // Qt-compatible typedef - used by DEFAULT, skipped when USE_QT_BACKEND is defined
-#ifndef USE_QT_BACKEND
+// or when Qt headers have already been included (detected via QT_VERSION)
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
 using QThread = core::Thread;
 #endif
 

@@ -42,35 +42,64 @@
 
 // Compatibility macros for easier migration
 // Used by DEFAULT - only skipped when USE_QT_BACKEND is defined
+// or when Qt headers have already been included (detected via QT_VERSION)
 
 #include <cassert>
 
-#ifndef USE_QT_BACKEND
-// Q_UNUSED equivalent
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
+// Q_UNUSED equivalent - only define if not already defined by Qt
+#ifndef Q_UNUSED
 #define Q_UNUSED(x) (void)(x)
+#endif
 
-// Q_ASSERT equivalent
+// Q_ASSERT equivalent - only define if not already defined by Qt
+#ifndef Q_ASSERT
 #define Q_ASSERT(x) assert(x)
+#endif
 
 // nullptr check
+#ifndef Q_NULLPTR
 #define Q_NULLPTR nullptr
+#endif
 
-// Qt meta-object system macros
+// Qt meta-object system macros - only define if not already defined by Qt
+#ifndef Q_OBJECT
 #define Q_OBJECT
+#endif
+#ifndef Q_PROPERTY
 #define Q_PROPERTY(...)
+#endif
+#ifndef Q_ENUM
 #define Q_ENUM(x)
+#endif
+#ifndef Q_GADGET
 #define Q_GADGET
+#endif
+#ifndef Q_INVOKABLE
 #define Q_INVOKABLE
+#endif
+#ifndef Q_SIGNAL
 #define Q_SIGNAL
+#endif
+#ifndef Q_SLOT
 #define Q_SLOT
+#endif
+#ifndef Q_EMIT
 #define Q_EMIT
+#endif
 
-// Signal/slot keywords
+// Signal/slot keywords - only define if not already defined by Qt
+#ifndef signals
 #define signals public
+#endif
+#ifndef slots
 #define slots
+#endif
+#ifndef emit
 #define emit
+#endif
 
-#endif // USE_QT_BACKEND
+#endif // !USE_QT_BACKEND && !QT_VERSION
 
 // Process (replaces QProcess - simplified version using fork/exec)
 #include <cstdlib>
@@ -219,7 +248,8 @@ private:
 using CoreProcess = core::Process;
 
 // Qt-compatible typedef - used by DEFAULT, skipped when USE_QT_BACKEND is defined
-#ifndef USE_QT_BACKEND
+// or when Qt headers have already been included (detected via QT_VERSION)
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
 using QProcess = core::Process;
 #endif
 
