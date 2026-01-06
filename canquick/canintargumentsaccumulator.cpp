@@ -26,7 +26,7 @@ CanIntArgumentsAccumulator * CanIntArgumentsAccumulator::getInstance(DISPLAY_ITE
 #if 0
         ret->doArgSmoothing = (graphicItem == GraphicItemsEnumMap::getId("INFO_VEH_SPEED"));
 #endif
-        objectsMap.insert(graphicItem, ret);
+        objectsMap[graphicItem] = ret;
 
  #if 0
         if(ret->doArgSmoothing){
