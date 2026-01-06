@@ -2,7 +2,7 @@
 #include <QMutex>
 #include <QTimer>
 #include "core/core.h"
-#include <QDateTime>
+#include "core/elapsed_timer.h"
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -106,9 +106,9 @@ void MainProcess::process()
             isDataComplete = false;
             emit startUpdateDisplayWindow();
             mutex.lock();
-            coreDebug()<< "updateStart:" << QDateTime::currentMSecsSinceEpoch();
+            coreDebug()<< "updateStart:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             updateDisplay();
-            coreDebug()<< "updateEnd:" << QDateTime::currentMSecsSinceEpoch();
+            coreDebug()<< "updateEnd:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             mutex.unlock();
 
         }
@@ -248,7 +248,7 @@ void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const S
     }
 #if 1
     coreDebug() << "function:" << __func__ << "alert:" << alert;
-    coreDebug() << " activated at:" << QDateTime::currentMSecsSinceEpoch();
+    coreDebug() << " activated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
 #endif
 
@@ -309,7 +309,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
     }
 
     coreDebug() << "function:" << __func__ << "alert:" << alert;
-    coreDebug() << "deactivated at:" << QDateTime::currentMSecsSinceEpoch();
+    coreDebug() << "deactivated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
     RootedTreeNode* nodeCGRT = nullptr;
 
