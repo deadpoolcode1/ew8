@@ -425,7 +425,7 @@ void CanManager::init(void)
 
     //CAN Socket configuration:
 
-    const QList<CanStdId_t> rfilterList = CanRxMsg::getMsgsWhiteList();
+    const List<CanStdId_t> rfilterList = CanRxMsg::getMsgsWhiteList();
 
     size_t rfilterSize = rfilterList.size();
 

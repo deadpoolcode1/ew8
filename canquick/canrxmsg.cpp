@@ -69,7 +69,7 @@ QMap <uint32_t, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
 MeDisconnectionReport * CanRxMsg::itsDisconnectionReport = nullptr;
-QList<CanStdId_t> CanRxMsg::msgsWhiteList;
+List<CanStdId_t> CanRxMsg::msgsWhiteList;
 bool CanRxMsg::isAlreadyLoaded = false;
 bool CanRxMsg::isDBCParsingForced = false;
 
@@ -345,7 +345,7 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignal
     coreDebug() << "CanRxMsgsPool is ready for usage";
 }
 
-const QList<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
+const List<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
 {
     return msgsWhiteList;
 }
@@ -385,9 +385,9 @@ CanRxMsg::CanRxMsg()
     itsJsonProtocol = nullptr;
 }
 
-void CanRxMsg::applyCanDBSignalsArray(QList<Signal *> * signalsList)
+void CanRxMsg::applyCanDBSignalsArray(List<Signal *> * signalsList)
 {
-    //canSignalsArray =  new QList<Signal *>();
+    //canSignalsArray =  new List<Signal *>();
 
     canSignalsArray = signalsList;
 
@@ -415,7 +415,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
         AMJsonSignal* signalValidator = nullptr;
         AMJsonSignal* signalsRequestIdArr[2];
         uint8_t requestidcount = 0;
-        QList<AMJsonSignal*> signalsToAppendList;
+        List<AMJsonSignal*> signalsToAppendList;
 
 
         foreach (Signal * curSignal, *canSignalsArray)
@@ -428,7 +428,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
             //TODO single return point
 
 
-            QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
+            List<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
 
             foreach (AMJsonSignal * jsonsig, signalsList)
             {
@@ -506,7 +506,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
         canJsonSignalsListInProcessOrder.append(signalsToAppendList);
 
-        QList<AMJsonSignal *>::iterator it;
+        List<AMJsonSignal *>::iterator it;
 
         for (it = canJsonSignalsListInProcessOrder.begin(); it != canJsonSignalsListInProcessOrder.end(); it++)
         {
@@ -542,7 +542,7 @@ void CanRxMsg::ack(CanManager *)
 
 void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 {
-    QList<Signal>::iterator it;
+    List<Signal>::iterator it;
     bool discardMsgOnRequestIdFail = false;
     bool discardMsg = false;
 

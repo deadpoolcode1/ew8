@@ -26,15 +26,15 @@ class CanIntArgumentsAccumulator;
 
 QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
 
-QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op)
+List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op)
 {
 
-      QList<int32_t> * trueValues = nullptr;
+      List<int32_t> * trueValues = nullptr;
       * a_set_op = set_op_na;
 
     if(signal_obj.contains(fieldName))
     {
-        trueValues = new QList<int32_t>();
+        trueValues = new List<int32_t>();
 
         if (signal_obj[fieldName].isArray()){
 
@@ -108,7 +108,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     core::JsonValue sigNameJsonValue = signal_obj["name"];
 
     isSupplementedSignalEntry = (sigNameJsonValue.isArray());
-     QList<int32_t> * domainTrueValues = nullptr;
+     List<int32_t> * domainTrueValues = nullptr;
      set_ops_t a_domain_set_op = set_op_na;
 
     if(isSupplementedSignalEntry)
@@ -205,7 +205,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     {
 
         set_ops_t a_set_op = set_op_na;
-        QList<int32_t> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
+        List<int32_t> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
         init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, a_set_op, sigTrueValues,   a_domain_set_op, domainTrueValues, false);
     }
 
@@ -230,7 +230,7 @@ String AMJsonSignal::getItsSupName(void)
     return itsSupName;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, const String& aName, const String& aSupName, const String& anAction, bool aPolarity, const String& aType, ssize_t anIndex, set_ops_t  a_set_op, QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, const String& aName, const String& aSupName, const String& anAction, bool aPolarity, const String& aType, ssize_t anIndex, set_ops_t  a_set_op, List<int32_t> * aTrueValues,  set_ops_t trueDomainOp, List<int32_t> * trueDomainValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 

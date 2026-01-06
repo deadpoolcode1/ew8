@@ -66,7 +66,7 @@ void AmJsonActionsMultiplexor::initByType(const String& aType)
                     else
                     {
 
-                        QList<int32_t> arglist;
+                        List<int32_t> arglist;
 
                         if(arg_val.isArray())
                         {
