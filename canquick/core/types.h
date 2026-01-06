@@ -45,6 +45,38 @@ bool variantCanConvert(const Variant& v) {
     return v.type() == typeid(T);
 }
 
+// =============================================================================
+// Qt Integer Type Aliases - ALWAYS use C++ standard types
+// These override Qt's integer types to force pure C++ usage
+// =============================================================================
+
+// Signed integer types
+using qint8 = int8_t;
+using qint16 = int16_t;
+using qint32 = int32_t;
+using qint64 = int64_t;
+
+// Unsigned integer types
+using quint8 = uint8_t;
+using quint16 = uint16_t;
+using quint32 = uint32_t;
+using quint64 = uint64_t;
+
+// Pointer-sized types
+using qintptr = intptr_t;
+using quintptr = uintptr_t;
+using qptrdiff = ptrdiff_t;
+using qsizetype = ssize_t;
+
+// qlonglong and qulonglong
+using qlonglong = long long;
+using qulonglong = unsigned long long;
+
+// qreal - Qt's floating point type (typically double)
+using qreal = double;
+
+// =============================================================================
+
 // Q_LIKELY / Q_UNLIKELY macros - only define if Qt is NOT present
 #ifndef QT_CORE_LIB
 #ifdef __GNUC__
