@@ -492,6 +492,19 @@ public:
         return QString();
     }
 
+    QChar toChar() const {
+        if (!data_.has_value()) return QChar();
+        if (data_.type() == typeid(QChar)) return std::any_cast<QChar>(data_);
+        if (data_.type() == typeid(char)) return QChar(std::any_cast<char>(data_));
+        if (data_.type() == typeid(int)) return QChar(std::any_cast<int>(data_));
+        // For QString, return first character
+        if (data_.type() == typeid(QString)) {
+            QString s = std::any_cast<QString>(data_);
+            return s.empty() ? QChar() : QChar(s[0]);
+        }
+        return QChar();
+    }
+
     template<typename T>
     bool canConvert() const {
         return data_.type() == typeid(T);
