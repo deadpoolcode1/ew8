@@ -5,7 +5,7 @@
 class AMJsonProtocol;
 class AMJsonSignal;
 
-AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, String action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
+AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
 {
 /*empty*/
 }
