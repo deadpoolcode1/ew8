@@ -51,9 +51,9 @@ public:
     std::string toStdString() const { return *this; }
 
     // QString-like helper methods for compatibility
-    String left(int n) const { return substr(0, n); }
-    String right(int n) const { return n >= (int)size() ? *this : substr(size() - n); }
-    String mid(int pos, int n = -1) const { return n < 0 ? substr(pos) : substr(pos, n); }
+    String left(int n) const { return String(substr(0, n)); }
+    String right(int n) const { return n >= (int)size() ? *this : String(substr(size() - n)); }
+    String mid(int pos, int n = -1) const { return n < 0 ? String(substr(pos)) : String(substr(pos, n)); }
 
     bool contains(const String& s) const { return find(s) != npos; }
     bool contains(const char* s) const { return find(s) != npos; }
