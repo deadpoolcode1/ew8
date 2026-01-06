@@ -47,11 +47,11 @@ private:
 
     QMap<String,AMJsonProtocol*> jsonProtocols;
 
-    QList<AMJsonEnablerAction *> jsonEnablerActions;
+    List<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
     QMap<String,AMJsonGraphicItemAction *> jsonGraphicItemActions;
-    QList<AMJsonArgumentAction *> jsonArgumentActions;
+    List<AMJsonArgumentAction *> jsonArgumentActions;
 
     CanManager * itsCanManager;
     IAMJsonActionFactory * itsAMJsonActionFactory;

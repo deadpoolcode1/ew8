@@ -262,8 +262,8 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           if (id <= 0xFFFFFFFF)
           {
               rxmsg = CanRxMsg::createInstance((uint32_t)id, name);
-              // Convert std::vector<Signal*> to QList<Signal*>
-              QList<Signal *> * qlistSignals = new QList<Signal *>();
+              // Convert std::vector<Signal*> to List<Signal*>
+              List<Signal *> * qlistSignals = new List<Signal *>();
               for (Signal * sig : *cansignals) {
                   qlistSignals->append(sig);
               }
@@ -272,7 +272,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
               rxmsg->setItsJsonProtocol(curParsedProtocol);
           }
 
-          // Clean up the std::vector (QList now owns the signals)
+          // Clean up the std::vector (List now owns the signals)
           delete cansignals;
           cansignals = new std::vector<Signal *>();
 

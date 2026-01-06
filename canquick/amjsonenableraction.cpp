@@ -20,7 +20,7 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
         }
 
-        QList<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
+        List<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
 
         foreach(AMJsonSignal * jsig, jsonSigList)
         {

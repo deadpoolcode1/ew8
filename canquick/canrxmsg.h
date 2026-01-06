@@ -9,6 +9,7 @@
 
 #include "amjsonprotocol.h"
 #include "candbsignal.h"
+#include "core/types.h"
 
 #include <QDataStream>
 
@@ -33,7 +34,7 @@ public:
     static CanRxMsg * getMsgByCanId(uint32_t std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
-    void applyCanDBSignalsArray(QList<Signal *> * canDBSignals);
+    void applyCanDBSignalsArray(List<Signal *> * canDBSignals);
     void setItsJsonProtocol(AMJsonProtocol * aJsonProtocol);
 
     Signal * getCANSignalByName(const String& name);
@@ -44,7 +45,7 @@ public:
     virtual void process(struct can_frame * frame);
     virtual void ack(CanManager * canMngr);
 
-    static  const QList<CanStdId_t> & getMsgsWhiteList(void);
+    static  const List<CanStdId_t> & getMsgsWhiteList(void);
     static bool saveToStorage(void);
     static bool loadFromStorage(void);
     static void forceDBCParsing(void);
@@ -68,7 +69,7 @@ private:
   static bool isDBCParsingForced;
   //Uses StdId as the key
   static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
-  static QList<CanStdId_t> msgsWhiteList;
+  static List<CanStdId_t> msgsWhiteList;
   static ICanRxMsgFactory * iCanRxMsgFactory;
   static AMSignalsModel * itsAMSignalsModel;
   static MeDisconnectionReport * itsDisconnectionReport;
@@ -94,11 +95,11 @@ protected:
   AMJsonProtocol * itsJsonProtocol;
 
   //WARNING: Used to initialize canJsonSignalsListInProcessOrder
-  QList<Signal *> * canSignalsArray;
+  List<Signal *> * canSignalsArray;
 
-  QList<AMJsonSignal *> canJsonSignalsListInProcessOrder;
+  List<AMJsonSignal *> canJsonSignalsListInProcessOrder;
 
-  QList<Signal> canJsonSignalsPoolIdxInProcessOrder;
+  List<Signal> canJsonSignalsPoolIdxInProcessOrder;
 
   friend QDataStream & operator<< (QDataStream &out, const CanRxMsg &any);
   friend QDataStream & operator>> (QDataStream &in, CanRxMsg &any);
