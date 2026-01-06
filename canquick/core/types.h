@@ -279,18 +279,76 @@ using QVector = QList<T>;
 template<typename K, typename V>
 class QMap : public std::map<K, V> {
 public:
+    using base_type = std::map<K, V>;
     using std::map<K, V>::map;
     QMap() : std::map<K, V>() {}
+
+    // Qt-compatible iterator wrapper
+    class iterator {
+    public:
+        using base_iterator = typename base_type::iterator;
+        iterator(base_iterator it) : it_(it) {}
+
+        const K& key() const { return it_->first; }
+        V& value() { return it_->second; }
+        const V& value() const { return it_->second; }
+
+        // Standard iterator operations
+        iterator& operator++() { ++it_; return *this; }
+        iterator operator++(int) { iterator tmp = *this; ++it_; return tmp; }
+        bool operator==(const iterator& other) const { return it_ == other.it_; }
+        bool operator!=(const iterator& other) const { return it_ != other.it_; }
+        std::pair<const K, V>& operator*() { return *it_; }
+        std::pair<const K, V>* operator->() { return &(*it_); }
+
+        base_iterator base() const { return it_; }
+    private:
+        base_iterator it_;
+    };
+
+    class const_iterator {
+    public:
+        using base_iterator = typename base_type::const_iterator;
+        const_iterator(base_iterator it) : it_(it) {}
+
+        const K& key() const { return it_->first; }
+        const V& value() const { return it_->second; }
+
+        // Standard iterator operations
+        const_iterator& operator++() { ++it_; return *this; }
+        const_iterator operator++(int) { const_iterator tmp = *this; ++it_; return tmp; }
+        bool operator==(const const_iterator& other) const { return it_ == other.it_; }
+        bool operator!=(const const_iterator& other) const { return it_ != other.it_; }
+        const std::pair<const K, V>& operator*() const { return *it_; }
+        const std::pair<const K, V>* operator->() const { return &(*it_); }
+
+        base_iterator base() const { return it_; }
+    private:
+        base_iterator it_;
+    };
+
+    // Override begin/end to return our custom iterators
+    iterator begin() { return iterator(base_type::begin()); }
+    iterator end() { return iterator(base_type::end()); }
+    const_iterator begin() const { return const_iterator(base_type::begin()); }
+    const_iterator end() const { return const_iterator(base_type::end()); }
+    const_iterator cbegin() const { return const_iterator(base_type::cbegin()); }
+    const_iterator cend() const { return const_iterator(base_type::cend()); }
+
+    // Override find to return our custom iterator
+    iterator find(const K& key) { return iterator(base_type::find(key)); }
+    const_iterator find(const K& key) const { return const_iterator(base_type::find(key)); }
 
     // Qt-compatible methods
     bool isEmpty() const { return this->empty(); }
     int count() const { return static_cast<int>(this->size()); }
-    bool contains(const K& key) const { return this->find(key) != this->end(); }
+    bool contains(const K& key) const { return base_type::find(key) != base_type::end(); }
     V value(const K& key, const V& defaultValue = V()) const {
-        auto it = this->find(key);
-        return it != this->end() ? it->second : defaultValue;
+        auto it = base_type::find(key);
+        return it != base_type::end() ? it->second : defaultValue;
     }
-    void insert(const K& key, const V& value) { (*this)[key] = value; }
+    void insert(const K& key, const V& val) { (*this)[key] = val; }
+    int remove(const K& key) { return static_cast<int>(this->erase(key)); }
     QList<K> keys() const {
         QList<K> result;
         for (const auto& pair : *this) {
@@ -311,13 +369,68 @@ public:
 template<typename K, typename V>
 class QMultiMap : public std::multimap<K, V> {
 public:
+    using base_type = std::multimap<K, V>;
     using std::multimap<K, V>::multimap;
     QMultiMap() : std::multimap<K, V>() {}
 
+    // Qt-compatible iterator wrapper
+    class iterator {
+    public:
+        using base_iterator = typename base_type::iterator;
+        iterator(base_iterator it) : it_(it) {}
+
+        const K& key() const { return it_->first; }
+        V& value() { return it_->second; }
+        const V& value() const { return it_->second; }
+
+        iterator& operator++() { ++it_; return *this; }
+        iterator operator++(int) { iterator tmp = *this; ++it_; return tmp; }
+        bool operator==(const iterator& other) const { return it_ == other.it_; }
+        bool operator!=(const iterator& other) const { return it_ != other.it_; }
+        std::pair<const K, V>& operator*() { return *it_; }
+        std::pair<const K, V>* operator->() { return &(*it_); }
+
+        base_iterator base() const { return it_; }
+    private:
+        base_iterator it_;
+    };
+
+    class const_iterator {
+    public:
+        using base_iterator = typename base_type::const_iterator;
+        const_iterator(base_iterator it) : it_(it) {}
+
+        const K& key() const { return it_->first; }
+        const V& value() const { return it_->second; }
+
+        const_iterator& operator++() { ++it_; return *this; }
+        const_iterator operator++(int) { const_iterator tmp = *this; ++it_; return tmp; }
+        bool operator==(const const_iterator& other) const { return it_ == other.it_; }
+        bool operator!=(const const_iterator& other) const { return it_ != other.it_; }
+        const std::pair<const K, V>& operator*() const { return *it_; }
+        const std::pair<const K, V>* operator->() const { return &(*it_); }
+
+        base_iterator base() const { return it_; }
+    private:
+        base_iterator it_;
+    };
+
+    // Override begin/end to return our custom iterators
+    iterator begin() { return iterator(base_type::begin()); }
+    iterator end() { return iterator(base_type::end()); }
+    const_iterator begin() const { return const_iterator(base_type::begin()); }
+    const_iterator end() const { return const_iterator(base_type::end()); }
+    const_iterator cbegin() const { return const_iterator(base_type::cbegin()); }
+    const_iterator cend() const { return const_iterator(base_type::cend()); }
+
+    // Override find to return our custom iterator
+    iterator find(const K& key) { return iterator(base_type::find(key)); }
+    const_iterator find(const K& key) const { return const_iterator(base_type::find(key)); }
+
     bool isEmpty() const { return this->empty(); }
     int count() const { return static_cast<int>(this->size()); }
-    bool contains(const K& key) const { return this->find(key) != this->end(); }
-    void insert(const K& key, const V& value) { std::multimap<K, V>::insert({key, value}); }
+    bool contains(const K& key) const { return base_type::find(key) != base_type::end(); }
+    void insert(const K& key, const V& val) { std::multimap<K, V>::insert({key, val}); }
     QList<V> values(const K& key) const {
         QList<V> result;
         auto range = this->equal_range(key);
