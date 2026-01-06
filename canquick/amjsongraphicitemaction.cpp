@@ -18,7 +18,7 @@ class CanStringArgumentsAccumulator;
 
 QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
 
-AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, QString action)
+AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, String action)
 {
     DISPLAY_ITEM_ID aGraphicItemID = GraphicItemsEnumMap::getId(action);
 
@@ -58,7 +58,7 @@ bool AMJsonGraphicItemAction::setSupplimentary(QVariant extractedCANsignal)
     return ret;
 }
 
-AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
+AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, String action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
 {
    itsGraphicItemID = aGraphicItemID;
    itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
@@ -159,7 +159,7 @@ void AMJsonGraphicItemAction::deactivate(void)
     }
 }
 
-void AMJsonGraphicItemAction::argumentComplete(QString anArg)
+void AMJsonGraphicItemAction::argumentComplete(String anArg)
 {
 
     bool isChanged = (argStr != anArg);
@@ -244,7 +244,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
 
             if(strAcc)
             {
-                connect(strAcc, SIGNAL(argumentComplete(QString)),this,SLOT(argumentComplete(QString)));
+                connect(strAcc, SIGNAL(argumentComplete(String)),this,SLOT(argumentComplete(String)));
                 hasArguments = true;
                 isArgOfStringType = true;
             }

@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "defs.h"
+#include "core/types.h"
 
 #include "amjsonaction.h"
 
@@ -13,7 +14,7 @@ class AMJsonProtocol;
 class AMJsonArgumentAction : public AMJsonAction
 {
 public:
-    explicit AMJsonArgumentAction(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonArgumentAction(AMJsonProtocol * aJsonProtocol, action_type_e type, const String& action, AMJsonAction * parent = nullptr);
 
     //NOTE: default index value (0)
     void setIndex(ssize_t anIndex) {itsIndex = anIndex;}

@@ -27,16 +27,16 @@ public:
     static void initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignalsModel * amSignalsModel);
     static void completeInitCanRxMsgsPool(void);
     static void setItsDisconnectionReport(MeDisconnectionReport * aDisconnectionReport);
-    static void setKeepAliveMsg(QString keepAliveMsgName, int32_t aKeepAliveTimeout);
+    static void setKeepAliveMsg(const String& keepAliveMsgName, int32_t aKeepAliveTimeout);
 
-    static CanRxMsg * createInstance(uint32_t StdId, QString itsName);
+    static CanRxMsg * createInstance(uint32_t StdId, const String& itsName);
     static CanRxMsg * getMsgByCanId(uint32_t std_id);
     //TODO: 1) move the method usage to the ICanRxMsgFactory.
     //TODO: 2) generalize CanRxMsg instances to SimpleCanRxMsg and SmartCanRxMsg.
     void applyCanDBSignalsArray(QList<Signal *> * canDBSignals);
     void setItsJsonProtocol(AMJsonProtocol * aJsonProtocol);
 
-    Signal * getCANSignalByName(QString name);
+    Signal * getCANSignalByName(const String& name);
 
     //NOTE: depends on JSON and DBC already parsed
     void initCanJsonSignalsListInProcessOrder(void);
@@ -83,14 +83,14 @@ private:
 protected:
   CanRxMsg();
 
-  static QString keepAliveMsgName;
+  static String keepAliveMsgName;
   static CanStdId_t keepAliveMsgId;
   static int32_t keepAliveTimeout;
 
   uint32_t getCanID(void);
 
-  QString itsJsonProtocolName;
-  QString itsName;//NOTE: Used during Jason Parsing
+  String itsJsonProtocolName;
+  String itsName;//NOTE: Used during Jason Parsing
   AMJsonProtocol * itsJsonProtocol;
 
   //WARNING: Used to initialize canJsonSignalsListInProcessOrder

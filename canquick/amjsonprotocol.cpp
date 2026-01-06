@@ -34,8 +34,8 @@ AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocol
         protocolNameValue = protocolNameAndType;
     }
 
-    name = QString::fromStdString(protocolNameValue.toString());
-    LOG_DEBUG("JSON: new protocol extracted: %s", qPrintable(name));
+    name = protocolNameValue.toString();
+    LOG_DEBUG("JSON: new protocol extracted: %s", name.c_str());
 
     if(isNotDefaultProtocolType)
     {
@@ -66,8 +66,8 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
     //fetch the current protocol's value tables:
      core::JsonArray jsonValueTablesArray = protocolValueTables.toArray();
 
-      QString vt_name;
-      QString vt_type;
+      String vt_name;
+      String vt_type;
       core::JsonArray vt_rows;
 
      //collect the value tables names:
@@ -75,8 +75,8 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
             core::JsonObject vt_obj = vt_raw.toObject();
 
             //take the name and create an empty corresponding multiplexor entry.
-          vt_name = QString::fromStdString(vt_obj["name"].toString());
-          vt_type = QString::fromStdString(vt_obj["type"].toString());
+          vt_name = vt_obj["name"].toString();
+          vt_type = vt_obj["type"].toString();
           vt_rows = vt_obj["rows"].toArray();
 
           AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows, vt_type);
@@ -87,7 +87,7 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 }
 
 
-QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(QString aName)
+QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
 {
     QList<AMJsonSignal*> ret;
     ret = jsonSignals.values(aName);
@@ -109,26 +109,26 @@ AMJsonProtocol::protocol_type_e AMJsonProtocol::getType(void)
     return type;
 }
 
-QString AMJsonProtocol::getTypeQString(void)
+String AMJsonProtocol::getTypeString(void)
 {
-    QString ret;
+    String ret;
 
     QMetaObject metaObj = this->staticMetaObject;
     QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("protocol_type_e"));
 
-    ret = QString(metaEnum.valueToKey(type));
+    ret = metaEnum.valueToKey(type);
 
     return ret;
 }
 
 
-QString AMJsonProtocol::getName(void)
+String AMJsonProtocol::getName(void)
 {
     return name;
 }
 
 
-bool AMJsonProtocol::addMultiplexor(QString name, AmJsonActionsMultiplexor * mux)
+bool AMJsonProtocol::addMultiplexor(const String& name, AmJsonActionsMultiplexor * mux)
 {
    bool ret;
    if(jsonMultiplexors.contains(name))
@@ -145,7 +145,7 @@ bool AMJsonProtocol::addMultiplexor(QString name, AmJsonActionsMultiplexor * mux
 }
 
 //NOTE: fails when lacks name or different type already assigned
-AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(QString name)
+AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(const String& name)
 {
     AmJsonActionsMultiplexor * ret = nullptr;
 
@@ -161,7 +161,7 @@ AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(QString name)
 void AMJsonProtocol::enableDisableThis(bool onOff)
 {
 
-    bool is_pre_enabled = disablers.isEmpty();
+    bool is_pre_enabled = disablers.empty();
 
     if (false == onOff && !disablers.contains(sender()))
     {
@@ -172,11 +172,11 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
         disablers.removeOne(sender());
     }
 
-    bool is_post_enabled = disablers.isEmpty();
+    bool is_post_enabled = disablers.empty();
 
     if(is_pre_enabled && !is_post_enabled)
     {
-        LOG_DEBUG("Protocol %s is %s", qPrintable(name), "disabled");
+        LOG_DEBUG("Protocol %s is %s", name.c_str(), "disabled");
 
 
         foreach (AMJsonSignal * jsonsig , jsonSignals)
@@ -198,7 +198,7 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
     }
     else if (!is_pre_enabled && is_post_enabled)
     {
-        LOG_DEBUG("Protocol %s is %s", qPrintable(name), "enabled");
+        LOG_DEBUG("Protocol %s is %s", name.c_str(), "enabled");
     }
 }
 

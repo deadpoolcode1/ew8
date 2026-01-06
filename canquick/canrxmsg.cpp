@@ -76,14 +76,14 @@ bool CanRxMsg::isDBCParsingForced = false;
 bool CanRxMsg::isRequestSent = false;
 bool CanRxMsg::isRequestIdLSBByteReceived = false;
 uint16_t CanRxMsg::requestId = 0x0;
-QString CanRxMsg::keepAliveMsgName;
+String CanRxMsg::keepAliveMsgName;
 CanStdId_t CanRxMsg::keepAliveMsgId = 0x0;
 int32_t CanRxMsg::keepAliveTimeout;
 
 
-void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName, int32_t aKeepAliveTimeout)
+void CanRxMsg::setKeepAliveMsg(String aKeepAliveMsgName, int32_t aKeepAliveTimeout)
 {
-  if(keepAliveMsgName.isEmpty())
+  if(keepAliveMsgName.empty())
   {
     keepAliveMsgName = aKeepAliveMsgName;
     keepAliveTimeout = aKeepAliveTimeout;
@@ -232,7 +232,7 @@ bool CanRxMsg::loadFromStorage(void)
 
                 configStream >> stdId;
 
-                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, QString(""));
+                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, "");
 
                 coreDebug() << "StdId:" << (int32_t)stdId;
 
@@ -293,7 +293,7 @@ void CanRxMsg::discardRequestId(void)
 
 
 
-CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, QString aName = "")
+CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, String aName = "")
 {
     CanRxMsg * ret = getMsgByCanId(StdId);
     //TODO review the check location
@@ -320,13 +320,13 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     }
 }
 
-Signal * CanRxMsg::getCANSignalByName(QString name)
+Signal * CanRxMsg::getCANSignalByName(String name)
 {
     Signal * ret = nullptr;
 
     foreach (Signal * cansig, * canSignalsArray)
     {
-        if (QString::fromStdString(cansig->name) == name)
+        if (cansig->name == name)
         {
             ret = cansig;
         }
@@ -423,7 +423,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
             //JSON Driven Alerts Triggering:
 
 
-            QString currSignalStr = QString::fromStdString(curSignal->name);
+            String currSignalStr = curSignal->name;
 
             //TODO single return point
 
@@ -435,13 +435,13 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
                 jsonsig->setItsCanDbSignal(curSignal);
 
-                QString supSignalName = jsonsig->getItsSupName();
+                String supSignalName = jsonsig->getItsSupName();
 
-                if (!supSignalName.isEmpty())
+                if (!supSignalName.empty())
                 {
                     foreach (Signal * iSignal, *canSignalsArray)
                     {
-                        if(QString::fromStdString(iSignal->name) == supSignalName)
+                        if(iSignal->name == supSignalName)
                         {
                             jsonsig->setItsCanSecDbSignal(iSignal);
                         }

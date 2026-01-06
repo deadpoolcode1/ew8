@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 #endif
 
     QCommandLineParser cmdLnParser;
-    QString mainQmlFileName;
+    String mainQmlFileName;
 
     QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
     QCommandLineOption testingConfig(QStringList() << "t" << "testing-mode", "Run the application with with testing mode configs");
@@ -163,11 +163,11 @@ int main(int argc, char *argv[])
     if (!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
     {
          engine.addImportPath(":/");
-         mainQmlUrl = QUrl(QStringLiteral("qrc:/")+mainQmlFileName);
+         mainQmlUrl = QUrl(QStringLiteral("qrc:/") + QString::fromStdString(mainQmlFileName));
     }
     else
     {
-        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/")+mainQmlFileName);
+        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + QString::fromStdString(mainQmlFileName));
     }
 
 	QQmlComponent component(&engine, mainQmlUrl);

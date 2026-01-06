@@ -34,13 +34,13 @@ public:
     SYSREQ_TYPE_ENUM_DEFINITION
     #undef SYSREQ_TYPE_ENUM_DEFINITION
 
-    static ::sysreq_type_e fromString(QString aType)
+    static ::sysreq_type_e fromString(const String& aType)
     {
         ::sysreq_type_e ret;
 
         const QMetaObject  * metaObj = &staticMetaObject;
         QMetaEnum metaEnum = metaObj->enumerator(metaObj->indexOfEnumerator("sysreq_type_e"));
-        ret = (::sysreq_type_e)metaEnum.keyToValue(aType.toLatin1());
+        ret = (::sysreq_type_e)metaEnum.keyToValue(aType.c_str());
 
         return ret;
     }

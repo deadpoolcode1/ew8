@@ -29,7 +29,7 @@ private:
 
 signals:
 
-    void argumentComplete(QString result);
+    void argumentComplete(const String& result);
 
 public slots:
 };
