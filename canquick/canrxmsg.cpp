@@ -8,6 +8,7 @@
 #include "core/core.h"
 #include "core/types.h"
 #include <any>
+#include <algorithm>
 
 // Helper function to convert std::any to QVariant
 static QVariant anyToVariant(const std::any& val)
@@ -116,7 +117,7 @@ QDataStream & operator>> (QDataStream &in, CanRxMsg &any)
     {
         Signal * sig = new Signal();
         in >> *sig;
-        any.canJsonSignalsPoolIdxInProcessOrder.append(*sig);
+        any.canJsonSignalsPoolIdxInProcessOrder.push_back(*sig);
     }
     return in;
 }
@@ -157,7 +158,7 @@ bool CanRxMsg::saveToStorage(void)
                 CanStdId_t id = i.key();
                 uint32_t q32Id = static_cast<uint32_t>(id);
 
-                if(msgsWhiteList.contains(id))
+                if(std::find(msgsWhiteList.begin(), msgsWhiteList.end(), id) != msgsWhiteList.end())
                 {
                     configStream << q32Id;
                     coreDebug() << "saving Msg Number:" << q32Id;
@@ -239,11 +240,18 @@ bool CanRxMsg::loadFromStorage(void)
                 if(rxmsg)
                 {
                     configStream >> *rxmsg;
-                    msgsWhiteList.append(stdId);
+                    msgsWhiteList.push_back(stdId);
                 }
                 else
                 {
-                    configStream >> dummybuff.canJsonSignalsPoolIdxInProcessOrder;
+                    // Read and discard the signals list
+                    uint32_t dummyListSize;
+                    configStream >> dummyListSize;
+                    for(uint32_t j = 0; j < dummyListSize; j++)
+                    {
+                        Signal dummySig;
+                        configStream >> dummySig;
+                    }
                 }
 
 
@@ -371,9 +379,9 @@ void CanRxMsg::completeInitCanRxMsgsPool()
             {
                 msg->initCanJsonSignalsListInProcessOrder();
 
-                if(!(msg->canJsonSignalsListInProcessOrder.isEmpty()))
+                if(!(msg->canJsonSignalsListInProcessOrder.empty()))
                 {
-                    msgsWhiteList.append(id);
+                    msgsWhiteList.push_back(id);
                 }
             }
         }
@@ -472,7 +480,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
                 case Enabler:
 
-                    canJsonSignalsListInProcessOrder.prepend(jsonsig);
+                    canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), jsonsig);
 
                     break;
 
@@ -480,13 +488,13 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 case StringArgument:
                 case IntArgument:
 
-                    canJsonSignalsListInProcessOrder.append(jsonsig);
+                    canJsonSignalsListInProcessOrder.push_back(jsonsig);
 
                     break;
 
                 default:
 
-                    signalsToAppendList.append(jsonsig);
+                    signalsToAppendList.push_back(jsonsig);
 
                     break;
                 }
@@ -495,16 +503,16 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
         if(requestidcount == 2)
         {
-            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[1]);
-            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[0]);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalsRequestIdArr[1]);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalsRequestIdArr[0]);
         }
 
         if(signalValidator != nullptr)
         {
-            canJsonSignalsListInProcessOrder.prepend(signalValidator);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalValidator);
         }
 
-        canJsonSignalsListInProcessOrder.append(signalsToAppendList);
+        canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.end(), signalsToAppendList.begin(), signalsToAppendList.end());
 
         List<AMJsonSignal *>::iterator it;
 
@@ -515,12 +523,12 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
            (jsonsig->getCanDbSignal())->AMJsonSignalIdx = jsonsig->getItsIndex();
 
-           canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSignal()));
+           canJsonSignalsPoolIdxInProcessOrder.push_back(*(jsonsig->getCanDbSignal()));
 
            if(jsonsig->getIsSupplemented())
            {
                (jsonsig->getCanDbSupSignal())->AMJsonSignalIdx = jsonsig->getItsIndex();
-               canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSupSignal()));
+               canJsonSignalsPoolIdxInProcessOrder.push_back(*(jsonsig->getCanDbSupSignal()));
            }
 
         }
