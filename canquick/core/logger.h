@@ -9,10 +9,9 @@
 #include <chrono>
 #include <mutex>
 
-// Include Qt headers if Qt is present (for QString/QUrl streaming support)
+// Include Qt headers if Qt is present (for QString streaming support)
 #ifdef QT_CORE_LIB
 #include <QString>
-#include <QUrl>
 #endif
 
 // Simple logging system to replace QDebug
@@ -116,12 +115,6 @@ public:
     // Qt QString support
     LogStream& operator<<(const QString& value) {
         ss_ << value.toStdString();
-        return *this;
-    }
-
-    // Qt QUrl support
-    LogStream& operator<<(const QUrl& value) {
-        ss_ << value.toString().toStdString();
         return *this;
     }
 #endif // QT_CORE_LIB

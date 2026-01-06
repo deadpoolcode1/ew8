@@ -154,15 +154,13 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    QUrl mainQmlUrl;
+    // Build path as std::string instead of QUrl
+    std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + mainQmlFileName;
 
-    // Use file system access instead of compiled Qt resources
-    // This removes dependency on QResource
-    mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + QString::fromStdString(mainQmlFileName));
-
-	QQmlComponent component(&engine, mainQmlUrl);
-coreDebug() << "Loading QML from:" << mainQmlUrl;
-	coreDebug() << "Component status:" << component.status();
+    // Only construct QUrl inline where required by Qt QML APIs
+    QQmlComponent component(&engine, QUrl::fromLocalFile(QString::fromStdString(mainQmlPath)));
+    coreDebug() << "Loading QML from:" << mainQmlPath;
+    coreDebug() << "Component status:" << component.status();
 if (component.status() != QQmlComponent::Ready) {
     coreDebug() << "QML errors:" << component.errorString();
 }
