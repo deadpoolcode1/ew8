@@ -31,40 +31,7 @@ static QVariant anyToVariant(const std::any& val)
     return QVariant();
 }
 
-// core::DataStream operators for Signal type
-core::DataStream & operator<< (core::DataStream &out, const Signal &sig)
-{
-    SerializedSignal_t sesig;
-    sesig.startByte = sig.startByte;
-    sesig.startBit = sig.startBit;
-    sesig.numOfBits = sig.numOfBits;
-    sesig.sign = static_cast<uint8_t>(sig.sign);
-    sesig.factor = sig.factor;
-    sesig.offset = sig.offset;
-    sesig.min = sig.min;
-    sesig.max = sig.max;
-    sesig.enumValueType = static_cast<int8_t>(sig.valueType);
-    sesig.AMJsonSignalIdx = sig.AMJsonSignalIdx;
-    out.writeRawData((const char*)(&sesig), sizeof(SerializedSignal_t));
-    return out;
-}
-
-core::DataStream & operator>> (core::DataStream &in, Signal &sig)
-{
-    SerializedSignal_t sesig;
-    in.readRawData((char*)&sesig, sizeof(SerializedSignal_t));
-    sig.startByte = sesig.startByte;
-    sig.startBit = sesig.startBit;
-    sig.numOfBits = sesig.numOfBits;
-    sig.sign = sesig.sign ? true : false;
-    sig.factor = sesig.factor;
-    sig.offset = sesig.offset;
-    sig.min = sesig.min;
-    sig.max = sesig.max;
-    sig.valueType = static_cast<SignalValueType>(sesig.enumValueType);
-    sig.AMJsonSignalIdx = sesig.AMJsonSignalIdx;
-    return in;
-}
+// Note: core::DataStream operators for Signal type are defined in candbsignal.cpp
 
 Map<uint32_t, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
