@@ -10,8 +10,7 @@
 #include "amjsonprotocol.h"
 #include "candbsignal.h"
 #include "core/types.h"
-
-#include <QDataStream>
+#include "core/serialization.h"
 
 class CanManager;
 
@@ -101,11 +100,11 @@ protected:
 
   List<Signal> canJsonSignalsPoolIdxInProcessOrder;
 
-  friend QDataStream & operator<< (QDataStream &out, const CanRxMsg &any);
-  friend QDataStream & operator>> (QDataStream &in, CanRxMsg &any);
+  friend core::DataStream & operator<< (core::DataStream &out, const CanRxMsg &any);
+  friend core::DataStream & operator>> (core::DataStream &in, CanRxMsg &any);
 };
 
-extern QDataStream & operator<< (QDataStream &out, const CanRxMsg & any);
-extern QDataStream & operator>> (QDataStream &in, CanRxMsg &any);
+extern core::DataStream & operator<< (core::DataStream &out, const CanRxMsg & any);
+extern core::DataStream & operator>> (core::DataStream &in, CanRxMsg &any);
 
 #endif // CANRXMSG_H

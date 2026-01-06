@@ -2,6 +2,7 @@
 
 #include "keepalivemsg.h"
 #include "defs.h"
+#include "core/file_utils.h"
 
 //NOTE: Next header is used for random()
 //TODO: replace with QRandomGenerator, when passing to qt 5.12
@@ -19,21 +20,21 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
     system_type = stypeInvalid;
 
     if ("linux" == QSysInfo::kernelType()) {
-        QFile deviceModelFile(QString::fromStdString(deviceModelFileName));
-        QString modelLine;
+        core::File deviceModelFile(deviceModelFileName);
+        std::string modelLine;
 
-        if(deviceModelFile.open(QFile::ReadOnly | QFile::Text))
+        if(deviceModelFile.open(core::File::ReadOnly | core::File::Text))
         {
             modelLine = deviceModelFile.readLine();
             deviceModelFile.close();
 
 
-            if(modelLine.contains("pcb353"))
+            if(modelLine.find("pcb353") != std::string::npos)
             {
                 system_type = stypeLinux3_2inch;
             }
 
-            else if(modelLine.contains("pcb000928"))
+            else if(modelLine.find("pcb000928") != std::string::npos)
             {
                 system_type = stypeLinux3_5inch;
             }
