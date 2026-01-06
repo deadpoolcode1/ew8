@@ -39,7 +39,7 @@ void AMJsonFixedArgumentsActionInvoker::process(QObject *sender, QVariant extrac
         }
         else
         {
-            switch(itsIntArgs.length())
+            switch(itsIntArgs.size())
             {
             case 1:
                 itsAction->argumentComplete((uint8_t)itsIntArgs.at(0), 0, 0);
