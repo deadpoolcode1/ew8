@@ -34,7 +34,7 @@ CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPL
 void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t aChar)
 {
 
-    QString * result =   nullptr;
+    String * result =   nullptr;
 
     if(!isprint(aChar))
     {
@@ -54,7 +54,7 @@ void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t
             ch_result[i] = charactersMap[i];
         }
 
-        result = new QString(ch_result);
+        result = new String(ch_result);
 
         argumentComplete(*result);
 

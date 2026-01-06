@@ -22,7 +22,7 @@ class AmJsonActionsMultiplexor: public QObject
 
 public:
 
-    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, QString type, QObject * parent = nullptr);
+    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, const String& type, QObject * parent = nullptr);
 
     std::unordered_map<double, IAMJsonProcessable *> * getItsValueTable();
 
@@ -32,7 +32,7 @@ private:
     action_type_e  type;
     core::JsonArray itsRawRows;
     std::unordered_map<double, IAMJsonProcessable *> itsValueTable;
-    void initByType(QString aType);
+    void initByType(const String& aType);
 
     AMJsonProtocol * itsProtocol;
     IAMJsonActionFactory * itsActionFactory;

@@ -35,13 +35,13 @@ public:
     ACTION_TYPE_ENUM_DEFINITION
     #undef ACTION_TYPE_ENUM_DEFINITION
 
-    static ::action_type_e fromString(QString aType)
+    static ::action_type_e fromString(const String& aType)
     {
         ::action_type_e ret;
 
         const QMetaObject  * metaObj = &staticMetaObject;
         QMetaEnum metaEnum = metaObj->enumerator(metaObj->indexOfEnumerator("action_type_e"));
-        ret = (::action_type_e)metaEnum.keyToValue(aType.toLatin1());
+        ret = (::action_type_e)metaEnum.keyToValue(aType.c_str());
 
         return ret;
     }

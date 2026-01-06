@@ -33,7 +33,7 @@ public:
 
     explicit AMSignalsModel(CanManager * aManager);
 
-    AMJsonProtocol * getProtocol(QString aName);
+    AMJsonProtocol * getProtocol(const String& aName);
 
     CanManager * getItsCanManager(void);
 
@@ -45,12 +45,12 @@ private:
 
     void jsonInitProtocolsAndSignalsVectors(void);
 
-    QMap<QString,AMJsonProtocol*> jsonProtocols;
+    QMap<String,AMJsonProtocol*> jsonProtocols;
 
     QList<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
-    QMap<QString,AMJsonGraphicItemAction *> jsonGraphicItemActions;
+    QMap<String,AMJsonGraphicItemAction *> jsonGraphicItemActions;
     QList<AMJsonArgumentAction *> jsonArgumentActions;
 
     CanManager * itsCanManager;

@@ -261,7 +261,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
           //WARNING: VECTOR__INDEPENDENT_SIG_MSG id is not supported
           if (id <= 0xFFFFFFFF)
           {
-              rxmsg = CanRxMsg::createInstance((uint32_t)id, QString::fromStdString(name));
+              rxmsg = CanRxMsg::createInstance((uint32_t)id, name);
               // Convert std::vector<Signal*> to QList<Signal*>
               QList<Signal *> * qlistSignals = new QList<Signal *>();
               for (Signal * sig : *cansignals) {

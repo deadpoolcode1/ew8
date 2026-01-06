@@ -31,41 +31,41 @@ public:
 
     void append(AMJsonSignal * signal);
 
-    QString getName(void);
+    String getName(void);
 
-    QList<AMJsonSignal*> getSignalEntries(QString aName);
+    QList<AMJsonSignal*> getSignalEntries(const String& aName);
 
     void setType(core::JsonValue typeValue);
     protocol_type_e getType(void);
-    QString getTypeQString(void);
+    String getTypeString(void);
 
-     bool getIsEnabled(void) {return disablers.isEmpty();}
+     bool getIsEnabled(void) {return disablers.empty();}
 
      AMSignalsModel * itsModel;
 
      void collectValueTables(core::JsonValue protocolValueTables);
 
      //NOTE: fails when name already exists
-     bool addMultiplexor(QString name, AmJsonActionsMultiplexor * mux);
+     bool addMultiplexor(const String& name, AmJsonActionsMultiplexor * mux);
 
      //NOTE: returns nullptr when lacks name or different type already assigned
-     AmJsonActionsMultiplexor * getMultiplexorByName(QString name);
+     AmJsonActionsMultiplexor * getMultiplexorByName(const String& name);
 
 public slots:
 
     void enableDisableThis(bool OnOff);
 
 private:
-    QString name;
-    QString ackProtName;
+    String name;
+    String ackProtName;
 
     protocol_type_e type;
 
     QList<QObject *> disablers;
 
-    QMultiMap<QString,AMJsonSignal*> jsonSignals;
+    QMultiMap<String,AMJsonSignal*> jsonSignals;
 
-    QMap<QString, AmJsonActionsMultiplexor*> jsonMultiplexors;
+    QMap<String, AmJsonActionsMultiplexor*> jsonMultiplexors;
 
     uint32_t poolIndex;
     static QMap<uint32_t, AMJsonProtocol *> objectsPool;

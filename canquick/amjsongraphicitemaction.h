@@ -22,7 +22,7 @@ class AMJsonGraphicItemAction: public AMJsonAction
 
 public:
 
-    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, QString action);
+    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, const String& action);
 
     static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
 
@@ -41,12 +41,12 @@ public:
 
 public slots:
     void argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg);
-    void argumentComplete(QString strArg);
+    void argumentComplete(const String& strArg);
     void forceDeactivation(void);
 
 private:
 
-    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent = nullptr);
 
     void deactivate(void);
 
@@ -64,7 +64,7 @@ private:
     uint8_t argInt;
     uint8_t argFrac;
     uint8_t argUnits;
-    QString argStr;
+    String argStr;
 
     bool isArgOfStringType;
 

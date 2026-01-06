@@ -26,23 +26,23 @@ class CanIntArgumentsAccumulator;
 
 QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
 
-QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
+QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op)
 {
 
       QList<int32_t> * trueValues = nullptr;
       * a_set_op = set_op_na;
 
-    if(signal_obj.contains(fieldName.toStdString()))
+    if(signal_obj.contains(fieldName))
     {
         trueValues = new QList<int32_t>();
 
-        if (signal_obj[fieldName.toStdString()].isArray()){
+        if (signal_obj[fieldName].isArray()){
 
-            core::JsonArray trueValues_Array = signal_obj[fieldName.toStdString()].toArray();
+            core::JsonArray trueValues_Array = signal_obj[fieldName].toArray();
 
             if (trueValues_Array[0].isString())
             {
-                QString opString = QString::fromStdString(trueValues_Array[0].toString());
+                String opString = trueValues_Array[0].toString();
                 if("gt" == opString)
                 {
                     * a_set_op = set_op_gt;
@@ -95,10 +95,10 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
 
     //Signal row parsing:
     core::JsonObject signal_obj = singleSignalsEntry.toObject();
-    QString sigName;
-    QString supName = "";
-    QString sigAction;
-    QString sigType;
+    String sigName;
+    String supName = "";
+    String sigAction;
+    String sigType;
     bool polarity = true;
     int32_t sigIndex = -1;
     bool isValueTable = false;
@@ -113,14 +113,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
 
     if(isSupplementedSignalEntry)
     {
-        sigName = QString::fromStdString(sigNameJsonValue.toArray().at(0).toString());
-        supName = QString::fromStdString(sigNameJsonValue.toArray().at(1).toString());
+        sigName = sigNameJsonValue.toArray().at(0).toString();
+        supName = sigNameJsonValue.toArray().at(1).toString();
         domainTrueValues = extractSetValuesField(signal_obj, "Domain", & a_domain_set_op);
     }
     else
     {
 
-        sigName = QString::fromStdString(sigNameJsonValue.toString());
+        sigName = sigNameJsonValue.toString();
     }
 
 
@@ -129,25 +129,25 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     {
         core::JsonArray actionArray = signal_obj["action"].toArray();
 
-        sigAction = QString::fromStdString(actionArray[0].toString());
-        if ("inverted" == QString::fromStdString(actionArray[1].toString()))
+        sigAction = actionArray[0].toString();
+        if ("inverted" == actionArray[1].toString())
         {
             polarity = false;
         }
     }
     else
     {
-        sigAction = QString::fromStdString(signal_obj["action"].toString());
+        sigAction = signal_obj["action"].toString();
     }
     //end of Action parsing
 
-    sigType =  QString::fromStdString(signal_obj["type"].toString());
+    sigType = signal_obj["type"].toString();
 
     sigIndex = signal_obj["index"].toInt(-1);
 
     uint32_t bufferLength = 0;
     uint32_t skipSmoothingDelta = 0;
-    QString smoothingType;
+    String smoothingType;
 
     //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
     core::JsonValue smoothedVal = signal_obj["smoothed"];
@@ -157,7 +157,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
             core::JsonArray sigSmoothed_Array = smoothedVal.toArray();
             bufferLength = (uint32_t)sigSmoothed_Array.at(0).toInt(0);
             skipSmoothingDelta = (uint32_t)sigSmoothed_Array.at(1).toInt(0);
-            smoothingType = QString::fromStdString(sigSmoothed_Array.at(2).toString("items"));
+            smoothingType = sigSmoothed_Array.at(2).toString("items");
             coreDebug()<<"smoothing type: "<< smoothingType;
     }
 
@@ -225,12 +225,12 @@ uint32_t AMJsonSignal::getItsIndex(void)
     return poolIndex;
 }
 
-QString AMJsonSignal::getItsSupName(void)
+String AMJsonSignal::getItsSupName(void)
 {
     return itsSupName;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, const String& aName, const String& aSupName, const String& anAction, bool aPolarity, const String& aType, ssize_t anIndex, set_ops_t  a_set_op, QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 
@@ -284,7 +284,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupN
     //TODO use actions map
 }
 
-void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString aSmoothingType)
+void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, const String& aSmoothingType)
 {
     if(IntArgument == type)
     {
@@ -312,7 +312,7 @@ void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDel
     }
 }
 
- QString AMJsonSignal::getName(void)
+ String AMJsonSignal::getName(void)
  {
      return itsName;
  }
@@ -325,7 +325,7 @@ void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDel
  Signal * AMJsonSignal::getCanDbSupSignal(void)
  {
      Signal * ret  = nullptr;
-     if (!itsSupName.isEmpty())
+     if (!itsSupName.empty())
      {
          ret = & itsSecondCanDbSignal;
      }
@@ -502,7 +502,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
  void AMJsonSignal::enableDisableThis(bool onOff)
  {
 
-     bool is_pre_enabled = disablers.isEmpty();
+     bool is_pre_enabled = disablers.empty();
 
      if (false == onOff && !disablers.contains(sender()))
      {
@@ -513,16 +513,16 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          disablers.removeOne(sender());
      }
 
-     bool is_post_enabled = disablers.isEmpty();
+     bool is_post_enabled = disablers.empty();
 
      if(is_pre_enabled && !is_post_enabled)
      {
-         LOG_DEBUG("Signal %s is %s", qPrintable(itsName), "disabled");
+         LOG_DEBUG("Signal %s is %s", itsName.c_str(), "disabled");
          deactivateAllGraphicItems();
      }
      else if (!is_pre_enabled && is_post_enabled)
      {
-         LOG_DEBUG("Signal %s is %s", qPrintable(itsName), "enabled");
+         LOG_DEBUG("Signal %s is %s", itsName.c_str(), "enabled");
      }
  }
 
