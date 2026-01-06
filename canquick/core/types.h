@@ -46,9 +46,11 @@ bool variantCanConvert(const Variant& v) {
 }
 
 // =============================================================================
-// Qt Integer Type Aliases - ALWAYS use C++ standard types
-// These override Qt's integer types to force pure C++ usage
+// Qt Integer Type Aliases - Only define when Qt is NOT present
+// When Qt IS present, use Qt's own type definitions to avoid conflicts
 // =============================================================================
+
+#ifndef QT_CORE_LIB
 
 // Signed integer types
 using qint8 = int8_t;
@@ -74,6 +76,8 @@ using qulonglong = unsigned long long;
 
 // qreal - Qt's floating point type (typically double)
 using qreal = double;
+
+#endif // QT_CORE_LIB
 
 // =============================================================================
 
