@@ -22,7 +22,7 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
 
         List<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
 
-        foreach(AMJsonSignal * jsig, jsonSigList)
+        for (AMJsonSignal * jsig : jsonSigList)
         {
             if(Enabler != jsig->type)
             {
