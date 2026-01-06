@@ -125,12 +125,12 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
     //functional connections of the stored Actions:
 
-    foreach (AMJsonEnablerAction * enabler, jsonEnablerActions)
+    for (AMJsonEnablerAction * enabler : jsonEnablerActions)
     {
         enabler->connect2EnabledDisabled();
     }
 
-    foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
+    for (AMJsonArgumentAction * argument : jsonArgumentActions)
     {
         //TODO: think about arguments : actions 1:n
         Map<String,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
