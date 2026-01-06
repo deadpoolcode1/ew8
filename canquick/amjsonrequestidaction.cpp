@@ -14,7 +14,7 @@ AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, con
 void AMJsonRequestIdAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
 {
     bool status;
-       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((int32_t)extractedCANsignal.toInt(&status));
+       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((intptr_t)extractedCANsignal.toInt(&status));
 
        if(itsIndex == 0)
        {
