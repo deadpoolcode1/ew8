@@ -539,7 +539,8 @@ namespace CoreIODevice {
 }
 
 // Qt-compatible typedefs - used by DEFAULT, skipped when USE_QT_BACKEND is defined
-#ifndef USE_QT_BACKEND
+// or when Qt headers have already been included (detected via QT_VERSION)
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
 using QFile = core::File;
 using QDir = core::Dir;
 using QFileInfo = core::FileInfo;
@@ -553,6 +554,6 @@ namespace QIODevice {
     const int Truncate = core::File::Truncate;
     const int Text = core::File::Text;
 }
-#endif // USE_QT_BACKEND
+#endif // !USE_QT_BACKEND && !QT_VERSION
 
 #endif // CORE_FILE_UTILS_H
