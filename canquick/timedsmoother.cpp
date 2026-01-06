@@ -1,6 +1,6 @@
 #include "core/types.h"
+#include "core/elapsed_timer.h"
 #include <QObject>
-#include <QDateTime>
 #include "timedsmoother.h"
 
 //TODO: try to use time lap instead of fixed buffer length, storing the timestamps of the measures.
@@ -24,7 +24,7 @@ void TimedSmoother::cleanBuffer(void)
 void TimedSmoother::addMeasure(uint32_t measure)
 {
 
-    int64_t curTimestamp = QDateTime::currentMSecsSinceEpoch();
+    int64_t curTimestamp = core::ElapsedTimer::currentMSecsSinceEpoch();
 
     if(skipSmoothingDelta > 0)
     {
