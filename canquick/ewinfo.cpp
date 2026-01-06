@@ -90,8 +90,8 @@ void EWInfo::setMeSn(const String& aMeSn)
 
 //TODO compute the snv value
 
-    std::string ew = ewsn_str.toStdString();
-    std::string me = aMeSn.toStdString();
+    std::string ew = ewsn_str;
+    std::string me = aMeSn;
 
     //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
