@@ -21,6 +21,8 @@
 
 #include <QObject>
 
+#include <algorithm>
+
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
@@ -64,7 +66,7 @@ List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
                     coreDebug() << "Set: operation type error";
                 }
 
-                trueValues->append(trueValues_Array[1].toInt(0));
+                trueValues->push_back(trueValues_Array[1].toInt(0));
 
 
             }
@@ -74,7 +76,7 @@ List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
 
                 for(const core::JsonValue & value : trueValues_Array)
                 {
-                    trueValues->append(value.toInt(0));
+                    trueValues->push_back(value.toInt(0));
                 }
             }
 
@@ -84,7 +86,7 @@ List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
         {
             int32_t sigTrueValue = signal_obj["Set"].toInt(0);
             * a_set_op = set_op_or;
-            trueValues->append(sigTrueValue);
+            trueValues->push_back(sigTrueValue);
         }
     }
     return trueValues;
@@ -430,19 +432,19 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          switch (itsDomainSetOp)
          {
          case set_op_or:
-             ret = ((itsDomainTrueValues->contains(desired)) == polarity);
+             ret = ((std::find(itsDomainTrueValues->begin(), itsDomainTrueValues->end(), desired) != itsDomainTrueValues->end()) == polarity);
              break;
          case set_op_lt:
-             ret = ((itsDomainTrueValues->constFirst() > desired) == polarity);
+             ret = ((itsDomainTrueValues->front() > desired) == polarity);
              break;
          case set_op_le:
-             ret = ((itsDomainTrueValues->constFirst() >= desired) == polarity);
+             ret = ((itsDomainTrueValues->front() >= desired) == polarity);
              break;
          case set_op_gt:
-             ret = ((itsDomainTrueValues->constFirst() < desired) == polarity);
+             ret = ((itsDomainTrueValues->front() < desired) == polarity);
              break;
          case set_op_ge:
-             ret = ((itsDomainTrueValues->constFirst() <= desired) == polarity);
+             ret = ((itsDomainTrueValues->front() <= desired) == polarity);
              break;
          default:
              coreDebug() << "Domain set operation in not defined.";
@@ -470,19 +472,19 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          switch (trueValuesOp)
          {
          case set_op_or:
-             * do_active = ((trueValues->contains(desired)) == polarity);
+             * do_active = ((std::find(trueValues->begin(), trueValues->end(), desired) != trueValues->end()) == polarity);
              break;
          case set_op_lt:
-             * do_active = ((trueValues->constFirst() > desired) == polarity);
+             * do_active = ((trueValues->front() > desired) == polarity);
              break;
          case set_op_le:
-             * do_active = ((trueValues->constFirst() >= desired) == polarity);
+             * do_active = ((trueValues->front() >= desired) == polarity);
              break;
          case set_op_gt:
-             * do_active = ((trueValues->constFirst() < desired) == polarity);
+             * do_active = ((trueValues->front() < desired) == polarity);
              break;
          case set_op_ge:
-             * do_active = ((trueValues->constFirst() <= desired) == polarity);
+             * do_active = ((trueValues->front() <= desired) == polarity);
              break;
          default:
              coreDebug() << "Set operation in not defined.";
@@ -504,13 +506,14 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
      bool is_pre_enabled = disablers.empty();
 
-     if (false == onOff && !disablers.contains(sender()))
+     auto it = std::find(disablers.begin(), disablers.end(), sender());
+     if (false == onOff && it == disablers.end())
      {
-         disablers.append(sender());
+         disablers.push_back(sender());
      }
-     else if (true == onOff && disablers.contains(sender()))
+     else if (true == onOff && it != disablers.end())
      {
-         disablers.removeOne(sender());
+         disablers.erase(it);
      }
 
      bool is_post_enabled = disablers.empty();

@@ -76,7 +76,7 @@ void AmJsonActionsMultiplexor::initByType(const String& aType)
                             {
                                 if(arg_item.isDouble())
                                 {
-                                    arglist.append(arg_item.toInt());
+                                    arglist.push_back(arg_item.toInt());
                                 }
                             }
 
@@ -84,10 +84,10 @@ void AmJsonActionsMultiplexor::initByType(const String& aType)
                         }
                         else if(arg_val.isDouble())
                         {
-                            arglist.append(arg_val.toInt());
+                            arglist.push_back(arg_val.toInt());
                         }
 
-                        if(!(arglist.isEmpty()))
+                        if(!(arglist.empty()))
                         {
                             anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arglist);
                         }

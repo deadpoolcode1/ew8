@@ -2,6 +2,8 @@
 #include "graphicitemsenummap.h"
 #include "core/logger.h"
 
+#include <algorithm>
+
 #include "amjsonargumentaction.h"
 
 #include "amjsonaction.h"
@@ -68,26 +70,27 @@ AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol,
 }
 
 void AMJsonGraphicItemAction::process(QObject * sender, QVariant extractedCANsignal)
-{   
-    bool isSenderListed = activators.contains(sender);
+{
+    auto it = std::find(activators.begin(), activators.end(), sender);
+    bool isSenderListed = (it != activators.end());
 
     if (extractedCANsignal.toBool())
     {
         if(!isSenderListed)
         {
             activate();
-            activators.append(sender);
+            activators.push_back(sender);
         }
     }
     else
     {
         if(isSenderListed)
         {
-            if(1 == activators.count())
+            if(1 == activators.size())
             {
                 deactivate();
             }
-            activators.removeOne(sender);
+            activators.erase(it);
         }
     }
 }
@@ -218,7 +221,7 @@ void AMJsonGraphicItemAction::argumentComplete(uint8_t intArg, uint8_t fracArg, 
 
 bool AMJsonGraphicItemAction::getIsActived(void)
 {
-    return !(activators.isEmpty());
+    return !(activators.empty());
 }
 
 
