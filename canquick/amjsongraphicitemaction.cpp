@@ -18,7 +18,7 @@ class AMJsonSignal;
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
 
-QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
+Map<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
 
 AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, const String& action)
 {
@@ -26,12 +26,13 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * 
 
     AMJsonGraphicItemAction * ret =  nullptr;
 
-    ret = itsObjects.value(aGraphicItemID, nullptr);
+    auto it = itsObjects.find(aGraphicItemID);
+    ret = (it != itsObjects.end()) ? it->second : nullptr;
 
     if(nullptr == ret)
     {
         ret = new AMJsonGraphicItemAction(aJsonProtocol, aGraphicItemID, action);
-        itsObjects.insert(aGraphicItemID, ret);
+        itsObjects[aGraphicItemID] = ret;
     }
 
     return ret;
@@ -41,7 +42,8 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstanceByItemID(DISPLAY_I
 {
     AMJsonGraphicItemAction * ret;
 
-    ret = itsObjects.value(aGraphicItemID, nullptr);
+    auto it = itsObjects.find(aGraphicItemID);
+    ret = (it != itsObjects.end()) ? it->second : nullptr;
 
     return ret;
 }

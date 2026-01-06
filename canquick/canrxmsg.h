@@ -68,7 +68,7 @@ private:
   static bool isRequestIdLSBByteReceived;
   static bool isDBCParsingForced;
   //Uses StdId as the key
-  static QMap<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
+  static Map<CanStdId_t, CanRxMsg *> CanRxMsgsPool;
   static List<CanStdId_t> msgsWhiteList;
   static ICanRxMsgFactory * iCanRxMsgFactory;
   static AMSignalsModel * itsAMSignalsModel;
