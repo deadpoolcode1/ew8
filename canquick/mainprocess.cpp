@@ -234,11 +234,11 @@ void MainProcess::activate(DISPLAY_ITEM_ID alert, uint8_t valueInt, uint8_t valu
 
 void MainProcess::activate(DISPLAY_ITEM_ID alert, const std::string& stringArg)
 {
-    activateInternal(alert, true, QString::fromStdString(stringArg), 0, 0, 0);
+    activateInternal(alert, true, stringArg, 0, 0, 0);
 }
 
 
-void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
+void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)

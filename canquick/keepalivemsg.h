@@ -43,7 +43,7 @@ private:
 
     WatchDogDevice * wdt;
 
-    const QString deviceModelFileName = "/sys/firmware/devicetree/base/model";
+    const String deviceModelFileName = "/sys/firmware/devicetree/base/model";
 
 };
 

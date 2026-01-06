@@ -13,11 +13,11 @@ class AMJsonAction : public QObject, public IAMJsonProcessable
     Q_OBJECT
 
 public:
-    explicit AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, QObject *parent = nullptr);
+    explicit AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e type, const String& action, QObject *parent = nullptr);
 
     AMJsonProtocol * getItsJsonProtocol(void);
 
-    QString getActionName(void);
+    String getActionName(void);
 
     virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
     bool setSupplimentary(QVariant extractedCANsignal);
@@ -26,7 +26,7 @@ public:
 
 private:
 
-    QString action;
+    String action;
 
 
 

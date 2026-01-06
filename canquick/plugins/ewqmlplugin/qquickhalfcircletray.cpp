@@ -15,14 +15,14 @@ QQuickHalfCircleTray::QQuickHalfCircleTray(QQuickItem *parent):
     // setFlag(ItemHasContents, true);
 }
 
-QString QQuickHalfCircleTray::getSide(void)
+String QQuickHalfCircleTray::getSide(void)
 {
-    QString ret;
+    String ret;
     ret = is_left ? "left":"right";
     return ret;
 }
 
-void QQuickHalfCircleTray::setSide(QString aSide)
+void QQuickHalfCircleTray::setSide(String aSide)
 {
     is_left = (aSide == "left");
     if(!is_left) LOG_DEBUG("it is right!");

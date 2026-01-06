@@ -39,7 +39,7 @@ CanManager * AMSignalsModel::getItsCanManager(void)
     return itsCanManager;
 }
 
-AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
+AMJsonProtocol * AMSignalsModel::getProtocol(String aName)
 {
 
     AMJsonProtocol * ret;
@@ -75,12 +75,12 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
         {
 
         //TODO find if exist
-        QString keepAliveMsgName = "";
+        String keepAliveMsgName = "";
         int32_t keepAliveTimeout;
 
         if(protocol_obj.contains("keepAlive"))//TODO check necessity of the check
         {
-            keepAliveMsgName = QString::fromStdString(protocol_obj["keepAlive"].toString(""));
+            keepAliveMsgName = protocol_obj["keepAlive"].toString("");
             keepAliveTimeout = protocol_obj["timeout"].toInt(500);
             CanRxMsg::setKeepAliveMsg(keepAliveMsgName, keepAliveTimeout);
         }
@@ -116,7 +116,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         }
         else {
-            LOG_DEBUG("Skip CAN Protocol:%s", qPrintable(amjp->getName()));
+            LOG_DEBUG("Skip CAN Protocol:%s", amjp->getName().c_str());
             //TODO clean the allocated memory
         }
 
@@ -132,7 +132,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
     foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
     {
         //TODO: think about arguments : actions 1:n
-        QMap<QString,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
+        QMap<String,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
 
         if(it != jsonGraphicItemActions.end())
         {

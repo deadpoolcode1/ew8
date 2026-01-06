@@ -4,6 +4,7 @@
 #include <QObject>
 #include "canmanager.h"
 #include "ialertdisplay.h"
+#include "core/types.h"
 #include <QQmlApplicationEngine>
 #include "rootedtree.h"
 #include "brightnesscontrol.h"
@@ -51,7 +52,7 @@ public slots:
     void process();
 
 private:
-    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
+    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
 
     bool isDataComplete;
 
