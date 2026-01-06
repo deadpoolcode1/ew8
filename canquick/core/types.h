@@ -236,6 +236,12 @@ public:
 // qPrintable macro for QString
 #define qPrintable(str) ((str).c_str())
 
+// foreach macro replacement - Qt's foreach is equivalent to range-based for
+// Usage: foreach(Type item, container) { ... }
+// This simple implementation uses range-based for under the hood
+#define foreach(variable, container) \
+    for (variable : container)
+
 // QList replacement with Qt-compatible API
 template<typename T>
 class QList : public std::vector<T> {
