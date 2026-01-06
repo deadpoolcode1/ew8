@@ -5,7 +5,7 @@
 
 class CanRxMsg;
 
-AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, String action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, RequestId, action, parent)
+AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, RequestId, action, parent)
 {
     itsIndex = 0;
 }

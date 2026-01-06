@@ -14,7 +14,7 @@ class BrightnessControl;
 class CANDebugReport;
 class WatchDogDevice;
 
-AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, String action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
+AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
 {
    type = SystemRequestType::fromString(action);
 }
