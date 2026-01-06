@@ -100,29 +100,18 @@ List<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
 
 void AMJsonProtocol::setType(core::JsonValue typeValue)
 {
-
-    QMetaObject metaObj = this->staticMetaObject;
-    QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("protocol_type_e"));
-
-    type = (protocol_type_e)metaEnum.keyToValue(typeValue.toString().c_str());
+    type = protocolTypeFromString(typeValue.toString());
 }
 
 
-AMJsonProtocol::protocol_type_e AMJsonProtocol::getType(void)
+protocol_type_e AMJsonProtocol::getType(void)
 {
     return type;
 }
 
 String AMJsonProtocol::getTypeString(void)
 {
-    String ret;
-
-    QMetaObject metaObj = this->staticMetaObject;
-    QMetaEnum metaEnum = metaObj.enumerator(metaObj.indexOfEnumerator("protocol_type_e"));
-
-    ret = metaEnum.valueToKey(type);
-
-    return ret;
+    return protocolTypeToString(type);
 }
 
 

@@ -12,10 +12,8 @@
 
 #include "defs.h"
 
-#include <QResource>
 #include "core/file_utils.h"
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include "core/cmdline_parser.h"
 #include <QScreen>
 #include "brightnesscontrol.h"
 #include "amjsonconfigreader.h"
@@ -99,16 +97,16 @@ int main(int argc, char *argv[])
     BrightnessControl brightnessControl;
 #endif
 
-    QCommandLineParser cmdLnParser;
+    core::CommandLineParser cmdLnParser;
     String mainQmlFileName;
 
-    QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
-    QCommandLineOption testingConfig(QStringList() << "t" << "testing-mode", "Run the application with with testing mode configs");
+    core::CommandLineOption forceParsing("f", "force-parsing", "Parsing config files, even cache is available");
+    core::CommandLineOption testingConfig("t", "testing-mode", "Run the application with with testing mode configs");
 
     cmdLnParser.addOption(forceParsing);
     cmdLnParser.addOption(testingConfig);
 
-    cmdLnParser.process(app);
+    cmdLnParser.process(argc, argv);
 
     bool is_testing_mode = cmdLnParser.isSet(testingConfig);
     bool is_forced = is_testing_mode || cmdLnParser.isSet(forceParsing);
@@ -158,16 +156,9 @@ int main(int argc, char *argv[])
 
     QUrl mainQmlUrl;
 
-
-    if (!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
-    {
-         engine.addImportPath(":/");
-         mainQmlUrl = QUrl(QStringLiteral("qrc:/") + QString::fromStdString(mainQmlFileName));
-    }
-    else
-    {
-        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + QString::fromStdString(mainQmlFileName));
-    }
+    // Use file system access instead of compiled Qt resources
+    // This removes dependency on QResource
+    mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + QString::fromStdString(mainQmlFileName));
 
 	QQmlComponent component(&engine, mainQmlUrl);
 coreDebug() << "Loading QML from:" << mainQmlUrl;

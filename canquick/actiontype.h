@@ -1,51 +1,24 @@
 #ifndef ACTIONTYPE_H
 #define ACTIONTYPE_H
 
-#include <QObject>
-#include <QMetaObject>
-#include <QMetaEnum>
+#include "core/enum_utils.h"
 #include "core/types.h"
 
-#ifndef ACTION_TYPE_ENUM_DEFINITION
-#define ACTION_TYPE_ENUM_DEFINITION \
-enum action_type_e \
-{ \
-    GraphicItem = 0, \
-    Enabler = 1, \
-    StringArgument = 2, \
-    IntArgument = 3, \
-    RequestId = 4, \
-    Validator = 5, \
-    SystemRequest = 6, \
-};
-#else
- #error Choose other macro name.
-#endif
-
-ACTION_TYPE_ENUM_DEFINITION
+// action_type_e is defined in core/enum_utils.h
+// This class provides a fromString helper for compatibility
 
 class ActionType
 {
-Q_GADGET
-
-Q_ENUM(action_type_e)
-
 public:
-
-    ACTION_TYPE_ENUM_DEFINITION
-    #undef ACTION_TYPE_ENUM_DEFINITION
-
     static ::action_type_e fromString(const String& aType)
     {
-        ::action_type_e ret;
+        return actionTypeFromString(aType);
+    }
 
-        const QMetaObject  * metaObj = &staticMetaObject;
-        QMetaEnum metaEnum = metaObj->enumerator(metaObj->indexOfEnumerator("action_type_e"));
-        ret = (::action_type_e)metaEnum.keyToValue(aType.c_str());
-
-        return ret;
+    static String toString(::action_type_e value)
+    {
+        return actionTypeToString(value);
     }
 };
-
 
 #endif // ACTIONTYPE_H
