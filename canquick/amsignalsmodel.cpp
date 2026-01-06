@@ -39,7 +39,7 @@ CanManager * AMSignalsModel::getItsCanManager(void)
     return itsCanManager;
 }
 
-AMJsonProtocol * AMSignalsModel::getProtocol(String aName)
+AMJsonProtocol * AMSignalsModel::getProtocol(const String& aName)
 {
 
     AMJsonProtocol * ret;

@@ -18,7 +18,7 @@ class CanStringArgumentsAccumulator;
 
 QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
 
-AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, String action)
+AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, const String& action)
 {
     DISPLAY_ITEM_ID aGraphicItemID = GraphicItemsEnumMap::getId(action);
 
@@ -58,7 +58,7 @@ bool AMJsonGraphicItemAction::setSupplimentary(QVariant extractedCANsignal)
     return ret;
 }
 
-AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, String action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
+AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
 {
    itsGraphicItemID = aGraphicItemID;
    itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
@@ -134,7 +134,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
             else
             {
-                itsDisplay->activate(itsGraphicItemID, argStr.toStdString());
+                itsDisplay->activate(itsGraphicItemID, argStr);
             }
         }
         itsDisplay->mutex.unlock();
@@ -159,7 +159,7 @@ void AMJsonGraphicItemAction::deactivate(void)
     }
 }
 
-void AMJsonGraphicItemAction::argumentComplete(String anArg)
+void AMJsonGraphicItemAction::argumentComplete(const String& anArg)
 {
 
     bool isChanged = (argStr != anArg);

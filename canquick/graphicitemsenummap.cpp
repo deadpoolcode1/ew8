@@ -20,7 +20,7 @@ GraphicItemsEnumMap::GraphicItemsEnumMap()
    init();
 }
 
-DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(String name)
+DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(const String& name)
 {
 
     GraphicItemsEnumMap * myInstance = getInstance();
