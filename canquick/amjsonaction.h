@@ -35,7 +35,7 @@ private:
 
     uint32_t poolIndex;
     action_type_e type;
-    static QMap<uint32_t, AMJsonAction *> objectsPool;
+    static Map<uint32_t, AMJsonAction *> objectsPool;
 
 signals:
 

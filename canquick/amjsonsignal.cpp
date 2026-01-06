@@ -26,7 +26,7 @@
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
-QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
+Map<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
 
 List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op)
 {
@@ -212,13 +212,14 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     }
 
     poolIndex = objectsPool.size();
-    objectsPool.insert(poolIndex,this);
+    objectsPool[poolIndex] = this;
 }
 
 AMJsonSignal * AMJsonSignal::getByIndex(uint32_t idx)
 {
     AMJsonSignal * ret;
-    ret = objectsPool.value(idx, nullptr);
+    auto it = objectsPool.find(idx);
+    ret = (it != objectsPool.end()) ? it->second : nullptr;
     return ret;
 }
 

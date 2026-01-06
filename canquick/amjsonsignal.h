@@ -85,7 +85,7 @@ public slots:
 private:
 
   uint32_t poolIndex;
-  static QMap<uint32_t, AMJsonSignal *> objectsPool;
+  static Map<uint32_t, AMJsonSignal *> objectsPool;
 
   AMJsonAction * itsAction;
 

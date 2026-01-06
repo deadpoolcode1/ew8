@@ -44,7 +44,8 @@ AMJsonProtocol * AMSignalsModel::getProtocol(const String& aName)
 
     AMJsonProtocol * ret;
 
-    ret = jsonProtocols.value(aName,nullptr);
+    auto it = jsonProtocols.find(aName);
+    ret = (it != jsonProtocols.end()) ? it->second : nullptr;
 
     return ret;
 
@@ -112,7 +113,7 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
 
         //insert protocol into Protocols collector.
-        jsonProtocols.insert(amjp->getName(),amjp);
+        jsonProtocols[amjp->getName()] = amjp;
 
         }
         else {
@@ -132,15 +133,15 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
     foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
     {
         //TODO: think about arguments : actions 1:n
-        QMap<String,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
+        Map<String,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
 
         if(it != jsonGraphicItemActions.end())
         {
-            AMJsonGraphicItemAction *jsonaction = it.value();
+            AMJsonGraphicItemAction *jsonaction = it->second;
             //TODO add forced arguments feature to graphicItemAction
             jsonaction->connect2Arguments(argument);
 
-            jsonGraphicItemActions.remove(argument->getActionName());
+            jsonGraphicItemActions.erase(argument->getActionName());
         }
     }
 }
@@ -157,7 +158,7 @@ void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)
 
     case GraphicItem:
 
-        jsonGraphicItemActions.insert(anAction->getActionName(), (AMJsonGraphicItemAction *)anAction);
+        jsonGraphicItemActions[anAction->getActionName()] = (AMJsonGraphicItemAction *)anAction;
 
         break;
 
