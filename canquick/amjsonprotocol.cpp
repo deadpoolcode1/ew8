@@ -53,7 +53,7 @@ void AMJsonProtocol::append(AMJsonSignal * signal)
 {
     if(signal)
     {
-        jsonSignals.insert(signal->getName(), signal);
+        jsonSignals.insert({signal->getName(), signal});
     }
     else
     {
@@ -91,10 +91,9 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 List<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
 {
     List<AMJsonSignal*> ret;
-    QList<AMJsonSignal*> qlist = jsonSignals.values(aName);
-    ret.reserve(qlist.size());
-    for (AMJsonSignal* sig : qlist) {
-        ret.push_back(sig);
+    auto range = jsonSignals.equal_range(aName);
+    for (auto it = range.first; it != range.second; ++it) {
+        ret.push_back(it->second);
     }
     return ret;
 }
@@ -136,13 +135,13 @@ String AMJsonProtocol::getName(void)
 bool AMJsonProtocol::addMultiplexor(const String& name, AmJsonActionsMultiplexor * mux)
 {
    bool ret;
-   if(jsonMultiplexors.contains(name))
+   if(jsonMultiplexors.find(name) != jsonMultiplexors.end())
    {
        ret = false;
    }
    else
    {
-       jsonMultiplexors.insert(name,mux);
+       jsonMultiplexors.insert({name, mux});
        ret = true;
    }
 
@@ -154,9 +153,10 @@ AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(const String& na
 {
     AmJsonActionsMultiplexor * ret = nullptr;
 
-    if(jsonMultiplexors.contains(name))
+    auto it = jsonMultiplexors.find(name);
+    if(it != jsonMultiplexors.end())
     {
-        ret = jsonMultiplexors.value(name);
+        ret = it->second;
     }
     return ret;
 }
@@ -184,8 +184,9 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
         LOG_DEBUG("Protocol %s is %s", name.c_str(), "disabled");
 
 
-        foreach (AMJsonSignal * jsonsig , jsonSignals)
+        for (const auto& pair : jsonSignals)
         {
+            AMJsonSignal* jsonsig = pair.second;
             if(Enabler == jsonsig->type)
             {
                 jsonsig->triggerAllDisablers();
@@ -193,8 +194,9 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
         }
 
 
-        foreach (AMJsonSignal * jsonsig , jsonSignals)
+        for (const auto& pair : jsonSignals)
         {
+            AMJsonSignal* jsonsig = pair.second;
             if((jsonsig->getIsEnabled())&&(GraphicItem == jsonsig->type))
             {
                 jsonsig->deactivateAllGraphicItems();
