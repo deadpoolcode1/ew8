@@ -14,7 +14,7 @@ class Resource {
 public:
     // Check if a resource file exists on the filesystem
     static bool exists(const std::string& path) {
-        return FileInfo::exists(path);
+        return File::exists(path);
     }
 
     // For compiled resources (.rcc files), this is a no-op
