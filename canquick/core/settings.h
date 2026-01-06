@@ -7,6 +7,7 @@
 #include <sstream>
 #include <mutex>
 #include <any>
+#include <type_traits>
 
 #include "types.h"
 #include "file_utils.h"
@@ -206,6 +207,84 @@ public:
     }
 
     std::string fileName() const { return path_; }
+
+    // Qt2/Qt3 compatibility methods for legacy code
+    bool readBoolEntry(const std::string& key, bool defaultValue = false, bool* ok = nullptr) const {
+        std::string val = value(key, "");
+        if (val.empty()) {
+            if (ok) *ok = false;
+            return defaultValue;
+        }
+        if (ok) *ok = true;
+        return (val == "true" || val == "1" || val == "yes");
+    }
+
+    int readNumEntry(const std::string& key, int defaultValue = 0, bool* ok = nullptr) const {
+        std::string val = value(key, "");
+        if (val.empty()) {
+            if (ok) *ok = false;
+            return defaultValue;
+        }
+        try {
+            if (ok) *ok = true;
+            return std::stoi(val);
+        } catch (...) {
+            if (ok) *ok = false;
+            return defaultValue;
+        }
+    }
+
+    std::string readEntry(const std::string& key, const std::string& defaultValue = "", bool* ok = nullptr) const {
+        std::string val = value(key, "");
+        if (val.empty()) {
+            if (ok) *ok = false;
+            return defaultValue;
+        }
+        if (ok) *ok = true;
+        return val;
+    }
+
+    std::vector<std::string> readListEntry(const std::string& key, bool* ok = nullptr) const {
+        std::string val = value(key, "");
+        std::vector<std::string> result;
+        if (val.empty()) {
+            if (ok) *ok = false;
+            return result;
+        }
+        // Parse comma-separated list
+        std::stringstream ss(val);
+        std::string item;
+        while (std::getline(ss, item, ',')) {
+            // Trim whitespace
+            size_t start = item.find_first_not_of(" \t");
+            size_t end = item.find_last_not_of(" \t");
+            if (start != std::string::npos && end != std::string::npos) {
+                result.push_back(item.substr(start, end - start + 1));
+            }
+        }
+        if (ok) *ok = true;
+        return result;
+    }
+
+    // Qt2/Qt3 style writeEntry - template for any type
+    template<typename T>
+    bool writeEntry(const std::string& key, const T& value) {
+        if constexpr (std::is_same_v<T, bool>) {
+            setValue(key, value);
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            setValue(key, value);
+        } else if constexpr (std::is_integral_v<T>) {
+            setValue(key, static_cast<int>(value));
+        } else if constexpr (std::is_floating_point_v<T>) {
+            setValue(key, static_cast<double>(value));
+        } else {
+            // Convert to string using stringstream
+            std::ostringstream oss;
+            oss << value;
+            setValue(key, oss.str());
+        }
+        return true;
+    }
 
 private:
     void load() {
