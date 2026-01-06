@@ -69,7 +69,7 @@ public:
     //TODO: move two following statements to private section
     bool polarity;
     action_type_e type;
-    QList<int32_t> * trueValues;//actual, when is not boolean
+    List<int32_t> * trueValues;//actual, when is not boolean
     set_ops_t trueValuesOp;
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
@@ -94,7 +94,7 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op);
+  List<int32_t> * extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op);
 
   bool getDomainValidity(QVariant extractedSupCANsignal);
 
@@ -102,7 +102,7 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, const String& itsName, const String& itsSupName, const String& action, bool polarity, const String& type, ssize_t index, set_ops_t trueValuesOp, QList<int32_t> * trueValues, set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable);
+  void init(AMJsonProtocol * aProtocol, const String& itsName, const String& itsSupName, const String& action, bool polarity, const String& type, ssize_t index, set_ops_t trueValuesOp, List<int32_t> * trueValues, set_ops_t trueDomainOp, List<int32_t> * trueDomainValues, bool isValueTable);
   void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, const String& smoothingType);
 
   String itsName;
@@ -112,10 +112,10 @@ private:
   bool isSupplementedSignalEntry;
 
   set_ops_t itsDomainSetOp;
-  QList<int32_t> * itsDomainTrueValues;
+  List<int32_t> * itsDomainTrueValues;
 
 
-  QList<QObject *> disablers;
+  List<QObject *> disablers;
 
   Signal itsCanDbSignal;
   Signal itsSecondCanDbSignal;

@@ -33,7 +33,7 @@ public:
 
     String getName(void);
 
-    QList<AMJsonSignal*> getSignalEntries(const String& aName);
+    List<AMJsonSignal*> getSignalEntries(const String& aName);
 
     void setType(core::JsonValue typeValue);
     protocol_type_e getType(void);
@@ -61,7 +61,7 @@ private:
 
     protocol_type_e type;
 
-    QList<QObject *> disablers;
+    List<QObject *> disablers;
 
     QMultiMap<String,AMJsonSignal*> jsonSignals;
 

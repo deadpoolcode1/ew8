@@ -16,7 +16,7 @@ public:
 private:
     void cleanBuffer(void);
     uint32_t getAverage(void);
-    QList<uint32_t> bufferQueue;
+    List<uint32_t> bufferQueue;
     uint32_t skipSmoothingDelta;
     uint32_t smoothingBufferLength;
     uint32_t sum;
