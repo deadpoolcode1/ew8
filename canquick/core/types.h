@@ -15,15 +15,6 @@
 // Include Qt backend selection header
 #include "qt_backend.h"
 
-// =============================================================================
-// Qt Detection: If we're building with Qt (QT_CORE_LIB is defined by qmake),
-// include QtGlobal to get QT_VERSION defined early. This ensures our
-// QT_VERSION-based guards work correctly.
-// =============================================================================
-#if defined(QT_CORE_LIB) && !defined(QT_VERSION)
-#include <QtGlobal>
-#endif
-
 // QString replacement - use std::string
 using String = std::string;
 
@@ -75,10 +66,10 @@ bool variantCanConvert(const Variant& v) {
 // Qt-compatible container wrappers with Qt-like API
 // These provide drop-in replacements for Qt containers with familiar methods
 // Used by DEFAULT - only skipped when USE_QT_BACKEND is defined OR
-// when Qt is present (detected via QT_VERSION or QT_CORE_LIB)
+// when Qt headers have already been included (detected via QT_VERSION)
 // =============================================================================
 
-#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION) && !defined(QT_CORE_LIB)
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
 
 #include <algorithm>
 #include <functional>
@@ -543,6 +534,6 @@ using QStringList = QList<QString>;
 #define QStringBuilder QString
 #endif
 
-#endif // !USE_QT_BACKEND && !QT_VERSION && !QT_CORE_LIB - end of Qt-compatible wrappers (these are the DEFAULT)
+#endif // !USE_QT_BACKEND && !QT_VERSION - end of Qt-compatible wrappers (these are the DEFAULT)
 
 #endif // CORE_TYPES_H
