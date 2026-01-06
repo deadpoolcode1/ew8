@@ -13,8 +13,8 @@ class AMSignalsModel;
 
 class QPainter;
 
-QString QQuickQRCode::baseurl = "";
-QString QQuickQRCode::request = "";
+String QQuickQRCode::baseurl = "";
+String QQuickQRCode::request = "";
 
 
 void QQuickQRCode::declareQML() {
@@ -30,9 +30,9 @@ QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPainted
 void QQuickQRCode::paint(QPainter * painter)
 {
 
-    QString m_encoded = baseurl + request;
+    String m_encoded = baseurl + request;
 
-    QRcode *qrcode = QRcode_encodeString8bit(m_encoded.toLatin1(), 4, QR_ECLEVEL_L);
+    QRcode *qrcode = QRcode_encodeString8bit(m_encoded.c_str(), 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
     uint8_t * data = qrcode->data;
@@ -79,23 +79,23 @@ void QQuickQRCode::paint(QPainter * painter)
     QRcode_free(qrcode);
 }
 
-void QQuickQRCode::setRequest(QString aRequest)
+void QQuickQRCode::setRequest(String aRequest)
 {
    reqUpdate(aRequest);
 }
 
-void QQuickQRCode::setBaseUrl(QString aUrl)
+void QQuickQRCode::setBaseUrl(String aUrl)
 {
    baseurl = aUrl;
 }
 
 
-void QQuickQRCode::reqUpdate(QString arg)
+void QQuickQRCode::reqUpdate(String arg)
 {
     if(request != arg)
     {
         request =  arg;
-        LOG_DEBUG("New qr request: %s", qPrintable(arg));
+        LOG_DEBUG("New qr request: %s", arg.c_str());
         update();
     }
 }

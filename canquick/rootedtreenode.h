@@ -4,6 +4,7 @@
 #include <QObject>
 //#include <QList>
 #include "defs.h"
+#include "core/types.h"
 #include "rootedtree.h"
 #include "displaysignalizer.h"
 
@@ -40,7 +41,7 @@ public:
     void handleMutexGroup();
 
     void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
-    void setCanEntityArg(QString stringArg);
+    void setCanEntityArg(const String& stringArg);
 
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
@@ -77,7 +78,7 @@ private:
     uint8_t valueInt;
     uint8_t valueFrac;
     uint8_t unit;
-    QString stringArg;
+    String stringArg;
 };
 
 

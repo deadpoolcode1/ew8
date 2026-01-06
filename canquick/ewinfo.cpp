@@ -55,22 +55,22 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
 #endif
 }
 
-QString EWInfo::getEwsn(void)
+String EWInfo::getEwsn(void)
 {
   return ewsn_str;
 }
 
-QString EWInfo::getEngineVer(void)
+String EWInfo::getEngineVer(void)
 {
    return ewbin_str;
 }
 
-QString EWInfo::getConfigVer(void)
+String EWInfo::getConfigVer(void)
 {
   return ewcfg_str;
 }
 
-QString EWInfo::getSnv(void)
+String EWInfo::getSnv(void)
 {
 #if 0
     ewsn_str = "3021016070300013";
@@ -80,12 +80,12 @@ QString EWInfo::getSnv(void)
   return snv_str;
 }
 
-QString EWInfo::getOSBuildTimestamp(void)
+String EWInfo::getOSBuildTimestamp(void)
 {
   return ewosbuild_str;
 }
 
-void EWInfo::setMeSn(QString aMeSn)
+void EWInfo::setMeSn(String aMeSn)
 {
 
 //TODO compute the snv value
@@ -118,7 +118,7 @@ void EWInfo::setMeSn(QString aMeSn)
     coreDebug()<< "uint64_t SNV=" << SNV;
 #endif
 
-    snv_str = QString::number(SNV);
+    snv_str = std::to_string(SNV);
 
 
     is_snv_ready = true;
@@ -141,10 +141,7 @@ void EWInfo::declareQML(void)
 void EWInfo::readEWInfo(void)
 {
     //NOTE: Engine version:
-     ewbin_str = QString("%1.%2.%3")
-    .arg(MAJOR_VERSION)
-    .arg(MINOR_VERSION)
-    .arg(OTA_TEST_VERSION);
+     ewbin_str = std::to_string(MAJOR_VERSION) + "." + std::to_string(MINOR_VERSION) + "." + std::to_string(OTA_TEST_VERSION);
 
      coreDebug() << "EWInfo:Engine version " << ewbin_str;
 
@@ -152,10 +149,7 @@ void EWInfo::readEWInfo(void)
     core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
     if(!jsonArray.isEmpty())
     {
-        ewcfg_str = QString("%1.%2.%3")
-         .arg(jsonArray.at(0).toInt(0xff))
-         .arg(jsonArray.at(1).toInt(0x3f))
-         .arg((jsonArray.at(2).toInt(0x3)) & 0x3);
+        ewcfg_str = std::to_string(jsonArray.at(0).toInt(0xff)) + "." + std::to_string(jsonArray.at(1).toInt(0x3f)) + "." + std::to_string((jsonArray.at(2).toInt(0x3)) & 0x3);
     }
 }
 
@@ -186,7 +180,7 @@ void EWInfo::readOSBuildInfo(void)
        uint32_t tstamp = buildId.toUInt(&ok, 16);
        if(ok)
        {
-           ewosbuild_str = QString::number(tstamp);
+           ewosbuild_str = std::to_string(tstamp);
        }
 
     }

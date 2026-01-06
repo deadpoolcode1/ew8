@@ -35,11 +35,11 @@ public:
 
     AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent = nullptr);
 
-    QString getName(void);
+    String getName(void);
 
     AMJsonProtocol * itsProtocol;
 
-    bool getIsEnabled(void) {return disablers.isEmpty();}
+    bool getIsEnabled(void) {return disablers.empty();}
 
     void process(QVariant pureExtractedCANsignal);
     void process(QVariant pureExtractedCANsignal, QVariant extractedSupCANsignal);
@@ -56,7 +56,7 @@ public:
 
     void setItsCanSecDbSignal(Signal * canSignalPtr);
 
-    QString getItsSupName(void);
+    String getItsSupName(void);
 
     static  AMJsonSignal * getByIndex(uint32_t idx);
 
@@ -64,7 +64,7 @@ public:
 
 
     //TODO: remove
-    QString action;
+    String action;
 
     //TODO: move two following statements to private section
     bool polarity;
@@ -94,7 +94,7 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
+  QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op);
 
   bool getDomainValidity(QVariant extractedSupCANsignal);
 
@@ -102,12 +102,12 @@ private:
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<int32_t> * trueValues, set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable);
-  void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString smoothingType);
+  void init(AMJsonProtocol * aProtocol, const String& itsName, const String& itsSupName, const String& action, bool polarity, const String& type, ssize_t index, set_ops_t trueValuesOp, QList<int32_t> * trueValues, set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable);
+  void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, const String& smoothingType);
 
-  QString itsName;
+  String itsName;
 
-  QString itsSupName;
+  String itsSupName;
 
   bool isSupplementedSignalEntry;
 

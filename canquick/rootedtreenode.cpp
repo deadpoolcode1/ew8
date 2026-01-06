@@ -249,7 +249,7 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
-void RootedTreeNode::setCanEntityArg(QString stringArg)
+void RootedTreeNode::setCanEntityArg(String stringArg)
 {
     this->stringArg = stringArg;
 }

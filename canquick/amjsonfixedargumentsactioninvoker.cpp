@@ -3,7 +3,7 @@
 
 class AMJsonGraphicItemAction;
 
-AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QString aStringArg)
+AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, String aStringArg)
 {
     itsAction =  anAction;
     itsStringArg = aStringArg;

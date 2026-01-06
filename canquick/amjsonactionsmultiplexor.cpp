@@ -5,7 +5,7 @@
 #include "defs.h"
 #include "core/logger.h"
 
-AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
+AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, String aType, QObject *parent) : QObject(parent)
 {
     itsRawRows = vt_rows;
 
@@ -16,7 +16,7 @@ AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, c
     initByType(aType);
 }
 
-void AmJsonActionsMultiplexor::initByType(QString aType)
+void AmJsonActionsMultiplexor::initByType(String aType)
 {
 
     type = ActionType::fromString(aType);
@@ -39,7 +39,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
             double triggerValue = row_obj["value"].toDouble();
 
 
-            QString strAction = QString::fromStdString(row_obj["action"].toString());
+            String strAction = row_obj["action"].toString();
 
 
 
@@ -60,7 +60,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
                     if(arg_val.isString())
                     {
-                        QString arg = QString::fromStdString(arg_val.toString());
+                        String arg = arg_val.toString();
                         anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arg);
                     }
                     else

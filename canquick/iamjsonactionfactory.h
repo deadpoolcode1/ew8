@@ -15,7 +15,7 @@ public:
     /**
      * @arg type - AMJsonSignal::action_type_e
      */
-    virtual AMJsonAction * createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index) = 0;
+    virtual AMJsonAction * createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, const String& action, ssize_t index) = 0;
 };
 
 #endif // IAMJSONACTIONFACTORY_H

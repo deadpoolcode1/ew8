@@ -6,14 +6,15 @@
 #include <QPainter>
 
 #include "defs.h"
+#include "core/types.h"
 
 class QPainter;
 
 class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
-    Q_PROPERTY(QString request  WRITE setRequest)
+    Q_PROPERTY(String baseurl  WRITE setBaseUrl)
+    Q_PROPERTY(String request  WRITE setRequest)
 #if 0
     Q_PROPERTY(uint32_t margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
@@ -30,9 +31,9 @@ public:
 
     static void declareQML();
 
-    void setRequest(QString aRequest);
+    void setRequest(const String& aRequest);
 
-    void setBaseUrl(QString aUrl);
+    void setBaseUrl(const String& aUrl);
 
 signals:
 
@@ -43,8 +44,8 @@ private:
     const uint8_t whiteBlackBitMask = 0x01;
 
 
-    static QString  baseurl;
-    static QString  request;
+    static String  baseurl;
+    static String  request;
 
     int32_t margin;
 
@@ -53,8 +54,8 @@ private:
 
     DISPLAY_ITEM_ID type;
 
-    void snUpdate(QString arg);
-    void reqUpdate(QString arg);
+    void snUpdate(const String& arg);
+    void reqUpdate(const String& arg);
 };
 
 #endif // QQUICKQRCODE_H

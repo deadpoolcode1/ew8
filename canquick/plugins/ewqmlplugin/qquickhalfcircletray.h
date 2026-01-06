@@ -8,20 +8,20 @@ class QQuickHalfCircleTray : public QQuickItem
 {
     Q_OBJECT
     Q_DISABLE_COPY(QQuickHalfCircleTray)
-    Q_PROPERTY(QString side READ getSide WRITE setSide NOTIFY setSideSignal)
+    Q_PROPERTY(String side READ getSide WRITE setSide NOTIFY setSideSignal)
 
 public:
     QQuickHalfCircleTray(QQuickItem *parent = nullptr);
     ~QQuickHalfCircleTray();
 
-    QString getSide(void);
+    String getSide(void);
 
     void componentComplete();
 
-    void setSide(QString aSide);
+    void setSide(const String& aSide);
 
 signals:
-    void setSideSignal(QString aSide);
+    void setSideSignal(const String& aSide);
 	
 public slots:
     void childrenPositionsUpdate();
