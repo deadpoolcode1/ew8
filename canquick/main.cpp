@@ -163,11 +163,11 @@ int main(int argc, char *argv[])
     if (!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
     {
          engine.addImportPath(":/");
-         mainQmlUrl = QUrl(QStringLiteral("qrc:/") + QString::fromStdString(mainQmlFileName));
+         mainQmlUrl = QUrl(QStringLiteral("qrc:/") + mainQmlFileName.toQString());
     }
     else
     {
-        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + QString::fromStdString(mainQmlFileName));
+        mainQmlUrl = QUrl::fromLocalFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/") + mainQmlFileName.toQString());
     }
 
 	QQmlComponent component(&engine, mainQmlUrl);

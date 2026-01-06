@@ -12,8 +12,76 @@
 #include <variant>
 #include <optional>
 
-// QString replacement - use std::string
+// =============================================================================
+// String class - works seamlessly with Qt's QString when Qt is present
+// =============================================================================
+
+#ifdef QT_CORE_LIB
+// When Qt is present, include QString and QByteArray for seamless conversion
+#include <QString>
+#include <QByteArray>
+
+// String class that wraps std::string but converts automatically to/from QString/QByteArray
+class String : public std::string {
+public:
+    using std::string::string;
+    String() : std::string() {}
+    String(const std::string& s) : std::string(s) {}
+    String(const char* s) : std::string(s ? s : "") {}
+
+    // Implicit conversion FROM Qt's QString
+    String(const QString& qs) : std::string(qs.toStdString()) {}
+
+    // Implicit conversion FROM Qt's QByteArray
+    String(const QByteArray& ba) : std::string(ba.constData(), ba.size()) {}
+
+    // Implicit conversion TO Qt's QString
+    operator QString() const { return QString::fromStdString(*this); }
+
+    // Implicit conversion TO Qt's QByteArray
+    operator QByteArray() const { return QByteArray(data(), size()); }
+
+    // Explicit conversion methods
+    QString toQString() const { return QString::fromStdString(*this); }
+    QByteArray toQByteArray() const { return QByteArray(data(), size()); }
+    static String fromQString(const QString& qs) { return String(qs.toStdString()); }
+    static String fromQByteArray(const QByteArray& ba) { return String(ba.constData(), ba.size()); }
+
+    // For compatibility with code expecting toStdString()
+    std::string toStdString() const { return *this; }
+
+    // QString-like helper methods for compatibility
+    String left(int n) const { return substr(0, n); }
+    String right(int n) const { return n >= (int)size() ? *this : substr(size() - n); }
+    String mid(int pos, int n = -1) const { return n < 0 ? substr(pos) : substr(pos, n); }
+
+    bool contains(const String& s) const { return find(s) != npos; }
+    bool contains(const char* s) const { return find(s) != npos; }
+    bool contains(char c) const { return find(c) != npos; }
+
+    int length() const { return static_cast<int>(size()); }
+
+    unsigned int toUInt(bool* ok = nullptr, int base = 10) const {
+        try {
+            size_t pos;
+            unsigned long val = std::stoul(*this, &pos, base);
+            if (ok) *ok = (pos == size());
+            return static_cast<unsigned int>(val);
+        } catch (...) {
+            if (ok) *ok = false;
+            return 0;
+        }
+    }
+};
+
+// Register String with Qt's meta-type system for use in Q_PROPERTY
+#include <QMetaType>
+Q_DECLARE_METATYPE(String)
+
+#else
+// When Qt is NOT present, String is just std::string
 using String = std::string;
+#endif // QT_CORE_LIB
 
 // ByteArray type - use std::vector<uint8_t> for binary data
 using ByteArray = std::vector<uint8_t>;
