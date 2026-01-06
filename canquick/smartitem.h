@@ -42,7 +42,6 @@ protected:
     IAlertDisplay * alertsDisplay;
 
     //TODO addTimers:
-    //QDateTime qdt;
     bool isActived;
     uint8_t visId;
 
