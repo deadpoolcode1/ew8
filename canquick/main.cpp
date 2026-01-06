@@ -13,8 +13,7 @@
 #include "defs.h"
 
 #include <QResource>
-#include <QFile>
-#include <QDir>
+#include "core/file_utils.h"
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QScreen>
@@ -66,9 +65,9 @@ int main(int argc, char *argv[])
     coreDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
-    QFile kernMsgDev("/dev/kmsg");
+    core::File kernMsgDev("/dev/kmsg");
 
-    if(kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+    if(kernMsgDev.open(core::File::WriteOnly | core::File::Text))
     {
        kernMsgDev.write("<2> canquick: init started");
        kernMsgDev.close();
@@ -205,7 +204,7 @@ if (component.status() != QQmlComponent::Ready) {
 
     if ( ! is_testing_mode)
     {
-        if (kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+        if (kernMsgDev.open(core::File::WriteOnly | core::File::Text))
         {
            kernMsgDev.write("<2> canquick: in main loop");
            kernMsgDev.close();
