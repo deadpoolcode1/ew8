@@ -151,7 +151,7 @@ void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)
     {
     case Enabler:
 
-        jsonEnablerActions.append((AMJsonEnablerAction *)anAction);
+        jsonEnablerActions.push_back((AMJsonEnablerAction *)anAction);
 
         break;
 
@@ -164,7 +164,7 @@ void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)
     case StringArgument:
     case IntArgument:
 
-        jsonArgumentActions.append((AMJsonArgumentAction *)anAction);
+        jsonArgumentActions.push_back((AMJsonArgumentAction *)anAction);
 
         break;
 

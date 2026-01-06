@@ -1,4 +1,5 @@
 #include <QObject>
+#include <algorithm>
 
 #include "amjsonprotocol.h"
 #include "core/json.h"
@@ -90,7 +91,11 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 List<AMJsonSignal*> AMJsonProtocol::getSignalEntries(const String& aName)
 {
     List<AMJsonSignal*> ret;
-    ret = jsonSignals.values(aName);
+    QList<AMJsonSignal*> qlist = jsonSignals.values(aName);
+    ret.reserve(qlist.size());
+    for (AMJsonSignal* sig : qlist) {
+        ret.push_back(sig);
+    }
     return ret;
 }
 
@@ -163,13 +168,13 @@ void AMJsonProtocol::enableDisableThis(bool onOff)
 
     bool is_pre_enabled = disablers.empty();
 
-    if (false == onOff && !disablers.contains(sender()))
+    if (false == onOff && std::find(disablers.begin(), disablers.end(), sender()) == disablers.end())
     {
-        disablers.append(sender());
+        disablers.push_back(sender());
     }
-    else if (true == onOff && disablers.contains(sender()))
+    else if (true == onOff && std::find(disablers.begin(), disablers.end(), sender()) != disablers.end())
     {
-        disablers.removeOne(sender());
+        disablers.erase(std::remove(disablers.begin(), disablers.end(), sender()), disablers.end());
     }
 
     bool is_post_enabled = disablers.empty();
