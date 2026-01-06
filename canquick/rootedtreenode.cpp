@@ -140,7 +140,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
 
         if(!isInt){
-            type = (DISPLAY_ITEM_ID)GraphicItemsEnumMap::getId(canEntityTypeQVar.toString());
+            type = (DISPLAY_ITEM_ID)GraphicItemsEnumMap::getId(canEntityTypeQVar.toString().toStdString());
         }
 
         if (type != AlertTypes::QtQG) // no link between groups and alert types!
@@ -249,7 +249,7 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
-void RootedTreeNode::setCanEntityArg(String stringArg)
+void RootedTreeNode::setCanEntityArg(const String& stringArg)
 {
     this->stringArg = stringArg;
 }
@@ -389,7 +389,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
 
     if(visible)
     {
-        QVariant qstr(stringArg);
+        QVariant qstr(QString::fromStdString(stringArg));
 
         emit this->qmlSignalizer->setVisibleSignalStr(qstr);
         emit this->qmlSignalizer->setVisibleSignal((QVariant)valueInt,(QVariant)valueFrac,(QVariant)unit);
