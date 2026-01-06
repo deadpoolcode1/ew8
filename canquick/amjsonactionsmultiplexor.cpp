@@ -5,7 +5,7 @@
 #include "defs.h"
 #include "core/logger.h"
 
-AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, String aType, QObject *parent) : QObject(parent)
+AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, const String& aType, QObject *parent) : QObject(parent)
 {
     itsRawRows = vt_rows;
 
@@ -16,7 +16,7 @@ AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, c
     initByType(aType);
 }
 
-void AmJsonActionsMultiplexor::initByType(String aType)
+void AmJsonActionsMultiplexor::initByType(const String& aType)
 {
 
     type = ActionType::fromString(aType);
