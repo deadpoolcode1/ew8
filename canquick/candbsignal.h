@@ -79,11 +79,6 @@ Value;
 core::DataStream & operator<< (core::DataStream &out, const Signal & any);
 core::DataStream & operator>> (core::DataStream &in, Signal & any);
 
-// QDataStream operators for Signal type (for Qt serialization)
-class QDataStream;
-QDataStream & operator<< (QDataStream &out, const Signal & sig);
-QDataStream & operator>> (QDataStream &in, Signal & sig);
-
 class CanDBSignal {
 public:
 
