@@ -19,7 +19,7 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
     system_type = stypeInvalid;
 
     if ("linux" == QSysInfo::kernelType()) {
-        QFile deviceModelFile(deviceModelFileName);
+        QFile deviceModelFile(QString::fromStdString(deviceModelFileName));
         QString modelLine;
 
         if(deviceModelFile.open(QFile::ReadOnly | QFile::Text))

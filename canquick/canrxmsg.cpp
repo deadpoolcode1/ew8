@@ -81,7 +81,7 @@ CanStdId_t CanRxMsg::keepAliveMsgId = 0x0;
 int32_t CanRxMsg::keepAliveTimeout;
 
 
-void CanRxMsg::setKeepAliveMsg(String aKeepAliveMsgName, int32_t aKeepAliveTimeout)
+void CanRxMsg::setKeepAliveMsg(const String& aKeepAliveMsgName, int32_t aKeepAliveTimeout)
 {
   if(keepAliveMsgName.empty())
   {
@@ -293,7 +293,7 @@ void CanRxMsg::discardRequestId(void)
 
 
 
-CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, String aName = "")
+CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, const String& aName)
 {
     CanRxMsg * ret = getMsgByCanId(StdId);
     //TODO review the check location
@@ -320,7 +320,7 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     }
 }
 
-Signal * CanRxMsg::getCANSignalByName(String name)
+Signal * CanRxMsg::getCANSignalByName(const String& name)
 {
     Signal * ret = nullptr;
 
