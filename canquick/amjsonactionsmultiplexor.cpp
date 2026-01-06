@@ -21,7 +21,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
     type = ActionType::fromString(aType);
 
-    //TODO: convert raw rows to QHash values table
+    // Convert raw rows to values table
     for (const core::JsonValue & row_val : itsRawRows) {
 
         core::JsonObject row_obj = row_val.toObject();
