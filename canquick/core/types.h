@@ -78,6 +78,21 @@ public:
 #include <QMetaType>
 Q_DECLARE_METATYPE(String)
 
+// Function to register String type with Qt's meta-type system for QML usage
+// Must be called before QQmlApplicationEngine is created
+inline void registerStringMetaType() {
+    // Register the type with Qt's meta-type system
+    qRegisterMetaType<String>("String");
+
+    // Register converters between QString and String for QML property bindings
+    QMetaType::registerConverter<QString, String>([](const QString& s) -> String {
+        return String(s);
+    });
+    QMetaType::registerConverter<String, QString>([](const String& s) -> QString {
+        return s.toQString();
+    });
+}
+
 #else
 // When Qt is NOT present, String is just std::string
 using String = std::string;

@@ -3,6 +3,7 @@
 #include <QQmlComponent>
 
 #include "core/core.h"
+#include "core/types.h"
 #include "qquickqrcode.h"
 
 #include "mainprocess.h"
@@ -154,6 +155,9 @@ int main(int argc, char *argv[])
     AlertTypes::declareQML();
     QQuickQRCode::declareQML();
     EWInfo::declareQML();
+
+    // Register String type with Qt's meta-type system for QML property bindings
+    registerStringMetaType();
 
     QQmlApplicationEngine engine;
 
