@@ -441,38 +441,6 @@ public:
     }
 };
 
-// QHash replacement with Qt-compatible API
-template<typename K, typename V>
-class QHash : public std::unordered_map<K, V> {
-public:
-    using std::unordered_map<K, V>::unordered_map;
-    QHash() : std::unordered_map<K, V>() {}
-
-    // Qt-compatible methods
-    bool isEmpty() const { return this->empty(); }
-    int count() const { return static_cast<int>(this->size()); }
-    bool contains(const K& key) const { return this->find(key) != this->end(); }
-    V value(const K& key, const V& defaultValue = V()) const {
-        auto it = this->find(key);
-        return it != this->end() ? it->second : defaultValue;
-    }
-    void insert(const K& key, const V& value) { (*this)[key] = value; }
-    QList<K> keys() const {
-        QList<K> result;
-        for (const auto& pair : *this) {
-            result.push_back(pair.first);
-        }
-        return result;
-    }
-    QList<V> values() const {
-        QList<V> result;
-        for (const auto& pair : *this) {
-            result.push_back(pair.second);
-        }
-        return result;
-    }
-};
-
 // QVariant replacement using std::any with Qt-compatible API
 class QVariant {
 public:
