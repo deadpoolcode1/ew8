@@ -254,8 +254,8 @@ private:
 using CoreDataStream = core::DataStream;
 using CoreSaveFile = core::SaveFile;
 
-// Qt-compatible typedefs - only define if not using Qt
-#ifndef QT_CORE_LIB
+// Qt-compatible typedefs - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 using QDataStream = core::DataStream;
 using QSaveFile = core::SaveFile;
 #endif

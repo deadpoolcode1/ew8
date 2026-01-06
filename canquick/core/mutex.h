@@ -127,8 +127,8 @@ using CoreMutexLocker = core::MutexLocker;
 using CoreReadWriteLock = core::ReadWriteLock;
 using CoreWaitCondition = core::WaitCondition;
 
-// Qt-compatible typedefs - only define if not using Qt
-#ifndef QT_CORE_LIB
+// Qt-compatible typedefs - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 using QMutex = core::Mutex;
 using QMutexLocker = core::MutexLocker;
 using QReadWriteLock = core::ReadWriteLock;

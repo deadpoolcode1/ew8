@@ -12,6 +12,9 @@
 #include <variant>
 #include <optional>
 
+// Include Qt backend selection header
+#include "qt_backend.h"
+
 // QString replacement - use std::string
 using String = std::string;
 
@@ -45,8 +48,8 @@ bool variantCanConvert(const Variant& v) {
     return v.type() == typeid(T);
 }
 
-// Q_LIKELY / Q_UNLIKELY macros - only define if Qt is NOT present
-#ifndef QT_CORE_LIB
+// Q_LIKELY / Q_UNLIKELY macros - only define if Qt backend is NOT used
+#ifndef USE_QT_BACKEND
 #ifdef __GNUC__
 #define Q_LIKELY(x)   __builtin_expect(!!(x), 1)
 #define Q_UNLIKELY(x) __builtin_expect(!!(x), 0)
@@ -54,15 +57,15 @@ bool variantCanConvert(const Variant& v) {
 #define Q_LIKELY(x)   (x)
 #define Q_UNLIKELY(x) (x)
 #endif
-#endif // QT_CORE_LIB
+#endif // USE_QT_BACKEND
 
 // =============================================================================
 // Qt-compatible container wrappers with Qt-like API
 // These provide drop-in replacements for Qt containers with familiar methods
-// Only defined when Qt is NOT present
+// Used by DEFAULT - only skipped when USE_QT_BACKEND is defined
 // =============================================================================
 
-#ifndef QT_CORE_LIB
+#ifndef USE_QT_BACKEND
 
 #include <algorithm>
 #include <functional>
@@ -520,6 +523,6 @@ using QStringList = QList<QString>;
 // QStringBuilder compatibility
 #define QStringBuilder QString
 
-#endif // QT_CORE_LIB - end of Qt-compatible wrappers
+#endif // USE_QT_BACKEND - end of Qt-compatible wrappers (these are the DEFAULT)
 
 #endif // CORE_TYPES_H
