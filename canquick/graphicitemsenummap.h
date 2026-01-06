@@ -11,8 +11,8 @@ class GraphicItemsEnumMap
 public:
 
     //TODO add exception on not found
-    static DISPLAY_ITEM_ID getId(QString name);
-    static QString getName(DISPLAY_ITEM_ID id);
+    static DISPLAY_ITEM_ID getId(core::QString name);
+    static core::QString getName(DISPLAY_ITEM_ID id);
 
 private:
 

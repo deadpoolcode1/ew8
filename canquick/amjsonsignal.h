@@ -35,14 +35,14 @@ public:
 
     AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent = nullptr);
 
-    QString getName(void);
+    core::QString getName(void);
 
     AMJsonProtocol * itsProtocol;
 
     bool getIsEnabled(void) {return disablers.isEmpty();}
 
-    void process(QVariant pureExtractedCANsignal);
-    void process(QVariant pureExtractedCANsignal, QVariant extractedSupCANsignal);
+    void process(core::QVariant pureExtractedCANsignal);
+    void process(core::QVariant pureExtractedCANsignal, core::QVariant extractedSupCANsignal);
 
     void deactivateAllGraphicItems(void);
 
@@ -56,7 +56,7 @@ public:
 
     void setItsCanSecDbSignal(Signal * canSignalPtr);
 
-    QString getItsSupName(void);
+    core::QString getItsSupName(void);
 
     static  AMJsonSignal * getByIndex(uint32_t idx);
 
@@ -64,19 +64,19 @@ public:
 
 
     //TODO: remove
-    QString action;
+    core::QString action;
 
     //TODO: move two following statements to private section
     bool polarity;
     action_type_e type;
-    QList<int32_t> * trueValues;//actual, when is not boolean
+    core::QList<int32_t> * trueValues;//actual, when is not boolean
     set_ops_t trueValuesOp;
     ssize_t index;//NOTE: used on distributed multiple bytes arguments
 
     AMJsonAction * getItsAction(void){return itsValueTable ? nullptr : itsAction;}
 
 
-    bool extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active);
+    bool extractSetUnsetAction(core::QVariant extractedCANsignal, bool * do_active);
 
 public slots:
 
@@ -85,7 +85,7 @@ public slots:
 private:
 
   uint32_t poolIndex;
-  static QMap<uint32_t, AMJsonSignal *> objectsPool;
+  static core::QMap<uint32_t, AMJsonSignal *> objectsPool;
 
   AMJsonAction * itsAction;
 
@@ -94,28 +94,28 @@ private:
 
   void setActivatedAction(IAMJsonProcessable * anAction){activatedAction = anAction;}
 
-  QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op);
+  core::QList<int32_t> * extractSetValuesField( core::JsonObject signal_obj, core::QString fieldName, set_ops_t * a_set_op);
 
-  bool getDomainValidity(QVariant extractedSupCANsignal);
+  bool getDomainValidity(core::QVariant extractedSupCANsignal);
 
   IAMJsonProcessable * getActivatedAction(void){return activatedAction;}
 
   IAMJsonActionFactory * itsAMJsonActionFactory;
 
-  void init(AMJsonProtocol * aProtocol, QString itsName, QString itsSupName, QString action, bool polarity, QString type,ssize_t index, set_ops_t trueValuesOp, QList<int32_t> * trueValues, set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable);
-  void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString smoothingType);
+  void init(AMJsonProtocol * aProtocol, core::QString itsName, core::QString itsSupName, core::QString action, bool polarity, core::QString type,ssize_t index, set_ops_t trueValuesOp, core::QList<int32_t> * trueValues, set_ops_t trueDomainOp, core::QList<int32_t> * trueDomainValues, bool isValueTable);
+  void setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, core::QString smoothingType);
 
-  QString itsName;
+  core::QString itsName;
 
-  QString itsSupName;
+  core::QString itsSupName;
 
   bool isSupplementedSignalEntry;
 
   set_ops_t itsDomainSetOp;
-  QList<int32_t> * itsDomainTrueValues;
+  core::QList<int32_t> * itsDomainTrueValues;
 
 
-  QList<QObject *> disablers;
+  core::QList<QObject *> disablers;
 
   Signal itsCanDbSignal;
   Signal itsSecondCanDbSignal;

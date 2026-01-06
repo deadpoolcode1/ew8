@@ -34,7 +34,7 @@ AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocol
         protocolNameValue = protocolNameAndType;
     }
 
-    name = QString::fromStdString(protocolNameValue.toString());
+    name = core::QString(protocolNameValue.toString());
     LOG_DEBUG("JSON: new protocol extracted: %s", qPrintable(name));
 
     if(isNotDefaultProtocolType)
@@ -66,8 +66,8 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
     //fetch the current protocol's value tables:
      core::JsonArray jsonValueTablesArray = protocolValueTables.toArray();
 
-      QString vt_name;
-      QString vt_type;
+      core::QString vt_name;
+      core::QString vt_type;
       core::JsonArray vt_rows;
 
      //collect the value tables names:
@@ -75,8 +75,8 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
             core::JsonObject vt_obj = vt_raw.toObject();
 
             //take the name and create an empty corresponding multiplexor entry.
-          vt_name = QString::fromStdString(vt_obj["name"].toString());
-          vt_type = QString::fromStdString(vt_obj["type"].toString());
+          vt_name = core::QString(vt_obj["name"].toString());
+          vt_type = core::QString(vt_obj["type"].toString());
           vt_rows = vt_obj["rows"].toArray();
 
           AmJsonActionsMultiplexor * aMultiplexor = new AmJsonActionsMultiplexor(this, vt_rows, vt_type);
@@ -87,9 +87,9 @@ void AMJsonProtocol::collectValueTables(core::JsonValue protocolValueTables)
 }
 
 
-QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(QString aName)
+core::QList<AMJsonSignal*> AMJsonProtocol::getSignalEntries(core::QString aName)
 {
-    QList<AMJsonSignal*> ret;
+    core::QList<AMJsonSignal*> ret;
     ret = jsonSignals.values(aName);
     return ret;
 }
@@ -122,13 +122,13 @@ QString AMJsonProtocol::getTypeQString(void)
 }
 
 
-QString AMJsonProtocol::getName(void)
+core::QString AMJsonProtocol::getName(void)
 {
     return name;
 }
 
 
-bool AMJsonProtocol::addMultiplexor(QString name, AmJsonActionsMultiplexor * mux)
+bool AMJsonProtocol::addMultiplexor(core::QString name, AmJsonActionsMultiplexor * mux)
 {
    bool ret;
    if(jsonMultiplexors.contains(name))
@@ -145,7 +145,7 @@ bool AMJsonProtocol::addMultiplexor(QString name, AmJsonActionsMultiplexor * mux
 }
 
 //NOTE: fails when lacks name or different type already assigned
-AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(QString name)
+AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(core::QString name)
 {
     AmJsonActionsMultiplexor * ret = nullptr;
 

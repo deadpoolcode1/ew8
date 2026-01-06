@@ -34,7 +34,7 @@ public:
     SYSREQ_TYPE_ENUM_DEFINITION
     #undef SYSREQ_TYPE_ENUM_DEFINITION
 
-    static ::sysreq_type_e fromString(QString aType)
+    static ::sysreq_type_e fromString(core::QString aType)
     {
         ::sysreq_type_e ret;
 

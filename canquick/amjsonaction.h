@@ -13,20 +13,20 @@ class AMJsonAction : public QObject, public IAMJsonProcessable
     Q_OBJECT
 
 public:
-    explicit AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, QObject *parent = nullptr);
+    explicit AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e type, core::QString action, QObject *parent = nullptr);
 
     AMJsonProtocol * getItsJsonProtocol(void);
 
-    QString getActionName(void);
+    core::QString getActionName(void);
 
-    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
-    bool setSupplimentary(QVariant extractedCANsignal);
+    virtual void process(QObject * sender, core::QVariant extractedCANsignal) = 0;
+    bool setSupplimentary(core::QVariant extractedCANsignal);
 
     action_type_e getActionType(void);
 
 private:
 
-    QString action;
+    core::QString action;
 
 
 
@@ -35,7 +35,7 @@ private:
 
     uint32_t poolIndex;
     action_type_e type;
-    static QMap<uint32_t, AMJsonAction *> objectsPool;
+    static core::QMap<uint32_t, AMJsonAction *> objectsPool;
 
 signals:
 

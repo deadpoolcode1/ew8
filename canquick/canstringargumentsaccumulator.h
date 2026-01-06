@@ -25,11 +25,11 @@ private:
 
     explicit CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 
-    QMap<size_t,char> charactersMap;
+    core::QMap<size_t,char> charactersMap;
 
 signals:
 
-    void argumentComplete(QString result);
+    void argumentComplete(core::QString result);
 
 public slots:
 };

@@ -1,6 +1,7 @@
 #ifndef CANINTARGUMENTSACCUMULATOR_H
 #define CANINTARGUMENTSACCUMULATOR_H
 
+#include "core/types.h"
 #include "canargumentsaccumulator.h"
 #include "ismoother.h"
 
@@ -35,7 +36,7 @@ private:
 
     //TODO replace with circular buffer
     uint32_t speedSmoothingBufferLength;
-    QList<uint8_t> smoothedArgBuffer;
+    core::QList<uint8_t> smoothedArgBuffer;
 
 
 signals:

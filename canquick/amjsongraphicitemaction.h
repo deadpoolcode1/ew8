@@ -22,13 +22,13 @@ class AMJsonGraphicItemAction: public AMJsonAction
 
 public:
 
-    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, QString action);
+    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, core::QString action);
 
     static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, core::QVariant extractedCANsignal);
 
-    bool setSupplimentary(QVariant extractedCANsignal);
+    bool setSupplimentary(core::QVariant extractedCANsignal);
 
     bool getIsActived(void);
 
@@ -41,12 +41,12 @@ public:
 
 public slots:
     void argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg);
-    void argumentComplete(QString strArg);
+    void argumentComplete(core::QString strArg);
     void forceDeactivation(void);
 
 private:
 
-    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, core::QString action, AMJsonAction * parent = nullptr);
 
     void deactivate(void);
 
@@ -58,21 +58,21 @@ private:
     bool hasArguments;
     bool areArgumentsReceived;
     bool isSupplemented;
-    QVariant itsSupplimentary;
-    QList<QVariant> itsSuppDomain;
+    core::QVariant itsSupplimentary;
+    core::QList<core::QVariant> itsSuppDomain;
 
     uint8_t argInt;
     uint8_t argFrac;
     uint8_t argUnits;
-    QString argStr;
+    core::QString argStr;
 
     bool isArgOfStringType;
 
     IAlertDisplay * itsDisplay;
 
-    static QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
+    static core::QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
 
-    QList<QObject *> activators;
+    core::QList<QObject *> activators;
 };
 
 #endif // AMJSONGRAPHICITEMACTION_H

@@ -1,6 +1,7 @@
 #ifndef MAINPROCESS_H
 #define MAINPROCESS_H
 
+#include "core/types.h"
 #include <QObject>
 #include "canmanager.h"
 #include "ialertdisplay.h"
@@ -34,7 +35,7 @@ public:
 signals:
     void startUpdateDisplayWindow();
 
-    void messageDisplayWindow(QVariant aStrMsg);
+    void messageDisplayWindow(core::QVariant aStrMsg);
 
 public slots:
 
@@ -51,7 +52,7 @@ public slots:
     void process();
 
 private:
-    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
+    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const core::QString& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
 
     bool isDataComplete;
 

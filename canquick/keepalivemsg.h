@@ -1,6 +1,7 @@
 #ifndef KEEPALIVEMSG_H
 #define KEEPALIVEMSG_H
 
+#include "core/types.h"
 #include "canmanager.h"
 
 class CanManager;
@@ -43,7 +44,7 @@ private:
 
     WatchDogDevice * wdt;
 
-    const QString deviceModelFileName = "/sys/firmware/devicetree/base/model";
+    const core::QString deviceModelFileName = "/sys/firmware/devicetree/base/model";
 
 };
 

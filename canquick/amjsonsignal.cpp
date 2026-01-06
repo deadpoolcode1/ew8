@@ -24,17 +24,17 @@
 class CanStringArgumentsAccumulator;
 class CanIntArgumentsAccumulator;
 
-QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
+core::QMap<uint32_t,AMJsonSignal *> AMJsonSignal::objectsPool;
 
-QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, QString fieldName, set_ops_t * a_set_op)
+core::QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj, core::QString fieldName, set_ops_t * a_set_op)
 {
 
-      QList<int32_t> * trueValues = nullptr;
+      core::QList<int32_t> * trueValues = nullptr;
       * a_set_op = set_op_na;
 
     if(signal_obj.contains(fieldName.toStdString()))
     {
-        trueValues = new QList<int32_t>();
+        trueValues = new core::QList<int32_t>();
 
         if (signal_obj[fieldName.toStdString()].isArray()){
 
@@ -42,7 +42,7 @@ QList<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_ob
 
             if (trueValues_Array[0].isString())
             {
-                QString opString = QString::fromStdString(trueValues_Array[0].toString());
+                core::QString opString = core::QString(trueValues_Array[0].toString());
                 if("gt" == opString)
                 {
                     * a_set_op = set_op_gt;
@@ -95,10 +95,10 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
 
     //Signal row parsing:
     core::JsonObject signal_obj = singleSignalsEntry.toObject();
-    QString sigName;
-    QString supName = "";
-    QString sigAction;
-    QString sigType;
+    core::QString sigName;
+    core::QString supName = "";
+    core::QString sigAction;
+    core::QString sigType;
     bool polarity = true;
     int32_t sigIndex = -1;
     bool isValueTable = false;
@@ -108,19 +108,19 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     core::JsonValue sigNameJsonValue = signal_obj["name"];
 
     isSupplementedSignalEntry = (sigNameJsonValue.isArray());
-     QList<int32_t> * domainTrueValues = nullptr;
+     core::QList<int32_t> * domainTrueValues = nullptr;
      set_ops_t a_domain_set_op = set_op_na;
 
     if(isSupplementedSignalEntry)
     {
-        sigName = QString::fromStdString(sigNameJsonValue.toArray().at(0).toString());
-        supName = QString::fromStdString(sigNameJsonValue.toArray().at(1).toString());
+        sigName = core::QString(sigNameJsonValue.toArray().at(0).toString());
+        supName = core::QString(sigNameJsonValue.toArray().at(1).toString());
         domainTrueValues = extractSetValuesField(signal_obj, "Domain", & a_domain_set_op);
     }
     else
     {
 
-        sigName = QString::fromStdString(sigNameJsonValue.toString());
+        sigName = core::QString(sigNameJsonValue.toString());
     }
 
 
@@ -129,25 +129,25 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     {
         core::JsonArray actionArray = signal_obj["action"].toArray();
 
-        sigAction = QString::fromStdString(actionArray[0].toString());
-        if ("inverted" == QString::fromStdString(actionArray[1].toString()))
+        sigAction = core::QString(actionArray[0].toString());
+        if ("inverted" == core::QString(actionArray[1].toString()))
         {
             polarity = false;
         }
     }
     else
     {
-        sigAction = QString::fromStdString(signal_obj["action"].toString());
+        sigAction = core::QString(signal_obj["action"].toString());
     }
     //end of Action parsing
 
-    sigType =  QString::fromStdString(signal_obj["type"].toString());
+    sigType =  core::QString(signal_obj["type"].toString());
 
     sigIndex = signal_obj["index"].toInt(-1);
 
     uint32_t bufferLength = 0;
     uint32_t skipSmoothingDelta = 0;
-    QString smoothingType;
+    core::QString smoothingType;
 
     //>>>>Smoothing parameters handling(for IntArgument)<<<<<<
     core::JsonValue smoothedVal = signal_obj["smoothed"];
@@ -157,7 +157,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
             core::JsonArray sigSmoothed_Array = smoothedVal.toArray();
             bufferLength = (uint32_t)sigSmoothed_Array.at(0).toInt(0);
             skipSmoothingDelta = (uint32_t)sigSmoothed_Array.at(1).toInt(0);
-            smoothingType = QString::fromStdString(sigSmoothed_Array.at(2).toString("items"));
+            smoothingType = core::QString(sigSmoothed_Array.at(2).toString("items"));
             coreDebug()<<"smoothing type: "<< smoothingType;
     }
 
@@ -205,7 +205,7 @@ AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSig
     {
 
         set_ops_t a_set_op = set_op_na;
-        QList<int32_t> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
+        core::QList<int32_t> * sigTrueValues = extractSetValuesField(signal_obj, "Set", & a_set_op);
         init(aProtocol, sigName, supName, sigAction, polarity, sigType, -1, a_set_op, sigTrueValues,   a_domain_set_op, domainTrueValues, false);
     }
 
@@ -225,12 +225,12 @@ uint32_t AMJsonSignal::getItsIndex(void)
     return poolIndex;
 }
 
-QString AMJsonSignal::getItsSupName(void)
+core::QString AMJsonSignal::getItsSupName(void)
 {
     return itsSupName;
 }
 
-void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupName, QString anAction, bool aPolarity, QString aType, ssize_t anIndex, set_ops_t  a_set_op, QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, QList<int32_t> * trueDomainValues, bool isValueTable)
+void AMJsonSignal::init(AMJsonProtocol * aProtocol, core::QString aName, core::QString aSupName, core::QString anAction, bool aPolarity, core::QString aType, ssize_t anIndex, set_ops_t  a_set_op, core::QList<int32_t> * aTrueValues,  set_ops_t trueDomainOp, core::QList<int32_t> * trueDomainValues, bool isValueTable)
 {
     itsValueTable = nullptr;
 
@@ -284,7 +284,7 @@ void AMJsonSignal::init(AMJsonProtocol * aProtocol, QString aName, QString aSupN
     //TODO use actions map
 }
 
-void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, QString aSmoothingType)
+void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDelta, core::QString aSmoothingType)
 {
     if(IntArgument == type)
     {
@@ -312,7 +312,7 @@ void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDel
     }
 }
 
- QString AMJsonSignal::getName(void)
+ core::QString AMJsonSignal::getName(void)
  {
      return itsName;
  }
@@ -325,7 +325,7 @@ void AMJsonSignal::setSmoothing(uint32_t bufferLength, uint32_t skipSmoothingDel
  Signal * AMJsonSignal::getCanDbSupSignal(void)
  {
      Signal * ret  = nullptr;
-     if (!itsSupName.isEmpty())
+     if (!itsSupName.empty())
      {
          ret = & itsSecondCanDbSignal;
      }
@@ -360,7 +360,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
     itsSecondCanDbSignal.valueType = canSignalPtr->valueType;
 }
 
- void AMJsonSignal::process(QVariant extractedCANsignal, QVariant extractedSupCANsignal)
+ void AMJsonSignal::process(core::QVariant extractedCANsignal, core::QVariant extractedSupCANsignal)
  {
 
      if(itsProtocol->getIsEnabled()&&this->getIsEnabled())
@@ -415,12 +415,12 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
      }
  }
 
-  void AMJsonSignal::process(QVariant pureExtractedCANsignal)
+  void AMJsonSignal::process(core::QVariant pureExtractedCANsignal)
   {
-      process(pureExtractedCANsignal, QVariant(0));
+      process(pureExtractedCANsignal, core::QVariant(0));
   }
 
- bool AMJsonSignal::getDomainValidity(QVariant extractedSupCANsignal)
+ bool AMJsonSignal::getDomainValidity(core::QVariant extractedSupCANsignal)
  {
      bool ret = true;
 
@@ -455,7 +455,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
  }
 
- bool AMJsonSignal::extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active)
+ bool AMJsonSignal::extractSetUnsetAction(core::QVariant extractedCANsignal, bool * do_active)
  {
      bool success = true;
 

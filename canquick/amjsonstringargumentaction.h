@@ -1,6 +1,7 @@
 #ifndef AMJSONSTRINGARGUMENTACTION_H
 #define AMJSONSTRINGARGUMENTACTION_H
 
+#include "core/types.h"
 #include "amjsonargumentaction.h"
 #include "canstringargumentsaccumulator.h"
 
@@ -12,9 +13,9 @@ class AMJsonStringArgumentAction : public AMJsonArgumentAction
     Q_OBJECT
 
 public:
-    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, core::QString action, AMJsonAction * parent = nullptr);
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, core::QVariant extractedCANsignal);
 
     bool isItsArgumentsType(int32_t type);
 

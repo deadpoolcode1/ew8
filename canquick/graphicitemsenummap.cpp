@@ -20,7 +20,7 @@ GraphicItemsEnumMap::GraphicItemsEnumMap()
    init();
 }
 
-DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
+DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(core::QString name)
 {
 
     GraphicItemsEnumMap * myInstance = getInstance();
@@ -31,12 +31,12 @@ DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
     return ret;
 }
 
-QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
+core::QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 {
     GraphicItemsEnumMap * myInstance = getInstance();
 
     auto it = myInstance->graphicItemsNamesMap.find(id);
-    QString ret = (it != myInstance->graphicItemsNamesMap.end()) ? QString::fromStdString(it->second) : QString("");
+    core::QString ret = (it != myInstance->graphicItemsNamesMap.end()) ? core::QString(it->second) : core::QString("");
 
     return ret;
 }

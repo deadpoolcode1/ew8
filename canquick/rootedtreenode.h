@@ -1,6 +1,7 @@
 #ifndef ROOTEDTREENODE_H
 #define ROOTEDTREENODE_H
 
+#include "core/types.h"
 #include <QObject>
 //#include <QList>
 #include "defs.h"
@@ -40,7 +41,7 @@ public:
     void handleMutexGroup();
 
     void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
-    void setCanEntityArg(QString stringArg);
+    void setCanEntityArg(core::QString stringArg);
 
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);
@@ -77,7 +78,7 @@ private:
     uint8_t valueInt;
     uint8_t valueFrac;
     uint8_t unit;
-    QString stringArg;
+    core::QString stringArg;
 };
 
 

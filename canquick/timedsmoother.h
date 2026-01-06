@@ -16,8 +16,8 @@ public:
 private:
     void cleanBuffer(void);
     uint32_t getAverage(void);
-    QList<uint32_t> bufferQueue;
-    QList<int64_t> timestampsQueue;
+    core::QList<uint32_t> bufferQueue;
+    core::QList<int64_t> timestampsQueue;
     int64_t firstMeasureTimestamp;
     uint32_t skipSmoothingDelta;
     int64_t smoothingTimeInterval;

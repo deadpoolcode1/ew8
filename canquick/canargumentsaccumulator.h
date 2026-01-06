@@ -19,7 +19,7 @@ public:
 
 protected:
     explicit CanArgumentsAccumulator(QObject *parent = nullptr);
-    static QMap<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> objectsMap;
+    static core::QMap<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> objectsMap;
 
     ssize_t maxIndex;
 
