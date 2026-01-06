@@ -79,14 +79,14 @@ void QQuickQRCode::paint(QPainter * painter)
     QRcode_free(qrcode);
 }
 
-void QQuickQRCode::setRequest(const String& aRequest)
+void QQuickQRCode::setRequest(const QString& aRequest)
 {
-   reqUpdate(aRequest);
+   reqUpdate(aRequest.toStdString());
 }
 
-void QQuickQRCode::setBaseUrl(const String& aUrl)
+void QQuickQRCode::setBaseUrl(const QString& aUrl)
 {
-   baseurl = aUrl;
+   baseurl = aUrl.toStdString();
 }
 
 
