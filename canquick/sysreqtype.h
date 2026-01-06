@@ -1,50 +1,24 @@
 #ifndef SYSREQTYPE_H
 #define SYSREQTYPE_H
 
-#include <QObject>
-#include <QMetaObject>
-#include <QMetaEnum>
+#include "core/enum_utils.h"
 #include "core/types.h"
 
-#ifndef SYSREQ_TYPE_ENUM_DEFINITION
-#define SYSREQ_TYPE_ENUM_DEFINITION \
-enum sysreq_type_e \
-{ \
-    GetVersionInfo = 0, \
-    DebugBrightness = 1, \
-    DebugButtons = 2, \
-    DebugAlerts = 3, \
-    SwitchModeTest = 4, \
-    SwitchModeAWS = 5, \
-};
-#else
- #error Choose other macro name.
-#endif
-
-SYSREQ_TYPE_ENUM_DEFINITION
+// sysreq_type_e is defined in core/enum_utils.h
+// This class provides a fromString helper for compatibility
 
 class SystemRequestType
 {
-Q_GADGET
-
-Q_ENUM(sysreq_type_e)
-
 public:
-
-    SYSREQ_TYPE_ENUM_DEFINITION
-    #undef SYSREQ_TYPE_ENUM_DEFINITION
-
     static ::sysreq_type_e fromString(const String& aType)
     {
-        ::sysreq_type_e ret;
+        return sysreqTypeFromString(aType);
+    }
 
-        const QMetaObject  * metaObj = &staticMetaObject;
-        QMetaEnum metaEnum = metaObj->enumerator(metaObj->indexOfEnumerator("sysreq_type_e"));
-        ret = (::sysreq_type_e)metaEnum.keyToValue(aType.c_str());
-
-        return ret;
+    static String toString(::sysreq_type_e value)
+    {
+        return sysreqTypeToString(value);
     }
 };
-
 
 #endif // SYSREQTYPE_H

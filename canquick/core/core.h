@@ -40,6 +40,15 @@
 // Settings (replaces QSettings)
 #include "settings.h"
 
+// Enum utilities (replaces Q_ENUM/QMetaEnum)
+#include "enum_utils.h"
+
+// Command-line parser (replaces QCommandLineParser)
+#include "cmdline_parser.h"
+
+// Resource handling (replaces QResource)
+#include "resource.h"
+
 // Compatibility macros for easier migration
 // Only define these if Qt is NOT present
 
