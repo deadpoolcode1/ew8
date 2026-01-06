@@ -35,7 +35,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QTimer>
-#include <QDateTime>
+#include "core/elapsed_timer.h"
 #include "core/json.h"
 
 #include "ialertdisplay.h"
@@ -549,7 +549,7 @@ void CanManager::read_frame(void)
                    (void*) static_cast<uintptr_t>(frame.data[5]) <<
                    (void*) static_cast<uintptr_t>(frame.data[6]) <<
                    (void*) static_cast<uintptr_t>(frame.data[7]) <<
-                   "ts:" << QDateTime::currentMSecsSinceEpoch();
+                   "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 #endif
 
 #if 0
@@ -657,7 +657,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
               curr->ack(this);
               itsDisplay->forceUpdate();
 #if 0
-              coreDebug() << "message" << (void*)(uint32_t) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
+              coreDebug() << "message" << (void*)(uint32_t) frame->can_id <<"processed ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 #endif
           }
 
