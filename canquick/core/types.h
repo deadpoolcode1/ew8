@@ -11,6 +11,8 @@
 #include <any>
 #include <variant>
 #include <optional>
+#include <algorithm>
+#include <functional>
 
 // Include Qt backend selection header
 #include "qt_backend.h"
@@ -63,16 +65,14 @@ bool variantCanConvert(const Variant& v) {
 #endif // USE_QT_BACKEND
 
 // =============================================================================
-// Qt-compatible container wrappers with Qt-like API
-// These provide drop-in replacements for Qt containers with familiar methods
-// Used by DEFAULT - only skipped when USE_QT_BACKEND is defined OR
-// when Qt headers have already been included (detected via QT_VERSION)
+// Custom Qt-compatible container wrappers in the 'core' namespace
+// These provide replacements for Qt containers with familiar methods
+// They are ALWAYS defined in the core:: namespace for gradual migration.
+// Use core::QString, core::QList, etc. to use the custom implementations
+// while still having access to Qt's types when needed.
 // =============================================================================
 
-#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION)
-
-#include <algorithm>
-#include <functional>
+namespace core {
 
 // QChar replacement - simple character wrapper
 class QChar {
@@ -239,20 +239,6 @@ public:
     static QString number(long long n) { return QString(std::to_string(n)); }
     static QString number(unsigned long long n) { return QString(std::to_string(n)); }
 };
-
-// qPrintable macro for QString - only define if not already defined
-#ifndef qPrintable
-#define qPrintable(str) ((str).c_str())
-#endif
-
-// foreach macro replacement - Qt's foreach is equivalent to range-based for
-// Usage: foreach(Type item, container) { ... }
-// This simple implementation uses range-based for under the hood
-// Only define if not already defined
-#ifndef foreach
-#define foreach(variable, container) \
-    for (variable : container)
-#endif
 
 // QList replacement with Qt-compatible API
 template<typename T>
@@ -529,11 +515,42 @@ private:
 // QStringList
 using QStringList = QList<QString>;
 
+} // namespace core
+
+// =============================================================================
+// Global namespace aliases - ONLY when Qt is NOT present
+// When building without Qt, bring core:: types into global namespace
+// This allows code to use QString, QList, etc. without the core:: prefix
+// when Qt headers are not included.
+// =============================================================================
+
+#if !defined(USE_QT_BACKEND) && !defined(QT_VERSION) && !defined(QT_CORE_LIB)
+
+using core::QChar;
+using core::QString;
+using core::QList;
+using core::QVector;
+using core::QMap;
+using core::QMultiMap;
+using core::QVariant;
+using core::QStringList;
+
+// qPrintable macro for QString - only define if not already defined
+#ifndef qPrintable
+#define qPrintable(str) ((str).c_str())
+#endif
+
+// foreach macro replacement - Qt's foreach is equivalent to range-based for
+#ifndef foreach
+#define foreach(variable, container) \
+    for (variable : container)
+#endif
+
 // QStringBuilder compatibility - only define if not already defined
 #ifndef QStringBuilder
 #define QStringBuilder QString
 #endif
 
-#endif // !USE_QT_BACKEND && !QT_VERSION - end of Qt-compatible wrappers (these are the DEFAULT)
+#endif // !USE_QT_BACKEND && !QT_VERSION && !QT_CORE_LIB
 
 #endif // CORE_TYPES_H
