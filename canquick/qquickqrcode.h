@@ -13,8 +13,8 @@ class QPainter;
 class QQuickQRCode : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
-    Q_PROPERTY(QString request  WRITE setRequest)
+    Q_PROPERTY(String baseurl  WRITE setBaseUrl)
+    Q_PROPERTY(String request  WRITE setRequest)
 #if 0
     Q_PROPERTY(uint32_t margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
@@ -31,9 +31,9 @@ public:
 
     static void declareQML();
 
-    void setRequest(const QString& aRequest);
+    void setRequest(const String& aRequest);
 
-    void setBaseUrl(const QString& aUrl);
+    void setBaseUrl(const String& aUrl);
 
 signals:
 

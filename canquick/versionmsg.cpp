@@ -113,7 +113,7 @@ void VersionMsg::readVersionInfo(void)
     #if !((defined WIN32) || (defined REMOVE_EW8_HW))
     QFile buildIdFile("/etc/version2epoch");
 
-    QString buildId;
+    String buildId;
 
     if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
     {

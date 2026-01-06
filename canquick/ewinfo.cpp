@@ -161,7 +161,7 @@ void EWInfo::readOSBuildInfo(void)
 
     QFile buildIdFile("/etc/version2epoch");
 
-    QString buildId;
+    String buildId;
 
     if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
     {
