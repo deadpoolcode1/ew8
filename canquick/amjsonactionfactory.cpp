@@ -16,7 +16,7 @@ class AMJsonNumericArgumentAction;
 class   AMJsonSystemRequestAction;
 class AMJsonRequestIdAction;
 
-AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, String action, ssize_t index)
+AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, const String& action, ssize_t index)
 {
     AMJsonAction * ret = nullptr;
 

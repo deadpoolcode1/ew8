@@ -7,7 +7,7 @@
 class AMJsonProtocol;
 
 
-AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, String action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, StringArgument, action, parent)
+AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, StringArgument, action, parent)
 {
     itsArgumentAccumulator = CanStringArgumentsAccumulator::getInstance(itsGraphicItemID);
 }

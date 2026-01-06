@@ -350,7 +350,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
   bool CanDBSignal::processDBCFile(AMJsonProtocol * prot)
   {
       bool status = true;
-      std::string protocolName = prot->getName().toStdString();
+      std::string protocolName = prot->getName();
       std::string dbcString;
       status = readDBCFile(protocolName, dbcString);
       if(status)
