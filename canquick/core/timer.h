@@ -199,8 +199,8 @@ using CoreTimer = core::Timer;
 using CorePeriodicTimer = core::PeriodicTimer;
 using CoreDelayedCallback = core::DelayedCallback;
 
-// Qt-compatible typedef - only define if not using Qt
-#ifndef QT_CORE_LIB
+// Qt-compatible typedef - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 using QTimer = core::Timer;
 #endif
 

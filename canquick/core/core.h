@@ -41,11 +41,11 @@
 #include "settings.h"
 
 // Compatibility macros for easier migration
-// Only define these if Qt is NOT present
+// Used by DEFAULT - only skipped when USE_QT_BACKEND is defined
 
 #include <cassert>
 
-#ifndef QT_CORE_LIB
+#ifndef USE_QT_BACKEND
 // Q_UNUSED equivalent
 #define Q_UNUSED(x) (void)(x)
 
@@ -70,7 +70,7 @@
 #define slots
 #define emit
 
-#endif // QT_CORE_LIB
+#endif // USE_QT_BACKEND
 
 // Process (replaces QProcess - simplified version using fork/exec)
 #include <cstdlib>
@@ -218,8 +218,8 @@ private:
 // Core-prefixed typedef (always available, no conflicts)
 using CoreProcess = core::Process;
 
-// Qt-compatible typedef - only define if not using Qt
-#ifndef QT_CORE_LIB
+// Qt-compatible typedef - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 using QProcess = core::Process;
 #endif
 

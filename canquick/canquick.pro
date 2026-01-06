@@ -9,6 +9,16 @@ DEFINES += MAJOR_VERSION=$${MAJOR_VERSION}
 DEFINES += MINOR_VERSION=$${MINOR_VERSION}
 DEFINES += OTA_TEST_VERSION=$${OTA_TEST_VERSION}
 
+# =============================================================================
+# Qt Backend Selection
+# =============================================================================
+# By DEFAULT: Custom core:: replacement classes are used (no Qt data type dependency)
+# To use actual Qt classes (for testing/validation), uncomment the line below:
+# DEFINES += USE_QT_BACKEND
+#
+# Or build with: qmake "DEFINES+=USE_QT_BACKEND"
+# =============================================================================
+
 qmlscripts.files = qml/*.qml qml/*.js
 qmlimages.files = qml/images/*
 signalcfgs.files = signals/*.json
@@ -147,6 +157,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES =
 
 HEADERS += \
+    core/qt_backend.h \
     qt_workarounds.h \
     bufferedsmoother.h \
     keepalivemsg.h \

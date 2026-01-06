@@ -9,8 +9,8 @@
 #include <chrono>
 #include <mutex>
 
-// Include Qt headers if Qt is present (for QString/QUrl streaming support)
-#ifdef QT_CORE_LIB
+// Include Qt headers if Qt backend is enabled (for QString/QUrl streaming support)
+#ifdef USE_QT_BACKEND
 #include <QString>
 #include <QUrl>
 #endif
@@ -112,19 +112,19 @@ public:
         return *this;
     }
 
-#ifdef QT_CORE_LIB
-    // Qt QString support
+#ifdef USE_QT_BACKEND
+    // Qt QString support (only when using Qt backend)
     LogStream& operator<<(const QString& value) {
         ss_ << value.toStdString();
         return *this;
     }
 
-    // Qt QUrl support
+    // Qt QUrl support (only when using Qt backend)
     LogStream& operator<<(const QUrl& value) {
         ss_ << value.toString().toStdString();
         return *this;
     }
-#endif // QT_CORE_LIB
+#endif // USE_QT_BACKEND
 
 private:
     LogLevel level_;
@@ -145,12 +145,12 @@ private:
 #define LOG_WARN(fmt, ...) core::Logger::instance().log(core::LogLevel::Warning, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
 #define LOG_ERROR(fmt, ...) core::Logger::instance().log(core::LogLevel::Error, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
 
-// Qt-compatible macros - only define if Qt is NOT present
-#ifndef QT_CORE_LIB
+// Qt-compatible macros - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 #define qDebug() core::LogStream(core::LogLevel::Debug)
 #define qInfo() core::LogStream(core::LogLevel::Info)
 #define qWarning() core::LogStream(core::LogLevel::Warning)
 #define qCritical() core::LogStream(core::LogLevel::Critical)
-#endif // QT_CORE_LIB
+#endif // USE_QT_BACKEND
 
 #endif // CORE_LOGGER_H

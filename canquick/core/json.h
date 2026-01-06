@@ -813,8 +813,8 @@ using CoreJsonArray = core::JsonArray;
 using CoreJsonDocument = core::JsonDocument;
 using CoreJsonParseError = core::JsonParseError;
 
-// Qt-compatible typedefs - only define if not using Qt
-#ifndef QT_CORE_LIB
+// Qt-compatible typedefs - used by DEFAULT, skipped when USE_QT_BACKEND is defined
+#ifndef USE_QT_BACKEND
 using QJsonValue = core::JsonValue;
 using QJsonObject = core::JsonObject;
 using QJsonArray = core::JsonArray;
