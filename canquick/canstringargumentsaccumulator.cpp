@@ -19,7 +19,7 @@ CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPL
     if(nullptr == (generalInstance = getExistingInstance(graphicItem)))
     {
         ret = new CanStringArgumentsAccumulator();
-        objectsMap.insert(graphicItem, ret);
+        objectsMap[graphicItem] = ret;
     }
     else if (generalInstance->getArgumentsTypeName() == argumentsTypeName)
     {
@@ -41,9 +41,9 @@ void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t
         aChar = 'X';
     }
 
-    charactersMap.insert(anIndex, (char)aChar);
+    charactersMap[anIndex] = (char)aChar;
 
-    if ((maxIndex +1)== charactersMap.count())
+    if ((maxIndex +1)== (ssize_t)charactersMap.size())
     {
         char ch_result[maxIndex+2];
 
