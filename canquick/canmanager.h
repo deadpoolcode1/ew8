@@ -13,8 +13,9 @@
 #include "defs.h"
 
 
-#include <QThread>
-#include <QTimer>
+#include "core/thread.h"
+#include "core/timer.h"
+#include "core/signal.h"
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -28,13 +29,12 @@ class AMSignalsModel;
 class MeDisconnectionReport;
 
 
-class CanManager :  public QObject
+class CanManager
 {
-    Q_OBJECT
-
 public:
 
-    CanManager(IAlertDisplay * alertdisp, QObject * parent = nullptr);
+    CanManager(IAlertDisplay * alertdisp);
+    ~CanManager();
     void read_frame(void);
     void write_frame(struct can_frame * frame_ptr);
     IAlertDisplay * getItsDisplay(void);
@@ -51,14 +51,11 @@ public:
     void sendISAPartDeact(void);
     void sendISAFullActivate(void);
 
-
-
     void launch(void);
 
-signals:
-    void resetConnectionTimeoutSignal(void);
+    // Signal emitted when connection timeout should be reset
+    core::Signal<> resetConnectionTimeoutSignal;
 
-public slots:
     void process();
 
 private:
@@ -83,7 +80,7 @@ private:
     IAlertDisplay * itsDisplay;
     ICanRxMsgFactory * itsCanRxMsgFactory;
     AMSignalsModel * amSignalsModel;
-    QThread * itsThread;
+    core::Thread* itsThread;
     MeDisconnectionReport * itsDisconnectionReport;
 };
 
