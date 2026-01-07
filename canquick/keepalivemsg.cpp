@@ -91,7 +91,7 @@ void KeepAliveMsg::triggerTimeout(void)
 {
     //NOTE: fetch uptime at a moment close to send
     uptimeReference.start();
-    uint64_t uptime64 = uptimeReference.msecsSinceReference();
+    uint64_t uptime64 = static_cast<uint64_t>(core::ElapsedTimer::currentMSecsSinceEpoch());
 
     if(uptime64 >= std::numeric_limits<uint32_t>::max())
     {
