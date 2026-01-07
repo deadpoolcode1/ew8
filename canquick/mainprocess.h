@@ -2,6 +2,8 @@
 #define MAINPROCESS_H
 
 #include <QObject>
+#include <QThread>
+#include <QTimer>
 #include "canmanager.h"
 #include "ialertdisplay.h"
 #include "core/types.h"

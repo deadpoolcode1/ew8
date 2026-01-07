@@ -5,21 +5,20 @@
 #include "core/file_utils.h"
 
 //NOTE: Next header is used for random()
-//TODO: replace with QRandomGenerator, when passing to qt 5.12
 #include <stdlib.h>
+#include <limits>
 
 KeepAliveMsg * KeepAliveMsg::instance = nullptr;
 
 KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
-{  
-    triggerTimerThread = new QThread();
-    triggerTimer = new QTimer();
-
-
+{
+    triggerTimerThread = new core::Thread();
+    triggerTimer = new core::Timer();
 
     system_type = stypeInvalid;
 
-    if ("linux" == QSysInfo::kernelType()) {
+#ifdef __linux__
+    {
         core::File deviceModelFile(deviceModelFileName);
         std::string modelLine;
 
@@ -40,7 +39,7 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
             }
         }
     }
-
+#endif
 
     sessionId = rand()%0xffff;
     errorId = 0x00;
@@ -54,17 +53,30 @@ KeepAliveMsg::KeepAliveMsg(CanManager * aCanManager): itsCanManager(aCanManager)
 
     triggerTimer->setSingleShot(false);
     triggerTimer->setInterval(DEFAULT_EW_KEEP_ALIVE_TIMEOUT);
-    triggerTimer->setTimerType(Qt::PreciseTimer);
 
-    connect(triggerTimerThread,SIGNAL(started()),triggerTimer,SLOT(start()));
-    connect(triggerTimer,SIGNAL(timeout()), this, SLOT(triggerTimeout()));
-
-    this->moveToThread(triggerTimerThread);
-    triggerTimer->moveToThread(triggerTimerThread);
+    // Connect timer timeout to triggerTimeout using core::Signal
+    triggerTimer->timeout.connect([this]() {
+        triggerTimeout();
+    });
 
     wdt = new WatchDogDevice();
 
-    triggerTimerThread->start();
+    // Start the timer (it runs in its own thread internally)
+    triggerTimer->start();
+}
+
+KeepAliveMsg::~KeepAliveMsg()
+{
+    if (triggerTimer) {
+        triggerTimer->stop();
+        delete triggerTimer;
+    }
+    if (triggerTimerThread) {
+        triggerTimerThread->quit();
+        triggerTimerThread->wait();
+        delete triggerTimerThread;
+    }
+    delete wdt;
 }
 
 void KeepAliveMsg::create(CanManager *aCanManager)
@@ -81,7 +93,7 @@ void KeepAliveMsg::triggerTimeout(void)
     uptimeReference.start();
     uint64_t uptime64 = uptimeReference.msecsSinceReference();
 
-    if(Q_UNLIKELY(uptime64 >= std::numeric_limits<uint32_t>::max()))
+    if(uptime64 >= std::numeric_limits<uint32_t>::max())
     {
         frame_to_send.data[0] = 0xff;
         frame_to_send.data[1] = 0xff;
@@ -102,4 +114,3 @@ void KeepAliveMsg::triggerTimeout(void)
 
     itsCanManager->write_frame(&frame_to_send);
 }
-
