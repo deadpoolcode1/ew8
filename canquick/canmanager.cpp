@@ -32,9 +32,9 @@
 #endif
 
 
-#include <QThread>
-#include <QMutex>
-#include <QTimer>
+#include "core/thread.h"
+#include "core/mutex.h"
+#include "core/timer.h"
 #include "core/elapsed_timer.h"
 #include "core/json.h"
 
@@ -59,7 +59,8 @@ const char * CanManager::can_if_name = "vcan0";
 #endif
 #endif
 
-CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
+CanManager::CanManager(IAlertDisplay * alertdisp)
+    : itsThread(nullptr)
 {
     itsDisplay = alertdisp;
 
@@ -72,17 +73,23 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     CanRxMsg::setItsDisconnectionReport(itsDisconnectionReport);
 
-
-    itsThread = new QThread(this);
-
-    this->moveToThread(itsThread);
-
-    // Connect to MeDisconnectionReport using lambda since it doesn't inherit QObject
-    connect(this, &CanManager::resetConnectionTimeoutSignal, [this]() {
+    // Connect signal to MeDisconnectionReport using core::Signal
+    resetConnectionTimeoutSignal.connect([this]() {
         itsDisconnectionReport->resetConnectionTimeout();
     });
 
-    connect(itsThread,SIGNAL(started()),this,SLOT(process()));
+    // Create thread - will be started in launch()
+    itsThread = new core::Thread();
+}
+
+CanManager::~CanManager()
+{
+    if (itsThread) {
+        itsThread->quit();
+        itsThread->wait();
+        delete itsThread;
+    }
+    delete itsDisconnectionReport;
 }
 
 void CanManager::launch(void)
@@ -90,8 +97,12 @@ void CanManager::launch(void)
     VersionMsg::create(this);
     VersionMsg::singleShot();
     itsDisconnectionReport->launch();
-    itsThread->start();
 
+    // Start thread with process() as the run function
+    itsThread->started.connect([this]() {
+        process();
+    });
+    itsThread->start();
 }
 
 //TODO: unite volume functions
@@ -643,7 +654,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
           if(CanRxMsg::isKeepAliveMsg(frame->can_id))
           {
-             emit resetConnectionTimeoutSignal();
+             resetConnectionTimeoutSignal.fire();
           }
 
           CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);

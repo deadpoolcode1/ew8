@@ -1,9 +1,9 @@
-#include <QThread>
-#include <QMutex>
-#include <QTimer>
 #include "core/core.h"
+#include "core/mutex.h"
 #include "core/elapsed_timer.h"
 
+#include <QThread>
+#include <QTimer>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include "core/file_utils.h"
