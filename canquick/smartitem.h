@@ -1,21 +1,18 @@
 #ifndef SMARTITEM_H
 #define SMARTITEM_H
 
-#include <QTimer>
-#include <QTimerEvent>
+#include "core/timer.h"
 #include "defs.h"
 #include "smartcanrxmsg.h"
-#include <QObject>
 
 class IAlertDisplay;
 
-class SmartItem : public QObject
+class SmartItem
 {
-    Q_OBJECT
-
 public:
 
     static SmartItem * getInstance(uint8_t aVisId);
+    ~SmartItem();
 
     typedef struct smart_params_s{
      visual_item_unit_t visUnits;
@@ -34,8 +31,11 @@ public:
     void setActive(smart_params_t & _params);
     void setInactive(void);
 
+    void fireItsMinActiveTime();
+    void fireItsMaxActiveTime();
+
 protected:
-    explicit SmartItem(uint8_t aVisId, QObject * parent = nullptr);
+    explicit SmartItem(uint8_t aVisId);
     static SmartItem * smartItemsPool[MAX_SMART_ITEMS_NUM];
     static size_t  smartItemsPoolNumOfObjects;
 
@@ -47,20 +47,12 @@ protected:
 
     DISPLAY_ITEM_ID itsAlert;
 
-
-    //functions:
-
-public slots:
-
-    void fireItsMinActiveTime();
-    void fireItsMaxActiveTime();
-
 private:
     uint32_t minDurationTime;
     uint32_t maxDurationTime;
 
-    QTimer * minDurationQtimer;
-    QTimer * maxDurationQtimer;
+    core::Timer* minDurationTimer;
+    core::Timer* maxDurationTimer;
 
     smart_params_t params;
 };
