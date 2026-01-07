@@ -121,7 +121,7 @@ void MainProcess::process()
 
 void MainProcess::message(const std::string& stringMessage)
 {
-   emit messageDisplayWindow(QVariant(QString::fromStdString(stringMessage)));
+   emit messageDisplayWindow(QVariant(String(stringMessage).toQString()));
 }
 
 

@@ -31,9 +31,9 @@ public:
 
     static void declareQML();
 
-    void setRequest(const QString& aRequest);
+    void setRequest(const String& aRequest);
 
-    void setBaseUrl(const QString& aUrl);
+    void setBaseUrl(const String& aUrl);
 
 signals:
 

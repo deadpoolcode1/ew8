@@ -11,9 +11,63 @@
 #include <any>
 #include <variant>
 #include <optional>
+#include <algorithm>
 
-// QString replacement - use std::string
-using String = std::string;
+// =============================================================================
+// String class - std::string based with optional Qt QString interop
+// =============================================================================
+
+#ifdef QT_CORE_LIB
+#include <QString>
+#endif
+
+class String : public std::string {
+public:
+    using std::string::string;
+    String() : std::string() {}
+    String(const std::string& s) : std::string(s) {}
+    String(const char* s) : std::string(s ? s : "") {}
+
+    // std::string compatibility
+    std::string toStdString() const { return *this; }
+    static String fromStdString(const std::string& s) { return String(s); }
+
+#ifdef QT_CORE_LIB
+    // Qt QString interop - implicit conversions
+    String(const QString& qs) : std::string(qs.toStdString()) {}
+    operator QString() const { return QString::fromStdString(*this); }
+    static String fromQString(const QString& qs) { return String(qs.toStdString()); }
+    QString toQString() const { return QString::fromStdString(*this); }
+#endif
+
+    // Common string methods
+    bool isEmpty() const { return empty(); }
+    int length() const { return static_cast<int>(size()); }
+
+    String toLower() const {
+        String result = *this;
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+        return result;
+    }
+
+    String toUpper() const {
+        String result = *this;
+        std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+        return result;
+    }
+
+    bool contains(const std::string& str) const {
+        return find(str) != std::string::npos;
+    }
+
+    bool contains(char ch) const {
+        return find(ch) != std::string::npos;
+    }
+
+    static String number(int n) { return String(std::to_string(n)); }
+    static String number(long n) { return String(std::to_string(n)); }
+    static String number(double n) { return String(std::to_string(n)); }
+};
 
 // ByteArray type - use std::vector<uint8_t> for binary data
 using ByteArray = std::vector<uint8_t>;

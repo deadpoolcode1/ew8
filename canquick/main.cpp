@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
     std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + mainQmlFileName;
 
     // Only construct QUrl inline where required by Qt QML APIs
-    QQmlComponent component(&engine, QUrl::fromLocalFile(QString::fromStdString(mainQmlPath)));
+    QQmlComponent component(&engine, QUrl::fromLocalFile(String(mainQmlPath).toQString()));
     coreDebug() << "Loading QML from:" << mainQmlPath;
     coreDebug() << "Component status:" << component.status();
 if (component.status() != QQmlComponent::Ready) {
