@@ -292,7 +292,7 @@ Signal * CanRxMsg::getCANSignalByName(const String& name)
 {
     Signal * ret = nullptr;
 
-    foreach (Signal * cansig, * canSignalsArray)
+    for (Signal * cansig : *canSignalsArray)
     {
         if (cansig->name == name)
         {
@@ -387,7 +387,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
         List<AMJsonSignal*> signalsToAppendList;
 
 
-        foreach (Signal * curSignal, *canSignalsArray)
+        for (Signal * curSignal : *canSignalsArray)
         {
             //JSON Driven Alerts Triggering:
 
@@ -399,7 +399,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
             List<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
 
-            foreach (AMJsonSignal * jsonsig, signalsList)
+            for (AMJsonSignal * jsonsig : signalsList)
             {
 
                 jsonsig->setItsCanDbSignal(curSignal);
@@ -408,7 +408,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
                 if (!supSignalName.empty())
                 {
-                    foreach (Signal * iSignal, *canSignalsArray)
+                    for (Signal * iSignal : *canSignalsArray)
                     {
                         if(iSignal->name == supSignalName)
                         {

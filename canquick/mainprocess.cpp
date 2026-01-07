@@ -171,7 +171,7 @@ int MainProcess::launchEverything()
 
     if(nullptr != theBrightnessControl)
     {
-        CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
+        CANDebugReport::getInstance()->setCanManager(canmgr);
         // BrightnessControl::sendBrightness is a core::Signal, connect it to CANDebugReport's slot
         theBrightnessControl->sendBrightness.connect([](uint32_t a, int32_t b, int32_t c) {
             CANDebugReport::getInstance()->sendBrightness(a, b, c);
