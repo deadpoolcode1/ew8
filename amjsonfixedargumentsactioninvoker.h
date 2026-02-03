@@ -2,6 +2,7 @@
 #define AMJSONFIXEDARGUMENTSACTIONINVOKER_H
 
 #include "iamjsonprocessable.h"
+#include "core/types.h"
 
 //class AMJsonAction;
 //class AMJsonGraphicItemAction;
@@ -11,8 +12,8 @@ class AMJsonFixedArgumentsActionInvoker: public IAMJsonProcessable
 
 public:
 
-    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QString aStringArg);
-    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, QList<qint32> intArgs);
+    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, const String& aStringArg);
+    AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, List<int32_t> intArgs);
 
     void process(QObject *sender, QVariant extractedCANsignal);
 
@@ -22,8 +23,8 @@ public:
 
 private:
     AMJsonGraphicItemAction * itsAction;
-    QString itsStringArg;
-    QList <qint32> itsIntArgs;
+    String itsStringArg;
+    List <int32_t> itsIntArgs;
     bool isProcessedWithStringArg;
 };
 

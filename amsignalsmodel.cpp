@@ -1,8 +1,8 @@
 #include "amsignalsmodel.h"
-#include <QFile>
+#include "core/file_utils.h"
 
-#include <QJsonArray>
-#include <QJsonObject>
+#include "core/json.h"
+#include "core/logger.h"
 
 #include <QObject>
 
@@ -39,12 +39,13 @@ CanManager * AMSignalsModel::getItsCanManager(void)
     return itsCanManager;
 }
 
-AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
+AMJsonProtocol * AMSignalsModel::getProtocol(const String& aName)
 {
 
     AMJsonProtocol * ret;
 
-    ret = jsonProtocols.value(aName,nullptr);
+    auto it = jsonProtocols.find(aName);
+    ret = (it != jsonProtocols.end()) ? it->second : nullptr;
 
     return ret;
 
@@ -52,16 +53,16 @@ AMJsonProtocol * AMSignalsModel::getProtocol(QString aName)
 
 void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 {
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("Protocols").toArray();
+    core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("Protocols").toArray();
 
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject protocol_obj = value.toObject();
+    for (const core::JsonValue& value : jsonArray) {
+        core::JsonObject protocol_obj = value.toObject();
 
         AMJsonProtocol *amjp = new AMJsonProtocol(this, protocol_obj["protocol"]);
 
         bool status = true;
 
-        if (amjp->getType() == AMJsonProtocol::CAN)
+        if (amjp->getType() == CAN)
         {
 
             if(!CanRxMsg::isAlreadyLoaded)
@@ -75,10 +76,10 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
         {
 
         //TODO find if exist
-        QString keepAliveMsgName = "";
-        qint32 keepAliveTimeout;
+        String keepAliveMsgName = "";
+        int32_t keepAliveTimeout;
 
-        if(protocol_obj.find("keepAlive") != protocol_obj.end())//TODO check necessity of the check
+        if(protocol_obj.contains("keepAlive"))//TODO check necessity of the check
         {
             keepAliveMsgName = protocol_obj["keepAlive"].toString("");
             keepAliveTimeout = protocol_obj["timeout"].toInt(500);
@@ -89,9 +90,9 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
         // //////////////////////////////////////
 
-        QJsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
+        core::JsonArray jsonSignalsArray = protocol_obj["signals"].toArray();
 
-        foreach (const QJsonValue & signal_value, jsonSignalsArray) {
+        for (const core::JsonValue& signal_value : jsonSignalsArray) {
 
                // /////////////////////////////////////////////////////////////////
 
@@ -112,11 +113,11 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
 
         //insert protocol into Protocols collector.
-        jsonProtocols.insert(amjp->getName(),amjp);
+        jsonProtocols[amjp->getName()] = amjp;
 
         }
         else {
-            qDebug("Skip CAN Protocol:%s", qPrintable(amjp->getName()));
+            LOG_DEBUG("Skip CAN Protocol:%s", amjp->getName().c_str());
             //TODO clean the allocated memory
         }
 
@@ -124,23 +125,23 @@ void AMSignalsModel::jsonInitProtocolsAndSignalsVectors(void)
 
     //functional connections of the stored Actions:
 
-    foreach (AMJsonEnablerAction * enabler, jsonEnablerActions)
+    for (AMJsonEnablerAction * enabler : jsonEnablerActions)
     {
         enabler->connect2EnabledDisabled();
     }
 
-    foreach (AMJsonArgumentAction * argument, jsonArgumentActions)
+    for (AMJsonArgumentAction * argument : jsonArgumentActions)
     {
         //TODO: think about arguments : actions 1:n
-        QMap<QString,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
+        Map<String,AMJsonGraphicItemAction *>::iterator it = jsonGraphicItemActions.find(argument->getActionName());
 
         if(it != jsonGraphicItemActions.end())
         {
-            AMJsonGraphicItemAction *jsonaction = it.value();
+            AMJsonGraphicItemAction *jsonaction = it->second;
             //TODO add forced arguments feature to graphicItemAction
             jsonaction->connect2Arguments(argument);
 
-            jsonGraphicItemActions.remove(argument->getActionName());
+            jsonGraphicItemActions.erase(argument->getActionName());
         }
     }
 }
@@ -151,20 +152,20 @@ void AMSignalsModel::storeCollectedAction(AMJsonAction * anAction)
     {
     case Enabler:
 
-        jsonEnablerActions.append((AMJsonEnablerAction *)anAction);
+        jsonEnablerActions.push_back((AMJsonEnablerAction *)anAction);
 
         break;
 
     case GraphicItem:
 
-        jsonGraphicItemActions.insert(anAction->getActionName(), (AMJsonGraphicItemAction *)anAction);
+        jsonGraphicItemActions[anAction->getActionName()] = (AMJsonGraphicItemAction *)anAction;
 
         break;
 
     case StringArgument:
     case IntArgument:
 
-        jsonArgumentActions.append((AMJsonArgumentAction *)anAction);
+        jsonArgumentActions.push_back((AMJsonArgumentAction *)anAction);
 
         break;
 

@@ -1,8 +1,8 @@
 #ifndef AMSIGNALSMODEL_H
 #define AMSIGNALSMODEL_H
 
-#include <QFile>
-#include <QJsonDocument>
+#include "core/file_utils.h"
+#include "core/json.h"
 #include <defs.h>
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
@@ -33,7 +33,7 @@ public:
 
     explicit AMSignalsModel(CanManager * aManager);
 
-    AMJsonProtocol * getProtocol(QString aName);
+    AMJsonProtocol * getProtocol(const String& aName);
 
     CanManager * getItsCanManager(void);
 
@@ -45,13 +45,13 @@ private:
 
     void jsonInitProtocolsAndSignalsVectors(void);
 
-    QMap<QString,AMJsonProtocol*> jsonProtocols;
+    Map<String,AMJsonProtocol*> jsonProtocols;
 
-    QList<AMJsonEnablerAction *> jsonEnablerActions;
+    List<AMJsonEnablerAction *> jsonEnablerActions;
 
     //NOTE: for later one 2 one connecting
-    QMap<QString,AMJsonGraphicItemAction *> jsonGraphicItemActions;
-    QList<AMJsonArgumentAction *> jsonArgumentActions;
+    Map<String,AMJsonGraphicItemAction *> jsonGraphicItemActions;
+    List<AMJsonArgumentAction *> jsonArgumentActions;
 
     CanManager * itsCanManager;
     IAMJsonActionFactory * itsAMJsonActionFactory;

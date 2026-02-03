@@ -1,45 +1,58 @@
-#include <QThread>
-#include <QDebug>
+// Use core library instead of Qt
+#include "core/core.h"
+#include "core/thread.h"
+#include "core/logger.h"
+#include "core/elapsed_timer.h"
 
 #include "ialertdisplay.h"
 #include "defs.h"
 
 #include "medisconnectionreport.h"
 #include "canrxmsg.h"
-#include <QDateTime>
 
 
 
-MeDisconnectionReport::MeDisconnectionReport(IAlertDisplay * aDisplay, QObject *parent) : QObject(parent)
+MeDisconnectionReport::MeDisconnectionReport(IAlertDisplay * aDisplay)
 {
    itsDisplay = aDisplay;
 
    isInDisconnectionAlert = false;
 
-   connectionTimeoutTimer = new QTimer();
+   connectionTimeoutTimer = new core::Timer();
 
    connectionTimeoutTimer->setSingleShot(true);
    connectionTimeoutTimer->setInterval(CanRxMsg::getKeepAliveMsgTimeout());
-   connectionTimeoutTimer->setTimerType(Qt::PreciseTimer);
 
-   requestTimeoutTimer = new QTimer();
+   requestTimeoutTimer = new core::Timer();
 
    requestTimeoutTimer->setSingleShot(true);
    requestTimeoutTimer->setInterval(1000);
-   requestTimeoutTimer->setTimerType(Qt::PreciseTimer);
 
 
-   itsThread = new QThread();
-   this->moveToThread(itsThread);
-   connectionTimeoutTimer->moveToThread(itsThread);
-   requestTimeoutTimer->moveToThread(itsThread);
+   itsThread = new core::Thread();
 
-   connect(connectionTimeoutTimer,SIGNAL(timeout()), this, SLOT(fireConnectionTimeout()));
-   connect(itsThread,SIGNAL(started()), connectionTimeoutTimer, SLOT(start()));
+   // Connect timer timeouts to handlers
+   connectionTimeoutTimer->timeout.connect([this]() {
+       fireConnectionTimeout();
+   });
 
-   connect(this, SIGNAL(startRequestTimeoutTimer()), requestTimeoutTimer, SLOT(start()));
-   connect(this, SIGNAL(stopRequestTimeoutTimer()), requestTimeoutTimer, SLOT(stop()));
-   connect(requestTimeoutTimer, SIGNAL(timeout()), this, SLOT(fireRequestTimeout()));
+   requestTimeoutTimer->timeout.connect([this]() {
+       fireRequestTimeout();
+   });
+
+   // Start connection timer when thread starts
+   itsThread->started.connect([this]() {
+       connectionTimeoutTimer->start();
+   });
+
+   // Connect signals for request timeout control
+   startRequestTimeoutTimer.connect([this]() {
+       requestTimeoutTimer->start();
+   });
+
+   stopRequestTimeoutTimer.connect([this]() {
+       requestTimeoutTimer->stop();
+   });
 }
 
 void MeDisconnectionReport::launch(void)
@@ -50,7 +63,7 @@ void MeDisconnectionReport::launch(void)
 void MeDisconnectionReport::fireRequestTimeout(void)
 {
     CanRxMsg::discardRequestId();
-    qDebug() << "RIT: Request Id timeout";
+    coreDebug() << "RIT: Request Id timeout";
 #if 1
     itsDisplay->activate(AlertTypes::ALERT_REQFAIL);
     itsDisplay->forceUpdate();
@@ -73,6 +86,6 @@ void MeDisconnectionReport::resetConnectionTimeout(void)
         isInDisconnectionAlert = false;
     }
 
-    qDebug()<<"Disconnection timeout reset at:" <<  QDateTime::currentMSecsSinceEpoch();
+    coreDebug() << "Disconnection timeout reset at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
     connectionTimeoutTimer->start();
 }

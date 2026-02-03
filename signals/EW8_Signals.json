@@ -60,6 +60,7 @@
         ,"INFO_ISA_VERSION"
         ,"INFO_ISA_BUNDLE"
         ,"STATE_ISA_NOT_TSR"
+        ,"STATE_TSR_NOT_ISA"
 
 
         ,"INFO_DRIVER_AUTH_IN"
@@ -128,6 +129,7 @@
             "protocol":"IMS_ISA",
             "signals":[
                 {"name": "ISA_STATE_Value", "action": ["STATE_ISA_NOT_TSR", "inverted"], "type": "GraphicItem", "Set": 0}
+                ,{"name": "ISA_STATE_Value", "action": "STATE_TSR_NOT_ISA", "type": "GraphicItem", "Set": 0}
                 ,{"name": "ISA_STATE_Value", "action": "ISA_SLWF", "type": "Enabler" , "Set": [2,3]}
                 ,{"name": "ISA_STATE_Value", "action": "Legal_Speed_Validity", "type": "Enabler", "Set": [1,2,3]}
                 ,{"name": "ISA_STATE_Value", "action": "ALERT_ISA_ERROR", "type": "GraphicItem", "Set": 4}

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "defs.h"
 
-#include <QDebug>
+#include "core/core.h"
 
 #include "candbsignal.h"
 
@@ -32,10 +32,11 @@
 #endif
 
 
-#include <QThread>
-#include <QMutex>
-#include <QTimer>
-#include <QDateTime>
+#include "core/thread.h"
+#include "core/mutex.h"
+#include "core/timer.h"
+#include "core/elapsed_timer.h"
+#include "core/json.h"
 
 #include "ialertdisplay.h"
 #include "icanrxmsgfactory.h"
@@ -46,6 +47,9 @@
 #include "medisconnectionreport.h"
 
 #include "canmanager.h"
+#include "amjsonconfigreader.h"
+
+class AMJsonConfigReader;
 
 #ifndef WIN32
 #ifndef VIRTUAL_CAN0
@@ -55,7 +59,8 @@ const char * CanManager::can_if_name = "vcan0";
 #endif
 #endif
 
-CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(parent)
+CanManager::CanManager(IAlertDisplay * alertdisp)
+    : itsThread(nullptr)
 {
     itsDisplay = alertdisp;
 
@@ -68,14 +73,23 @@ CanManager::CanManager(IAlertDisplay * alertdisp, QObject * parent) : QObject(pa
 
     CanRxMsg::setItsDisconnectionReport(itsDisconnectionReport);
 
+    // Connect signal to MeDisconnectionReport using core::Signal
+    resetConnectionTimeoutSignal.connect([this]() {
+        itsDisconnectionReport->resetConnectionTimeout();
+    });
 
-    itsThread = new QThread(this);
+    // Create thread - will be started in launch()
+    itsThread = new core::Thread();
+}
 
-    this->moveToThread(itsThread);
-
-    connect(this, SIGNAL(resetConnectionTimeout()), itsDisconnectionReport, SLOT(resetConnectionTimeout()));
-
-    connect(itsThread,SIGNAL(started()),this,SLOT(process()));
+CanManager::~CanManager()
+{
+    if (itsThread) {
+        itsThread->quit();
+        itsThread->wait();
+        delete itsThread;
+    }
+    delete itsDisconnectionReport;
 }
 
 void CanManager::launch(void)
@@ -83,14 +97,18 @@ void CanManager::launch(void)
     VersionMsg::create(this);
     VersionMsg::singleShot();
     itsDisconnectionReport->launch();
-    itsThread->start();
 
+    // Start thread with process() as the run function
+    itsThread->started.connect([this]() {
+        process();
+    });
+    itsThread->start();
 }
 
 //TODO: unite volume functions
 void CanManager::sendVolumeDown(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -98,8 +116,8 @@ void CanManager::sendVolumeDown(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x0)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -116,7 +134,7 @@ void CanManager::sendVolumeDown(void)
 
 void CanManager::sendVolumeUp(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -124,8 +142,8 @@ void CanManager::sendVolumeUp(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x1)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -142,7 +160,7 @@ void CanManager::sendVolumeUp(void)
 
 void CanManager::sendVolumeGet(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -150,8 +168,8 @@ void CanManager::sendVolumeGet(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x2)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -167,7 +185,7 @@ void CanManager::sendVolumeGet(void)
 
 void CanManager::sendVolumeMute(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -175,8 +193,8 @@ void CanManager::sendVolumeMute(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x3)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -192,7 +210,7 @@ void CanManager::sendVolumeMute(void)
 
 void CanManager::sendISAFullDeact()
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -200,8 +218,8 @@ void CanManager::sendISAFullDeact()
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x5)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -217,7 +235,7 @@ void CanManager::sendISAFullDeact()
 
 void CanManager::sendISAPartDeact(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -225,8 +243,8 @@ void CanManager::sendISAPartDeact(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x4)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -242,7 +260,7 @@ void CanManager::sendISAPartDeact(void)
 
 void CanManager::sendISAFullActivate(void)
 {
-    quint16 requestId = rand()%0xffff;
+    uint16_t requestId = rand()%0xffff;
 
     struct can_frame frame_to_send;
 
@@ -250,8 +268,8 @@ void CanManager::sendISAFullActivate(void)
 
     frame_to_send.can_id = 0x733;
     frame_to_send.can_dlc = 8;
-    frame_to_send.data[0] = (quint8)((requestId >> 000) & 0xff);;
-    frame_to_send.data[1] = (quint8)((requestId >> 010) & 0xff);
+    frame_to_send.data[0] = (uint8_t)((requestId >> 000) & 0xff);;
+    frame_to_send.data[1] = (uint8_t)((requestId >> 010) & 0xff);
     frame_to_send.data[2] = (0x6)|(0xf8);
 
     frame_to_send.data[3] = (0xff);
@@ -287,7 +305,63 @@ void CanManager::init(void)
 
     CanRxMsg::completeInitCanRxMsgsPool();
 
+    //"CANBusParameters":
+    //{
+    //    "baudrateKbps": 500,
+    //    "samplePoint": 87.5
+    //}
 
+    int32_t bdr = 500;
+    double samplepnt = 87.5;
+
+    core::JsonValue canbus_jtop = AMJsonConfigReader::getInstance()->getJsonTopEntry("CANBusParameters");
+
+    if (canbus_jtop.isUndefined())
+    {
+        coreDebug() << "CANBusParameters entry is not found, using default values.";
+    }
+    else
+    {
+        core::JsonObject canbus_jobj = canbus_jtop.toObject();
+
+
+        core::JsonValue baudrate_entry = canbus_jobj["baudrateKbps"];
+
+        //NOTE: sample point % configuration used in Linux only:
+        core::JsonValue samplepoint_entry = canbus_jobj["samplePoint"];
+
+        if (baudrate_entry.isUndefined())
+        {
+            coreDebug() << "Baudrate entry is not found, using default value.";
+        }
+        else
+        {
+            bdr = baudrate_entry.toInt(500);
+        }
+
+        double samplepoint_tmp;
+
+        if (samplepoint_entry.isUndefined())
+        {
+            coreDebug() << "Sample point entry is not found, using default value.";
+        }
+        else
+        {
+            samplepoint_tmp = samplepoint_entry.toDouble(87.5);
+
+            if (samplepoint_tmp > 100 or samplepoint_tmp < 0)
+            {
+                coreDebug() << "CAN samplepoint in config file is not valid, using default value";
+            }
+            else
+            {
+                samplepnt = samplepoint_tmp;
+            }
+        }
+    }
+
+
+    coreDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
 #ifndef WIN32
 
@@ -299,12 +373,35 @@ void CanManager::init(void)
 
     if(can_err_status)
     {
-        qDebug("failed can interface stop");
+        coreDebug() << "failed can interface stop";
     }
     else
     {
         //set parameters:
-        can_err_status = can_set_bitrate_samplepoint(can_if_name, 500000, 0.875);
+        switch (bdr)
+        {
+        case 1000:
+             coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+             break;
+        case 500:
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+            break;
+        case 250:
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+            break;
+
+        case 125:
+            coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+            break;
+
+        default:
+            coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+            bdr = 500;
+        }
+
+
+
+        can_err_status = can_set_bitrate_samplepoint(can_if_name, bdr * 1000, samplepnt / 100);
 
         struct can_ctrlmode cm =
         {
@@ -317,7 +414,7 @@ void CanManager::init(void)
 
         if(can_err_status)
         {
-            qDebug("can parameters configuration failed");
+            coreDebug() << "can parameters configuration failed";
         }
         else
         {
@@ -325,21 +422,21 @@ void CanManager::init(void)
 
             if(can_err_status)
             {
-                qDebug("failed can interface start");
+                coreDebug() << "failed can interface start";
             }
         }
     }
 
     if(!can_err_status)
     {
-      qDebug("Can interface configuration succeed\n");
+      coreDebug() << "Can interface configuration succeed";
     }
 
 
 
     //CAN Socket configuration:
 
-    const QList<CanStdId_t> rfilterList = CanRxMsg::getMsgsWhiteList();
+    const List<CanStdId_t> rfilterList = CanRxMsg::getMsgsWhiteList();
 
     size_t rfilterSize = rfilterList.size();
 
@@ -354,9 +451,9 @@ void CanManager::init(void)
     socknum = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
 #if 0
-    qint32 status = 0;
+    int32_t status = 0;
 
-    qint32 flags = fcntl(socknum, F_GETFL);
+    int32_t flags = fcntl(socknum, F_GETFL);
 
 
     if(-1 != flags)
@@ -370,7 +467,7 @@ void CanManager::init(void)
 
     if(-1 == status)
     {
-        qDebug("Unsuccess on NONBLOCKINK CAN socket configure");
+        coreDebug() << "Unsuccess on NONBLOCKINK CAN socket configure";
     }
 #endif
 
@@ -384,7 +481,7 @@ void CanManager::init(void)
     addr.can_ifindex = ifr.ifr_ifindex;
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
-    qDebug("can interface initiated");
+    coreDebug() << "can interface initiated";
 #else
       canInitializeLibrary();
 
@@ -393,8 +490,36 @@ void CanManager::init(void)
 
       //canSetBusOutputControl(hnd, canDRIVER_NORMAL);
 
+      long canBITRATE;
 
-      stat = canSetBusParams(hnd, canBITRATE_500K, 0, 0, 0, 0, 0);
+      switch (bdr)
+      {
+      case 1000:
+           coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+                canBITRATE = canBITRATE_1M;
+                break;
+      case 500:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_500K;
+          break;
+      case 250:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_250K;
+          break;
+
+      case 125:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_125K;
+          break;
+
+
+      default:
+          coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+          canBITRATE = canBITRATE_500K;
+      }
+
+
+      stat = canSetBusParams(hnd, canBITRATE, 0, 0, 0, 0, 0);
       stat = canBusOn(hnd);
 
       //TODO add filter,sampling point and normal mode
@@ -426,16 +551,16 @@ void CanManager::read_frame(void)
     else
     {
 #if 1
-        qDebug() << "can interface:" << (void*) (quint32) frame.can_id << ":" <<
-                   (void*) (quint32) frame.data[0] <<
-                   (void*) (quint32) frame.data[1] <<
-                   (void*) (quint32) frame.data[2] <<
-                   (void*) (quint32) frame.data[3] <<
-                   (void*) (quint32) frame.data[4] <<
-                   (void*) (quint32) frame.data[5] <<
-                   (void*) (quint32) frame.data[6] <<
-                   (void*) (quint32) frame.data[7] <<
-                   "ts:" << QDateTime::currentMSecsSinceEpoch();
+        coreDebug() << "can interface:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":" <<
+                   (void*) static_cast<uintptr_t>(frame.data[0]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[1]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[2]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[3]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[4]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[5]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[6]) <<
+                   (void*) static_cast<uintptr_t>(frame.data[7]) <<
+                   "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 #endif
 
 #if 0
@@ -497,7 +622,7 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
     nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
 
     if (nbytes < 0) {
-         qDebug("Can not write to the CAN bus socket!");
+         coreDebug() << "Can not write to the CAN bus socket!";
     }
 #else
       stat = canOK;
@@ -529,7 +654,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
 
           if(CanRxMsg::isKeepAliveMsg(frame->can_id))
           {
-             emit resetConnectionTimeout();
+             resetConnectionTimeoutSignal.fire();
           }
 
           CanRxMsg * curr = CanRxMsg::getMsgByCanId(frame->can_id);
@@ -543,7 +668,7 @@ bool CanManager::parse_frame(struct can_frame * frame)
               curr->ack(this);
               itsDisplay->forceUpdate();
 #if 0
-              qDebug() << "message" << (void*)(quint32) frame->can_id <<"processed ts:" << QDateTime::currentMSecsSinceEpoch();
+              coreDebug() << "message" << (void*)(uint32_t) frame->can_id <<"processed ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 #endif
           }
 

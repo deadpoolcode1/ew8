@@ -3,44 +3,70 @@
 #include "defs.h"
 #include "canrxmsg.h"
 
-#include <QDataStream>
-#include <QSaveFile>
-#include <QDebug>
+#include "core/serialization.h"
+#include "core/file_utils.h"
+#include "core/core.h"
+#include "core/types.h"
+#include <any>
+#include <algorithm>
 
-QMap <quint32, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
+// Helper function to convert std::any to QVariant
+static QVariant anyToVariant(const std::any& val)
+{
+    if (!val.has_value()) {
+        return QVariant();
+    }
+    if (val.type() == typeid(bool)) {
+        return QVariant(std::any_cast<bool>(val));
+    }
+    if (val.type() == typeid(int32_t)) {
+        return QVariant(std::any_cast<int32_t>(val));
+    }
+    if (val.type() == typeid(double)) {
+        return QVariant(std::any_cast<double>(val));
+    }
+    if (val.type() == typeid(float)) {
+        return QVariant(static_cast<double>(std::any_cast<float>(val)));
+    }
+    return QVariant();
+}
+
+// Note: core::DataStream operators for Signal type are defined in candbsignal.cpp
+
+Map<uint32_t, CanRxMsg *> CanRxMsg::CanRxMsgsPool;
 ICanRxMsgFactory * CanRxMsg::iCanRxMsgFactory = nullptr;
 AMSignalsModel * CanRxMsg::itsAMSignalsModel = nullptr;
 MeDisconnectionReport * CanRxMsg::itsDisconnectionReport = nullptr;
-QList<CanStdId_t> CanRxMsg::msgsWhiteList;
+List<CanStdId_t> CanRxMsg::msgsWhiteList;
 bool CanRxMsg::isAlreadyLoaded = false;
 bool CanRxMsg::isDBCParsingForced = false;
 
 bool CanRxMsg::isRequestSent = false;
 bool CanRxMsg::isRequestIdLSBByteReceived = false;
-quint16 CanRxMsg::requestId = 0x0;
-QString CanRxMsg::keepAliveMsgName;
+uint16_t CanRxMsg::requestId = 0x0;
+String CanRxMsg::keepAliveMsgName;
 CanStdId_t CanRxMsg::keepAliveMsgId = 0x0;
-qint32 CanRxMsg::keepAliveTimeout;
+int32_t CanRxMsg::keepAliveTimeout;
 
 
-void CanRxMsg::setKeepAliveMsg(QString aKeepAliveMsgName, qint32 aKeepAliveTimeout)
+void CanRxMsg::setKeepAliveMsg(const String& aKeepAliveMsgName, int32_t aKeepAliveTimeout)
 {
-  if(keepAliveMsgName.isEmpty())
+  if(keepAliveMsgName.empty())
   {
     keepAliveMsgName = aKeepAliveMsgName;
     keepAliveTimeout = aKeepAliveTimeout;
   }
   else
   {
-    qDebug() << "Abmiguous keep alive message definition. Must  be only one";
+    coreDebug() << "Abmiguous keep alive message definition. Must  be only one";
   }
 }
 
-QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
+core::DataStream & operator<< (core::DataStream &out, const CanRxMsg &any)
 {
-    quint32 listsize = any.canJsonSignalsPoolIdxInProcessOrder.size();
+    uint32_t listsize = any.canJsonSignalsPoolIdxInProcessOrder.size();
     out << listsize;
-    for(quint32 i = 0; i < listsize; i++)
+    for(uint32_t i = 0; i < listsize; i++)
     {
         out << (any.canJsonSignalsPoolIdxInProcessOrder.at(i));
     }
@@ -48,17 +74,17 @@ QDataStream & operator<< (QDataStream &out, const CanRxMsg &any)
     return out;
 }
 
-QDataStream & operator>> (QDataStream &in, CanRxMsg &any)
+core::DataStream & operator>> (core::DataStream &in, CanRxMsg &any)
 {
-    quint32 listsize;
+    uint32_t listsize;
 
 
     in >> listsize;
-    for(quint32 i = 0; i < listsize; i++)
+    for(uint32_t i = 0; i < listsize; i++)
     {
         Signal * sig = new Signal();
         in >> *sig;
-        any.canJsonSignalsPoolIdxInProcessOrder.append(*sig);
+        any.canJsonSignalsPoolIdxInProcessOrder.push_back(*sig);
     }
     return in;
 }
@@ -70,48 +96,43 @@ bool CanRxMsg::saveToStorage(void)
 
     if(!isAlreadyLoaded)
     {
-        QSaveFile configDump("config.dat");
+        core::SaveFile configDump("config.dat");
 
-        if(!configDump.open(QFile::WriteOnly))
+        if(!configDump.open(core::File::WriteOnly))
         {
-            qDebug("Error: Can not write config.dat!");
+            coreDebug() << "Error: Can not write config.dat!";
         }
         else{
-            QDataStream configStream( & configDump);
-            configStream.setByteOrder(QDataStream::BigEndian);
-            configStream.setVersion(QDataStream::Qt_5_9);
-            configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
+            core::DataStream configStream(&configDump);
+            configStream.setByteOrder(core::DataStream::BigEndian);
 
 
-            quint32 keepAliveOutput = (quint32) keepAliveMsgId;
+            uint32_t keepAliveOutput = (uint32_t) keepAliveMsgId;
             configStream << keepAliveOutput;
 #if 0
             configStream << CanRxMsgsPool.size();
 #else
-            configStream << (quint32)msgsWhiteList.size();
+            configStream << (uint32_t)msgsWhiteList.size();
 #endif
-            QMap<CanStdId_t, CanRxMsg *>::iterator i;
+            Map<CanStdId_t, CanRxMsg *>::iterator i;
 
             for  (i = CanRxMsgsPool.begin(); i != CanRxMsgsPool.end(); i++)
             {
 
-                CanRxMsg * msg = i.value();
-                CanStdId_t id = i.key();
-                quint32 q32Id = static_cast<quint32>(id);
+                CanRxMsg * msg = i->second;
+                CanStdId_t id = i->first;
+                uint32_t q32Id = static_cast<uint32_t>(id);
 
-                if(msgsWhiteList.contains(id))
+                if(std::find(msgsWhiteList.begin(), msgsWhiteList.end(), id) != msgsWhiteList.end())
                 {
                     configStream << q32Id;
-                    qDebug() << "saving Msg Number:" << q32Id;
+                    coreDebug() << "saving Msg Number:" << q32Id;
                     configStream << *msg;
-                    configStream.commitTransaction();
-                    configDump.flush();
                 }
             }
 
         }
 
-        configDump.flush();
         configDump.commit();
     }
     return status;
@@ -135,38 +156,34 @@ bool CanRxMsg::loadFromStorage(void)
 
     if(!isDBCParsingForced)
     {
-        QFile configDump("config.dat");
+        core::File configDump("config.dat");
 
-        QByteArray blob;
-
-        if(!configDump.open(QFile::ReadOnly))
+        if(!configDump.open(core::File::ReadOnly))
         {
-            qDebug("Error: Can not read config.dat!");
+            coreDebug() << "Error: Can not read config.dat!";
             status = false;
         }
         else{
 
-            blob = configDump.readAll();
+            std::vector<uint8_t> blob = configDump.readAllBytes();
 
-            QDataStream configStream(blob);
-            configStream.setByteOrder(QDataStream::BigEndian);
-            configStream.setVersion(QDataStream::Qt_5_9);
-            configStream.setFloatingPointPrecision(QDataStream:: SinglePrecision);
+            core::DataStream configStream(&blob);
+            configStream.setByteOrder(core::DataStream::BigEndian);
 
 
-            quint32 keepAliveInput;
+            uint32_t keepAliveInput;
             configStream >> keepAliveInput;
 
             keepAliveMsgId = (CanStdId_t)keepAliveInput;
 
 
-            quint32 msgNum;
+            uint32_t msgNum;
 
             configStream >> msgNum;
 
-            qDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
+            coreDebug() << "Size of loaded CanRxMsgs Pool is" << msgNum;
 
-            quint32 stdId;
+            uint32_t stdId;
 
             CanRxMsg dummybuff;
 
@@ -176,18 +193,25 @@ bool CanRxMsg::loadFromStorage(void)
 
                 configStream >> stdId;
 
-                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, QString(""));
+                CanRxMsg * rxmsg = CanRxMsg::createInstance(stdId, "");
 
-                qDebug() << "StdId:" << (qint32)stdId;
+                coreDebug() << "StdId:" << (int32_t)stdId;
 
                 if(rxmsg)
                 {
                     configStream >> *rxmsg;
-                    msgsWhiteList.append(stdId);
+                    msgsWhiteList.push_back(stdId);
                 }
                 else
                 {
-                    configStream >> dummybuff.canJsonSignalsPoolIdxInProcessOrder;
+                    // Read and discard the signals list
+                    uint32_t dummyListSize;
+                    configStream >> dummyListSize;
+                    for(uint32_t j = 0; j < dummyListSize; j++)
+                    {
+                        Signal dummySig;
+                        configStream >> dummySig;
+                    }
                 }
 
 
@@ -203,7 +227,7 @@ bool CanRxMsg::loadFromStorage(void)
     return status;
 }
 
-void CanRxMsg::expectRequestId(quint16 aRequestId)
+void CanRxMsg::expectRequestId(uint16_t aRequestId)
 {
     requestId = aRequestId;
     isRequestSent = true;
@@ -211,15 +235,15 @@ void CanRxMsg::expectRequestId(quint16 aRequestId)
     itsDisconnectionReport->startRequestTimeoutTimer();
 }
 
-void CanRxMsg::receiveRequestIdByteLSB(quint8 aByte)
+void CanRxMsg::receiveRequestIdByteLSB(uint8_t aByte)
 {
     isRequestIdLSBByteReceived = isRequestSent &&
-            ((quint16)aByte == (requestId & (quint16)0xff));
+            ((uint16_t)aByte == (requestId & (uint16_t)0xff));
 }
 
-void CanRxMsg::receiveRequestIdByteMSB(quint8 aByte)
+void CanRxMsg::receiveRequestIdByteMSB(uint8_t aByte)
 {
-    if(isRequestIdLSBByteReceived && ((quint16)aByte == ((requestId >> 010) & (quint16)0xff)))
+    if(isRequestIdLSBByteReceived && ((uint16_t)aByte == ((requestId >> 010) & (uint16_t)0xff)))
     {
         isRequestSent = false;
         itsDisconnectionReport->stopRequestTimeoutTimer();
@@ -237,7 +261,7 @@ void CanRxMsg::discardRequestId(void)
 
 
 
-CanRxMsg * CanRxMsg::createInstance(quint32 StdId, QString aName = "")
+CanRxMsg * CanRxMsg::createInstance(uint32_t StdId, const String& aName)
 {
     CanRxMsg * ret = getMsgByCanId(StdId);
     //TODO review the check location
@@ -248,7 +272,7 @@ CanRxMsg * CanRxMsg::createInstance(quint32 StdId, QString aName = "")
         if(nullptr != ret)
         {
             ret->itsName = aName;
-            CanRxMsgsPool.insert(StdId, ret);
+            CanRxMsgsPool[StdId] = ret;
         }
     }
     return ret;
@@ -264,11 +288,11 @@ void CanRxMsg::setItsJsonProtocol(AMJsonProtocol *aJsonProtocol)
     }
 }
 
-Signal * CanRxMsg::getCANSignalByName(QString name)
+Signal * CanRxMsg::getCANSignalByName(const String& name)
 {
     Signal * ret = nullptr;
 
-    foreach (Signal * cansig, * canSignalsArray)
+    for (Signal * cansig : *canSignalsArray)
     {
         if (cansig->name == name)
         {
@@ -286,10 +310,10 @@ void CanRxMsg::initCanRxMsgsPool(ICanRxMsgFactory * anICanRxMsgFactory, AMSignal
     CanRxMsg::iCanRxMsgFactory = anICanRxMsgFactory;
     CanRxMsg::itsAMSignalsModel = amSignalsModel;
     CanRxMsg::loadFromStorage();
-    qDebug("CanRxMsgsPool is ready for usage");
+    coreDebug() << "CanRxMsgsPool is ready for usage";
 }
 
-const QList<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
+const List<CanStdId_t> & CanRxMsg::getMsgsWhiteList(void)
 {
     return msgsWhiteList;
 }
@@ -298,13 +322,13 @@ void CanRxMsg::completeInitCanRxMsgsPool()
 {
     if(!isAlreadyLoaded)
     {
-        QMap<CanStdId_t, CanRxMsg *>::iterator i;
+        Map<CanStdId_t, CanRxMsg *>::iterator i;
 
         for  (i = CanRxMsgsPool.begin(); i != CanRxMsgsPool.end(); i++)
         {
 
-            CanRxMsg * msg = i.value();
-            CanStdId_t id = i.key();
+            CanRxMsg * msg = i->second;
+            CanStdId_t id = i->first;
 
             if(keepAliveMsgName != "" && msg->itsName == keepAliveMsgName)
             {
@@ -315,9 +339,9 @@ void CanRxMsg::completeInitCanRxMsgsPool()
             {
                 msg->initCanJsonSignalsListInProcessOrder();
 
-                if(!(msg->canJsonSignalsListInProcessOrder.isEmpty()))
+                if(!(msg->canJsonSignalsListInProcessOrder.empty()))
                 {
-                    msgsWhiteList.append(id);
+                    msgsWhiteList.push_back(id);
                 }
             }
         }
@@ -329,20 +353,21 @@ CanRxMsg::CanRxMsg()
     itsJsonProtocol = nullptr;
 }
 
-void CanRxMsg::applyCanDBSignalsArray(QList<Signal *> * signalsList)
+void CanRxMsg::applyCanDBSignalsArray(List<Signal *> * signalsList)
 {
-    //canSignalsArray =  new QList<Signal *>();
+    //canSignalsArray =  new List<Signal *>();
 
     canSignalsArray = signalsList;
 
-    qDebug ("Added signal list to the message");
+    coreDebug() << "Added signal list to the message";
 }
 
-CanRxMsg * CanRxMsg::getMsgByCanId(quint32 StdId)
+CanRxMsg * CanRxMsg::getMsgByCanId(uint32_t StdId)
 {
     CanRxMsg * ret = nullptr;
 
-    ret = CanRxMsgsPool.value(StdId, nullptr);
+    auto it = CanRxMsgsPool.find(StdId);
+    ret = (it != CanRxMsgsPool.end()) ? it->second : nullptr;
 
     return ret;
 }
@@ -358,32 +383,32 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
         AMJsonSignal* signalValidator = nullptr;
         AMJsonSignal* signalsRequestIdArr[2];
-        quint8 requestidcount = 0;
-        QList<AMJsonSignal*> signalsToAppendList;
+        uint8_t requestidcount = 0;
+        List<AMJsonSignal*> signalsToAppendList;
 
 
-        foreach (Signal * curSignal, *canSignalsArray)
+        for (Signal * curSignal : *canSignalsArray)
         {
             //JSON Driven Alerts Triggering:
 
 
-            QString currSignalStr = curSignal->name;
+            String currSignalStr = curSignal->name;
 
             //TODO single return point
 
 
-            QList<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
+            List<AMJsonSignal*> signalsList =  (itsJsonProtocol->getSignalEntries(currSignalStr));
 
-            foreach (AMJsonSignal * jsonsig, signalsList)
+            for (AMJsonSignal * jsonsig : signalsList)
             {
 
                 jsonsig->setItsCanDbSignal(curSignal);
 
-                QString supSignalName = jsonsig->getItsSupName();
+                String supSignalName = jsonsig->getItsSupName();
 
-                if (!supSignalName.isEmpty())
+                if (!supSignalName.empty())
                 {
-                    foreach (Signal * iSignal, *canSignalsArray)
+                    for (Signal * iSignal : *canSignalsArray)
                     {
                         if(iSignal->name == supSignalName)
                         {
@@ -416,7 +441,7 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
                 case Enabler:
 
-                    canJsonSignalsListInProcessOrder.prepend(jsonsig);
+                    canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), jsonsig);
 
                     break;
 
@@ -424,13 +449,13 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
                 case StringArgument:
                 case IntArgument:
 
-                    canJsonSignalsListInProcessOrder.append(jsonsig);
+                    canJsonSignalsListInProcessOrder.push_back(jsonsig);
 
                     break;
 
                 default:
 
-                    signalsToAppendList.append(jsonsig);
+                    signalsToAppendList.push_back(jsonsig);
 
                     break;
                 }
@@ -439,18 +464,18 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
         if(requestidcount == 2)
         {
-            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[1]);
-            canJsonSignalsListInProcessOrder.prepend(signalsRequestIdArr[0]);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalsRequestIdArr[1]);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalsRequestIdArr[0]);
         }
 
         if(signalValidator != nullptr)
         {
-            canJsonSignalsListInProcessOrder.prepend(signalValidator);
+            canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.begin(), signalValidator);
         }
 
-        canJsonSignalsListInProcessOrder.append(signalsToAppendList);
+        canJsonSignalsListInProcessOrder.insert(canJsonSignalsListInProcessOrder.end(), signalsToAppendList.begin(), signalsToAppendList.end());
 
-        QList<AMJsonSignal *>::iterator it;
+        List<AMJsonSignal *>::iterator it;
 
         for (it = canJsonSignalsListInProcessOrder.begin(); it != canJsonSignalsListInProcessOrder.end(); it++)
         {
@@ -459,12 +484,12 @@ void CanRxMsg::initCanJsonSignalsListInProcessOrder(void)
 
            (jsonsig->getCanDbSignal())->AMJsonSignalIdx = jsonsig->getItsIndex();
 
-           canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSignal()));
+           canJsonSignalsPoolIdxInProcessOrder.push_back(*(jsonsig->getCanDbSignal()));
 
            if(jsonsig->getIsSupplemented())
            {
                (jsonsig->getCanDbSupSignal())->AMJsonSignalIdx = jsonsig->getItsIndex();
-               canJsonSignalsPoolIdxInProcessOrder.append(*(jsonsig->getCanDbSupSignal()));
+               canJsonSignalsPoolIdxInProcessOrder.push_back(*(jsonsig->getCanDbSupSignal()));
            }
 
         }
@@ -486,7 +511,7 @@ void CanRxMsg::ack(CanManager *)
 
 void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 {
-    QList<Signal>::iterator it;
+    List<Signal>::iterator it;
     bool discardMsgOnRequestIdFail = false;
     bool discardMsg = false;
 
@@ -502,13 +527,13 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
         if(!jsonsig)
         {
-            qDebug() << "Unknown signal id:";
+            coreDebug() << "Unknown signal id:";
         }
         else
         {
             Signal tmp = *it;
 
-            arg = extractSignal(&tmp, frame);
+            arg = anyToVariant(extractSignal(&tmp, frame));
 
             if(jsonsig->type == Validator)
             {
@@ -553,7 +578,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
                     else
                     {
                         Signal supSig =  * (++it);
-                        supArg =  extractSignal(&supSig, frame);
+                        supArg =  anyToVariant(extractSignal(&supSig, frame));
                         jsonsig->process(arg, supArg);
 
                     }

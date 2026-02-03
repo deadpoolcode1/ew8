@@ -7,7 +7,7 @@
 class AMJsonProtocol;
 
 
-AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, StringArgument, action, parent)
+AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, StringArgument, action, parent)
 {
     itsArgumentAccumulator = CanStringArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
@@ -18,7 +18,7 @@ void AMJsonStringArgumentAction::process(QObject * /*sender*/, QVariant extracte
 }
 
 
-bool AMJsonStringArgumentAction::isItsArgumentsType(qint32 type)
+bool AMJsonStringArgumentAction::isItsArgumentsType(int32_t type)
 {
     return (type == StringArgument);
 }

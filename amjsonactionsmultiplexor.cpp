@@ -1,11 +1,11 @@
 #include "amjsonactionsmultiplexor.h"
-#include <QJsonObject>
 #include "amjsonaction.h"
 #include "amjsonactionfactory.h"
 #include "amjsonfixedargumentsactioninvoker.h"
 #include "defs.h"
+#include "core/logger.h"
 
-AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, QJsonArray vt_rows, QString aType, QObject *parent) : QObject(parent)
+AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, const String& aType, QObject *parent) : QObject(parent)
 {
     itsRawRows = vt_rows;
 
@@ -16,15 +16,15 @@ AmJsonActionsMultiplexor::AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, Q
     initByType(aType);
 }
 
-void AmJsonActionsMultiplexor::initByType(QString aType)
+void AmJsonActionsMultiplexor::initByType(const String& aType)
 {
 
     type = ActionType::fromString(aType);
 
-    //TODO: convert raw rows to QHash values table
-    foreach (const QJsonValue & row_val, itsRawRows) {
+    // Convert raw rows to values table
+    for (const core::JsonValue & row_val : itsRawRows) {
 
-        QJsonObject row_obj = row_val.toObject();
+        core::JsonObject row_obj = row_val.toObject();
 
         bool valueStatus = row_obj["value"].isDouble();
 
@@ -32,14 +32,14 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
 
         if (!valueStatus)
         {
-            qDebug ("Value Table: broken value");
+            LOG_DEBUG("Value Table: broken value");
         }
         else
         {
             double triggerValue = row_obj["value"].toDouble();
 
 
-            QString strAction = row_obj["action"].toString();
+            String strAction = row_obj["action"].toString();
 
 
 
@@ -53,30 +53,30 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
             if(GraphicItem == type)
             {
 
-                QJsonValue arg_val = row_obj["arg"];
+                core::JsonValue arg_val = row_obj["arg"];
 
                 if(!(arg_val.isUndefined()))
                 {
 
                     if(arg_val.isString())
                     {
-                        QString arg = arg_val.toString();
+                        String arg = arg_val.toString();
                         anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arg);
                     }
                     else
                     {
 
-                        QList<qint32> arglist;
+                        List<int32_t> arglist;
 
                         if(arg_val.isArray())
                         {
-                            QJsonArray args_arr = arg_val.toArray();
+                            core::JsonArray args_arr = arg_val.toArray();
 
-                            foreach(const QJsonValue & arg_item, args_arr)
+                            for(const core::JsonValue & arg_item : args_arr)
                             {
                                 if(arg_item.isDouble())
                                 {
-                                    arglist.append(arg_item.toInt());
+                                    arglist.push_back(arg_item.toInt());
                                 }
                             }
 
@@ -84,10 +84,10 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
                         }
                         else if(arg_val.isDouble())
                         {
-                            arglist.append(arg_val.toInt());
+                            arglist.push_back(arg_val.toInt());
                         }
 
-                        if(!(arglist.isEmpty()))
+                        if(!(arglist.empty()))
                         {
                             anActionTableItem =  new AMJsonFixedArgumentsActionInvoker((AMJsonGraphicItemAction *)anAction, arglist);
                         }
@@ -95,7 +95,7 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
                 }
             }
 
-            itsValueTable.insert(triggerValue,anActionTableItem);
+            itsValueTable[triggerValue] = anActionTableItem;
 
             itsProtocol->itsModel->storeCollectedAction(anAction);
 
@@ -103,12 +103,12 @@ void AmJsonActionsMultiplexor::initByType(QString aType)
     }
 }
 
-QHash<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::getItsValueTable()
+std::unordered_map<double, IAMJsonProcessable *> * AmJsonActionsMultiplexor::getItsValueTable()
 {
     return &itsValueTable;
 }
 
-qint32 AmJsonActionsMultiplexor::getItsValuesType(void)
+int32_t AmJsonActionsMultiplexor::getItsValuesType(void)
 {
     return type;
 }

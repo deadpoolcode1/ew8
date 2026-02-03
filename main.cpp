@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
+#include "core/core.h"
 #include "qquickqrcode.h"
 
 #include "mainprocess.h"
@@ -11,11 +12,8 @@
 
 #include "defs.h"
 
-#include <QResource>
-#include <QFile>
-#include <QDir>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include "core/file_utils.h"
+#include "core/cmdline_parser.h"
 #include <QScreen>
 #include "brightnesscontrol.h"
 #include "amjsonconfigreader.h"
@@ -46,18 +44,28 @@ class QQuickQRCode;
 class EWInfo;
 class AMJsonConfigReader;
 
-QElapsedTimer bootUpTimer;
+core::ElapsedTimer bootUpTimer;
 
 int main(int argc, char *argv[])
 {
     bootUpTimer.start();
 
-    qDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
+#ifdef REMOVE_EW8_HW
+    // Auto-setup virtual CAN for desktop builds
+    if (system("ip link show can0 > /dev/null 2>&1") != 0) {
+        coreDebug() << "Setting up virtual CAN interface...";
+        system("sudo /usr/sbin/modprobe vcan 2>/dev/null");
+        system("sudo /usr/sbin/ip link add dev can0 type vcan 2>/dev/null");
+        system("sudo /usr/sbin/ip link set up can0 2>/dev/null");
+    }
+#endif
+
+    coreDebug() << "Initialization begins, time" << bootUpTimer.elapsed();
 
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
-    QFile kernMsgDev("/dev/kmsg");
+    core::File kernMsgDev("/dev/kmsg");
 
-    if(kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+    if(kernMsgDev.open(core::File::WriteOnly | core::File::Text))
     {
        kernMsgDev.write("<2> canquick: init started");
        kernMsgDev.close();
@@ -68,10 +76,10 @@ int main(int argc, char *argv[])
 
 
 #if 0
-    qDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
+    coreDebug() << "Supported Animated Formats" << QImageReader::supportedImageFormats();
 #endif
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    // Qt::AA_EnableHighDpiScaling is deprecated in Qt 6 - High-DPI scaling is always enabled
 #ifdef REMOVE_EW8_HW
     QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 #endif
@@ -86,19 +94,19 @@ int main(int argc, char *argv[])
     app.setOrganizationName("mobileye");
 
 #ifndef REMOVE_EW8_HW
-    BrightnessControl brightnessControl(&app);
+    BrightnessControl brightnessControl;
 #endif
 
-    QCommandLineParser cmdLnParser;
-    QString mainQmlFileName;
+    core::CommandLineParser cmdLnParser;
+    String mainQmlFileName;
 
-    QCommandLineOption forceParsing(QStringList() << "f" << "force-parsing", "Parsing config files, even cache is available");
-    QCommandLineOption testingConfig(QStringList() << "t" << "testing-mode", "Run the application with with testing mode configs");
+    core::CommandLineOption forceParsing("f", "force-parsing", "Parsing config files, even cache is available");
+    core::CommandLineOption testingConfig("t", "testing-mode", "Run the application with with testing mode configs");
 
     cmdLnParser.addOption(forceParsing);
     cmdLnParser.addOption(testingConfig);
 
-    cmdLnParser.process(app);
+    cmdLnParser.process(argc, argv);
 
     bool is_testing_mode = cmdLnParser.isSet(testingConfig);
     bool is_forced = is_testing_mode || cmdLnParser.isSet(forceParsing);
@@ -146,25 +154,20 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    QUrl mainQmlUrl;
+    // Build path as std::string instead of QUrl
+    std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + mainQmlFileName;
 
-
-    if (!is_forced && QResource::registerResource((QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/main.rcc"))))
-    {
-         engine.addImportPath(":/");
-         mainQmlUrl = QUrl(QStringLiteral("qrc:/")+mainQmlFileName);
-    }
-    else
-    {
-        mainQmlUrl = QUrl(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("qml/")+mainQmlFileName);
-    }
-
-    QQmlComponent component(&engine, mainQmlUrl);
-
+    // Only construct QUrl inline where required by Qt QML APIs
+    QQmlComponent component(&engine, QUrl::fromLocalFile(String(mainQmlPath).toQString()));
+    coreDebug() << "Loading QML from:" << mainQmlPath;
+    coreDebug() << "Component status:" << component.status();
+if (component.status() != QQmlComponent::Ready) {
+    coreDebug() << "QML errors:" << component.errorString();
+}
 
     QObject * componentObject = component.create();
 
-    qDebug() << "Component created, time" << bootUpTimer.elapsed();
+    coreDebug() << "Component created, time" << bootUpTimer.elapsed();
 
     MainProcess* mp = MainProcess::getInstance(componentObject);
 
@@ -176,11 +179,11 @@ int main(int argc, char *argv[])
         CanRxMsg::saveToStorage();
     }
 
-    qDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
+    coreDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
 
     mp->launchEverything();
 
-    qDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
+    coreDebug() << "Core Application Loop begins, time:" << bootUpTimer.elapsed();
 
 
 
@@ -190,7 +193,7 @@ int main(int argc, char *argv[])
 
     if ( ! is_testing_mode)
     {
-        if (kernMsgDev.open(QFile::WriteOnly | QFile::Text))
+        if (kernMsgDev.open(core::File::WriteOnly | core::File::Text))
         {
            kernMsgDev.write("<2> canquick: in main loop");
            kernMsgDev.close();

@@ -7,15 +7,22 @@ using namespace peg;
 #include "defs.h"
 
 #include "candbgrammar.h"
-#include <QFile>
-#include <QDebug>
+
+// Use core library instead of Qt
+#include "core/file_utils.h"
+#include "core/logger.h"
+#include "core/serialization.h"
+
+#include <string>
+#include <algorithm>
 
 #include "amjsonprotocol.h"
+#include "core/types.h"
 
 class CanRxMsg;
 class AMJsonProtocol;
 
-QDataStream & operator<< (QDataStream & out, const Signal & any)
+core::DataStream & operator<< (core::DataStream & out, const Signal & any)
 {
 
     SerializedSignal_t sesig;
@@ -23,20 +30,20 @@ QDataStream & operator<< (QDataStream & out, const Signal & any)
      sesig.startByte = any.startByte;
      sesig.startBit = any.startBit;
      sesig.numOfBits = any.numOfBits;
-     sesig.sign = static_cast<quint8>(any.sign);
+     sesig.sign = static_cast<uint8_t>(any.sign);
      sesig.factor = any.factor;
      sesig.offset = any.offset;
      sesig.min = any.min;
      sesig.max = any.max;
-     sesig.enumValueType = static_cast<qint8>(any.valueType);
+     sesig.enumValueType = static_cast<int8_t>(any.valueType);
      sesig.AMJsonSignalIdx = any.AMJsonSignalIdx;
 
-     out.writeRawData((const char*) (& sesig),sizeof(SerializedSignal_t));
+     out.writeRawData((const char*) (& sesig), sizeof(SerializedSignal_t));
 
      return out;
 }
 
-QDataStream & operator>> (QDataStream & in, Signal & any)
+core::DataStream & operator>> (core::DataStream & in, Signal & any)
 {
     SerializedSignal_t sesig;
 
@@ -53,45 +60,55 @@ QDataStream & operator>> (QDataStream & in, Signal & any)
     any.valueType = static_cast<SignalValueType>(sesig.enumValueType);
     any.AMJsonSignalIdx = sesig.AMJsonSignalIdx;
 
-    if (in.status() != QDataStream::Ok)
+    if (in.status() != core::DataStream::Ok)
     {
-        qDebug() << "WARNING:" << any.AMJsonSignalIdx << "signal status" << in.status();
+        coreDebug() << "WARNING:" << any.AMJsonSignalIdx << "signal status" << in.status();
     }
 
     return in;
 }
 
 
-bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
+bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extractedString)
 {
     bool ret = true;
 
-    QFile dbcFile(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("dbc/")+protocolName.toLatin1()+QStringLiteral(".dbc"));
+    std::string filePath = std::string(BASE_TARGET_DIR) + "dbc/" + protocolName + ".dbc";
+    core::File dbcFile(filePath);
 
     if(dbcFile.exists())
     {
-        qDebug ("Found DBC files");
-        if(dbcFile.open(QIODevice::ReadOnly))
+        coreDebug() << "Found DBC files";
+        if(dbcFile.open(core::File::ReadOnly))
         {
-            qDebug("signals JSON scheme  successfully found and open.");
+            coreDebug() << "signals JSON scheme successfully found and open.";
 
             //TODO: evaluate json consistency
 
-
             extractedString = dbcFile.readAll();
 
-            extractedString.replace("\r\n","\n");
+            // Replace \r\n with \n
+            size_t pos = 0;
+            while ((pos = extractedString.find("\r\n", pos)) != std::string::npos) {
+                extractedString.replace(pos, 2, "\n");
+                pos += 1;
+            }
 
-            extractedString.replace("\\\"","'");
+            // Replace \" with '
+            pos = 0;
+            while ((pos = extractedString.find("\\\"", pos)) != std::string::npos) {
+                extractedString.replace(pos, 2, "'");
+                pos += 1;
+            }
 
             dbcFile.close();
         }
 
-        //TODO clean from the junc staff
+        //TODO clean from the junk stuff
     }
     else
     {
-        qDebug("dbc file read failed.");
+        coreDebug() << "dbc file read failed.";
         ret = false;
     }
 
@@ -106,34 +123,35 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
 
 
-       phrases = new QList<QString>();
-       c_identifiers = new QList<QString>();
-       signs  = new QList<QString>();
-       ecu_tokens  = new QList<QString>();
-       numbers  = new QList<qint64>();//TODO think about floats implementation
-       cansignals = new QList<Signal *>();
+       phrases = new std::vector<std::string>();
+       c_identifiers = new std::vector<std::string>();
+       signs  = new std::vector<std::string>();
+       ecu_tokens  = new std::vector<std::string>();
+       numbers  = new std::vector<int64_t>();//TODO think about floats implementation
+       cansignals = new std::vector<Signal *>();
 #if 0
        //NOTE: is not actually used, defined at Json
-       vtRows = new QList<Value>();
+       vtRows = new std::vector<Value>();
 #endif
 
       //version elements:
       (* pParser)["phrase"] = [this](const SemanticValues & sv)
       {
-          QString str = QString::fromUtf8(sv.token().data(),sv.token().size());
-          str.remove('"');
-          phrases->append(str);
+          std::string str(sv.token().data(), sv.token().size());
+          // Remove quotes
+          str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
+          phrases->push_back(str);
       };
 
       (* pParser)["version"]   = [this](const SemanticValues &)
       {
-          if (!phrases->isEmpty())
+          if (!phrases->empty())
           {
-              phrases->removeLast();
+              phrases->pop_back();
           }
           else
           {
-              qDebug("Empty version");
+              coreDebug() << "Empty version";
           }
       };
 
@@ -141,10 +159,10 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       (* pParser)["ECU_NAME"]   = [this](const SemanticValues &)
       {
 #if USE_ECU_NAME
-          QString str = QString::fromUtf8(sv.token().data(),sv.token().size());
-          str.remove('\r');
-          str.remove('\n');
-          c_identifiers->append(str);
+          std::string str(sv.token().data(), sv.token().size());
+          str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
+          str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+          c_identifiers->push_back(str);
 #endif
       };
 
@@ -152,28 +170,28 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       //signal elements:
       (* pParser)["NAME"]   = [this](const SemanticValues & sv)
       {
-          QString str = QString::fromUtf8(sv.token().data(),sv.token().size());
-          str.remove('\r');
-          str.remove('\n');
-          c_identifiers->append(str);
+          std::string str(sv.token().data(), sv.token().size());
+          str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
+          str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+          c_identifiers->push_back(str);
       };
 
       (* pParser)["number"] = [this](const SemanticValues & sv)
       {
           try {
-              qint64 number = std::stoull(sv.token(), nullptr, 10);
-              numbers->append(number);
+              int64_t number = std::stoull(sv.token(), nullptr, 10);
+              numbers->push_back(number);
           } catch (const std::exception& ex)
           {
-              qDebug("Unable to parse number from %s", sv.token().c_str());
+              coreDebug() << "Unable to parse number from " << sv.token().c_str();
           }
       };
 
       (* pParser)["sign"] = [this](const SemanticValues & sv)
       {
-          QString str = QString::fromUtf8(sv.token().data(),sv.token().size());
+          std::string str(sv.token().data(), sv.token().size());
           //TODO convert signs to booleans
-          signs->append(str);
+          signs->push_back(str);
       };
 
 
@@ -184,21 +202,22 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           Signal * cansig = new Signal();
 
 #ifdef USE_ECU_NAME
-          qDebug ("ecu_name:%lu",qPrintable(c_identifiers->takeLast()));
+          coreDebug() << "ecu_name:" << c_identifiers->back();
+          c_identifiers->pop_back();
 #endif
-        /*QString unit =*/ phrases->takeLast();
-          qint64 max = numbers->takeLast();
-          qint64 min = numbers->takeLast();
-          qint64 offset = numbers->takeLast();
-          qint64 factor = numbers->takeLast();
-          QString sign = signs->takeLast();
+        /*std::string unit =*/ phrases->back(); phrases->pop_back();
+          int64_t max = numbers->back(); numbers->pop_back();
+          int64_t min = numbers->back(); numbers->pop_back();
+          int64_t offset = numbers->back(); numbers->pop_back();
+          int64_t factor = numbers->back(); numbers->pop_back();
+          std::string sign = signs->back(); signs->pop_back();
 
-        /*qint64 byteOrder =*/ numbers->takeLast();
-          qint64 signalSize = numbers->takeLast();
-          qint64 startBit = numbers->takeLast();
-          QString name = c_identifiers->takeLast();
+        /*int64_t byteOrder =*/ numbers->back(); numbers->pop_back();
+          int64_t signalSize = numbers->back(); numbers->pop_back();
+          int64_t startBit = numbers->back(); numbers->pop_back();
+          std::string name = c_identifiers->back(); c_identifiers->pop_back();
 
-          const qint8 OctetBitLen = 8;
+          const int8_t OctetBitLen = 8;
 
           cansig->name = name;
           cansig->startByte = startBit /  OctetBitLen ;
@@ -210,11 +229,11 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           cansig->min = (double)min;
           cansig->max = (double)max;
 
-          //WARNIG: default TODO: check in the Vector spec
+          //WARNING: default TODO: check in the Vector spec
           cansig->valueType = SIGNAL_VALUE_TYPE_INTEGER ;
 
 
-          cansignals->prepend(cansig);
+          cansignals->insert(cansignals->begin(), cansig);
 
 #ifdef USE_MUX_NDX
           //NOTE:  Not implemented.
@@ -223,16 +242,18 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
       (* pParser)["message"] = [this](const SemanticValues &)
       {
-          qDebug("message:");
+          coreDebug() << "message:";
 
 #ifdef USE_ECU_NAME
-          qDebug ("ecu:%s",qPrintable(c_identifiers->takeLast()));
+          coreDebug() << "ecu:" << c_identifiers->back();
+          c_identifiers->pop_back();
 #endif
-          QString name = c_identifiers->takeLast();
-          qDebug ("name:%s",qPrintable(name));
+          std::string name = c_identifiers->back(); c_identifiers->pop_back();
+          coreDebug() << "name:" << name;
 
-          qDebug () << "dlc:" << numbers->takeLast();
-          quint64 id = numbers->takeLast(); qDebug() << "id:" << id;
+          coreDebug() << "dlc:" << numbers->back(); numbers->pop_back();
+          uint64_t id = numbers->back(); numbers->pop_back();
+          coreDebug() << "id:" << id;
 
 
           CanRxMsg * rxmsg;
@@ -240,13 +261,20 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
           //WARNING: VECTOR__INDEPENDENT_SIG_MSG id is not supported
           if (id <= 0xFFFFFFFF)
           {
-              rxmsg = CanRxMsg::createInstance((quint32)id, name);
-              rxmsg->applyCanDBSignalsArray(cansignals);
+              rxmsg = CanRxMsg::createInstance((uint32_t)id, name);
+              // Convert std::vector<Signal*> to List<Signal*>
+              List<Signal *> * qlistSignals = new List<Signal *>();
+              for (Signal * sig : *cansignals) {
+                  qlistSignals->push_back(sig);
+              }
+              rxmsg->applyCanDBSignalsArray(qlistSignals);
 
               rxmsg->setItsJsonProtocol(curParsedProtocol);
           }
 
-          cansignals = new QList<Signal *>();
+          // Clean up the std::vector (List now owns the signals)
+          delete cansignals;
+          cansignals = new std::vector<Signal *>();
 
           numbers->clear();
           c_identifiers->clear();
@@ -254,24 +282,25 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
 
       (* pParser)["number_phrase_pair"] = [this](const SemanticValues &)
       {
-          /*QString a_name =*/ phrases->takeLast();
-          /*double a_value = (double)*/ numbers->takeLast();
+          /*std::string a_name =*/ phrases->back(); phrases->pop_back();
+          /*double a_value = (double)*/ numbers->back(); numbers->pop_back();
 #if 0
           Value a_row = {.name = a_name,
                          .value = a_value};
-          vtRows->prepend(a_row);
+          vtRows->insert(vtRows->begin(), a_row);
 #endif
       };
 
       (* pParser)["val_entry"] = [this](const SemanticValues &)
       {
-          qDebug() << "Value Table:";
-          QString name = c_identifiers->takeLast(); qDebug("name:%s",qPrintable(name));
+          coreDebug() << "Value Table:";
+          std::string name = c_identifiers->back(); c_identifiers->pop_back();
+          coreDebug() << "name:" << name;
 
 #if 0
-          foreach(const Value & vt_row, * vtRows)
+          for(const Value & vt_row : *vtRows)
           {
-              qDebug() << "row:" << vt_row.value << qPrintable(vt_row.name);
+              coreDebug() << "row:" << vt_row.value << vt_row.name;
           }
           vtRows->clear();
 #endif
@@ -282,15 +311,15 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       {
 
 
-          /*qint64 message_num =*/ numbers->takeLast();
-          /*QString name =*/ c_identifiers->takeLast();
+          /*int64_t message_num =*/ numbers->back(); numbers->pop_back();
+          /*std::string name =*/ c_identifiers->back(); c_identifiers->pop_back();
  #if 0
-          qDebug("Value For Signal:");
-          qDebug() << "message id:" << message_num;
-          qDebug() << "signal name:" << qPrintable(name);
-          foreach(const Value & vt_row, * vtRows)
+          coreDebug() << "Value For Signal:";
+          coreDebug() << "message id:" << message_num;
+          coreDebug() << "signal name:" << name;
+          for(const Value & vt_row : *vtRows)
           {
-              qDebug() << "row:" << vt_row.value << "," << qPrintable(vt_row.name);
+              coreDebug() << "row:" << vt_row.value << "," << vt_row.name;
           }
           vtRows->clear();
 #endif
@@ -305,15 +334,13 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
       init_parser();
   }
 
-  bool CanDBSignal::parseDBCFileString(QString extractedFile)
+  bool CanDBSignal::parseDBCFileString(const std::string& extractedFile)
   {
      bool status = true;
 
-     const std::string str2Parse = extractedFile.toStdString();
-
-     if (!pParser->parse(str2Parse.c_str()))
+     if (!pParser->parse(extractedFile.c_str()))
      {
-         qDebug("dbc syntax error...");
+         coreDebug() << "dbc syntax error...";
          status = false;
      }
 
@@ -323,8 +350,8 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
   bool CanDBSignal::processDBCFile(AMJsonProtocol * prot)
   {
       bool status = true;
-      QString protocolName = prot->getName();
-      QString dbcString;
+      std::string protocolName = prot->getName();
+      std::string dbcString;
       status = readDBCFile(protocolName, dbcString);
       if(status)
       {
@@ -339,44 +366,44 @@ bool CanDBSignal::readDBCFile(QString protocolName,  QString & extractedString)
   }
 
 
-  QVariant extractSignal(Signal * canSignal, struct can_frame *frame)
+  std::any extractSignal(Signal * canSignal, struct can_frame *frame)
   {
 
-     QVariant ret;
+     std::any ret;
 
      if(canSignal)
      {
          //Extract the signal value
 
-         quint8 cut_mask = 0xFF>>(0x08 - (canSignal->numOfBits));
-         quint8 raw_val =
+         uint8_t cut_mask = 0xFF>>(0x08 - (canSignal->numOfBits));
+         uint8_t raw_val =
                  frame->data[(canSignal->startByte)]>>(canSignal->startBit)&cut_mask;
 
          switch(canSignal->valueType)
          {
          case SIGNAL_VALUE_TYPE_DOUBLE:
-             ret = QVariant((double)raw_val);
+             ret = (double)raw_val;
              break;
 
          case SIGNAL_VALUE_TYPE_FLOAT:
-             ret = QVariant((double)raw_val);
+             ret = (double)raw_val;
              break;
 
          case SIGNAL_VALUE_TYPE_INTEGER:
 
              if(1 == canSignal->numOfBits || (canSignal->min == 0 && canSignal->max == 1))
              {
-                 ret = QVariant((bool)raw_val);
+                 ret = (bool)raw_val;
              }
              else
              {
-                  ret = QVariant((qint32)raw_val);
+                  ret = (int32_t)raw_val;
              }
              break;
 
          default:
-             qDebug("Illegal signal value type");
-             ret = QVariant::fromValue((QObject * const) nullptr);
+             coreDebug() << "Illegal signal value type";
+             ret = std::any();
          }
 
       }

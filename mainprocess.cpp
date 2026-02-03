@@ -1,12 +1,12 @@
-#include <QThread>
-#include <QMutex>
-#include <QTimer>
-#include <QDebug>
-#include <QDateTime>
+#include "core/core.h"
+#include "core/mutex.h"
+#include "core/elapsed_timer.h"
 
+#include <QThread>
+#include <QTimer>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
-#include <QFile>
+#include "core/file_utils.h"
 
 #include "mainprocess.h"
 #include "canmanager.h"
@@ -52,11 +52,11 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     // //////////////////////////////
 
-    qDebug() << "CanManger init begin, time:" << bootUpTimer.elapsed();
+    coreDebug() << "CanManger init begin, time:" << bootUpTimer.elapsed();
 
     canmgr = new CanManager(this);
 
-     qDebug() << "CanManger init complete, time:" << bootUpTimer.elapsed();
+     coreDebug() << "CanManger init complete, time:" << bootUpTimer.elapsed();
 
     QObject * rootQobjectGeneralPannel = MainProcess::componentObject->findChild<QObject*>("general_panel_root");
     if (!rootQobjectGeneralPannel)
@@ -92,7 +92,7 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     connect(updateDisplayTimeWindow,SIGNAL(timeout()),this,SLOT(process()));
 
-     qDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
+     coreDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
 }
 
 void MainProcess::process()
@@ -106,9 +106,9 @@ void MainProcess::process()
             isDataComplete = false;
             emit startUpdateDisplayWindow();
             mutex.lock();
-            qDebug()<< "updateStart:" << QDateTime::currentMSecsSinceEpoch();
+            coreDebug()<< "updateStart:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             updateDisplay();
-            qDebug()<< "updateEnd:" << QDateTime::currentMSecsSinceEpoch();
+            coreDebug()<< "updateEnd:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             mutex.unlock();
 
         }
@@ -119,9 +119,9 @@ void MainProcess::process()
 #endif
 }
 
-void MainProcess::message(QString aStrMsg)
+void MainProcess::message(const std::string& stringMessage)
 {
-   emit messageDisplayWindow(QVariant(aStrMsg));
+   emit messageDisplayWindow(QVariant(String(stringMessage).toQString()));
 }
 
 
@@ -140,8 +140,8 @@ int MainProcess::launchEverything()
     QObject::connect(appWindow, SIGNAL(debugMessagesConnect(bool)),
                       this, SLOT(debugMessagesConnected(bool)));
 
-    QObject::connect(appWindow, SIGNAL(volumeKeySend(qint32)),
-                      this, SLOT(volumeKeySent(qint32)));
+    QObject::connect(appWindow, SIGNAL(volumeKeySend(int32_t)),
+                      this, SLOT(volumeKeySent(int32_t)));
 
     QObject::connect(appWindow, SIGNAL(isaFullActivationRequest()),
                       this, SLOT(isaFullActivationRequestSend()));
@@ -158,37 +158,40 @@ int MainProcess::launchEverything()
 
     if(nullptr != theBrightnessControl)
     {
-        QObject::connect(appWindow, SIGNAL(brightnessChanged(qint32)),
-                         theBrightnessControl, SLOT(brightnessLevelChanged(qint32)));
-
+        // BrightnessControl doesn't inherit QObject, so use MainProcess as intermediary
+        QObject::connect(appWindow, SIGNAL(brightnessChanged(int32_t)),
+                         this, SLOT(forwardBrightnessChanged(int32_t)));
     }
     else
     {
-        qDebug("Please set brightness control!");
+        coreDebug() << "Please set brightness control!";
     }
 
     canmgr->launch();
 
     if(nullptr != theBrightnessControl)
     {
-        CANDebugReport::getInstance(canmgr)->setCanManager(canmgr);
-        connect(theBrightnessControl, SIGNAL(sendBrightness(quint32,qint32,qint32)), CANDebugReport::getInstance(), SLOT(sendBrightness(quint32,qint32,qint32)));
+        CANDebugReport::getInstance()->setCanManager(canmgr);
+        // BrightnessControl::sendBrightness is a core::Signal, connect it to CANDebugReport's slot
+        theBrightnessControl->sendBrightness.connect([](uint32_t a, int32_t b, int32_t c) {
+            CANDebugReport::getInstance()->sendBrightness(a, b, c);
+        });
 
-        QObject::connect(appWindow, SIGNAL(keyPressedReportSend(qint32)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(qint32)));
-        QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(qint32)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(qint32)));
+        QObject::connect(appWindow, SIGNAL(keyPressedReportSend(int32_t)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(int32_t)));
+        QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(int32_t)),
+                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(int32_t)));
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool,bool,bool,bool)),
                           CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
 #if 0
         if (-1 != appWindow->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("alertsReportSend(bool, bool, bool, bool)")))
         {
-            qDebug()<<"alertsReportSend(bool, bool, bool, bool) connected";
+            coreDebug()<<"alertsReportSend(bool, bool, bool, bool) connected";
         }
         else
         {
-             qDebug()<<"alertsReportSend(bool, bool, bool, bool) is not present.";
+             coreDebug()<<"alertsReportSend(bool, bool, bool, bool) is not present.";
         }
 #endif
     }
@@ -224,18 +227,18 @@ void MainProcess::updateDisplay(void)
     }
 }
 
-void MainProcess::activate(DISPLAY_ITEM_ID alert, quint8 valueInt, quint8 valueFrac, quint8 unit)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
-     activate(alert, false, "", valueInt, valueFrac, unit);
+     activateInternal(alert, false, "", valueInt, valueFrac, unit);
 }
 
-void MainProcess::activate(DISPLAY_ITEM_ID alert, QString arg)
+void MainProcess::activate(DISPLAY_ITEM_ID alert, const std::string& stringArg)
 {
-    activate(alert, true, arg, 0, 0, 0);
+    activateInternal(alert, true, stringArg, 0, 0, 0);
 }
 
 
-void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit)
+void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
 
     if (AlertTypes::ALERT_NONE == alert)
@@ -244,8 +247,8 @@ void MainProcess::activate(qint32 alert, bool isStrArg, QString strArg, quint8 v
         return;
     }
 #if 1
-    qDebug("function:%s alert: %d\n", __func__, alert);
-    qDebug()<< " activated at:" << QDateTime::currentMSecsSinceEpoch();
+    coreDebug() << "function:" << __func__ << "alert:" << alert;
+    coreDebug() << " activated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
 #endif
 
@@ -305,8 +308,8 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
         return;
     }
 
-    qDebug("function:%s alert: %d\n", __func__, alert);
-    qDebug()<< "deactivated at:" << QDateTime::currentMSecsSinceEpoch();
+    coreDebug() << "function:" << __func__ << "alert:" << alert;
+    coreDebug() << "deactivated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
     RootedTreeNode* nodeCGRT = nullptr;
 
@@ -344,10 +347,10 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 }
 
 
-void MainProcess::volumeKeySent(qint32 qtKey)
+void MainProcess::volumeKeySent(int32_t qtKey)
 {
 
-  qDebug("volumeKeySent");
+  coreDebug() << "volumeKeySent";
   switch(qtKey)
   {
   case Qt::Key_Return:
@@ -370,7 +373,7 @@ void MainProcess::volumeKeySent(qint32 qtKey)
 
   default:
 
-      qDebug("Unsupported Volume key");
+      coreDebug() << "Unsupported Volume key";
 
       break;
   }
@@ -393,5 +396,10 @@ void MainProcess::isaFullDeactivationRequestSend()
     canmgr->sendISAFullDeact();
 }
 
-
+void MainProcess::forwardBrightnessChanged(int32_t newLevel)
+{
+    if (theBrightnessControl != nullptr) {
+        theBrightnessControl->brightnessLevelChanged(newLevel);
+    }
+}
 

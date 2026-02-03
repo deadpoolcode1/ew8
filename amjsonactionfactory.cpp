@@ -1,4 +1,5 @@
 #include "amjsonactionfactory.h"
+#include "core/logger.h"
 
 #include "amjsongraphicitemaction.h"
 #include "amjsonenableraction.h"
@@ -15,7 +16,7 @@ class AMJsonNumericArgumentAction;
 class   AMJsonSystemRequestAction;
 class AMJsonRequestIdAction;
 
-AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, QString action, ssize_t index)
+AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * aJsonProtocol, action_type_e type, const String& action, ssize_t index)
 {
     AMJsonAction * ret = nullptr;
 
@@ -59,7 +60,7 @@ AMJsonAction * AMJsonActionFactory::createAMJsonActionInstance(AMJsonProtocol * 
 
     default:
 
-        qDebug("Unsupported AMJsonActionType");
+        LOG_DEBUG("Unsupported AMJsonActionType");
         break;
 
     }

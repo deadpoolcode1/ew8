@@ -1,10 +1,6 @@
 #include "canstringargumentsaccumulator.h"
-
 #include "canargumentsaccumulator.h"
-
-#include <QMap>
-
-#include <QStringBuilder>
+#include "core/types.h"
 
 #include <ctype.h>
 
@@ -23,7 +19,7 @@ CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPL
     if(nullptr == (generalInstance = getExistingInstance(graphicItem)))
     {
         ret = new CanStringArgumentsAccumulator();
-        objectsMap.insert(graphicItem, ret);
+        objectsMap[graphicItem] = ret;
     }
     else if (generalInstance->getArgumentsTypeName() == argumentsTypeName)
     {
@@ -35,19 +31,19 @@ CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPL
 }
 
 
-void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 aChar)
+void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t aChar)
 {
 
-    QString * result =   nullptr;
+    String * result =   nullptr;
 
     if(!isprint(aChar))
     {
         aChar = 'X';
     }
 
-    charactersMap.insert(anIndex, (char)aChar);
+    charactersMap[anIndex] = (char)aChar;
 
-    if ((maxIndex +1)== charactersMap.count())
+    if ((maxIndex +1)== (ssize_t)charactersMap.size())
     {
         char ch_result[maxIndex+2];
 
@@ -58,7 +54,7 @@ void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, qint8 
             ch_result[i] = charactersMap[i];
         }
 
-        result = new QString(ch_result);
+        result = new String(ch_result);
 
         argumentComplete(*result);
 

@@ -6,6 +6,7 @@
 #include <QPainter>
 
 #include "defs.h"
+#include "core/types.h"
 
 class QPainter;
 
@@ -15,7 +16,7 @@ class QQuickQRCode : public QQuickPaintedItem
     Q_PROPERTY(QString baseurl  WRITE setBaseUrl)
     Q_PROPERTY(QString request  WRITE setRequest)
 #if 0
-    Q_PROPERTY(quint32 margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
+    Q_PROPERTY(uint32_t margin /* READ margin  WRITE setMargin NOTIFY marginChanged*/)
 #endif
     //TODO add encoded string propert
     //TODO add scale property
@@ -30,9 +31,9 @@ public:
 
     static void declareQML();
 
-    void setRequest(QString aRequest);
+    void setRequest(const String& aRequest);
 
-    void setBaseUrl(QString aUrl);
+    void setBaseUrl(const String& aUrl);
 
 signals:
 
@@ -40,21 +41,21 @@ signals:
 public slots:
 
 private:
-    const quint8 whiteBlackBitMask = 0x01;
+    const uint8_t whiteBlackBitMask = 0x01;
 
 
-    static QString  baseurl;
-    static QString  request;
+    static String  baseurl;
+    static String  request;
 
-    qint32 margin;
+    int32_t margin;
 
     QImage * qimage;
-    qint32  width;
+    int32_t  width;
 
     DISPLAY_ITEM_ID type;
 
-    void snUpdate(QString arg);
-    void reqUpdate(QString arg);
+    void snUpdate(const String& arg);
+    void reqUpdate(const String& arg);
 };
 
 #endif // QQUICKQRCODE_H

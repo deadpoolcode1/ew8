@@ -8,17 +8,17 @@
 #include <linux/watchdog.h>
 #endif
 #include <signal.h>
-#include <QDebug>
+#include "core/core.h"
 
 #include "watchdogdevice.h"
 
-qint32 WatchDogDevice::fd = 0;
+int32_t WatchDogDevice::fd = 0;
 
 int WatchDogDevice::disarm(void)
 {
     int ret;
 
-    qDebug() << "Disabling WDT!";
+    coreDebug() << "Disabling WDT!";
 
     ret = write(fd, "V\0", 2);
     if (ret != 1) {
@@ -30,7 +30,7 @@ int WatchDogDevice::disarm(void)
     return ret;
 }
 
-void WatchDogDevice::sighandler(qint32 signum)
+void WatchDogDevice::sighandler(int32_t signum)
 {
 #ifndef WIN32
     int ret;
@@ -49,7 +49,7 @@ void WatchDogDevice::toggle(void)
     int status;
     status = write(fd, "\0", 1);
     if (status != 1) {
-          qDebug()<<"Failed to toggle linux watchdog device";
+          coreDebug()<<"Failed to toggle linux watchdog device";
     }
 #endif
 }
@@ -62,14 +62,14 @@ WatchDogDevice::WatchDogDevice()
    fd = open("/dev/watchdog", O_WRONLY);
 
    if (fd == -1) {
-       qDebug()<< "Watchdog init failed";
+       coreDebug()<< "Watchdog init failed";
    }
    else
    {
-     qDebug()<<"Starting WDT Monitoring";
+     coreDebug()<<"Starting WDT Monitoring";
    }
 
-   qint32 timeout = 1;
+   int32_t timeout = 1;
 
    ioctl(fd, WDIOC_SETTIMEOUT, &timeout);
 #endif

@@ -4,7 +4,9 @@
 #include "amjsonsignal.h"
 #include "amjsonactionsmultiplexor.h"
 #include "canrxmsg.h"
-#include <QMultiMap>
+#include "core/json.h"
+#include "core/types.h"
+#include "core/enum_utils.h"
 #include <QObject>
 
 class AMJsonSignal;
@@ -16,58 +18,51 @@ class AMJsonProtocol : public QObject
    Q_OBJECT
 
 public:
-
-    enum protocol_type_e
-    {
-         GPIO = 1,
-         CAN = 2,
-         Disabled = 3,
-    };
-    Q_ENUM(protocol_type_e)
+    // protocol_type_e is defined in core/enum_utils.h
 
 
-    explicit AMJsonProtocol(AMSignalsModel * aModel, QJsonValue protocolNameAndType, QObject * parent = nullptr);
+    explicit AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent = nullptr);
 
     void append(AMJsonSignal * signal);
 
-    QString getName(void);
+    String getName(void);
 
-    QList<AMJsonSignal*> getSignalEntries(QString aName);
+    List<AMJsonSignal*> getSignalEntries(const String& aName);
 
-    void setType(QJsonValue typeValue);
+    void setType(core::JsonValue typeValue);
     protocol_type_e getType(void);
-    QString getTypeQString(void);
+    String getTypeString(void);
 
-     bool getIsEnabled(void) {return disablers.isEmpty();}
+     bool getIsEnabled(void) {return disablers.empty();}
 
      AMSignalsModel * itsModel;
 
-     void collectValueTables(QJsonValue protocolValueTables);
+     void collectValueTables(core::JsonValue protocolValueTables);
 
      //NOTE: fails when name already exists
-     bool addMultiplexor(QString name, AmJsonActionsMultiplexor * mux);
+     bool addMultiplexor(const String& name, AmJsonActionsMultiplexor * mux);
 
      //NOTE: returns nullptr when lacks name or different type already assigned
-     AmJsonActionsMultiplexor * getMultiplexorByName(QString name);
+     AmJsonActionsMultiplexor * getMultiplexorByName(const String& name);
 
 public slots:
 
     void enableDisableThis(bool OnOff);
 
 private:
-    QString name;
-    QString ackProtName;
+    String name;
+    String ackProtName;
 
     protocol_type_e type;
 
-    QList<QObject *> disablers;
+    List<QObject *> disablers;
 
-    QMultiMap<QString,AMJsonSignal*> jsonSignals;
+    MultiMap<String,AMJsonSignal*> jsonSignals;
 
-    QMap<QString, AmJsonActionsMultiplexor*> jsonMultiplexors;
+    Map<String, AmJsonActionsMultiplexor*> jsonMultiplexors;
 
-    quint32 poolIndex;
-    static QMap<quint32, AMJsonProtocol *> objectsPool;
+    uint32_t poolIndex;
+    static Map<uint32_t, AMJsonProtocol *> objectsPool;
 
 };
 

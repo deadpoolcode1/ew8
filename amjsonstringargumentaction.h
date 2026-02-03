@@ -3,6 +3,7 @@
 
 #include "amjsonargumentaction.h"
 #include "canstringargumentsaccumulator.h"
+#include "core/types.h"
 
 class AMJsonArgumentAction;
 class CanStringArgumentsAccumulator;
@@ -12,11 +13,11 @@ class AMJsonStringArgumentAction : public AMJsonArgumentAction
     Q_OBJECT
 
 public:
-    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
     void process(QObject * sender, QVariant extractedCANsignal);
 
-    bool isItsArgumentsType(qint32 type);
+    bool isItsArgumentsType(int32_t type);
 
 private:
     CanStringArgumentsAccumulator * itsArgumentAccumulator;

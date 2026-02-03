@@ -1,5 +1,8 @@
 #include "amjsongraphicitemaction.h"
 #include "graphicitemsenummap.h"
+#include "core/logger.h"
+
+#include <algorithm>
 
 #include "amjsonargumentaction.h"
 
@@ -15,20 +18,21 @@ class AMJsonSignal;
 class CanIntArgumentsAccumulator;
 class CanStringArgumentsAccumulator;
 
-QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
+Map<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> AMJsonGraphicItemAction::itsObjects;
 
-AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, QString action)
+AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstance(AMJsonProtocol * aJsonProtocol, const String& action)
 {
     DISPLAY_ITEM_ID aGraphicItemID = GraphicItemsEnumMap::getId(action);
 
     AMJsonGraphicItemAction * ret =  nullptr;
 
-    ret = itsObjects.value(aGraphicItemID, nullptr);
+    auto it = itsObjects.find(aGraphicItemID);
+    ret = (it != itsObjects.end()) ? it->second : nullptr;
 
     if(nullptr == ret)
     {
         ret = new AMJsonGraphicItemAction(aJsonProtocol, aGraphicItemID, action);
-        itsObjects.insert(aGraphicItemID, ret);
+        itsObjects[aGraphicItemID] = ret;
     }
 
     return ret;
@@ -38,7 +42,8 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstanceByItemID(DISPLAY_I
 {
     AMJsonGraphicItemAction * ret;
 
-    ret = itsObjects.value(aGraphicItemID, nullptr);
+    auto it = itsObjects.find(aGraphicItemID);
+    ret = (it != itsObjects.end()) ? it->second : nullptr;
 
     return ret;
 }
@@ -57,7 +62,7 @@ bool AMJsonGraphicItemAction::setSupplimentary(QVariant extractedCANsignal)
     return ret;
 }
 
-AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
+AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
 {
    itsGraphicItemID = aGraphicItemID;
    itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
@@ -67,26 +72,27 @@ AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol,
 }
 
 void AMJsonGraphicItemAction::process(QObject * sender, QVariant extractedCANsignal)
-{   
-    bool isSenderListed = activators.contains(sender);
+{
+    auto it = std::find(activators.begin(), activators.end(), sender);
+    bool isSenderListed = (it != activators.end());
 
     if (extractedCANsignal.toBool())
     {
         if(!isSenderListed)
         {
             activate();
-            activators.append(sender);
+            activators.push_back(sender);
         }
     }
     else
     {
         if(isSenderListed)
         {
-            if(1 == activators.count())
+            if(1 == activators.size())
             {
                 deactivate();
             }
-            activators.removeOne(sender);
+            activators.erase(it);
         }
     }
 }
@@ -113,7 +119,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
             else
             {
-                itsDisplay->activate(itsGraphicItemID,(quint8)itsSupplimentary.toInt());
+                itsDisplay->activate(itsGraphicItemID,(uint8_t)itsSupplimentary.toInt());
             }
 
         }
@@ -127,7 +133,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
                 }
                 else
                 {
-                     itsDisplay->activate(itsGraphicItemID, argInt, (quint8)itsSupplimentary.toInt());
+                     itsDisplay->activate(itsGraphicItemID, argInt, (uint8_t)itsSupplimentary.toInt());
                 }
 
             }
@@ -158,7 +164,7 @@ void AMJsonGraphicItemAction::deactivate(void)
     }
 }
 
-void AMJsonGraphicItemAction::argumentComplete(QString anArg)
+void AMJsonGraphicItemAction::argumentComplete(const String& anArg)
 {
 
     bool isChanged = (argStr != anArg);
@@ -184,9 +190,9 @@ void AMJsonGraphicItemAction::argumentComplete(QString anArg)
 }
 
 //TODO in same frame arguments must be handled before GraphicItems
-void AMJsonGraphicItemAction::argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)
+void AMJsonGraphicItemAction::argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)
 {
-   qDebug("argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg)");
+   LOG_DEBUG("argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg)");
    bool areChanged =
            (argInt != intArg ||
            argFrac != fracArg ||
@@ -217,7 +223,7 @@ void AMJsonGraphicItemAction::argumentComplete(quint8 intArg, quint8 fracArg, qu
 
 bool AMJsonGraphicItemAction::getIsActived(void)
 {
-    return !(activators.isEmpty());
+    return !(activators.empty());
 }
 
 
@@ -232,7 +238,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
             if(intAcc)
             {
-                connect(intAcc, SIGNAL(argumentComplete(quint8,quint8,quint8)),this,SLOT(argumentComplete(quint8,quint8,quint8)));
+                connect(intAcc, SIGNAL(argumentComplete(uint8_t,uint8_t,uint8_t)),this,SLOT(argumentComplete(uint8_t,uint8_t,uint8_t)));
                 hasArguments = true;
                 isArgOfStringType = false;
             }
@@ -243,7 +249,7 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
 
             if(strAcc)
             {
-                connect(strAcc, SIGNAL(argumentComplete(QString)),this,SLOT(argumentComplete(QString)));
+                connect(strAcc, SIGNAL(argumentComplete(String)),this,SLOT(argumentComplete(String)));
                 hasArguments = true;
                 isArgOfStringType = true;
             }

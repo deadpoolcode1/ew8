@@ -5,7 +5,7 @@
 class AMJsonProtocol;
 class AMJsonSignal;
 
-AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
+AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
 {
 /*empty*/
 }
@@ -20,9 +20,9 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
             connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
         }
 
-        QList<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
+        List<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
 
-        foreach(AMJsonSignal * jsig, jsonSigList)
+        for (AMJsonSignal * jsig : jsonSigList)
         {
             if(Enabler != jsig->type)
             {

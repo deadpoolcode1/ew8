@@ -3,6 +3,7 @@
 
 #include "amjsonaction.h"
 #include "defs.h"
+#include "core/types.h"
 
 class AMJsonAction;
 
@@ -11,7 +12,7 @@ class AMJsonEnablerAction : public AMJsonAction
     Q_OBJECT
 
 public:
-    explicit AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
     //WARNING: connect the enabled signals and protocols
     //just after all of them are inserted in the model.

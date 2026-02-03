@@ -3,6 +3,7 @@
 
 #include "canargumentsaccumulator.h"
 #include "ismoother.h"
+#include "core/types.h"
 
 #include <QObject>
 
@@ -18,7 +19,7 @@ public:
 
     virtual const char * getArgumentsTypeName() {return argumentsTypeName;}
 
-    void insertValueFromSignal(size_t anIndex, qint8 anArg);
+    void insertValueFromSignal(size_t anIndex, int8_t anArg);
 
     void addSmoothingAlgorithm(ISmoother * aSmoother);
 
@@ -29,18 +30,18 @@ private:
 
      explicit CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
 
-    quint8 intValue[3];
+    uint8_t intValue[3];
     bool flagValue[3];
     bool doArgSmoothing;
 
     //TODO replace with circular buffer
-    quint32 speedSmoothingBufferLength;
-    QList<quint8> smoothedArgBuffer;
+    uint32_t speedSmoothingBufferLength;
+    List<uint8_t> smoothedArgBuffer;
 
 
 signals:
 
-    void argumentComplete(quint8 intValue, quint8 fracValue, quint8 unitValue);
+    void argumentComplete(uint8_t intValue, uint8_t fracValue, uint8_t unitValue);
 
 public slots:
 };

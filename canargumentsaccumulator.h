@@ -2,10 +2,8 @@
 #define CANARGUMENTSACCUMULATOR_H
 
 #include "defs.h"
-#include <QMap>
-#include <QStringBuilder>
+#include "core/types.h"
 #include <QObject>
-#include <QVector>
 
 class CanArgumentsAccumulator : public QObject
 {
@@ -17,11 +15,11 @@ public:
 
     virtual const char * getArgumentsTypeName() = 0;
 
-    virtual void insertValueFromSignal(size_t anIndex, qint8 anArg) = 0;
+    virtual void insertValueFromSignal(size_t anIndex, int8_t anArg) = 0;
 
 protected:
     explicit CanArgumentsAccumulator(QObject *parent = nullptr);
-    static QMap<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> objectsMap;
+    static Map<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> objectsMap;
 
     ssize_t maxIndex;
 

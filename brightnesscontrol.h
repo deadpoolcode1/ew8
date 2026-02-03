@@ -1,64 +1,65 @@
 #ifndef BRIGHTNESSCONTROL_H
 #define BRIGHTNESSCONTROL_H
 
-#include <QObject>
-#include <QFile>
-#include <QTimer>
-#include <QMap>
-#include <QFileSystemWatcher>
-#include <QSettings>
+// Use core library instead of Qt
+#include "core/core.h"
+#include "core/file_utils.h"
+#include "core/timer.h"
+#include "core/signal.h"
+#include "core/settings.h"
+
+#include <string>
+#include <map>
+
 #include "canmanager.h"
 
 class CanManager;
 
-class BrightnessControl : public QObject
+class BrightnessControl
 {
-    Q_OBJECT
 public:
-    explicit BrightnessControl(QObject *parent = nullptr);
+    explicit BrightnessControl();
     ~BrightnessControl();
 
      static void setCANDebugReport(bool doReport);
 
      void setItsDisplay(IAlertDisplay * aDisplay);
 
+    // Signal replacement for Qt signal
+    core::Signal<uint32_t, int32_t, int32_t> sendBrightness;
 
-signals:
-
-   void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
-
-public slots:
+    // Slot replacements - now just regular methods
     void fireIlluminanceMeasure(void);
-    void brightnessLevelChanged(qint32 newLevel);
+    void brightnessLevelChanged(int32_t newLevel);
 
 private:
 
     void assignMappings(void);
-    void assignBrightness(quint32 outputLevel, bool forceBrightness = false);
-    qint32 measureIlluminanceLevel(void);
+    void assignBrightness(uint32_t outputLevel, bool forceBrightness = false);
+    int32_t measureIlluminanceLevel(void);
 
 
 
-    QTimer * triggerTimer;
-    QFile * measureFile;
-    QString measureFileName;
-    QFile * outputFile;
-    QString outputFileName;
-    qint32 currentOutput;
-    qint32 currentMenuLevel;
+    core::Timer * triggerTimer;
+    core::File * measureFile;
+    std::string measureFileName;
+    core::File * outputFile;
+    std::string outputFileName;
+    int32_t currentOutput;
+    int32_t currentMenuLevel;
     double scale;
 
-    qint32 * lowerPoints;
-    qint32 lowerPointsSize;
-    //COONTAINS: menuLevel,Size,PtrToValuesArray
-    QMap<qint32, qint32 *> outputLevels;
-    qint32 * currentMenuLevelOutputs;
+    int32_t * lowerPoints;
+    int32_t lowerPointsSize;
+    //CONTAINS: menuLevel,Size,PtrToValuesArray
+    std::map<int32_t, int32_t *> outputLevels;
+    int32_t * currentMenuLevelOutputs;
     static bool doCANDebugReport;
-    quint32 illuminance_measure_mV;
+    uint32_t illuminance_measure_mV;
     IAlertDisplay * itsAlertDisplay;
 
 #if 0
-    QFileSystemWatcher * settingsWatcher;
+    core::FileSystemWatcher * settingsWatcher;
 #endif
 };
 
