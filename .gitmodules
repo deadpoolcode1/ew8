@@ -1,0 +1,3 @@
+[submodule "lvgl_poc/lvgl"]
+	path = lvgl_poc/lvgl
+	url = https://github.com/lvgl/lvgl.git
