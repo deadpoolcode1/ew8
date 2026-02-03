@@ -8,12 +8,10 @@
 
 #include "entitytype.h"
 
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonValue>
-#include <QDebug>
+#include "core/json.h"
+#include "core/core.h"
 
-QMutex GraphicItemsEnumMap::instanceMutex;
+core::Mutex GraphicItemsEnumMap::instanceMutex;
 
 GraphicItemsEnumMap * GraphicItemsEnumMap::instance;
 
@@ -22,28 +20,30 @@ GraphicItemsEnumMap::GraphicItemsEnumMap()
    init();
 }
 
-DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(QString name)
+DISPLAY_ITEM_ID GraphicItemsEnumMap::getId(const String& name)
 {
 
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    DISPLAY_ITEM_ID ret = myInstance->graphicItemsIDsMap.value(name, (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE);
+    auto it = myInstance->graphicItemsIDsMap.find(name);
+    DISPLAY_ITEM_ID ret = (it != myInstance->graphicItemsIDsMap.end()) ? it->second : (DISPLAY_ITEM_ID)AlertTypes::ALERT_NONE;
 
     return ret;
 }
 
-QString GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
+String GraphicItemsEnumMap::getName(DISPLAY_ITEM_ID id)
 {
     GraphicItemsEnumMap * myInstance = getInstance();
 
-    QString ret = myInstance->graphicItemsNamesMap.value(id,"");
+    auto it = myInstance->graphicItemsNamesMap.find(id);
+    String ret = (it != myInstance->graphicItemsNamesMap.end()) ? it->second : "";
 
     return ret;
 }
 
 void GraphicItemsEnumMap::init(void)
 {
-     QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("GraphicItems").toArray();
+     core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("GraphicItems").toArray();
 
     DISPLAY_ITEM_ID id;
 
@@ -51,21 +51,21 @@ void GraphicItemsEnumMap::init(void)
     id =  ((DISPLAY_ITEM_ID)AlertTypes::ALERT_END_OF_TYPE);
 #endif
 
-    qDebug() << "JSON: Graphic Items enum:";
+    coreDebug() << "JSON: Graphic Items enum:";
 
-    foreach (const QJsonValue & value, jsonArray) { 
+    for (const core::JsonValue& value : jsonArray) {
 
-        QString name = value.toString();
+        std::string name = value.toString();
 
         id++;
 
         //TODO verify NAME and ID are unique
 
-        qDebug() << "name: " <<  qPrintable(name) << "id:" << id;
+        coreDebug() << "name: " <<  name.c_str() << "id:" << id;
 
 
-        graphicItemsIDsMap.insert(name,id);
-        graphicItemsNamesMap.insert(id, name);
+        graphicItemsIDsMap[name] = id;
+        graphicItemsNamesMap[id] = name;
 
 
         //TODO verify that those values are presented also in JSON signals

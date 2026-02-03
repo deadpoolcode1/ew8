@@ -2,8 +2,11 @@
 #define MAINPROCESS_H
 
 #include <QObject>
+#include <QThread>
+#include <QTimer>
 #include "canmanager.h"
 #include "ialertdisplay.h"
+#include "core/types.h"
 #include <QQmlApplicationEngine>
 #include "rootedtree.h"
 #include "brightnesscontrol.h"
@@ -22,12 +25,12 @@ public:
 
     void setBrightnessControl(BrightnessControl * aBrightnessControl);
 
-    //alerts display:
-    virtual void activate(DISPLAY_ITEM_ID at, quint8 valueInt, quint8 valueFrac, quint8 unit);
-    virtual void activate(DISPLAY_ITEM_ID at, QString stringArg);
-    virtual void deactivate(DISPLAY_ITEM_ID at);
-    virtual void forceUpdate(void);
-    virtual void message(QString aStrMsg);
+    //alerts display (IAlertDisplay interface implementation):
+    virtual void activate(DISPLAY_ITEM_ID at, uint8_t valueInt = 0, uint8_t valueFrac = 0, uint8_t unit = 0) override;
+    virtual void activate(DISPLAY_ITEM_ID at, const std::string& stringArg) override;
+    virtual void deactivate(DISPLAY_ITEM_ID at) override;
+    virtual void forceUpdate(void) override;
+    virtual void message(const std::string& stringMessage) override;
 
     static MainProcess* getInstance(QObject * aComponentObject);
 
@@ -40,18 +43,18 @@ public slots:
 
     void debugMessagesConnected(bool On);
 
-    void volumeKeySent(qint32);
+    void volumeKeySent(int32_t);
 
     void isaFullActivationRequestSend();
     void isaPartialDeactivationRequestSend();
     void isaFullDeactivationRequestSend();
 
-
+    void forwardBrightnessChanged(int32_t newLevel);
 
     void process();
 
 private:
-    void activate(DISPLAY_ITEM_ID at, bool isStrArg, QString strArg, quint8 valueInt, quint8 valueFrac, quint8 unit);
+    void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
 
     bool isDataComplete;
 

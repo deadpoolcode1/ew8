@@ -1,6 +1,10 @@
 #ifndef IAMJSONPROCESSABLE_H
 #define IAMJSONPROCESSABLE_H
 
+#include "core/types.h"
+
+class QObject;
+
 class IAMJsonProcessable
 {
 public:

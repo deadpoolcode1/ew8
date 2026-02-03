@@ -1,5 +1,5 @@
 {
-    "ConfigVersion":[4,8,0],
+    "ConfigVersion":[5,0,0],
     "Illuminance": {
         "points": [1500,2000,2500,3000]
         ,"measure": "/sys/bus/iio/devices/iio:device0/in_voltage0_raw"
@@ -17,5 +17,10 @@
         ]
         ,
         "output": "/sys/class/backlight/backlight/brightness"
+    }
+    ,
+    "CANBusParameters": {
+        "baudrateKbps": 500,
+        "samplePoint": 87.5
     }
 }

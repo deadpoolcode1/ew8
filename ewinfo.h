@@ -2,17 +2,18 @@
 #define EWINFO_H
 
 #include <QObject>
+#include "core/types.h"
 
 
 class EWInfo: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString sn READ getEwsn CONSTANT)
-    Q_PROPERTY(QString bin READ getEngineVer CONSTANT)
-    Q_PROPERTY(QString cfg READ getConfigVer CONSTANT)
-    Q_PROPERTY(QString mesn WRITE setMeSn)
-    Q_PROPERTY(QString snv READ getSnv NOTIFY snvChanged)
-    Q_PROPERTY(QString osbuild READ getOSBuildTimestamp CONSTANT)
+    Q_PROPERTY(String sn READ getEwsn CONSTANT)
+    Q_PROPERTY(String bin READ getEngineVer CONSTANT)
+    Q_PROPERTY(String cfg READ getConfigVer CONSTANT)
+    Q_PROPERTY(String mesn WRITE setMeSn)
+    Q_PROPERTY(String snv READ getSnv NOTIFY snvChanged)
+    Q_PROPERTY(String osbuild READ getOSBuildTimestamp CONSTANT)
 
 
 public:
@@ -21,16 +22,16 @@ public:
 
     //Single time fired
     static void declareQML();
-    QString getEwsn(void);
-    QString getEngineVer(void);
-    QString getConfigVer(void);
-    QString getOSBuildTimestamp(void);
+    String getEwsn(void);
+    String getEngineVer(void);
+    String getConfigVer(void);
+    String getOSBuildTimestamp(void);
 
-    QString getSnv(void);
-    void setMeSn(QString);
+    String getSnv(void);
+    void setMeSn(const String&);
 
 signals:
-    void snvChanged(QString newSnv);
+    void snvChanged(const String& newSnv);
 
 private:
 
@@ -40,20 +41,20 @@ private:
 
     void readOSBuildInfo(void);
     void readServiceNumber(void);
-    void enableDisableSFC(quint32 * wr_ptr, bool On);
-    quint32 readDataSFC(quint32 * rd_ptr, quint32 index);
+    void enableDisableSFC(uint32_t * wr_ptr, bool On);
+    uint32_t readDataSFC(uint32_t * rd_ptr, uint32_t index);
 
 
 
-    quint8 ewsn_lsb[8];
-    quint8 ewsn_msb[8];
+    uint8_t ewsn_lsb[8];
+    uint8_t ewsn_msb[8];
 #endif
 
-    QString ewsn_str;
-    QString ewbin_str;
-    QString ewcfg_str;
-    QString ewosbuild_str;
-    QString snv_str;
+    String ewsn_str;
+    String ewbin_str;
+    String ewcfg_str;
+    String ewosbuild_str;
+    String snv_str;
     bool is_snv_ready;
 };
 

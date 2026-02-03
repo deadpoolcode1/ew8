@@ -1,15 +1,19 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+// Include Qt headers first (when building with Qt) to ensure Qt types are defined
 #include <alerttypes.h>
+
+// Then include core types (which will skip Qt-like types if Qt is present)
+#include "core/types.h"
+#include "core/elapsed_timer.h"
 
 #include "candbsignal.h"
 
-typedef quint32 CanStdId_t;
+typedef uint32_t CanStdId_t;
 
-#include <QElapsedTimer>
-
-extern QElapsedTimer bootUpTimer;
+// Use core::ElapsedTimer instead of QElapsedTimer
+extern core::ElapsedTimer bootUpTimer;
 
 #define DEFAULT_EW_CAN_CONNECTION_TIMEOUT (500)
 #define DEFAULT_EW_KEEP_ALIVE_TIMEOUT (200)
@@ -20,14 +24,14 @@ extern QElapsedTimer bootUpTimer;
 #    define DISPLAY_ITEM_ID AlertTypes::EnAlert
 #else
 //Enables usage of JSON enums unlisted in C++
-    typedef qint32 DISPLAY_ITEM_ID;
+    typedef int32_t DISPLAY_ITEM_ID;
 #endif
 
 #ifdef WIN32
 struct can_frame{
       long can_id;
-      quint32    can_dlc;
-      quint8    data[8];
+      uint32_t    can_dlc;
+      uint8_t    data[8];
 };
 
 #endif

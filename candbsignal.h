@@ -1,8 +1,15 @@
 #ifndef CANDBSIGNAL_H
 #define CANDBSIGNAL_H
 
-#include <QObject>
-#include <QDataStream>
+// Include defs.h first (which includes Qt headers before core types)
+#include "defs.h"
+
+// Include core library after Qt headers are already included
+#include "core/serialization.h"
+
+#include <string>
+#include <vector>
+#include <any>
 
 #include "peglib.h"
 using namespace peg;
@@ -16,8 +23,6 @@ using namespace peg;
 #include "canlib.h"
 #endif
 
-#include "defs.h"
-
 class AMJsonProtocol;
 
 typedef enum SignalValueType_e
@@ -30,7 +35,7 @@ SignalValueType;
 
 typedef struct Signal_s
 {
-    QString name;
+    std::string name;
     unsigned int startByte;
     unsigned int startBit;
     unsigned int numOfBits;
@@ -40,23 +45,23 @@ typedef struct Signal_s
     double min;
     double max;
     SignalValueType valueType;
-    quint32 AMJsonSignalIdx;
+    uint32_t AMJsonSignalIdx;
 }
 Signal;
 
 typedef struct SerializedSignal_s
 {
 public:
-    quint32 startByte;
-    quint32 startBit;
-    quint32 numOfBits;
-    quint8 sign;
+    uint32_t startByte;
+    uint32_t startBit;
+    uint32_t numOfBits;
+    uint8_t sign;
     double factor;
     double offset;
     double min;
     double max;
-    qint32 enumValueType;
-    quint32 AMJsonSignalIdx;
+    int32_t enumValueType;
+    uint32_t AMJsonSignalIdx;
 } SerializedSignal_t;
 
 
@@ -64,15 +69,15 @@ public:
 
 typedef struct Value_s
 {
-    QString name;
+    std::string name;
     double value;
 }
 Value;
 
 
 
-QDataStream & operator<< (QDataStream &out, const Signal & any);
-QDataStream & operator>> (QDataStream &in, Signal & any);
+core::DataStream & operator<< (core::DataStream &out, const Signal & any);
+core::DataStream & operator>> (core::DataStream &in, Signal & any);
 
 class CanDBSignal {
 public:
@@ -83,24 +88,24 @@ public:
 
 private:
 
-     bool parseDBCFileString(QString extractedFile);
-     bool readDBCFile(QString protocolName, QString & extractedFile);
+     bool parseDBCFileString(const std::string& extractedFile);
+     bool readDBCFile(const std::string& protocolName, std::string& extractedFile);
      void init_parser(void);
 
      AMJsonProtocol * curParsedProtocol;
 
      parser * pParser;
 
-     QList<QString> * phrases;
-     QList<QString> * c_identifiers;
-     QList<QString> *  signs;
-     QList<QString> * ecu_tokens;
-     QList<qint64> * numbers;//TODO think about floats implementation
-     QList<Signal *> * cansignals;
-     QList<Value> * vtRows;
+     std::vector<std::string> * phrases;
+     std::vector<std::string> * c_identifiers;
+     std::vector<std::string> * signs;
+     std::vector<std::string> * ecu_tokens;
+     std::vector<int64_t> * numbers;//TODO think about floats implementation
+     std::vector<Signal *> * cansignals;
+     std::vector<Value> * vtRows;
 };
 
-QVariant extractSignal(Signal * canSignal, struct can_frame *frame);
+std::any extractSignal(Signal * canSignal, struct can_frame *frame);
 
 
 #endif //CANDBSIGNAL_H

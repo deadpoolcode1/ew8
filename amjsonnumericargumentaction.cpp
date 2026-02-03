@@ -8,7 +8,7 @@ class AMJsonProtocol;
 
 class CanIntArgumentsAccumulator;
 
-AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, IntArgument, action, parent)
+AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, IntArgument, action, parent)
 {
     itsArgumentAccumulator = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
@@ -18,7 +18,7 @@ void AMJsonNumericArgumentAction::process(QObject * /*sender*/, QVariant extract
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toInt());
 }
 
-bool AMJsonNumericArgumentAction::isItsArgumentsType(qint32 type)
+bool AMJsonNumericArgumentAction::isItsArgumentsType(int32_t type)
 {
-    return (type == (qint32)IntArgument);
+    return (type == (int32_t)IntArgument);
 }

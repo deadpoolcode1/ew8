@@ -1,23 +1,23 @@
 #include "amjsonconfigreader.h"
 
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QDebug>
+// Use core library instead of Qt
+#include "core/json.h"
+#include "core/file_utils.h"
+#include "core/logger.h"
 
-#include <QFile>
-#include <QMap>
-#include <QString>
+#include <string>
+#include <map>
 
 AMJsonConfigReader * AMJsonConfigReader::instance = nullptr;
-QMutex AMJsonConfigReader::instanceMutex;
+core::Mutex AMJsonConfigReader::instanceMutex;
 
-QJsonValue AMJsonConfigReader::getJsonTopEntry(QString entryKey)
+core::JsonValue AMJsonConfigReader::getJsonTopEntry(const std::string& entryKey)
 {
-   QJsonValue ret;
-   if(jsonEntriesList.contains(entryKey))
+   core::JsonValue ret;
+   auto it = jsonEntriesList.find(entryKey);
+   if(it != jsonEntriesList.end())
    {
-       ret = jsonEntriesList.value(entryKey);
+       ret = it->second;
    }
    return ret;
 }
@@ -39,30 +39,31 @@ AMJsonConfigReader * AMJsonConfigReader::getInstance(void)
 
 AMJsonConfigReader::AMJsonConfigReader(void)
 {
-    readJsonDocument("configs/EW8_Brightness.json");
+    readJsonDocument("configs/EW8_Config.json");
 }
 
-void AMJsonConfigReader::readJsonDocument(QString arg)
+void AMJsonConfigReader::readJsonDocument(const std::string& arg)
 {
+    core::JsonDocument jdoc;
 
-    QJsonDocument jdoc;
-
-    QFile jsonFile(QStringLiteral(BASE_TARGET_DIR)+arg);
+    std::string filePath = std::string(BASE_TARGET_DIR) + arg;
+    core::File jsonFile(filePath);
 
     if(jsonFile.exists())
     {
-        qDebug ("JSON file exists");
-        if(jsonFile.open(QIODevice::ReadOnly))
+        coreDebug() << "JSON file exists";
+        if(jsonFile.open(core::File::ReadOnly))
         {
-            //TODO evaluate json cosnsistency
+            //TODO evaluate json consistency
 
-            QJsonParseError errStatus;
+            core::JsonParseError errStatus;
 
-            jdoc = QJsonDocument::fromJson(jsonFile.readAll(), &errStatus);
+            std::string fileContent = jsonFile.readAll();
+            jdoc = core::JsonDocument::fromJson(fileContent, &errStatus);
 
-            if(QJsonParseError::NoError != errStatus.error)
+            if(core::JsonParseError::NoError != errStatus.error())
             {
-                qDebug() << "Json reader reading file:" << arg << " Error status:"<< errStatus.errorString();
+                coreDebug() << "Json reader reading file:" << arg << " Error status:" << errStatus.errorString();
             }
 
             jsonFile.close();
@@ -74,15 +75,15 @@ void AMJsonConfigReader::readJsonDocument(QString arg)
     }
     else
     {
-        qDebug("signals JSON scheme file read failed.");
+        coreDebug() << "signals JSON scheme file read failed.";
         //TODO use some default scheme
         //TODO Error Alert
      }
 
-    QJsonObject jobj = jdoc.object();
+    core::JsonObject jobj = jdoc.object();
 
-    for (QJsonObject::const_iterator it = jobj.constBegin() ; it !=  jobj.constEnd(); it++)
+    for (auto it = jobj.constBegin(); it != jobj.constEnd(); ++it)
     {
-        jsonEntriesList.insert(it.key(),it.value());
+        jsonEntriesList.insert({it->first, it->second});
     }
 }

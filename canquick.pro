@@ -1,5 +1,5 @@
-MAJOR_VERSION = 2
-MINOR_VERSION = 1
+MAJOR_VERSION = 3
+MINOR_VERSION = 0
 OTA_TEST_VERSION = 0
 
 VERSION = $${MAJOR_VERSION}"."$${MINOR_VERSION}"."$${OTA_TEST_VERSION}
@@ -28,6 +28,15 @@ QT += quick
 # QT += sensors
 
 CONFIG += c++11
+
+# Workaround for Qt 6.9.x qfloat16 bug on 64-bit Linux
+# Qt declares comparison operators for both 'long' and 64-bit integer types, but on LP64
+# they are the same type, causing redefinition errors in qfloat16.h
+# See: https://doc.qt.io/qt-6/qfloat16.html
+linux {
+    # Disable qfloat16 arithmetic/comparison operators which cause conflicts on LP64
+    DEFINES += QT_NO_FLOAT16_OPERATORS
+}
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -138,6 +147,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES =
 
 HEADERS += \
+    qt_workarounds.h \
     bufferedsmoother.h \
     keepalivemsg.h \
     versionmsg.h \
@@ -190,27 +200,73 @@ HEADERS += \
     candebugreport.h \
     ewinfo.h
 
+# =============================================================================
+# PLATFORM-SPECIFIC CONFIGURATION
+# =============================================================================
 
-win32: LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
+# -----------------------------------------------------------------------------
+# Windows Configuration
+# -----------------------------------------------------------------------------
+win32 {
+    message("Building for Windows")
 
-win32: INCLUDEPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
-win32: DEPENDPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
+    # Kvaser CAN library
+    LIBS += -L'C:/Program Files (x86)/Kvaser/Canlib/Lib/MS/' -lcanlib32
+    INCLUDEPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
+    DEPENDPATH += 'C:/Program Files (x86)/Kvaser/Canlib/INC'
 
-win32: LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
+    # QREncode library
+    LIBS += -L"C:/Program Files (x86)/qrencode-win32/Lib/" -lqrcodelib
+    INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
+    DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
 
-win32: INCLUDEPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
-win32: DEPENDPATH += 'C:/Program Files (x86)/qrencode-win32/INC'
+    # Windows uses different CAN code paths, no REMOVE_EW8_HW needed
+}
 
-linux: LIBS += -lsocketcan -lqrencode -ldrm
+# -----------------------------------------------------------------------------
+# Linux Configuration
+# -----------------------------------------------------------------------------
+linux {
+    LIBS += -lsocketcan -lqrencode -ldrm
+    DEFINES += LOG_INIT_COMPLETE_TO_DMESG
 
-linux: DEFINES += LOG_INIT_COMPLETE_TO_DMESG
+    # Detect if building for desktop (x86_64) or embedded ARM
+    contains(QMAKE_HOST.arch, x86_64) {
+        message("Building for Linux Desktop (x86_64)")
 
-#Specific preprocessor definitions:
+        # Disable hardware-specific code for desktop simulation
+        DEFINES += REMOVE_EW8_HW
+
+        # Use current directory for resources in desktop builds
+        DEFINES -= "BASE_TARGET_DIR=\'\"$${target.path}/../\"\'"
+
+        # Post-build: Setup symlinks and CAN interface
+        QMAKE_POST_LINK += $$quote(echo "=== Post-build setup ===" &&)
+        QMAKE_POST_LINK += $$quote(sudo mkdir -p /opt/canquick/bin 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/qml /opt/canquick/qml 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/signals /opt/canquick/signals 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/configs /opt/canquick/configs 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/DBC /opt/canquick/dbc 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(echo "Symlinks created in /opt/canquick/" &&)
+        QMAKE_POST_LINK += $$quote(sudo modprobe vcan 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ip link add dev can0 type vcan 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ip link set up can0 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(echo "Virtual CAN interface can0 ready")
+
+    } else:contains(QMAKE_HOST.arch, arm.*)|contains(QMAKE_HOST.arch, aarch64) {
+        message("Building for Linux ARM (embedded target)")
+        # Real hardware - do NOT define REMOVE_EW8_HW
+    } else {
+        message("Building for Linux (unknown arch: $$QMAKE_HOST.arch)")
+    }
+}
+
+# -----------------------------------------------------------------------------
+# Common Definitions
+# -----------------------------------------------------------------------------
 DEFINES += VERIFY_ALL_ALERTS_IMPLEMENTED
 
 !isEmpty(target.path): DEFINES += "BASE_TARGET_DIR=\'\"$${target.path}/../\"\'"
 else: DEFINES += "BASE_TARGET_DIR=\'\"\"\'"
 
-#DEFINES += REMOVE_EW8_HW
 #DEFINES += VIRTUAL_CAN0
-

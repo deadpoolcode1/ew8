@@ -1,8 +1,8 @@
 #ifndef AMJSONGRAPHICITEMACTION_H
 #define AMJSONGRAPHICITEMACTION_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QMap>
 
 #include "defs.h"
 #include "amjsonaction.h"
@@ -22,7 +22,7 @@ class AMJsonGraphicItemAction: public AMJsonAction
 
 public:
 
-    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, QString action);
+    static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, const String& action);
 
     static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
 
@@ -40,13 +40,13 @@ public:
 
 
 public slots:
-    void argumentComplete(quint8 intArg, quint8 fracArg, quint8 unitArg);
-    void argumentComplete(QString strArg);
+    void argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg);
+    void argumentComplete(const String& strArg);
     void forceDeactivation(void);
 
 private:
 
-    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent = nullptr);
 
     void deactivate(void);
 
@@ -59,20 +59,20 @@ private:
     bool areArgumentsReceived;
     bool isSupplemented;
     QVariant itsSupplimentary;
-    QList<QVariant> itsSuppDomain;
+    List<QVariant> itsSuppDomain;
 
-    quint8 argInt;
-    quint8 argFrac;
-    quint8 argUnits;
-    QString argStr;
+    uint8_t argInt;
+    uint8_t argFrac;
+    uint8_t argUnits;
+    String argStr;
 
     bool isArgOfStringType;
 
     IAlertDisplay * itsDisplay;
 
-    static QMap<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
+    static Map<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
 
-    QList<QObject *> activators;
+    List<QObject *> activators;
 };
 
 #endif // AMJSONGRAPHICITEMACTION_H

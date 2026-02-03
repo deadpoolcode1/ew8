@@ -1,6 +1,7 @@
 #include "qquickqrcode.h"
 #include "canstringargumentsaccumulator.h"
 #include "amsignalsmodel.h"
+#include "core/logger.h"
 
 #include <qrencode.h>
 
@@ -12,8 +13,8 @@ class AMSignalsModel;
 
 class QPainter;
 
-QString QQuickQRCode::baseurl = "";
-QString QQuickQRCode::request = "";
+String QQuickQRCode::baseurl = "";
+String QQuickQRCode::request = "";
 
 
 void QQuickQRCode::declareQML() {
@@ -29,14 +30,14 @@ QQuickQRCode::QQuickQRCode(QQuickPaintedItem * parentQQuickItem) : QQuickPainted
 void QQuickQRCode::paint(QPainter * painter)
 {
 
-    QString m_encoded = baseurl + request;
+    String m_encoded = baseurl + request;
 
-    QRcode *qrcode = QRcode_encodeString8bit(m_encoded.toLatin1(), 4, QR_ECLEVEL_L);
+    QRcode *qrcode = QRcode_encodeString8bit(m_encoded.c_str(), 4, QR_ECLEVEL_L);
 
     width = (qrcode->width);
-    quint8 * data = qrcode->data;
+    uint8_t * data = qrcode->data;
 
-    qDebug("qrencode geometry is = %d,%d",qrcode->width,qrcode->width);
+    LOG_DEBUG("qrencode geometry is = %d,%d", qrcode->width, qrcode->width);
 
 
      qimage = new QImage(width+(margin*2),width+(margin*2),QImage::Format_RGB888);
@@ -50,9 +51,9 @@ void QQuickQRCode::paint(QPainter * painter)
      qimage->fill(whiteColor);
 
 
-    for (qint32 y = 0; y < width; y++)
+    for (int32_t y = 0; y < width; y++)
     {
-        for (qint32 x = 0; x < width; x++)
+        for (int32_t x = 0; x < width; x++)
         {
                 if(*(data+x+(y*width)) & (whiteBlackBitMask))
                 {
@@ -65,7 +66,7 @@ void QQuickQRCode::paint(QPainter * painter)
 
     }
 
-    qDebug("QImage geometry is = %d,%d",qimage->width(),qimage->height());
+    LOG_DEBUG("QImage geometry is = %d,%d", qimage->width(), qimage->height());
 
     //QImage scaledImage = * qimage->scaled(156, 156, Qt::KeepAspectRatio);
 
@@ -78,23 +79,23 @@ void QQuickQRCode::paint(QPainter * painter)
     QRcode_free(qrcode);
 }
 
-void QQuickQRCode::setRequest(QString aRequest)
+void QQuickQRCode::setRequest(const String& aRequest)
 {
    reqUpdate(aRequest);
 }
 
-void QQuickQRCode::setBaseUrl(QString aUrl)
+void QQuickQRCode::setBaseUrl(const String& aUrl)
 {
    baseurl = aUrl;
 }
 
 
-void QQuickQRCode::reqUpdate(QString arg)
+void QQuickQRCode::reqUpdate(const String& arg)
 {
     if(request != arg)
     {
         request =  arg;
-        qDebug("New qr request: %s", qPrintable(arg));
+        LOG_DEBUG("New qr request: %s", arg.c_str());
         update();
     }
 }

@@ -5,6 +5,7 @@
 
 #include "defs.h"
 #include "sysreqtype.h"
+#include "core/types.h"
 
 #include "amjsonaction.h"
 
@@ -16,7 +17,7 @@ class SystemRequestType;
 class AMJsonSystemRequestAction : public AMJsonAction
 {
 public:
-    explicit AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent = nullptr);
+    explicit AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
     //NOTE: default index value (0)
     void process(QObject * sender, QVariant extractedCANsignal);

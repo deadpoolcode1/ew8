@@ -5,9 +5,8 @@
 #include "versionmsg.h"
 #include "candebugreport.h"
 #include "watchdogdevice.h"
-#include <QDebug>
+#include "core/core.h"
 #include <QObject>
-#include <QProcess>
 
 class VersionMsg;
 class SystemRequestType;
@@ -15,7 +14,7 @@ class BrightnessControl;
 class CANDebugReport;
 class WatchDogDevice;
 
-AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, QString action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
+AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
 {
    type = SystemRequestType::fromString(action);
 }
@@ -50,14 +49,14 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
-            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick -t"));
+            core::Process::startDetached(std::string(BASE_TARGET_DIR) + "bin/canquick", {"-t"});
 
 
 #elif ! defined(QT_DEBUG)
-            QProcess::startDetached(QStringLiteral("release/canquick -t"));
+            core::Process::startDetached("release/canquick", {"-t"});
 
 #else
-            QProcess::startDetached(QStringLiteral("debug/canquick -t"));
+            core::Process::startDetached("debug/canquick", {"-t"});
 #endif
             exit(0);
         }
@@ -68,20 +67,20 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
-            QProcess::startDetached(QStringLiteral(BASE_TARGET_DIR)+QStringLiteral("bin/canquick"));
+            core::Process::startDetachedCommand(std::string(BASE_TARGET_DIR) + "bin/canquick");
 
 #elif ! defined(QT_DEBUG)
-            QProcess::startDetached(QStringLiteral("release/canquick"));
+            core::Process::startDetachedCommand("release/canquick");
 
 #else
-            QProcess::startDetached(QStringLiteral("debug/canquick"));
+            core::Process::startDetachedCommand("debug/canquick");
 #endif
             exit(0);
         }
         break;
 
     default:
-        qDebug()<<"Processing unsupported request type";
+        coreDebug() << "Processing unsupported request type";
         break;
     }
 }

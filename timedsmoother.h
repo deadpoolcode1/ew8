@@ -1,8 +1,8 @@
 #ifndef EDSMOOTHER_H
 #define EDSMOOTHER_H
 
+#include "core/types.h"
 #include <QObject>
-#include <QList>
 #include "ismoother.h"
 
 class ISmoother;
@@ -10,19 +10,19 @@ class ISmoother;
 class TimedSmoother: public ISmoother
 {
 public:
-    TimedSmoother(quint32 smoothingiTimeInterval, quint32 skipSmoothingDelta);
-    quint32 getSmoothedValue(void);
-    void addMeasure(quint32 measure);
+    TimedSmoother(uint32_t smoothingiTimeInterval, uint32_t skipSmoothingDelta);
+    uint32_t getSmoothedValue(void);
+    void addMeasure(uint32_t measure);
 private:
     void cleanBuffer(void);
-    quint32 getAverage(void);
-    QList<quint32> bufferQueue;
-    QList<qint64> timestampsQueue;
-    qint64 firstMeasureTimestamp;
-    quint32 skipSmoothingDelta;
-    qint64 smoothingTimeInterval;
-    quint32 sum;
-    quint32 items_count;
+    uint32_t getAverage(void);
+    List<uint32_t> bufferQueue;
+    List<int64_t> timestampsQueue;
+    int64_t firstMeasureTimestamp;
+    uint32_t skipSmoothingDelta;
+    int64_t smoothingTimeInterval;
+    uint32_t sum;
+    uint32_t items_count;
 };
 
 #endif // TIMEDSMOOTHER_H

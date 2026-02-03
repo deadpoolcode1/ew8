@@ -1,10 +1,9 @@
 #include "ewinfo.h"
 #include "defs.h"
-#include <QDebug>
-#include <QFile>
-#include <QTextStream>
+#include "core/core.h"
+#include "core/file_utils.h"
 #include "amjsonconfigreader.h"
-#include <QJsonArray>
+#include "core/json.h"
 
 #ifndef WIN32
 //TODO remove unused:
@@ -55,70 +54,70 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
 #endif
 }
 
-QString EWInfo::getEwsn(void)
+String EWInfo::getEwsn(void)
 {
   return ewsn_str;
 }
 
-QString EWInfo::getEngineVer(void)
+String EWInfo::getEngineVer(void)
 {
    return ewbin_str;
 }
 
-QString EWInfo::getConfigVer(void)
+String EWInfo::getConfigVer(void)
 {
   return ewcfg_str;
 }
 
-QString EWInfo::getSnv(void)
+String EWInfo::getSnv(void)
 {
 #if 0
     ewsn_str = "3021016070300013";
     setMeSn("0121011070P00524");
-    qDebug()<<"SNV property ="<<snv_str;
+    coreDebug()<<"SNV property ="<<snv_str;
 #endif
   return snv_str;
 }
 
-QString EWInfo::getOSBuildTimestamp(void)
+String EWInfo::getOSBuildTimestamp(void)
 {
   return ewosbuild_str;
 }
 
-void EWInfo::setMeSn(QString aMeSn)
+void EWInfo::setMeSn(const String& aMeSn)
 {
 
 //TODO compute the snv value
 
-    QByteArray ew = ewsn_str.toLocal8Bit();
-    QByteArray me = aMeSn.toLocal8Bit();
+    std::string ew = ewsn_str;
+    std::string me = aMeSn;
 
     //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
     {
-    quint64 A = (quint64)ew[me[15]%16];//4:0:48
-    quint64 B = (quint64)ew[me[14]%16] ;//2:2:50
-    quint64 C = (quint64)ew[me[13]%16] ;//5:1:49
-    quint64 D = (quint64)ew[me[12]%16] ;//0:3:51
-    quint64 E = (quint64)ew[me[11]%16] ;//0:3:51
+    uint64_t A = (uint64_t)(uint8_t)ew[me[15]%16];//4:0:48
+    uint64_t B = (uint64_t)(uint8_t)ew[me[14]%16] ;//2:2:50
+    uint64_t C = (uint64_t)(uint8_t)ew[me[13]%16] ;//5:1:49
+    uint64_t D = (uint64_t)(uint8_t)ew[me[12]%16] ;//0:3:51
+    uint64_t E = (uint64_t)(uint8_t)ew[me[11]%16] ;//0:3:51
 
-    quint64 F = (quint64)me[ew[0]%16] ;
-    quint64 G = (quint64)me[ew[1]%16] ;
-    quint64 H = (quint64)me[ew[11]%16] ;
-    quint64 I = (quint64)me[ew[12]%16] ;
-    quint64 J = (quint64)me[ew[13]%16] ;
+    uint64_t F = (uint64_t)(uint8_t)me[ew[0]%16] ;
+    uint64_t G = (uint64_t)(uint8_t)me[ew[1]%16] ;
+    uint64_t H = (uint64_t)(uint8_t)me[ew[11]%16] ;
+    uint64_t I = (uint64_t)(uint8_t)me[ew[12]%16] ;
+    uint64_t J = (uint64_t)(uint8_t)me[ew[13]%16] ;
 
-    quint64 SNV = (quint64)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
+    uint64_t SNV = (uint64_t)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
 
 #if 0
-    qDebug () << " A:" << A << " B:" << B << " C:" << C
+    coreDebug() << " A:" << A << " B:" << B << " C:" << C
               << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
                  " I:" << I << " J:"<< J;
 
-    qDebug()<< "quint64 SNV=" << SNV;
+    coreDebug()<< "uint64_t SNV=" << SNV;
 #endif
 
-    snv_str = QString::number(SNV);
+    snv_str = std::to_string(SNV);
 
 
     is_snv_ready = true;
@@ -127,7 +126,7 @@ void EWInfo::setMeSn(QString aMeSn)
     }
     else
     {
-        qDebug() << "SN number length is wrong";
+        coreDebug() << "SN number length is wrong";
     }
 }
 
@@ -141,21 +140,15 @@ void EWInfo::declareQML(void)
 void EWInfo::readEWInfo(void)
 {
     //NOTE: Engine version:
-     ewbin_str = QString("%1.%2.%3")
-    .arg(MAJOR_VERSION)
-    .arg(MINOR_VERSION)
-    .arg(OTA_TEST_VERSION);
+     ewbin_str = std::to_string(MAJOR_VERSION) + "." + std::to_string(MINOR_VERSION) + "." + std::to_string(OTA_TEST_VERSION);
 
-     qDebug() << "EWInfo:Engine version " << ewbin_str;
+     coreDebug() << "EWInfo:Engine version " << ewbin_str;
 
     //NOTE: Config version:
-    QJsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
+    core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
     if(!jsonArray.isEmpty())
     {
-        ewcfg_str = QString("%1.%2.%3")
-         .arg(jsonArray.at(0).toInt(0xff))
-         .arg(jsonArray.at(1).toInt(0x3f))
-         .arg((jsonArray.at(2).toInt(0x3)) & 0x3);
+        ewcfg_str = std::to_string(jsonArray.at(0).toInt(0xff)) + "." + std::to_string(jsonArray.at(1).toInt(0x3f)) + "." + std::to_string((jsonArray.at(2).toInt(0x3)) & 0x3);
     }
 }
 
@@ -165,28 +158,28 @@ void EWInfo::readEWInfo(void)
 void EWInfo::readOSBuildInfo(void)
 {
 
-    QFile buildIdFile("/etc/version2epoch");
+    core::File buildIdFile("/etc/version2epoch");
 
-    QString buildId;
+    std::string buildId;
 
-    if(buildIdFile.open(QFile::ReadOnly | QFile::Text))
+    if(buildIdFile.open(core::File::ReadOnly | core::File::Text))
     {
-      QTextStream buildIdStream(&buildIdFile);
+      core::TextStream buildIdStream(&buildIdFile);
       buildId = buildIdStream.readLine();
       buildIdFile.close();
     }
 
     if(buildId.length() != 8)
     {
-       qDebug("System Build ID is not found is not found.");
+       LOG_DEBUG("System Build ID is not found is not found.");
     }
     else
     {
-       bool ok;
-       quint32 tstamp = buildId.toUInt(&ok, 16);
-       if(ok)
-       {
-           ewosbuild_str = QString::number(tstamp);
+       try {
+           uint32_t tstamp = std::stoul(buildId, nullptr, 16);
+           ewosbuild_str = std::to_string(tstamp);
+       } catch (...) {
+           // Conversion failed
        }
 
     }
@@ -197,13 +190,13 @@ void EWInfo::readOSBuildInfo(void)
 void EWInfo::readServiceNumber(void)
 {
     //TODO read the SN and verify:
-    qint32 mem_fd = open("/dev/mem",O_RDWR);
+    int32_t mem_fd = open("/dev/mem",O_RDWR);
 
-    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(quint32), PROT_WRITE,
+    void* pmc_pcr_ptr = mmap(NULL, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t), PROT_WRITE,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_PMC);
 
 
-    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32), PROT_READ,
+    void* sfc_dr_ptr = mmap(NULL, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t), PROT_READ,
                         MAP_PRIVATE, mem_fd, AT91C_BASE_SFC);
 
 
@@ -211,22 +204,22 @@ void EWInfo::readServiceNumber(void)
     close(mem_fd);
 
 
-    enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),true);
+    enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),true);
 
 
-    quint32 readRegister;
-    quint32 emptyRegisters = 0;
-    quint8 byteLSB;
+    uint32_t readRegister;
+    uint32_t emptyRegisters = 0;
+    uint8_t byteLSB;
     bool regIntegrity = true;
 
     ewsn_str = "";
 
-    for(qint32 i = 0; i<16 && regIntegrity;i++)
+    for(int32_t i = 0; i<16 && regIntegrity;i++)
     {
-        readRegister = readDataSFC((quint32*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(quint32)),i);
+        readRegister = readDataSFC((uint32_t*)sfc_dr_ptr+(AT91C_SFC_DR0_OFFSET/sizeof(uint32_t)),i);
 
 
-        byteLSB = (quint8)(readRegister & 0xff);
+        byteLSB = (uint8_t)(readRegister & 0xff);
 
         if(0 == readRegister)
         {
@@ -234,16 +227,16 @@ void EWInfo::readServiceNumber(void)
         }
         else
         {
-            quint8 byteMSB = (quint8)((readRegister >> 010)& 0xff);
+            uint8_t byteMSB = (uint8_t)((readRegister >> 010)& 0xff);
 
 
 
-            regIntegrity = (byteLSB == (quint8)(~ byteMSB));
+            regIntegrity = (byteLSB == (uint8_t)(~ byteMSB));
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (quint32)byteLSB << " Control:" << Qt::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (uint32_t)byteLSB << " Control:" << Qt::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #else
-            qDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (quint32)byteLSB << " Control:" << std::hex <<(quint32)byteMSB << " Integrity: " << regIntegrity;
+            coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (uint32_t)byteLSB << " Control:" << std::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
 #endif
         }
 
@@ -258,19 +251,19 @@ void EWInfo::readServiceNumber(void)
 
         if(isprint(byteLSB))
         {
-            ewsn_str.append(QChar((char)byteLSB));
+            ewsn_str.push_back((char)byteLSB);
         }
         else
         {
-            ewsn_str.append("X");
+            ewsn_str.push_back('X');
         }
     }
 
-     enableDisableSFC((quint32*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(quint32)),false);
+     enableDisableSFC((uint32_t*)(pmc_pcr_ptr)+(AT91C_PMC_PCR_OFFSET/sizeof(uint32_t)),false);
 
      if(!regIntegrity | ((0 != emptyRegisters) && (16 != emptyRegisters)))
      {
-         for(qint32 i = 0; i<16;i++)
+         for(int32_t i = 0; i<16;i++)
          {
              if(i < 8)
              {
@@ -292,20 +285,20 @@ void EWInfo::readServiceNumber(void)
          ewsn_str = "NA";
      }
 
-    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(quint32));
+    munmap(sfc_dr_ptr, AT91C_SFC_DR0_OFFSET + 16*sizeof(uint32_t));
 
-    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(quint32));
+    munmap(pmc_pcr_ptr, AT91C_PMC_PCR_OFFSET + sizeof(uint32_t));
 }
 
-void EWInfo::enableDisableSFC(quint32* wr_ptr, bool On)
+void EWInfo::enableDisableSFC(uint32_t* wr_ptr, bool On)
 {
     *wr_ptr = On ? (AT91C_ID_SFC | AT91C_PMC_PCR_CMD | AT91C_PMC_PCR_EN) :
                    (AT91C_ID_SFC | AT91C_PMC_PCR_CMD);
 }
 
-quint32 EWInfo::readDataSFC(quint32* rd_ptr, quint32 index)
+uint32_t EWInfo::readDataSFC(uint32_t* rd_ptr, uint32_t index)
 {
-   quint32 ret;
+   uint32_t ret;
    ret = *(rd_ptr+index);
    return ret;
 }

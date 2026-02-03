@@ -1,4 +1,5 @@
-#include <QVariant>
+#include "core/core.h"
+#include "core/types.h"
 #include "rootedtreenode.h"
 #include "alerttypes.h"
 #include "entitytype.h"
@@ -61,49 +62,49 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignalStr(QVariant)),
                          this->qmlItem, SLOT(setVisibleSlotStr(QVariant)));
-        qDebug("setVisibleSlotStr(QVariant) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+        coreDebug() << "setVisibleSlotStr(QVariant) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(void)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(void)));
-         qDebug("setVisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         coreDebug() << "setVisibleSlot(void) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant)));
-         qDebug("setVisibleSlot(quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         coreDebug() << "setVisibleSlot(uint8_t) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant, QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant, QVariant)));
-         qDebug("setVisibleSlot(quint8, quint8) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         coreDebug() << "setVisibleSlot(uint8_t, uint8_t) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setVisibleSlot(QVariant,QVariant, QVariant)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setVisibleSignal(QVariant, QVariant, QVariant)),
                          this->qmlItem, SLOT(setVisibleSlot(QVariant,QVariant, QVariant)));
-         qDebug("setVisibleSlot(all arguments) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+         coreDebug() << "setVisibleSlot(all arguments) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("setInvisibleSlot(void)")))
     {
         QObject::connect(this->qmlSignalizer, SIGNAL(setInvisibleSignal(void)),
                          this->qmlItem, SLOT(setInvisibleSlot(void)));
-        qDebug("setInvisibleSlot(void) connected to %s", qPrintable(this->qmlItem->property("objectName").toString()));
+        coreDebug() << "setInvisibleSlot(void) connected to" << this->qmlItem->property("objectName").toString();
     }
 
     if (-1 != this->qmlItem->metaObject()->indexOfSignal(QMetaObject::normalizedSignature("itemSelfDeactivate()")))
     {
         QObject::connect(this->qmlItem, SIGNAL(itemSelfDeactivate(void)),
                          this->qmlSignalizer, SLOT(forceItemSelfDeactivation(void)));
-        qDebug("itemSelfDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
+        coreDebug() << "itemSelfDeactivate() of object" << this->qmlItem->property("objectName").toString() << "connected";
     }
 
 
@@ -139,7 +140,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
         DISPLAY_ITEM_ID type = (DISPLAY_ITEM_ID)(canEntityTypeQVar.toInt(&isInt));
 
         if(!isInt){
-            type = (DISPLAY_ITEM_ID)GraphicItemsEnumMap::getId(canEntityTypeQVar.toString());
+            type = (DISPLAY_ITEM_ID)GraphicItemsEnumMap::getId(canEntityTypeQVar.toString().toStdString());
         }
 
         if (type != AlertTypes::QtQG) // no link between groups and alert types!
@@ -162,7 +163,7 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
                 {
                     QObject::connect(this->qmlItem, SIGNAL(itemActionDeactivate(void)),
                                      action, SLOT(forceDeactivation(void)));
-                    qDebug("itemActionDeactivate() of object %s connected", qPrintable(this->qmlItem->property("objectName").toString()));
+                    coreDebug() << "itemActionDeactivate() of object" << this->qmlItem->property("objectName").toString() << "connected";
                 }
             }
 
@@ -248,12 +249,12 @@ void RootedTreeNode::handleMutexGroup()
     }
 }
 
-void RootedTreeNode::setCanEntityArg(QString stringArg)
+void RootedTreeNode::setCanEntityArg(const String& stringArg)
 {
     this->stringArg = stringArg;
 }
 
- void RootedTreeNode::setCanEntityArgs(quint8 valueInt, quint8 valueFrac, quint8 unit)
+ void RootedTreeNode::setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
  {
      this->valueInt = valueInt;
      this->valueFrac = valueFrac;
@@ -280,7 +281,7 @@ void RootedTreeNode::activate()
     }
     else
     {
-       qDebug("Mode Group: Skip activation");
+       LOG_DEBUG("Mode Group: Skip activation");
     }
 }
 
@@ -303,7 +304,7 @@ void RootedTreeNode::deactivate()
         }
         else
         {
-           qDebug("Mode Group: Skip deactivation");
+           LOG_DEBUG("Mode Group: Skip deactivation");
         }
     }
 }
@@ -388,7 +389,7 @@ DISPLAY_ERRORS_t RootedTreeNode::updateVisibilityByInvoke(bool visible)
 
     if(visible)
     {
-        QVariant qstr(stringArg);
+        QVariant qstr(stringArg.toQString());
 
         emit this->qmlSignalizer->setVisibleSignalStr(qstr);
         emit this->qmlSignalizer->setVisibleSignal((QVariant)valueInt,(QVariant)valueFrac,(QVariant)unit);

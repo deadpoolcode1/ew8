@@ -25,10 +25,10 @@ signals:
 
 public slots:
 
-    void sendBrightness(quint32 illuminance_measure_mV, qint32 currentMenuLevel, qint32 currentOutput);
+    void sendBrightness(uint32_t illuminance_measure_mV, int32_t currentMenuLevel, int32_t currentOutput);
 
-    void sendButtonPressed(qint32 qtKey);
-    void sendButtonReleased(qint32 qtKey);
+    void sendButtonPressed(int32_t qtKey);
+    void sendButtonReleased(int32_t qtKey);
 
     void sendAlerts(bool PDZFstate, bool PDZRstate, bool PCWFstate, bool PCWRstate);
 

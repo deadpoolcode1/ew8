@@ -183,7 +183,7 @@ Window {
             property bool is_graphic_init: false
 
             function setVisibleSlot() {
-                if (state_isa.state !== "isa" && state_isa.state !== "isa_init")
+                if (state_isa.state != "tsr")
                 {
                     state_isa.state = "tsr"
                 }

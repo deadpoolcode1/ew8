@@ -2,6 +2,7 @@
 #include "smartcanrxmsg.h"
 #include "smartitem.h"
 #include "candbsignal.h"
+#include "core/logger.h"
 
 #include "canmanager.h"
 
@@ -48,7 +49,7 @@ void SmartCanRxMsg::process(struct can_frame * frame)
 
        //TODO: visual item status structure must be generated and its state must be saved
 
-        qDebug("Smart Can Rx Msg with VisId %d processed @%s:%d", recv_fields.visId, __func__, __LINE__);
+        LOG_DEBUG("Smart Can Rx Msg with VisId %d processed @%s:%d", recv_fields.visId, __func__, __LINE__);
 
 
        //Activation/Deactivation Block
@@ -103,9 +104,9 @@ void SmartCanRxMsg::ack(CanManager * canMngr)
 
 }
 
-quint32 SmartCanRxMsg::convert2msec (duration_unit_t unit)
+uint32_t SmartCanRxMsg::convert2msec (duration_unit_t unit)
 {
-    quint32 ret = 0;
+    uint32_t ret = 0;
 
     for (size_t i=0; i < du_units_table_size; i++)
     {
