@@ -27,7 +27,7 @@ QMAKE_SUBSTITUTES += candbgrammar.h.in
 QT += quick
 # QT += sensors
 
-CONFIG += c++11
+CONFIG += c++17
 
 # Workaround for Qt 6.9.x qfloat16 bug on 64-bit Linux
 # Qt declares comparison operators for both 'long' and 64-bit integer types, but on LP64
