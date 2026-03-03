@@ -1,6 +1,6 @@
 #include "core/types.h"
 #include "core/elapsed_timer.h"
-#include <QObject>
+#include <cmath>
 #include "timedsmoother.h"
 
 //TODO: try to use time lap instead of fixed buffer length, storing the timestamps of the measures.
@@ -68,7 +68,7 @@ uint32_t TimedSmoother::getAverage(void)
 
     if(items_count > 0)
     {
-        ret = (uint32_t)qRound((double)sum/items_count);
+        ret = (uint32_t)std::lround((double)sum/items_count);
     }
 
     return ret; ;
