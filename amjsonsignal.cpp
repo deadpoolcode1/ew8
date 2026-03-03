@@ -425,7 +425,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
  {
      bool ret = true;
 
-     if(extractedSupCANsignal.typeId() == QMetaType::Int && nullptr != (itsDomainTrueValues))
+     if(extractedSupCANsignal.type() == QVariant::Int && nullptr != (itsDomainTrueValues))
      {
          int32_t desired = extractedSupCANsignal.toInt();
          switch (itsDomainSetOp)
@@ -460,12 +460,12 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
  {
      bool success = true;
 
-     if (extractedCANsignal.typeId() == QMetaType::Bool)
+     if (extractedCANsignal.type() == QVariant::Bool)
      {
          bool desired = extractedCANsignal.toBool();
          *do_active = (desired == polarity);
      }
-     else if (extractedCANsignal.typeId() == QMetaType::Int && nullptr != (trueValues))
+     else if (extractedCANsignal.type() == QVariant::Int && nullptr != (trueValues))
      {
          int32_t desired = extractedCANsignal.toInt();
          switch (trueValuesOp)
