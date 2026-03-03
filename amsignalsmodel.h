@@ -14,8 +14,6 @@
 
 #include "iamjsonactionfactory.h"
 
-#include <QObject>
-
 class IAMJsonActionFactory;
 
 class AMJsonAction;
