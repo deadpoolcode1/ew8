@@ -2,7 +2,6 @@
 #define ISMOOTHER_H
 
 #include "core/types.h"
-#include <QObject>
 
 class ISmoother
 {
