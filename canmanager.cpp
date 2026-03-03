@@ -8,7 +8,7 @@
 
 #ifndef WIN32
 #include <unistd.h>
-#include <can_netlink.h>
+#include <linux/can/netlink.h>
 #include <libsocketcan.h>
 
 #include <net/if.h>
