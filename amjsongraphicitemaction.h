@@ -26,9 +26,9 @@ public:
 
     static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, Variant extractedCANsignal);
 
-    bool setSupplimentary(QVariant extractedCANsignal);
+    bool setSupplimentary(Variant extractedCANsignal);
 
     bool getIsActived(void);
 
@@ -58,8 +58,8 @@ private:
     bool hasArguments;
     bool areArgumentsReceived;
     bool isSupplemented;
-    QVariant itsSupplimentary;
-    List<QVariant> itsSuppDomain;
+    Variant itsSupplimentary;
+    List<Variant> itsSuppDomain;
 
     uint8_t argInt;
     uint8_t argFrac;

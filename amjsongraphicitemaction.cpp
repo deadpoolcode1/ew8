@@ -48,11 +48,11 @@ AMJsonGraphicItemAction * AMJsonGraphicItemAction::getInstanceByItemID(DISPLAY_I
     return ret;
 }
 
-bool AMJsonGraphicItemAction::setSupplimentary(QVariant extractedCANsignal)
+bool AMJsonGraphicItemAction::setSupplimentary(Variant extractedCANsignal)
 {
     bool ret = false;
-  
-    if(!isSupplemented || (itsSupplimentary != extractedCANsignal))
+
+    if(!isSupplemented || variantToInt(itsSupplimentary) != variantToInt(extractedCANsignal))
     {
         itsSupplimentary =  extractedCANsignal;
         isSupplemented = true;
@@ -71,12 +71,12 @@ AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol,
    isSupplemented =  false;
 }
 
-void AMJsonGraphicItemAction::process(QObject * sender, QVariant extractedCANsignal)
+void AMJsonGraphicItemAction::process(QObject * sender, Variant extractedCANsignal)
 {
     auto it = std::find(activators.begin(), activators.end(), sender);
     bool isSenderListed = (it != activators.end());
 
-    if (extractedCANsignal.toBool())
+    if (variantToBool(extractedCANsignal))
     {
         if(!isSenderListed)
         {
@@ -119,7 +119,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
             }
             else
             {
-                itsDisplay->activate(itsGraphicItemID,(uint8_t)itsSupplimentary.toInt());
+                itsDisplay->activate(itsGraphicItemID,(uint8_t)variantToInt(itsSupplimentary));
             }
 
         }

@@ -20,32 +20,32 @@ AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProto
 }
 
 
-void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
+void AMJsonSystemRequestAction::process(QObject * /*sender*/, Variant extractedCANsignal)
 {
     switch (type)
     {
     case GetVersionInfo:
 
-    if (extractedCANsignal.toBool())
+    if (variantToBool(extractedCANsignal))
     {
         VersionMsg::singleShot();
     }
         break;
 
     case DebugBrightness:
-        BrightnessControl::setCANDebugReport(extractedCANsignal.toBool());
+        BrightnessControl::setCANDebugReport(variantToBool(extractedCANsignal));
                 break;
 
     case DebugButtons:
-        CANDebugReport::setSendKeyReport(extractedCANsignal.toBool());
+        CANDebugReport::setSendKeyReport(variantToBool(extractedCANsignal));
                 break;
 
     case DebugAlerts:
-        CANDebugReport::setSendAlertsReport(extractedCANsignal.toBool());
+        CANDebugReport::setSendAlertsReport(variantToBool(extractedCANsignal));
                 break;
 
     case SwitchModeTest:
-        if(extractedCANsignal.toBool())
+        if(variantToBool(extractedCANsignal))
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
@@ -63,7 +63,7 @@ void AMJsonSystemRequestAction::process(QObject * /*sender*/, QVariant extracted
         break;
 
     case SwitchModeAWS:
-        if(extractedCANsignal.toBool())
+        if(variantToBool(extractedCANsignal))
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
