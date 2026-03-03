@@ -9,7 +9,7 @@ AMJsonAction::AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e aType, 
 }
 
 
-bool AMJsonAction::setSupplimentary(QVariant)
+bool AMJsonAction::setSupplimentary(Variant)
 {
     return false;
 }

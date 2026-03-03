@@ -361,7 +361,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
     itsSecondCanDbSignal.valueType = canSignalPtr->valueType;
 }
 
- void AMJsonSignal::process(QVariant extractedCANsignal, QVariant extractedSupCANsignal)
+ void AMJsonSignal::process(Variant extractedCANsignal, Variant extractedSupCANsignal)
  {
 
      if(itsProtocol->getIsEnabled()&&this->getIsEnabled())
@@ -373,7 +373,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
            IAMJsonProcessable * toActivate = nullptr;
            if (is_domain_valid) {
-               auto it = itsValueTable->find(extractedCANsignal.toInt());
+               auto it = itsValueTable->find((double)variantToInt(extractedCANsignal));
                if (it != itsValueTable->end()) {
                    toActivate = it->second;
                }
@@ -389,7 +389,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
                if(toDeactivate != nullptr)
                {
 
-                   toDeactivate->process(this, false);
+                   toDeactivate->process(this, Variant(false));
 
                }
 
@@ -397,7 +397,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
                {
 
 
-                   toActivate->process(this, true);
+                   toActivate->process(this, Variant(true));
 
                }
 
@@ -411,23 +411,23 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
        {
          bool do_activate;
          bool success = extractSetUnsetAction(extractedCANsignal, &do_activate);
-         itsAction->process(this, success ? do_activate : extractedCANsignal);
+         itsAction->process(this, success ? Variant(do_activate) : extractedCANsignal);
        }
      }
  }
 
-  void AMJsonSignal::process(QVariant pureExtractedCANsignal)
+  void AMJsonSignal::process(Variant pureExtractedCANsignal)
   {
-      process(pureExtractedCANsignal, QVariant(0));
+      process(pureExtractedCANsignal, Variant(int32_t(0)));
   }
 
- bool AMJsonSignal::getDomainValidity(QVariant extractedSupCANsignal)
+ bool AMJsonSignal::getDomainValidity(Variant extractedSupCANsignal)
  {
      bool ret = true;
 
-     if(extractedSupCANsignal.type() == QVariant::Int && nullptr != (itsDomainTrueValues))
+     if(variantCanConvert<int32_t>(extractedSupCANsignal) && nullptr != (itsDomainTrueValues))
      {
-         int32_t desired = extractedSupCANsignal.toInt();
+         int32_t desired = variantToInt(extractedSupCANsignal);
          switch (itsDomainSetOp)
          {
          case set_op_or:
@@ -456,18 +456,18 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
  }
 
- bool AMJsonSignal::extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active)
+ bool AMJsonSignal::extractSetUnsetAction(Variant extractedCANsignal, bool * do_active)
  {
      bool success = true;
 
-     if (extractedCANsignal.type() == QVariant::Bool)
+     if (variantCanConvert<bool>(extractedCANsignal))
      {
-         bool desired = extractedCANsignal.toBool();
+         bool desired = variantValue<bool>(extractedCANsignal);
          *do_active = (desired == polarity);
      }
-     else if (extractedCANsignal.type() == QVariant::Int && nullptr != (trueValues))
+     else if (variantCanConvert<int32_t>(extractedCANsignal) && nullptr != (trueValues))
      {
-         int32_t desired = extractedCANsignal.toInt();
+         int32_t desired = variantToInt(extractedCANsignal);
          switch (trueValuesOp)
          {
          case set_op_or:

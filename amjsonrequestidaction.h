@@ -19,7 +19,7 @@ public:
     //NOTE: default index value (0)
     void setIndex(ssize_t anIndex) {itsIndex = anIndex;}
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, Variant extractedCANsignal);
 
 protected:
 

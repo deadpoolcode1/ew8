@@ -15,9 +15,9 @@ public:
     AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, const String& aStringArg);
     AMJsonFixedArgumentsActionInvoker(AMJsonGraphicItemAction * anAction, List<int32_t> intArgs);
 
-    void process(QObject *sender, QVariant extractedCANsignal);
+    void process(QObject *sender, Variant extractedCANsignal);
 
-    bool setSupplimentary(QVariant extractedCANsignal);
+    bool setSupplimentary(Variant extractedCANsignal);
 
 
 

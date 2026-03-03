@@ -20,7 +20,7 @@ public:
     explicit AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
     //NOTE: default index value (0)
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, Variant extractedCANsignal);
 
 private:
 

@@ -34,7 +34,7 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
 
 }
 
-void AMJsonEnablerAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
+void AMJsonEnablerAction::process(QObject * /*sender*/, Variant extractedCANsignal)
 {
-       emit enableDisableConnected(extractedCANsignal.toBool());
+       emit enableDisableConnected(variantToBool(extractedCANsignal));
 }

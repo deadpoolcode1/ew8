@@ -99,6 +99,26 @@ bool variantCanConvert(const Variant& v) {
     return v.type() == typeid(T);
 }
 
+inline bool variantToBool(const Variant& v) {
+    if (!v.has_value()) return false;
+    if (v.type() == typeid(bool)) return std::any_cast<bool>(v);
+    if (v.type() == typeid(int32_t)) return std::any_cast<int32_t>(v) != 0;
+    if (v.type() == typeid(double)) return std::any_cast<double>(v) != 0.0;
+    if (v.type() == typeid(float)) return std::any_cast<float>(v) != 0.0f;
+    return false;
+}
+
+inline int32_t variantToInt(const Variant& v, bool* ok = nullptr) {
+    if (ok) *ok = true;
+    if (!v.has_value()) { if (ok) *ok = false; return 0; }
+    if (v.type() == typeid(int32_t)) return std::any_cast<int32_t>(v);
+    if (v.type() == typeid(bool)) return std::any_cast<bool>(v) ? 1 : 0;
+    if (v.type() == typeid(double)) return static_cast<int32_t>(std::any_cast<double>(v));
+    if (v.type() == typeid(float)) return static_cast<int32_t>(std::any_cast<float>(v));
+    if (ok) *ok = false;
+    return 0;
+}
+
 // =============================================================================
 // Qt Integer Type Aliases - Only define when Qt is NOT present
 // When Qt IS present, use Qt's own type definitions to avoid conflicts

@@ -16,7 +16,7 @@ class AMJsonNumericArgumentAction : public AMJsonArgumentAction
 public:
    explicit AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
-   void process(QObject * sender, QVariant extractedCANsignal);
+   void process(QObject * sender, Variant extractedCANsignal);
 
    bool isItsArgumentsType(int32_t type);
 

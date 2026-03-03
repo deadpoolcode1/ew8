@@ -15,7 +15,7 @@ class AMJsonStringArgumentAction : public AMJsonArgumentAction
 public:
     explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, Variant extractedCANsignal);
 
     bool isItsArgumentsType(int32_t type);
 

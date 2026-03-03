@@ -13,9 +13,9 @@ AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonP
     itsArgumentAccumulator = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonNumericArgumentAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
+void AMJsonNumericArgumentAction::process(QObject * /*sender*/, Variant extractedCANsignal)
 {
-    itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toInt());
+    itsArgumentAccumulator->insertValueFromSignal(itsIndex,variantToInt(extractedCANsignal));
 }
 
 bool AMJsonNumericArgumentAction::isItsArgumentsType(int32_t type)

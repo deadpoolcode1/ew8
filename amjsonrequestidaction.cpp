@@ -11,19 +11,19 @@ AMJsonRequestIdAction::AMJsonRequestIdAction(AMJsonProtocol * aJsonProtocol, con
 }
 
 
-void AMJsonRequestIdAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
+void AMJsonRequestIdAction::process(QObject * /*sender*/, Variant extractedCANsignal)
 {
     bool status;
-       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((intptr_t)extractedCANsignal.toInt(&status));
+       coreDebug() << "RequestId byte: " <<itsIndex << ":" << (void*)((intptr_t)variantToInt(extractedCANsignal, &status));
 
        if(itsIndex == 0)
        {
-           CanRxMsg::receiveRequestIdByteLSB((uint8_t)extractedCANsignal.toInt(&status));
+           CanRxMsg::receiveRequestIdByteLSB((uint8_t)variantToInt(extractedCANsignal, &status));
        }
 
        if(itsIndex == 1)
        {
-           CanRxMsg::receiveRequestIdByteMSB((uint8_t)extractedCANsignal.toInt(&status));
+           CanRxMsg::receiveRequestIdByteMSB((uint8_t)variantToInt(extractedCANsignal, &status));
        }
 }
 

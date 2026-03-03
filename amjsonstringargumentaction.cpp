@@ -12,9 +12,9 @@ AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonPro
     itsArgumentAccumulator = CanStringArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonStringArgumentAction::process(QObject * /*sender*/, QVariant extractedCANsignal)
+void AMJsonStringArgumentAction::process(QObject * /*sender*/, Variant extractedCANsignal)
 {
-    itsArgumentAccumulator->insertValueFromSignal(itsIndex,extractedCANsignal.toChar().toLatin1());
+    itsArgumentAccumulator->insertValueFromSignal(itsIndex,(char)variantToInt(extractedCANsignal));
 }
 
 

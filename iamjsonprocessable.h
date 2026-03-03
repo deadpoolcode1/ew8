@@ -8,8 +8,8 @@ class QObject;
 class IAMJsonProcessable
 {
 public:
-    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
-    virtual bool setSupplimentary(QVariant extractedCANsignal) = 0;
+    virtual void process(QObject * sender, Variant extractedCANsignal) = 0;
+    virtual bool setSupplimentary(Variant extractedCANsignal) = 0;
 };
 
 #endif // IAMJSONPROCESSABLE_H

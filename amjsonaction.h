@@ -19,8 +19,8 @@ public:
 
     String getActionName(void);
 
-    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
-    bool setSupplimentary(QVariant extractedCANsignal);
+    virtual void process(QObject * sender, Variant extractedCANsignal) = 0;
+    bool setSupplimentary(Variant extractedCANsignal);
 
     action_type_e getActionType(void);
 

@@ -41,8 +41,8 @@ public:
 
     bool getIsEnabled(void) {return disablers.empty();}
 
-    void process(QVariant pureExtractedCANsignal);
-    void process(QVariant pureExtractedCANsignal, QVariant extractedSupCANsignal);
+    void process(Variant pureExtractedCANsignal);
+    void process(Variant pureExtractedCANsignal, Variant extractedSupCANsignal);
 
     void deactivateAllGraphicItems(void);
 
@@ -76,7 +76,7 @@ public:
     AMJsonAction * getItsAction(void){return itsValueTable ? nullptr : itsAction;}
 
 
-    bool extractSetUnsetAction(QVariant extractedCANsignal, bool * do_active);
+    bool extractSetUnsetAction(Variant extractedCANsignal, bool * do_active);
 
 public slots:
 
@@ -96,7 +96,7 @@ private:
 
   List<int32_t> * extractSetValuesField( core::JsonObject signal_obj, const String& fieldName, set_ops_t * a_set_op);
 
-  bool getDomainValidity(QVariant extractedSupCANsignal);
+  bool getDomainValidity(Variant extractedSupCANsignal);
 
   IAMJsonProcessable * getActivatedAction(void){return activatedAction;}
 

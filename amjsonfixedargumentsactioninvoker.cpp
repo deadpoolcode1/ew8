@@ -13,7 +13,7 @@ AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraph
 }
 
 
-bool AMJsonFixedArgumentsActionInvoker::setSupplimentary (QVariant extractedCanSignal)
+bool AMJsonFixedArgumentsActionInvoker::setSupplimentary (Variant extractedCanSignal)
 {
     bool ret = itsAction->setSupplimentary(extractedCanSignal);
     return ret;
@@ -28,10 +28,10 @@ AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraph
     itsAction->setCalledWithFixedArgument(isProcessedWithStringArg);
 }
 
-void AMJsonFixedArgumentsActionInvoker::process(QObject *sender, QVariant extractedCANsignal)
+void AMJsonFixedArgumentsActionInvoker::process(QObject *sender, Variant extractedCANsignal)
 {
     //WARNING: arguments are applied on action activation only.
-    if(extractedCANsignal.toBool())
+    if(variantToBool(extractedCANsignal))
     {
         if(isProcessedWithStringArg)
         {

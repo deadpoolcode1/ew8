@@ -7,29 +7,7 @@
 #include "core/file_utils.h"
 #include "core/core.h"
 #include "core/types.h"
-#include <any>
 #include <algorithm>
-
-// Helper function to convert std::any to QVariant
-static QVariant anyToVariant(const std::any& val)
-{
-    if (!val.has_value()) {
-        return QVariant();
-    }
-    if (val.type() == typeid(bool)) {
-        return QVariant(std::any_cast<bool>(val));
-    }
-    if (val.type() == typeid(int32_t)) {
-        return QVariant(std::any_cast<int32_t>(val));
-    }
-    if (val.type() == typeid(double)) {
-        return QVariant(std::any_cast<double>(val));
-    }
-    if (val.type() == typeid(float)) {
-        return QVariant(static_cast<double>(std::any_cast<float>(val)));
-    }
-    return QVariant();
-}
 
 // Note: core::DataStream operators for Signal type are defined in candbsignal.cpp
 
@@ -522,8 +500,8 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
 
         AMJsonSignal * jsonsig = AMJsonSignal::getByIndex(it->AMJsonSignalIdx);
 
-        QVariant arg = 0;
-        QVariant supArg = 0;
+        Variant arg;
+        Variant supArg;
 
         if(!jsonsig)
         {
@@ -533,7 +511,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
         {
             Signal tmp = *it;
 
-            arg = anyToVariant(extractSignal(&tmp, frame));
+            arg = extractSignal(&tmp, frame);
 
             if(jsonsig->type == Validator)
             {
@@ -567,7 +545,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
                     }
                 }
 
-                if(!discardMsg&&!(arg.isNull()))
+                if(!discardMsg && arg.has_value())
                 {
 
 
@@ -578,7 +556,7 @@ void CanRxMsg::canRxJsonSignalsParseAndProcess(struct can_frame * frame)
                     else
                     {
                         Signal supSig =  * (++it);
-                        supArg =  anyToVariant(extractSignal(&supSig, frame));
+                        supArg = extractSignal(&supSig, frame);
                         jsonsig->process(arg, supArg);
 
                     }

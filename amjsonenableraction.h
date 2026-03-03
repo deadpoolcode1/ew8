@@ -18,7 +18,7 @@ public:
     //just after all of them are inserted in the model.
     void connect2EnabledDisabled(void);
 
-    void process(QObject * sender, QVariant extractedCANsignal);
+    void process(QObject * sender, Variant extractedCANsignal);
 
 signals:
 

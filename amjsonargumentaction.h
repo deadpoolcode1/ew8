@@ -21,7 +21,7 @@ public:
 
     virtual bool isItsArgumentsType(int32_t type) = 0;
 
-    virtual void process(QObject * sender, QVariant extractedCANsignal) = 0;
+    virtual void process(QObject * sender, Variant extractedCANsignal) = 0;
 
 protected:
 
