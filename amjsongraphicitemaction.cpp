@@ -133,7 +133,7 @@ void AMJsonGraphicItemAction::activate(bool do_reactivate)
                 }
                 else
                 {
-                     itsDisplay->activate(itsGraphicItemID, argInt, (uint8_t)itsSupplimentary.toInt());
+                     itsDisplay->activate(itsGraphicItemID, argInt, (uint8_t)variantToInt(itsSupplimentary));
                 }
 
             }
