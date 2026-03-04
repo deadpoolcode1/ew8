@@ -17,10 +17,10 @@ class SystemRequestType;
 class AMJsonSystemRequestAction : public AMJsonAction
 {
 public:
-    explicit AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
+    explicit AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action);
 
     //NOTE: default index value (0)
-    void process(QObject * sender, Variant extractedCANsignal);
+    void process(void * sender, Variant extractedCANsignal);
 
 private:
 

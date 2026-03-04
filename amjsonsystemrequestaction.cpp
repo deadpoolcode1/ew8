@@ -6,21 +6,19 @@
 #include "candebugreport.h"
 #include "watchdogdevice.h"
 #include "core/core.h"
-#include <QObject>
-
 class VersionMsg;
 class SystemRequestType;
 class BrightnessControl;
 class CANDebugReport;
 class WatchDogDevice;
 
-AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, SystemRequest, action, parent)
+AMJsonSystemRequestAction::AMJsonSystemRequestAction(AMJsonProtocol * aJsonProtocol, const String& action): AMJsonAction(aJsonProtocol, SystemRequest, action)
 {
    type = SystemRequestType::fromString(action);
 }
 
 
-void AMJsonSystemRequestAction::process(QObject * /*sender*/, Variant extractedCANsignal)
+void AMJsonSystemRequestAction::process(void * /*sender*/, Variant extractedCANsignal)
 {
     switch (type)
     {

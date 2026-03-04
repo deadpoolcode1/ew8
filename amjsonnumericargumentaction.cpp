@@ -8,12 +8,12 @@ class AMJsonProtocol;
 
 class CanIntArgumentsAccumulator;
 
-AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, IntArgument, action, parent)
+AMJsonNumericArgumentAction::AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action): AMJsonArgumentAction(aJsonProtocol, IntArgument, action)
 {
     itsArgumentAccumulator = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonNumericArgumentAction::process(QObject * /*sender*/, Variant extractedCANsignal)
+void AMJsonNumericArgumentAction::process(void * /*sender*/, Variant extractedCANsignal)
 {
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,variantToInt(extractedCANsignal));
 }

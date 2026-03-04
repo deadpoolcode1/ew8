@@ -28,7 +28,7 @@ AMJsonFixedArgumentsActionInvoker::AMJsonFixedArgumentsActionInvoker(AMJsonGraph
     itsAction->setCalledWithFixedArgument(isProcessedWithStringArg);
 }
 
-void AMJsonFixedArgumentsActionInvoker::process(QObject *sender, Variant extractedCANsignal)
+void AMJsonFixedArgumentsActionInvoker::process(void *sender, Variant extractedCANsignal)
 {
     //WARNING: arguments are applied on action activation only.
     if(variantToBool(extractedCANsignal))

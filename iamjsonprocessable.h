@@ -3,12 +3,10 @@
 
 #include "core/types.h"
 
-class QObject;
-
 class IAMJsonProcessable
 {
 public:
-    virtual void process(QObject * sender, Variant extractedCANsignal) = 0;
+    virtual void process(void * sender, Variant extractedCANsignal) = 0;
     virtual bool setSupplimentary(Variant extractedCANsignal) = 0;
 };
 

@@ -4,8 +4,6 @@
 #include "defs.h"
 #include "core/types.h"
 
-#include <QObject>
-
 #include "amjsonprotocol.h"
 #include "core/json.h"
 
@@ -25,15 +23,13 @@ class AMJsonProtocol;
 
 class IAlertDisplay;
 
-class AMJsonSignal: public QObject
+class AMJsonSignal
 {
-    Q_OBJECT
-
 public:
 
     //TODO split to oop-pattern
 
-    AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent = nullptr);
+    AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry);
 
     String getName(void);
 
@@ -78,9 +74,7 @@ public:
 
     bool extractSetUnsetAction(Variant extractedCANsignal, bool * do_active);
 
-public slots:
-
-    void enableDisableThis(bool OnOff);
+    void enableDisableThis(void * sender, bool OnOff);
 
 private:
 
@@ -115,7 +109,7 @@ private:
   List<int32_t> * itsDomainTrueValues;
 
 
-  List<QObject *> disablers;
+  List<void *> disablers;
 
   Signal itsCanDbSignal;
   Signal itsSecondCanDbSignal;

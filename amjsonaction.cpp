@@ -1,7 +1,7 @@
 #include "amjsonaction.h"
 #include "amjsonsignal.h"
 
-AMJsonAction::AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e aType, const String& anAction, QObject *parent) : QObject(parent)
+AMJsonAction::AMJsonAction(AMJsonProtocol * aJsonProtocol, action_type_e aType, const String& anAction)
 {
   action = anAction;
   itsProtocol = aJsonProtocol;

@@ -1,8 +1,6 @@
 #ifndef AMJSONNUMERICARGUMENTACTION_H
 #define AMJSONNUMERICARGUMENTACTION_H
 
-#include <QObject>
-
 #include "amjsonargumentaction.h"
 #include "canintargumentsaccumulator.h"
 #include "core/types.h"
@@ -11,12 +9,10 @@ class AMJsonArgumentAction;
 
 class AMJsonNumericArgumentAction : public AMJsonArgumentAction
 {
-    Q_OBJECT
-
 public:
-   explicit AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
+   explicit AMJsonNumericArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action);
 
-   void process(QObject * sender, Variant extractedCANsignal);
+   void process(void * sender, Variant extractedCANsignal);
 
    bool isItsArgumentsType(int32_t type);
 

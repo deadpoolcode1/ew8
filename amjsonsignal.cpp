@@ -17,8 +17,6 @@
 
 #include "core/json.h"
 
-#include <QObject>
-
 #include <algorithm>
 
 class CanStringArgumentsAccumulator;
@@ -90,7 +88,7 @@ List<int32_t> * AMJsonSignal::extractSetValuesField( core::JsonObject signal_obj
     return trueValues;
 }
 
-AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry, QObject * parent) : QObject(parent)
+AMJsonSignal::AMJsonSignal(AMJsonProtocol * aProtocol, core::JsonValue singleSignalsEntry)
 {
 
     //Signal row parsing:
@@ -500,15 +498,15 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
 
  }
 
- void AMJsonSignal::enableDisableThis(bool onOff)
+ void AMJsonSignal::enableDisableThis(void * sender, bool onOff)
  {
 
      bool is_pre_enabled = disablers.empty();
 
-     auto it = std::find(disablers.begin(), disablers.end(), sender());
+     auto it = std::find(disablers.begin(), disablers.end(), sender);
      if (false == onOff && it == disablers.end())
      {
-         disablers.push_back(sender());
+         disablers.push_back(sender);
      }
      else if (true == onOff && it != disablers.end())
      {
