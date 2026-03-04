@@ -233,11 +233,7 @@ void EWInfo::readServiceNumber(void)
 
             regIntegrity = (byteLSB == (uint8_t)(~ byteMSB));
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,  14, 0)
-            coreDebug()<< "EW8 Sn:"<< i << " Num:" << Qt::hex << (uint32_t)byteLSB << " Control:" << Qt::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
-#else
             coreDebug()<< "EW8 Sn:"<< i << " Num:" << std::hex << (uint32_t)byteLSB << " Control:" << std::hex <<(uint32_t)byteMSB << " Integrity: " << regIntegrity;
-#endif
         }
 
         if(i < 8)

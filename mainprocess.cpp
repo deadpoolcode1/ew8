@@ -178,12 +178,12 @@ int MainProcess::launchEverything()
         });
 
         QObject::connect(appWindow, SIGNAL(keyPressedReportSend(int32_t)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonPressed(int32_t)));
+                          this, SLOT(onKeyPressedReport(int32_t)));
         QObject::connect(appWindow, SIGNAL(keyReleasedReportSend(int32_t)),
-                          CANDebugReport::getInstance(), SLOT(sendButtonReleased(int32_t)));
+                          this, SLOT(onKeyReleasedReport(int32_t)));
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool,bool,bool,bool)),
-                          CANDebugReport::getInstance(), SLOT(sendAlerts(bool,bool,bool,bool)));
+                          this, SLOT(onAlertsReport(bool,bool,bool,bool)));
 #if 0
         if (-1 != appWindow->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("alertsReportSend(bool, bool, bool, bool)")))
         {
@@ -401,5 +401,20 @@ void MainProcess::forwardBrightnessChanged(int32_t newLevel)
     if (theBrightnessControl != nullptr) {
         theBrightnessControl->brightnessLevelChanged(newLevel);
     }
+}
+
+void MainProcess::onKeyPressedReport(int32_t key)
+{
+    CANDebugReport::getInstance()->sendButtonPressed(key);
+}
+
+void MainProcess::onKeyReleasedReport(int32_t key)
+{
+    CANDebugReport::getInstance()->sendButtonReleased(key);
+}
+
+void MainProcess::onAlertsReport(bool a, bool b, bool c, bool d)
+{
+    CANDebugReport::getInstance()->sendAlerts(a, b, c, d);
 }
 
