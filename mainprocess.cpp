@@ -2,10 +2,10 @@
 #include "core/mutex.h"
 #include "core/elapsed_timer.h"
 
-#include <QThread>
-#include <QTimer>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
+#include "core/thread.h"
+#include "core/timer.h"
 #include "core/file_utils.h"
 
 #include "mainprocess.h"
@@ -74,23 +74,17 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     generalPanelTree = new RootedTree(rootQobjectGeneralPannel, & flag_tree_changed, this);
 
 
-    itsThread = new QThread(this);
+    itsThread = new core::Thread();
 
-    updateDisplayTimeWindow = new QTimer();
+    updateDisplayTimeWindow = new core::Timer();
 
     updateDisplayTimeWindow->setInterval(30);
 
     updateDisplayTimeWindow->setSingleShot(true);
 
-    this->moveToThread(itsThread);
+    itsThread->started.connect([this]() { process(); });
 
-    updateDisplayTimeWindow->moveToThread(itsThread);
-
-    connect(itsThread,SIGNAL(started()),this,SLOT(process()));
-
-    connect (this,SIGNAL(startUpdateDisplayWindow()), updateDisplayTimeWindow, SLOT(start()));
-
-    connect(updateDisplayTimeWindow,SIGNAL(timeout()),this,SLOT(process()));
+    updateDisplayTimeWindow->timeout.connect([this]() { process(); });
 
      coreDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
 }
@@ -100,11 +94,11 @@ void MainProcess::process()
 
     if (isDataComplete && flag_tree_changed)
     {
-        if(Q_LIKELY(!updateDisplayTimeWindow->isActive()))
+        if(!updateDisplayTimeWindow->isActive())
         {
             flag_tree_changed = false;
             isDataComplete = false;
-            emit startUpdateDisplayWindow();
+            updateDisplayTimeWindow->start();
             mutex.lock();
             coreDebug()<< "updateStart:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             updateDisplay();
@@ -113,10 +107,6 @@ void MainProcess::process()
 
         }
     }
-#if 0
-    //TODO Set as update time window
-    QTimer::singleShot(30,this,SLOT(process()));
-#endif
 }
 
 void MainProcess::message(const std::string& stringMessage)
@@ -347,36 +337,21 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
 }
 
 
+// Qt key codes for volume keys (received from QML frontend)
+static const int32_t KEY_RETURN     = 0x01000004;
+static const int32_t KEY_VOLUMEMUTE = 0x01000071;
+static const int32_t KEY_VOLUMEDOWN = 0x01000070;
+static const int32_t KEY_VOLUMEUP   = 0x01000072;
+
 void MainProcess::volumeKeySent(int32_t qtKey)
 {
 
   coreDebug() << "volumeKeySent";
-  switch(qtKey)
-  {
-  case Qt::Key_Return:
-
-      canmgr->sendVolumeGet();
-      break;
-
-  case Qt::Key_VolumeMute:
-      canmgr->sendVolumeMute();
-
-      break;
-
-  case Qt::Key_VolumeDown:
-      canmgr->sendVolumeDown();
-      break;
-
-  case Qt::Key_VolumeUp:
-      canmgr->sendVolumeUp();
-      break;
-
-  default:
-
-      coreDebug() << "Unsupported Volume key";
-
-      break;
-  }
+  if      (qtKey == KEY_RETURN)     canmgr->sendVolumeGet();
+  else if (qtKey == KEY_VOLUMEMUTE) canmgr->sendVolumeMute();
+  else if (qtKey == KEY_VOLUMEDOWN) canmgr->sendVolumeDown();
+  else if (qtKey == KEY_VOLUMEUP)   canmgr->sendVolumeUp();
+  else coreDebug() << "Unsupported Volume key";
 }
 
 void MainProcess::isaFullActivationRequestSend()
