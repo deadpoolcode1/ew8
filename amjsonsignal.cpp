@@ -534,14 +534,14 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          {
              if(nullptr != itsAction)
              {
-                 emit ((AMJsonEnablerAction *)itsAction)-> enableDisableConnected(false);
+                 ((AMJsonEnablerAction *)itsAction)->enableDisableConnected.fire(false);
              }
          }
          else
          {
              for (const auto& pair : *itsValueTable)
              {
-                 emit ((AMJsonEnablerAction *)pair.second)-> enableDisableConnected(false);
+                 ((AMJsonEnablerAction *)pair.second)->enableDisableConnected.fire(false);
              }
          }
      }
@@ -556,7 +556,7 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
          {
              if(nullptr != itsAction)
              {
-                 itsAction -> process(this, QVariant(false));
+                 itsAction -> process(this, Variant(false));
              }
          }
          else
@@ -566,14 +566,14 @@ void AMJsonSignal::setItsCanSecDbSignal(Signal *canSignalPtr)
              if(nullptr != activeAction)
              {
                  setActivatedAction(nullptr);
-                 activeAction->process(this, QVariant(false));
+                 activeAction->process(this, Variant(false));
              }
              else
              {
 # if 0
                  for (const auto& pair : *itsValueTable)
                  {
-                     pair.second -> process(this, QVariant(false));
+                     pair.second -> process(this, Variant(false));
                  }
 #endif
              }

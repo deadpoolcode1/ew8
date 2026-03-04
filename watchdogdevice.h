@@ -1,8 +1,7 @@
 #ifndef WATCHDOGDEVICE_H
 #define WATCHDOGDEVICE_H
 
-#include <QObject>
-
+#include <cstdint>
 
 class WatchDogDevice
 {

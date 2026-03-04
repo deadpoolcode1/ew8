@@ -4,8 +4,6 @@
 #include "core/json.h"
 #include "core/logger.h"
 
-#include <QObject>
-
 #include "amjsonprotocol.h"
 #include "amjsonsignal.h"
 
