@@ -7,21 +7,16 @@
 #include "core/json.h"
 #include "core/types.h"
 #include "core/enum_utils.h"
-#include <QObject>
-
 class AMJsonSignal;
 class AmJsonActionsMultiplexor;
 class IAMJsonEnablable;
 
-class AMJsonProtocol : public QObject
+class AMJsonProtocol
 {
-   Q_OBJECT
-
 public:
     // protocol_type_e is defined in core/enum_utils.h
 
-
-    explicit AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent = nullptr);
+    explicit AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType);
 
     void append(AMJsonSignal * signal);
 
@@ -45,9 +40,7 @@ public:
      //NOTE: returns nullptr when lacks name or different type already assigned
      AmJsonActionsMultiplexor * getMultiplexorByName(const String& name);
 
-public slots:
-
-    void enableDisableThis(bool OnOff);
+    void enableDisableThis(void * sender, bool OnOff);
 
 private:
     String name;
@@ -55,7 +48,7 @@ private:
 
     protocol_type_e type;
 
-    List<QObject *> disablers;
+    List<void *> disablers;
 
     MultiMap<String,AMJsonSignal*> jsonSignals;
 

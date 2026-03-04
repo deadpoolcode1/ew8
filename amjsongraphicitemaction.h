@@ -2,7 +2,6 @@
 #define AMJSONGRAPHICITEMACTION_H
 
 #include "core/types.h"
-#include <QObject>
 
 #include "defs.h"
 #include "amjsonaction.h"
@@ -18,15 +17,13 @@ class IAlertDisplay;
 
 class AMJsonGraphicItemAction: public AMJsonAction
 {
-    Q_OBJECT
-
 public:
 
     static AMJsonGraphicItemAction * getInstance(AMJsonProtocol * aJsonProtocol, const String& action);
 
     static AMJsonGraphicItemAction * getInstanceByItemID(DISPLAY_ITEM_ID aGraphicItemID);
 
-    void process(QObject * sender, Variant extractedCANsignal);
+    void process(void * sender, Variant extractedCANsignal);
 
     bool setSupplimentary(Variant extractedCANsignal);
 
@@ -44,7 +41,7 @@ public:
 
 private:
 
-    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent = nullptr);
+    explicit AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action);
 
     void deactivate(void);
 
@@ -70,7 +67,7 @@ private:
 
     static Map<DISPLAY_ITEM_ID, AMJsonGraphicItemAction *> itsObjects;
 
-    List<QObject *> activators;
+    List<void *> activators;
 };
 
 #endif // AMJSONGRAPHICITEMACTION_H

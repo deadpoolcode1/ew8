@@ -9,20 +9,16 @@
 #include "amjsonsignal.h"
 #include "iamjsonactionfactory.h"
 #include "iamjsonprocessable.h"
-#include <QObject>
 
 class AMJsonAction;
 class AMJsonSignal;
 class IAMJsonActionFactory;
 
-class AmJsonActionsMultiplexor: public QObject
+class AmJsonActionsMultiplexor
 {
-    Q_OBJECT
-
-
 public:
 
-    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, const String& type, QObject * parent = nullptr);
+    AmJsonActionsMultiplexor(AMJsonProtocol * aProtocol, core::JsonArray vt_rows, const String& type);
 
     std::unordered_map<double, IAMJsonProcessable *> * getItsValueTable();
 

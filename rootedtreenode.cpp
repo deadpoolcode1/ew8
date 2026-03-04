@@ -161,8 +161,9 @@ void RootedTreeNode::convertfromQObject(QObject * qobject)
 
                 if(action != nullptr)
                 {
+                    this->qmlSignalizer->setAction(action);
                     QObject::connect(this->qmlItem, SIGNAL(itemActionDeactivate(void)),
-                                     action, SLOT(forceDeactivation(void)));
+                                     this->qmlSignalizer, SLOT(forceItemActionDeactivation(void)));
                     coreDebug() << "itemActionDeactivate() of object" << this->qmlItem->property("objectName").toString() << "connected";
                 }
             }

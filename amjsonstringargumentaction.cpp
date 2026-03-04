@@ -7,12 +7,12 @@
 class AMJsonProtocol;
 
 
-AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonArgumentAction(aJsonProtocol, StringArgument, action, parent)
+AMJsonStringArgumentAction::AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action): AMJsonArgumentAction(aJsonProtocol, StringArgument, action)
 {
     itsArgumentAccumulator = CanStringArgumentsAccumulator::getInstance(itsGraphicItemID);
 }
 
-void AMJsonStringArgumentAction::process(QObject * /*sender*/, Variant extractedCANsignal)
+void AMJsonStringArgumentAction::process(void * /*sender*/, Variant extractedCANsignal)
 {
     itsArgumentAccumulator->insertValueFromSignal(itsIndex,(char)variantToInt(extractedCANsignal));
 }

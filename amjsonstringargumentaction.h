@@ -10,12 +10,10 @@ class CanStringArgumentsAccumulator;
 
 class AMJsonStringArgumentAction : public AMJsonArgumentAction
 {
-    Q_OBJECT
-
 public:
-    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent = nullptr);
+    explicit AMJsonStringArgumentAction(AMJsonProtocol * aJsonProtocol, const String& action);
 
-    void process(QObject * sender, Variant extractedCANsignal);
+    void process(void * sender, Variant extractedCANsignal);
 
     bool isItsArgumentsType(int32_t type);
 

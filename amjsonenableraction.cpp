@@ -5,7 +5,7 @@
 class AMJsonProtocol;
 class AMJsonSignal;
 
-AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, Enabler, action, parent)
+AMJsonEnablerAction::AMJsonEnablerAction(AMJsonProtocol * aJsonProtocol, const String& action): AMJsonAction(aJsonProtocol, Enabler, action)
 {
 /*empty*/
 }
@@ -17,7 +17,7 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
         AMJsonProtocol * prot = getItsJsonProtocol()->itsModel->getProtocol(getActionName());
 
         if(prot&&(prot != getItsJsonProtocol())){
-            connect(this,SIGNAL(enableDisableConnected(bool)),prot,SLOT(enableDisableThis(bool)));
+            enableDisableConnected.connect([prot, this](bool onOff){ prot->enableDisableThis(this, onOff); });
         }
 
         List<AMJsonSignal *> jsonSigList = getItsJsonProtocol()->getSignalEntries(getActionName());
@@ -26,15 +26,15 @@ void AMJsonEnablerAction::connect2EnabledDisabled(void)
         {
             if(Enabler != jsig->type)
             {
-                connect(this,SIGNAL(enableDisableConnected(bool)),jsig,SLOT(enableDisableThis(bool)));
+                enableDisableConnected.connect([jsig, this](bool onOff){ jsig->enableDisableThis(this, onOff); });
             }
         }
 
-        emit enableDisableConnected(false);
+        enableDisableConnected.fire(false);
 
 }
 
-void AMJsonEnablerAction::process(QObject * /*sender*/, Variant extractedCANsignal)
+void AMJsonEnablerAction::process(void * /*sender*/, Variant extractedCANsignal)
 {
-       emit enableDisableConnected(variantToBool(extractedCANsignal));
+       enableDisableConnected.fire(variantToBool(extractedCANsignal));
 }

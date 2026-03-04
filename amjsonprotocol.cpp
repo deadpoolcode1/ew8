@@ -1,4 +1,3 @@
-#include <QObject>
 #include <algorithm>
 
 #include "amjsonprotocol.h"
@@ -9,7 +8,7 @@
 
 #include "graphicitemsenummap.h"
 
-AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType, QObject * parent) : QObject(parent)
+AMJsonProtocol::AMJsonProtocol(AMSignalsModel * aModel, core::JsonValue protocolNameAndType)
 {
     core::JsonValue protocolNameValue;
     core::JsonValue protocolTypeValue;
@@ -152,18 +151,18 @@ AmJsonActionsMultiplexor * AMJsonProtocol::getMultiplexorByName(const String& na
 
 
 
-void AMJsonProtocol::enableDisableThis(bool onOff)
+void AMJsonProtocol::enableDisableThis(void * sender, bool onOff)
 {
 
     bool is_pre_enabled = disablers.empty();
 
-    if (false == onOff && std::find(disablers.begin(), disablers.end(), sender()) == disablers.end())
+    if (false == onOff && std::find(disablers.begin(), disablers.end(), sender) == disablers.end())
     {
-        disablers.push_back(sender());
+        disablers.push_back(sender);
     }
-    else if (true == onOff && std::find(disablers.begin(), disablers.end(), sender()) != disablers.end())
+    else if (true == onOff && std::find(disablers.begin(), disablers.end(), sender) != disablers.end())
     {
-        disablers.erase(std::remove(disablers.begin(), disablers.end(), sender()), disablers.end());
+        disablers.erase(std::remove(disablers.begin(), disablers.end(), sender), disablers.end());
     }
 
     bool is_post_enabled = disablers.empty();

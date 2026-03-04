@@ -62,7 +62,7 @@ bool AMJsonGraphicItemAction::setSupplimentary(Variant extractedCANsignal)
     return ret;
 }
 
-AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action, AMJsonAction * parent): AMJsonAction(aJsonProtocol, GraphicItem, action, parent)
+AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol, DISPLAY_ITEM_ID aGraphicItemID, const String& action): AMJsonAction(aJsonProtocol, GraphicItem, action)
 {
    itsGraphicItemID = aGraphicItemID;
    itsDisplay = aJsonProtocol->itsModel->getItsCanManager()->getItsDisplay();
@@ -71,7 +71,7 @@ AMJsonGraphicItemAction::AMJsonGraphicItemAction(AMJsonProtocol * aJsonProtocol,
    isSupplemented =  false;
 }
 
-void AMJsonGraphicItemAction::process(QObject * sender, Variant extractedCANsignal)
+void AMJsonGraphicItemAction::process(void * sender, Variant extractedCANsignal)
 {
     auto it = std::find(activators.begin(), activators.end(), sender);
     bool isSenderListed = (it != activators.end());
