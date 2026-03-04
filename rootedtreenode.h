@@ -5,6 +5,7 @@
 //#include <QList>
 #include "defs.h"
 #include "core/types.h"
+#include "idisplaynode.h"
 #include "rootedtree.h"
 #include "displaysignalizer.h"
 
@@ -15,7 +16,7 @@ class LayersPriorityQ;  // forward declaration
 class EntityType;
 class RootedTree;
 
-class RootedTreeNode
+class RootedTreeNode : public IDisplayNode
 {
 public:
     RootedTreeNode();
@@ -30,18 +31,18 @@ public:
 //    bool operator<(const RootedTreeNode& lhs, const RootedTreeNode& rhs);
     int getLayer() {return layer;}
     QObject* getQmlItem() {return qmlItem;}
-    int getActivSem() {return activationSemaphore;}
+    int getActivSem() override {return activationSemaphore;}
     LayersPriorityQ* getChildren() {return children;}
 
     bool getMutexGroup() {return mutexGroup;}
 
-    void activate();
-    void deactivate();
+    void activate() override;
+    void deactivate() override;
     void deactivateItemInMutexGroup();
     void handleMutexGroup();
 
-    void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
-    void setCanEntityArg(const String& stringArg);
+    void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit) override;
+    void setCanEntityArg(const String& stringArg) override;
 
 
     DISPLAY_ERRORS_t updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis);

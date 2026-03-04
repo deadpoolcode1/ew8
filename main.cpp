@@ -39,7 +39,6 @@
 #endif
 #endif
 
-class AlertTypes;
 class QQuickQRCode;
 class EWInfo;
 class AMJsonConfigReader;
@@ -148,7 +147,7 @@ int main(int argc, char *argv[])
 
 
     //Usage of QML enum in C++:
-    AlertTypes::declareQML();
+    AlertTypesQml::declareQML();
     QQuickQRCode::declareQML();
     EWInfo::declareQML();
 

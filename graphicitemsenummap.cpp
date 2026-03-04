@@ -4,7 +4,7 @@
 
 #include "defs.h"
 
-#include "alerttypes.h"
+#include "alerttypes_core.h"
 
 #include "entitytype.h"
 

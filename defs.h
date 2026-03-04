@@ -1,10 +1,10 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-// Include Qt headers first (when building with Qt) to ensure Qt types are defined
-#include <alerttypes.h>
+// Qt-free alert enums and DISPLAY_ITEM_ID
+#include "alerttypes_core.h"
 
-// Then include core types (which will skip Qt-like types if Qt is present)
+// Core types (Qt-free)
 #include "core/types.h"
 #include "core/elapsed_timer.h"
 
@@ -19,13 +19,6 @@ extern core::ElapsedTimer bootUpTimer;
 #define DEFAULT_EW_KEEP_ALIVE_TIMEOUT (200)
 
 #define DYNAMIC_DISPLAY_ITEM_ID
-
-#if 0
-#    define DISPLAY_ITEM_ID AlertTypes::EnAlert
-#else
-//Enables usage of JSON enums unlisted in C++
-    typedef int32_t DISPLAY_ITEM_ID;
-#endif
 
 #ifdef WIN32
 struct can_frame{

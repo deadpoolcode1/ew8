@@ -2,8 +2,8 @@
 #define ENTITYTYPE_H
 
 #include "defs.h"
-#include "rootedtreenode.h"
-#include "alerttypes.h"
+#include "idisplaynode.h"
+#include "alerttypes_core.h"
 
 
 
@@ -13,7 +13,7 @@ class EntityType
 
 public:
 
-    typedef std::multimap<DISPLAY_ITEM_ID, RootedTreeNode*> t_TreeNodesTypeMap;
+    typedef std::multimap<DISPLAY_ITEM_ID, IDisplayNode*> t_TreeNodesTypeMap;
 
     typedef std::pair<t_TreeNodesTypeMap::iterator,t_TreeNodesTypeMap::iterator> t_TreeNodesInterval;
 
@@ -52,8 +52,8 @@ public:
     }
 
 
-//    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node);
-    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node)
+//    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, IDisplayNode* node);
+    static DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, IDisplayNode* node)
     {
 #ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
         if (_typesMap.find(type) == _typesMap.end())
@@ -63,7 +63,7 @@ public:
 
         EntityType::t_TreeNodesTypeMap::iterator it = _typesMap.find(type);
 
-        RootedTreeNode * nodeInMap = it->second;
+        IDisplayNode * nodeInMap = it->second;
 
         if (nodeInMap == nullptr)
         {
@@ -77,14 +77,14 @@ public:
         return OK;
     }
 
-    //    RootedTreeNode* getNode();
+    //    IDisplayNode* getNode();
 
 private:
 
     static t_TreeNodesTypeMap _typesMap;
 
 
-//    RootedTreeNode* _node;
+//    IDisplayNode* _node;
 //    DISPLAY_ITEM_ID _type;
 };
 

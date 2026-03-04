@@ -1,5 +1,6 @@
 #include "ewinfo.h"
 #include "defs.h"
+#include <QQmlEngine>
 #include "core/core.h"
 #include "core/file_utils.h"
 #include "amjsonconfigreader.h"

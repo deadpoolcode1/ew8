@@ -242,7 +242,7 @@ void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const S
 
 #endif
 
-    RootedTreeNode* nodeCGRT = nullptr;
+    IDisplayNode* nodeCGRT = nullptr;
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
 
@@ -301,7 +301,7 @@ void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
     coreDebug() << "function:" << __func__ << "alert:" << alert;
     coreDebug() << "deactivated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
-    RootedTreeNode* nodeCGRT = nullptr;
+    IDisplayNode* nodeCGRT = nullptr;
 
     EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
 
