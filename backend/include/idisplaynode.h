@@ -22,8 +22,6 @@ public:
     virtual void onBecomeVisible() = 0;
     virtual void onBecomeInvisible() = 0;
     virtual LayersPriorityQ* getChildren() = 0;
-    virtual bool isMutexGroup() const = 0;
-    virtual bool isModeGroup() const = 0;
 };
 
 #endif // IDISPLAYNODE_H

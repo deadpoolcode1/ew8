@@ -35,8 +35,8 @@ public:
     LayersPriorityQ* getChildren() override {return children;}
 
     bool getMutexGroup() {return mutexGroup;}
-    bool isMutexGroup() const override {return mutexGroup;}
-    bool isModeGroup() const override {return modeGroup;}
+    bool isMutexGroup() const {return mutexGroup;}
+    bool isModeGroup() const {return modeGroup;}
 
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
