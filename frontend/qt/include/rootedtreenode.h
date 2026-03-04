@@ -29,12 +29,17 @@ public:
     void addChildrenFromObject(QObject * qobject);
 
 //    bool operator<(const RootedTreeNode& lhs, const RootedTreeNode& rhs);
-    int getLayer() {return layer;}
+    int getLayer() const override {return layer;}
     QObject* getQmlItem() {return qmlItem;}
     int getActivSem() override {return activationSemaphore;}
-    LayersPriorityQ* getChildren() {return children;}
+    LayersPriorityQ* getChildren() override {return children;}
 
     bool getMutexGroup() {return mutexGroup;}
+    bool isMutexGroup() const override {return mutexGroup;}
+    bool isModeGroup() const override {return modeGroup;}
+
+    void onBecomeVisible() override;
+    void onBecomeInvisible() override;
 
     void activate() override;
     void deactivate() override;

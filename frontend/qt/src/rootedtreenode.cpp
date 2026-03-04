@@ -5,6 +5,7 @@
 #include "entitytype.h"
 #include "layerspriorityq.h"
 #include "amsignalsmodel.h"
+#include "display_tree.h"
 
 #include "graphicitemsenummap.h"
 #include "amjsongraphicitemaction.h"
@@ -38,7 +39,7 @@ void RootedTreeNode::appendChild(RootedTreeNode * rtn)
 
     for (it = queue->begin(); it < queue->end(); it++ )
     {
-        if ((*it)->getLayer() >= rtn->getLayer()  )
+        if ((*it)->getLayer() >= rtn->getLayer())
         {
             queue->insert(it, rtn);
             appended = true;
@@ -245,7 +246,7 @@ void RootedTreeNode::handleMutexGroup()
         LayersPriorityQ_t::iterator it;
         for (it = childrenQueue->begin(); it < childrenQueue->end(); it++ )
         {
-            (*it)->deactivateItemInMutexGroup();
+            static_cast<RootedTreeNode*>(*it)->deactivateItemInMutexGroup();
         }
     }
 }
@@ -313,71 +314,17 @@ void RootedTreeNode::deactivate()
 // recursive visibility update
 DISPLAY_ERRORS_t RootedTreeNode::updateVisibility(FORCE_INVISIBILITY_t layerForcedInvis)
 {
-    LayersPriorityQ_t* queue = children->getQueue();
-    LayersPriorityQ_t::iterator it;
-    DISPLAY_ERRORS_t res;
+    return updateTreeVisibility(this, layerForcedInvis);
+}
 
-    if (layerForcedInvis)
-    {
-        //this->qmlItem->property("visible") = false;
-        res = updateVisibilityByInvoke(false); //make invisible
-        if (res!= OK)
-        {
-            return res;
-        }
+void RootedTreeNode::onBecomeVisible()
+{
+    updateVisibilityByInvoke(true);
+}
 
-        for (it = queue->begin(); it < queue->end(); it++ )
-        {
-            (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
-        }
-        return OK;
-    }
-    else
-    {
-        if (activationSemaphore)
-        {
-            //this->qmlItem->property("visible") = true;
-            res = updateVisibilityByInvoke(true); //make visible
-            if (res!= OK)
-            {
-                return res;
-            }
-
-            // manage visualization priorities in children
-            int activatedLayer = -1; // priority in group
-            int curLayer = 0; // priority in group
-            for (it = queue->begin(); it < queue->end(); it++ )
-            {
-                curLayer = (*it)->getLayer();
-                int curActivSem = (*it)->getActivSem();
-                if (activatedLayer == -1 && curActivSem)
-                {
-                    activatedLayer = curLayer;
-                }
-                if (curLayer <= activatedLayer && curActivSem)  // manage visualization of children by layer priorities
-                {
-                    (*it)->updateVisibility(DO_NOT_FORCE_INVISIBILITY);  // explore sub-tree.
-                }
-                else
-                {
-                    (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
-                }
-            }
-        }
-        else
-        {
-            res = updateVisibilityByInvoke(false); //make invisible
-            if (res!= OK)
-            {
-                return res;
-            }
-            for (it = queue->begin(); it < queue->end(); it++ )
-            {
-                (*it)->updateVisibility(FORCE_INVISIBILITY);  // propagate invisibility to entire sub-tree.
-            }
-        }
-        return OK;
-    }
+void RootedTreeNode::onBecomeInvisible()
+{
+    updateVisibilityByInvoke(false);
 }
 
 

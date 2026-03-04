@@ -8,17 +8,14 @@
 #include "mainprocess.h"
 #include "alerttypes.h"
 
-#include "amjsonsignal.h"
-
 #include "defs.h"
 
 #include "core/file_utils.h"
-#include "core/cmdline_parser.h"
 #include <QScreen>
 #include "brightnesscontrol.h"
-#include "amjsonconfigreader.h"
 
 #include "ewinfo.h"
+#include "app_init.h"
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -41,7 +38,6 @@
 
 class QQuickQRCode;
 class EWInfo;
-class AMJsonConfigReader;
 
 core::ElapsedTimer bootUpTimer;
 
@@ -87,6 +83,8 @@ int main(int argc, char *argv[])
     system("killall -USR1 ew8_splash");
 #endif
 
+    AppConfig config = parseAppConfig(argc, argv);
+    initializeBackend(config);
 
     QGuiApplication app(argc,argv);
 
@@ -96,56 +94,6 @@ int main(int argc, char *argv[])
     BrightnessControl brightnessControl;
 #endif
 
-    core::CommandLineParser cmdLnParser;
-    String mainQmlFileName;
-
-    core::CommandLineOption forceParsing("f", "force-parsing", "Parsing config files, even cache is available");
-    core::CommandLineOption testingConfig("t", "testing-mode", "Run the application with with testing mode configs");
-
-    cmdLnParser.addOption(forceParsing);
-    cmdLnParser.addOption(testingConfig);
-
-    cmdLnParser.process(argc, argv);
-
-    bool is_testing_mode = cmdLnParser.isSet(testingConfig);
-    bool is_forced = is_testing_mode || cmdLnParser.isSet(forceParsing);
-
-
-
-    if (is_testing_mode)
-    {
-       mainQmlFileName = "tests.qml";
-    }
-    else
-    {
-        mainQmlFileName = "main.qml";
-    }
-
-
-
-    if (is_testing_mode)
-    {
-        AMJsonConfigReader::getInstance()->readJsonDocument("signals/ME_Test_Signals.json");
-    }
-    else
-    {
-        AMJsonConfigReader::getInstance()->readJsonDocument("signals/EW8_Signals.json");
-    }
-
-
-
-
-
-
-
-
-
-    if (is_forced)
-    {
-        CanRxMsg::forceDBCParsing();
-    }
-
-
     //Usage of QML enum in C++:
     AlertTypesQml::declareQML();
     QQuickQRCode::declareQML();
@@ -154,7 +102,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     // Build path as std::string instead of QUrl
-    std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + mainQmlFileName;
+    std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + config.mainQmlFileName;
 
     // Only construct QUrl inline where required by Qt QML APIs
     QQmlComponent component(&engine, QUrl::fromLocalFile(String(mainQmlPath).toQString()));
@@ -173,10 +121,8 @@ if (component.status() != QQmlComponent::Ready) {
 #ifndef REMOVE_EW8_HW
     mp->setBrightnessControl(& brightnessControl);
 #endif
-    if (!is_testing_mode)
-    {
-        CanRxMsg::saveToStorage();
-    }
+
+    postLaunchBackend(config);
 
     coreDebug() << "Initialization complete, time:" << bootUpTimer.elapsed();
 
@@ -190,7 +136,7 @@ if (component.status() != QQmlComponent::Ready) {
 #ifdef LOG_INIT_COMPLETE_TO_DMESG
 
 
-    if ( ! is_testing_mode)
+    if ( ! config.testingMode)
     {
         if (kernMsgDev.open(core::File::WriteOnly | core::File::Text))
         {
@@ -203,7 +149,7 @@ if (component.status() != QQmlComponent::Ready) {
 
 #ifndef WIN32
 
-    if ( ! is_testing_mode)
+    if ( ! config.testingMode)
     {
         system("killall -USR2 ew8_splash");
     }

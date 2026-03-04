@@ -5,12 +5,12 @@
 #include "rootedtreenode.h"
 
 class RootedTreeNode;
-class IAlertDisplay;
+class AlertController;
 
 class RootedTree
 {
 public:
-    RootedTree(QObject * qobject, bool * a_flag_is_changed, IAlertDisplay * itsDisplay);
+    RootedTree(QObject * qobject, AlertController * aAlertController);
 
     //WARNING: Following method used inside a tree node,
     //when it changed by direct signal from QML
@@ -20,8 +20,7 @@ public:
 
 private:
     RootedTreeNode * root;
-    bool * is_changed;
-    IAlertDisplay * itsDisplay;
+    AlertController * itsAlertController;
 
 
 };
