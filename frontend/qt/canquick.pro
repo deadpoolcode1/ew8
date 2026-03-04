@@ -10,19 +10,19 @@ DEFINES += MINOR_VERSION=$${MINOR_VERSION}
 DEFINES += OTA_TEST_VERSION=$${OTA_TEST_VERSION}
 
 qmlscripts.files = qml/*.qml qml/*.js
-qmlimages.files = qml/images/*
-signalcfgs.files = signals/*.json
-configs.files = configs/*.json
-dbcfiles.files = DBC/*.dbc
+qmlimages.files = ../../assets/images/*
+signalcfgs.files = ../../signals/*.json
+configs.files = ../../configs/*.json
+dbcfiles.files = ../../DBC/*.dbc
 rccfiles.files = qml/*.rcc
-fontfiles.files = qml/fonts/*
+fontfiles.files = ../../assets/fonts/*
 
 win32: batches.files = *.bat
 
-GRAMMARFILE = backend/candbgrammar.peg
+GRAMMARFILE = ../../backend/candbgrammar.peg
 
 CANDBGRAMMAR = $$cat($${GRAMMARFILE},blob)
-QMAKE_SUBSTITUTES += backend/candbgrammar.h.in
+QMAKE_SUBSTITUTES += ../../backend/candbgrammar.h.in
 
 QT += quick
 # QT += sensors
@@ -30,9 +30,9 @@ QT += quick
 CONFIG += c++17
 
 # Include paths for reorganized directory layout
-INCLUDEPATH += backend/include
-INCLUDEPATH += frontend/qt/include
-INCLUDEPATH += $${OUT_PWD}/backend
+INCLUDEPATH += ../../backend/include
+INCLUDEPATH += include
+INCLUDEPATH += $${OUT_PWD}/../../backend
 
 # Workaround for Qt 6.9.x qfloat16 bug on 64-bit Linux
 # Qt declares comparison operators for both 'long' and 64-bit integer types, but on LP64
@@ -55,51 +55,51 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    backend/src/bufferedsmoother.cpp \
-    backend/src/keepalivemsg.cpp \
-    backend/src/versionmsg.cpp \
-    frontend/qt/src/main.cpp \
-    backend/src/canmanager.cpp \
-    frontend/qt/src/mainprocess.cpp \
-    frontend/qt/src/rootedtreenode.cpp \
-    frontend/qt/src/rootedtree.cpp \
-    backend/src/layerspriorityq.cpp \
-    backend/src/entitytype.cpp \
-    backend/src/canrxmsg.cpp \
-    backend/src/canrxmsgfactory.cpp \
-    frontend/qt/src/displaysignalizer.cpp \
-    frontend/qt/src/qquickqrcode.cpp \
-    backend/src/amsignalsmodel.cpp \
-    backend/src/amjsonprotocol.cpp \
-    backend/src/amjsonsignal.cpp \
-    backend/src/canstringargumentsaccumulator.cpp \
-    backend/src/canintargumentsaccumulator.cpp \
-    backend/src/canargumentsaccumulator.cpp \
-    backend/src/amjsonconfigreader.cpp \
-    backend/src/graphicitemsenummap.cpp \
-    backend/src/amjsonaction.cpp \
-    backend/src/amjsongraphicitemaction.cpp \
-    backend/src/amjsonenableraction.cpp \
-    backend/src/amjsonargumentaction.cpp \
-    backend/src/amjsonstringargumentaction.cpp \
-    backend/src/amjsonnumericargumentaction.cpp \
-    backend/src/amjsonactionfactory.cpp \
-    backend/src/amjsonactionsmultiplexor.cpp \
-    backend/src/candbsignal.cpp \
-    backend/src/amjsonfixedargumentsactioninvoker.cpp \
-    backend/src/medisconnectionreport.cpp \
-    backend/src/amjsonrequestidaction.cpp \
-    backend/src/watchdogdevice.cpp \
-    backend/src/amjsonsystemrequestaction.cpp \
-    backend/src/timedsmoother.cpp \
-    backend/src/brightnesscontrol.cpp \
-    backend/src/candebugreport.cpp \
-    frontend/qt/src/ewinfo.cpp \
-    backend/src/snv_calculator.cpp \
-    backend/src/version_info.cpp \
-    backend/src/alertcontroller.cpp \
-    backend/src/app_init.cpp \
-    backend/src/display_tree.cpp
+    ../../backend/src/bufferedsmoother.cpp \
+    ../../backend/src/keepalivemsg.cpp \
+    ../../backend/src/versionmsg.cpp \
+    src/main.cpp \
+    ../../backend/src/canmanager.cpp \
+    src/mainprocess.cpp \
+    src/rootedtreenode.cpp \
+    src/rootedtree.cpp \
+    ../../backend/src/layerspriorityq.cpp \
+    ../../backend/src/entitytype.cpp \
+    ../../backend/src/canrxmsg.cpp \
+    ../../backend/src/canrxmsgfactory.cpp \
+    src/displaysignalizer.cpp \
+    src/qquickqrcode.cpp \
+    ../../backend/src/amsignalsmodel.cpp \
+    ../../backend/src/amjsonprotocol.cpp \
+    ../../backend/src/amjsonsignal.cpp \
+    ../../backend/src/canstringargumentsaccumulator.cpp \
+    ../../backend/src/canintargumentsaccumulator.cpp \
+    ../../backend/src/canargumentsaccumulator.cpp \
+    ../../backend/src/amjsonconfigreader.cpp \
+    ../../backend/src/graphicitemsenummap.cpp \
+    ../../backend/src/amjsonaction.cpp \
+    ../../backend/src/amjsongraphicitemaction.cpp \
+    ../../backend/src/amjsonenableraction.cpp \
+    ../../backend/src/amjsonargumentaction.cpp \
+    ../../backend/src/amjsonstringargumentaction.cpp \
+    ../../backend/src/amjsonnumericargumentaction.cpp \
+    ../../backend/src/amjsonactionfactory.cpp \
+    ../../backend/src/amjsonactionsmultiplexor.cpp \
+    ../../backend/src/candbsignal.cpp \
+    ../../backend/src/amjsonfixedargumentsactioninvoker.cpp \
+    ../../backend/src/medisconnectionreport.cpp \
+    ../../backend/src/amjsonrequestidaction.cpp \
+    ../../backend/src/watchdogdevice.cpp \
+    ../../backend/src/amjsonsystemrequestaction.cpp \
+    ../../backend/src/timedsmoother.cpp \
+    ../../backend/src/brightnesscontrol.cpp \
+    ../../backend/src/candebugreport.cpp \
+    src/ewinfo.cpp \
+    ../../backend/src/snv_calculator.cpp \
+    ../../backend/src/version_info.cpp \
+    ../../backend/src/alertcontroller.cpp \
+    ../../backend/src/app_init.cpp \
+    ../../backend/src/display_tree.cpp
 
 RESOURCES += qml.qrc
 
@@ -157,65 +157,65 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES =
 
 HEADERS += \
-    frontend/qt/include/qt_workarounds.h \
-    backend/include/alerttypes_core.h \
-    backend/include/idisplaynode.h \
-    backend/include/bufferedsmoother.h \
-    backend/include/keepalivemsg.h \
-    backend/include/versionmsg.h \
-    backend/include/peglib.h \
-    backend/include/canmanager.h \
-    backend/include/ialertdisplay.h \
-    backend/include/icanrxmsgfactory.h \
-    frontend/qt/include/mainprocess.h \
-    frontend/qt/include/rootedtreenode.h \
-    frontend/qt/include/rootedtree.h \
-    backend/include/defs.h \
-    backend/include/layerspriorityq.h \
-    backend/include/entitytype.h \
-    frontend/qt/include/alerttypes.h \
-    backend/include/canrxmsg.h \
-    backend/include/canrxmsgfactory.h \
-    frontend/qt/include/displaysignalizer.h \
-    backend/include/candbsignal.h \
-    frontend/qt/include/qquickqrcode.h \
-    backend/include/amsignalsmodel.h \
-    backend/include/amjsonprotocol.h \
-    backend/include/amjsonsignal.h \
-    backend/include/canstringargumentsaccumulator.h \
-    backend/include/canintargumentsaccumulator.h \
-    backend/include/canargumentsaccumulator.h \
-    backend/include/amjsonconfigreader.h \
-    backend/include/graphicitemsenummap.h \
-    backend/include/amjsonaction.h \
-    backend/include/amjsongraphicitemaction.h \
-    backend/include/amjsonenableraction.h \
-    backend/include/amjsonargumentaction.h \
-    backend/include/amjsonstringargumentaction.h \
-    backend/include/amjsonnumericargumentaction.h \
-    backend/include/iamjsonactionfactory.h \
-    backend/include/amjsonactionfactory.h \
-    backend/include/amjsonactionsmultiplexor.h \
-    backend/include/actiontype.h \
-    backend/candbgrammar.h.in \
-    backend/candbgrammar.peg \
-    backend/include/amjsonfixedargumentsactioninvoker.h \
-    backend/include/iamjsonprocessable.h \
-    backend/include/medisconnectionreport.h \
-    backend/include/amjsonrequestidaction.h \
-    backend/include/watchdogdevice.h \
-    backend/include/amjsonsystemrequestaction.h \
-    backend/include/ismoother.h \
-    backend/include/timedsmoother.h \
-    backend/include/brightnesscontrol.h \
-    backend/include/sysreqtype.h \
-    backend/include/candebugreport.h \
-    frontend/qt/include/ewinfo.h \
-    backend/include/snv_calculator.h \
-    backend/include/version_info.h \
-    backend/include/alertcontroller.h \
-    backend/include/app_init.h \
-    backend/include/display_tree.h
+    include/qt_workarounds.h \
+    ../../backend/include/alerttypes_core.h \
+    ../../backend/include/idisplaynode.h \
+    ../../backend/include/bufferedsmoother.h \
+    ../../backend/include/keepalivemsg.h \
+    ../../backend/include/versionmsg.h \
+    ../../backend/include/peglib.h \
+    ../../backend/include/canmanager.h \
+    ../../backend/include/ialertdisplay.h \
+    ../../backend/include/icanrxmsgfactory.h \
+    include/mainprocess.h \
+    include/rootedtreenode.h \
+    include/rootedtree.h \
+    ../../backend/include/defs.h \
+    ../../backend/include/layerspriorityq.h \
+    ../../backend/include/entitytype.h \
+    include/alerttypes.h \
+    ../../backend/include/canrxmsg.h \
+    ../../backend/include/canrxmsgfactory.h \
+    include/displaysignalizer.h \
+    ../../backend/include/candbsignal.h \
+    include/qquickqrcode.h \
+    ../../backend/include/amsignalsmodel.h \
+    ../../backend/include/amjsonprotocol.h \
+    ../../backend/include/amjsonsignal.h \
+    ../../backend/include/canstringargumentsaccumulator.h \
+    ../../backend/include/canintargumentsaccumulator.h \
+    ../../backend/include/canargumentsaccumulator.h \
+    ../../backend/include/amjsonconfigreader.h \
+    ../../backend/include/graphicitemsenummap.h \
+    ../../backend/include/amjsonaction.h \
+    ../../backend/include/amjsongraphicitemaction.h \
+    ../../backend/include/amjsonenableraction.h \
+    ../../backend/include/amjsonargumentaction.h \
+    ../../backend/include/amjsonstringargumentaction.h \
+    ../../backend/include/amjsonnumericargumentaction.h \
+    ../../backend/include/iamjsonactionfactory.h \
+    ../../backend/include/amjsonactionfactory.h \
+    ../../backend/include/amjsonactionsmultiplexor.h \
+    ../../backend/include/actiontype.h \
+    ../../backend/candbgrammar.h.in \
+    ../../backend/candbgrammar.peg \
+    ../../backend/include/amjsonfixedargumentsactioninvoker.h \
+    ../../backend/include/iamjsonprocessable.h \
+    ../../backend/include/medisconnectionreport.h \
+    ../../backend/include/amjsonrequestidaction.h \
+    ../../backend/include/watchdogdevice.h \
+    ../../backend/include/amjsonsystemrequestaction.h \
+    ../../backend/include/ismoother.h \
+    ../../backend/include/timedsmoother.h \
+    ../../backend/include/brightnesscontrol.h \
+    ../../backend/include/sysreqtype.h \
+    ../../backend/include/candebugreport.h \
+    include/ewinfo.h \
+    ../../backend/include/snv_calculator.h \
+    ../../backend/include/version_info.h \
+    ../../backend/include/alertcontroller.h \
+    ../../backend/include/app_init.h \
+    ../../backend/include/display_tree.h
 
 # =============================================================================
 # PLATFORM-SPECIFIC CONFIGURATION
@@ -260,10 +260,14 @@ linux {
         # Post-build: Setup symlinks and CAN interface
         QMAKE_POST_LINK += $$quote(echo "=== Post-build setup ===" &&)
         QMAKE_POST_LINK += $$quote(sudo mkdir -p /opt/canquick/bin 2>/dev/null || true &&)
-        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/qml /opt/canquick/qml 2>/dev/null || true &&)
-        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/signals /opt/canquick/signals 2>/dev/null || true &&)
-        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/configs /opt/canquick/configs 2>/dev/null || true &&)
-        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/DBC /opt/canquick/dbc 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo rm -rf /opt/canquick/qml 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo mkdir -p /opt/canquick/qml 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/qml/*.qml $$PWD/qml/*.js /opt/canquick/qml/ 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/../../assets/images /opt/canquick/qml/images 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/../../assets/fonts /opt/canquick/qml/fonts 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/../../signals /opt/canquick/signals 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/../../configs /opt/canquick/configs 2>/dev/null || true &&)
+        QMAKE_POST_LINK += $$quote(sudo ln -sf $$PWD/../../DBC /opt/canquick/dbc 2>/dev/null || true &&)
         QMAKE_POST_LINK += $$quote(echo "Symlinks created in /opt/canquick/" &&)
         QMAKE_POST_LINK += $$quote(sudo modprobe vcan 2>/dev/null || true &&)
         QMAKE_POST_LINK += $$quote(sudo ip link add dev can0 type vcan 2>/dev/null || true &&)
