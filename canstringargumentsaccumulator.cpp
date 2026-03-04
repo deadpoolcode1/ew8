@@ -6,7 +6,7 @@
 
 const char * CanStringArgumentsAccumulator::argumentsTypeName = "String";
 
-CanStringArgumentsAccumulator::CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent) : CanArgumentsAccumulator(parent)
+CanStringArgumentsAccumulator::CanStringArgumentsAccumulator() : CanArgumentsAccumulator()
 {}
 
 CanStringArgumentsAccumulator * CanStringArgumentsAccumulator::getInstance(DISPLAY_ITEM_ID graphicItem)
@@ -56,7 +56,7 @@ void CanStringArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t
 
         result = new String(ch_result);
 
-        argumentComplete(*result);
+        argumentComplete.fire(*result);
 
         charactersMap.clear();
     }

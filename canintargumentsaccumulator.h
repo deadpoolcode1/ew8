@@ -4,16 +4,13 @@
 #include "canargumentsaccumulator.h"
 #include "ismoother.h"
 #include "core/types.h"
-
-#include <QObject>
+#include "core/signal.h"
 
 class CanArgumentsAccumulator;
 
 class CanIntArgumentsAccumulator : public CanArgumentsAccumulator
 {
-    Q_OBJECT
 public:
-
 
     static CanIntArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
 
@@ -23,12 +20,13 @@ public:
 
     void addSmoothingAlgorithm(ISmoother * aSmoother);
 
+    core::Signal<uint8_t, uint8_t, uint8_t> argumentComplete;
 
 private:
     static const char * argumentsTypeName;
     ISmoother * smoother;
 
-     explicit CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
+    CanIntArgumentsAccumulator();
 
     uint8_t intValue[3];
     bool flagValue[3];
@@ -37,13 +35,6 @@ private:
     //TODO replace with circular buffer
     uint32_t speedSmoothingBufferLength;
     List<uint8_t> smoothedArgBuffer;
-
-
-signals:
-
-    void argumentComplete(uint8_t intValue, uint8_t fracValue, uint8_t unitValue);
-
-public slots:
 };
 
 #endif // CANINTARGUMENTSACCUMULATOR_H

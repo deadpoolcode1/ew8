@@ -38,8 +38,6 @@ public:
     void connect2Arguments(AMJsonArgumentAction * argumentSignal);
     void setCalledWithFixedArgument(bool isArgOfStringType);
 
-
-public slots:
     void argumentComplete(uint8_t intArg, uint8_t fracArg, uint8_t unitArg);
     void argumentComplete(const String& strArg);
     void forceDeactivation(void);

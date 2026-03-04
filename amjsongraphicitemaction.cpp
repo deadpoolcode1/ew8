@@ -233,12 +233,10 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
     {
         if (argumentAction->isItsArgumentsType(IntArgument))
         {
-
-
             CanIntArgumentsAccumulator * intAcc = CanIntArgumentsAccumulator::getInstance(itsGraphicItemID);
             if(intAcc)
             {
-                connect(intAcc, SIGNAL(argumentComplete(uint8_t,uint8_t,uint8_t)),this,SLOT(argumentComplete(uint8_t,uint8_t,uint8_t)));
+                intAcc->argumentComplete.connect([this](uint8_t a, uint8_t b, uint8_t c){ argumentComplete(a, b, c); });
                 hasArguments = true;
                 isArgOfStringType = false;
             }
@@ -249,11 +247,10 @@ void AMJsonGraphicItemAction::connect2Arguments(AMJsonArgumentAction * argumentA
 
             if(strAcc)
             {
-                connect(strAcc, SIGNAL(argumentComplete(String)),this,SLOT(argumentComplete(String)));
+                strAcc->argumentComplete.connect([this](const String& s){ argumentComplete(s); });
                 hasArguments = true;
                 isArgOfStringType = true;
             }
-
         }
     }
 

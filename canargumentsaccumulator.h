@@ -3,11 +3,9 @@
 
 #include "defs.h"
 #include "core/types.h"
-#include <QObject>
 
-class CanArgumentsAccumulator : public QObject
+class CanArgumentsAccumulator
 {
-    Q_OBJECT
 public:
     static CanArgumentsAccumulator * getExistingInstance(DISPLAY_ITEM_ID graphicItem);
 
@@ -18,14 +16,10 @@ public:
     virtual void insertValueFromSignal(size_t anIndex, int8_t anArg) = 0;
 
 protected:
-    explicit CanArgumentsAccumulator(QObject *parent = nullptr);
+    CanArgumentsAccumulator();
     static Map<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> objectsMap;
 
     ssize_t maxIndex;
-
-signals:
-
-public slots:
 };
 
 #endif // CANARGUMENTSACCUMULATOR_H
