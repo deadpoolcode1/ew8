@@ -3,14 +3,13 @@
 
 #include <vector>
 #include <queue>
-#include "rootedtreenode.h"
+#include "idisplaynode.h"
 
-// forward declaration
-class RootedTreeNode;
-typedef std::vector<RootedTreeNode*> LayersPriorityQ_t;
+class IDisplayNode;
+typedef std::vector<IDisplayNode*> LayersPriorityQ_t;
 
 struct CompareChildrenLayers {
-    bool operator()(RootedTreeNode * n1, RootedTreeNode * n2) {
+    bool operator()(IDisplayNode * n1, IDisplayNode * n2) {
         // return "true" if layer of "n1" is ordered higher than layer of "n2" (zero is a highest)
         return n1->getLayer() < n2->getLayer();
     }
@@ -23,10 +22,8 @@ public:
     LayersPriorityQ();
 
     LayersPriorityQ_t* getQueue() {return &queue;}
-//    std::priority_queue<RootedTreeNode*, std::vector<RootedTreeNode*>, CompareChildrenLayers>* getQueue() {return &pqueue;}
 private:
     LayersPriorityQ_t queue;
-//    std::priority_queue<RootedTreeNode*, std::vector<RootedTreeNode*>, CompareChildrenLayers> pqueue;
 
 };
 

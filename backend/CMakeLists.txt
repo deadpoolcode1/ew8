@@ -6,48 +6,55 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Grammar file processing — read the .peg file and embed it into a header
 # NOTE: candbgrammar.h.in uses qmake's $$VAR syntax, not CMake's ${VAR}.
 # So we generate the header directly instead of using configure_file.
-file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../candbgrammar.peg" CANDBGRAMMAR)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/candbgrammar.peg" CANDBGRAMMAR)
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/candbgrammar.h"
     "#pragma once\n\nconst char candbgrammar[] = R\"peg(\n${CANDBGRAMMAR})peg\";\n")
 
 set(BACKEND_SOURCES
-    ../amjsonaction.cpp
-    ../amjsonactionfactory.cpp
-    ../amjsonactionsmultiplexor.cpp
-    ../amjsonargumentaction.cpp
-    ../amjsonconfigreader.cpp
-    ../amjsonenableraction.cpp
-    ../amjsonfixedargumentsactioninvoker.cpp
-    ../amjsongraphicitemaction.cpp
-    ../amjsonnumericargumentaction.cpp
-    ../amjsonprotocol.cpp
-    ../amjsonrequestidaction.cpp
-    ../amjsonsignal.cpp
-    ../amjsonstringargumentaction.cpp
-    ../amjsonsystemrequestaction.cpp
-    ../amsignalsmodel.cpp
-    ../brightnesscontrol.cpp
-    ../bufferedsmoother.cpp
-    ../canargumentsaccumulator.cpp
-    ../candbsignal.cpp
-    ../candebugreport.cpp
-    ../canintargumentsaccumulator.cpp
-    ../canmanager.cpp
-    ../canrxmsg.cpp
-    ../canrxmsgfactory.cpp
-    ../canstringargumentsaccumulator.cpp
-    ../entitytype.cpp
-    ../graphicitemsenummap.cpp
-    ../keepalivemsg.cpp
-    ../medisconnectionreport.cpp
-    ../timedsmoother.cpp
-    ../versionmsg.cpp
-    ../watchdogdevice.cpp
+    src/amjsonaction.cpp
+    src/amjsonactionfactory.cpp
+    src/amjsonactionsmultiplexor.cpp
+    src/amjsonargumentaction.cpp
+    src/amjsonconfigreader.cpp
+    src/amjsonenableraction.cpp
+    src/amjsonfixedargumentsactioninvoker.cpp
+    src/amjsongraphicitemaction.cpp
+    src/amjsonnumericargumentaction.cpp
+    src/amjsonprotocol.cpp
+    src/amjsonrequestidaction.cpp
+    src/amjsonsignal.cpp
+    src/amjsonstringargumentaction.cpp
+    src/amjsonsystemrequestaction.cpp
+    src/amsignalsmodel.cpp
+    src/brightnesscontrol.cpp
+    src/bufferedsmoother.cpp
+    src/canargumentsaccumulator.cpp
+    src/candbsignal.cpp
+    src/candebugreport.cpp
+    src/canintargumentsaccumulator.cpp
+    src/canmanager.cpp
+    src/canrxmsg.cpp
+    src/canrxmsgfactory.cpp
+    src/canstringargumentsaccumulator.cpp
+    src/entitytype.cpp
+    src/graphicitemsenummap.cpp
+    src/keepalivemsg.cpp
+    src/medisconnectionreport.cpp
+    src/timedsmoother.cpp
+    src/versionmsg.cpp
+    src/watchdogdevice.cpp
+    src/snv_calculator.cpp
+    src/version_info.cpp
+    src/layerspriorityq.cpp
+    src/alertcontroller.cpp
+    src/app_init.cpp
+    src/display_tree.cpp
 )
 
 add_library(ew8_backend STATIC ${BACKEND_SOURCES})
 
 target_include_directories(ew8_backend PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${CMAKE_CURRENT_BINARY_DIR}
 )

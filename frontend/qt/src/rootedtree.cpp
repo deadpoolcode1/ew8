@@ -1,22 +1,19 @@
-#include "ialertdisplay.h"
+#include "alertcontroller.h"
 
 #include "rootedtree.h"
 
-class IAlertDisplay;
 
-
-RootedTree::RootedTree(QObject * qobject, bool * a_flag_is_changed, IAlertDisplay * aDisplay)
+RootedTree::RootedTree(QObject * qobject, AlertController * aAlertController)
 {
-    is_changed = a_flag_is_changed;
-    itsDisplay = aDisplay;
+    itsAlertController = aAlertController;
     root = new RootedTreeNode(qobject, this);
     root->setParent(NULL);
 }
 
 void RootedTree::setChanged(void)
 {
-    * is_changed = true;
-    itsDisplay->forceUpdate();
+    itsAlertController->setTreeChanged();
+    itsAlertController->forceUpdate();
 }
 
 void RootedTree::updateVisibility()

@@ -5,6 +5,8 @@
 #include "core/file_utils.h"
 #include "amjsonconfigreader.h"
 #include "core/json.h"
+#include "snv_calculator.h"
+#include "version_info.h"
 
 #ifndef WIN32
 //TODO remove unused:
@@ -93,37 +95,12 @@ void EWInfo::setMeSn(const QString& aMeSn)
     std::string ew = ewsn_str;
     std::string me = aMeSn.toStdString();
 
-    //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
     {
-    uint64_t A = (uint64_t)(uint8_t)ew[me[15]%16];//4:0:48
-    uint64_t B = (uint64_t)(uint8_t)ew[me[14]%16] ;//2:2:50
-    uint64_t C = (uint64_t)(uint8_t)ew[me[13]%16] ;//5:1:49
-    uint64_t D = (uint64_t)(uint8_t)ew[me[12]%16] ;//0:3:51
-    uint64_t E = (uint64_t)(uint8_t)ew[me[11]%16] ;//0:3:51
-
-    uint64_t F = (uint64_t)(uint8_t)me[ew[0]%16] ;
-    uint64_t G = (uint64_t)(uint8_t)me[ew[1]%16] ;
-    uint64_t H = (uint64_t)(uint8_t)me[ew[11]%16] ;
-    uint64_t I = (uint64_t)(uint8_t)me[ew[12]%16] ;
-    uint64_t J = (uint64_t)(uint8_t)me[ew[13]%16] ;
-
-    uint64_t SNV = (uint64_t)((A+B+C+D+E)*(F+G+H+I+J)*(A*B*C*D*E+F*G*H*I*J)) % ULONG_LONG_MAX;
-
-#if 0
-    coreDebug() << " A:" << A << " B:" << B << " C:" << C
-              << "D:" << D << " E:" << E << " F:" << F << " G:" << G << " H:" << H <<
-                 " I:" << I << " J:"<< J;
-
-    coreDebug()<< "uint64_t SNV=" << SNV;
-#endif
-
-    snv_str = std::to_string(SNV);
-
-
-    is_snv_ready = true;
-
-    emit snvChanged(QString::fromStdString(snv_str));
+        uint64_t SNV = calculateSNV(ew, me);
+        snv_str = std::to_string(SNV);
+        is_snv_ready = true;
+        emit snvChanged(QString::fromStdString(snv_str));
     }
     else
     {
@@ -140,17 +117,11 @@ void EWInfo::declareQML(void)
 
 void EWInfo::readEWInfo(void)
 {
-    //NOTE: Engine version:
-     ewbin_str = std::to_string(MAJOR_VERSION) + "." + std::to_string(MINOR_VERSION) + "." + std::to_string(OTA_TEST_VERSION);
+    VersionInfo vi = buildVersionInfo();
+    ewbin_str = vi.engine;
+    ewcfg_str = vi.config;
 
-     coreDebug() << "EWInfo:Engine version " << ewbin_str;
-
-    //NOTE: Config version:
-    core::JsonArray jsonArray = AMJsonConfigReader::getInstance()->getJsonTopEntry("ConfigVersion").toArray();
-    if(!jsonArray.isEmpty())
-    {
-        ewcfg_str = std::to_string(jsonArray.at(0).toInt(0xff)) + "." + std::to_string(jsonArray.at(1).toInt(0x3f)) + "." + std::to_string((jsonArray.at(2).toInt(0x3)) & 0x3);
-    }
+    coreDebug() << "EWInfo:Engine version " << ewbin_str;
 }
 
 

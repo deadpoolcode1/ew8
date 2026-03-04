@@ -4,4 +4,3 @@ LayersPriorityQ::LayersPriorityQ()
 {
 
 }
-

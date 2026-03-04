@@ -16,26 +16,26 @@ set(BASE_TARGET_DIR "${EW8_INSTALL_PREFIX}/bin/../" CACHE STRING "Base directory
 add_subdirectory(../../backend backend_build)
 
 set(FRONTEND_SOURCES
-    ../../main.cpp
-    ../../mainprocess.cpp
-    ../../rootedtreenode.cpp
-    ../../rootedtree.cpp
-    ../../layerspriorityq.cpp
-    ../../displaysignalizer.cpp
-    ../../qquickqrcode.cpp
-    ../../ewinfo.cpp
+    src/main.cpp
+    src/mainprocess.cpp
+    src/rootedtreenode.cpp
+    src/rootedtree.cpp
+    src/displaysignalizer.cpp
+    src/qquickqrcode.cpp
+    src/ewinfo.cpp
     # Headers with Q_OBJECT (needed for AUTOMOC)
-    ../../alerttypes.h
-    ../../mainprocess.h
-    ../../displaysignalizer.h
-    ../../qquickqrcode.h
-    ../../ewinfo.h
+    include/alerttypes.h
+    include/mainprocess.h
+    include/displaysignalizer.h
+    include/qquickqrcode.h
+    include/ewinfo.h
 )
 
 add_executable(canquick ${FRONTEND_SOURCES})
 
 target_include_directories(canquick PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../..
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../
 )
 
 target_link_libraries(canquick PRIVATE

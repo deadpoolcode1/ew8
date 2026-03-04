@@ -10,7 +10,6 @@
 
 #include "mainprocess.h"
 #include "canmanager.h"
-#include "ialertdisplay.h"
 #include "alerttypes.h"
 #include "entitytype.h"
 #include "rootedtreenode.h"
@@ -42,10 +41,6 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     componentObject = aComponentObject;
 
-    isDataComplete = false;
-
-    flag_tree_changed = false;
-
     theBrightnessControl = nullptr;
 
     //Init QtQuick Objects:
@@ -54,7 +49,9 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     coreDebug() << "CanManger init begin, time:" << bootUpTimer.elapsed();
 
-    canmgr = new CanManager(this);
+    alertController = new AlertController();
+
+    canmgr = new CanManager(alertController);
 
      coreDebug() << "CanManger init complete, time:" << bootUpTimer.elapsed();
 
@@ -71,7 +68,7 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     EntityType::generateTypes();
 
 // build panels trees
-    generalPanelTree = new RootedTree(rootQobjectGeneralPannel, & flag_tree_changed, this);
+    generalPanelTree = new RootedTree(rootQobjectGeneralPannel, alertController);
 
 
     itsThread = new core::Thread();
@@ -86,39 +83,39 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     updateDisplayTimeWindow->timeout.connect([this]() { process(); });
 
+    alertController->setMessageCallback([this](const std::string& msg) {
+        emit messageDisplayWindow(QVariant(String(msg).toQString()));
+    });
+
+    alertController->setProcessCallback([this]() { process(); });
+
      coreDebug() << "MainManager init complete, time:" << bootUpTimer.elapsed();
 }
 
 void MainProcess::process()
 {
 
-    if (isDataComplete && flag_tree_changed)
+    if (alertController->needsDisplayUpdate())
     {
         if(!updateDisplayTimeWindow->isActive())
         {
-            flag_tree_changed = false;
-            isDataComplete = false;
+            alertController->markUpdateComplete();
             updateDisplayTimeWindow->start();
-            mutex.lock();
+            alertController->mutex.lock();
             coreDebug()<< "updateStart:" << core::ElapsedTimer::currentMSecsSinceEpoch();
             updateDisplay();
             coreDebug()<< "updateEnd:" << core::ElapsedTimer::currentMSecsSinceEpoch();
-            mutex.unlock();
+            alertController->mutex.unlock();
 
         }
     }
-}
-
-void MainProcess::message(const std::string& stringMessage)
-{
-   emit messageDisplayWindow(QVariant(String(stringMessage).toQString()));
 }
 
 
 void MainProcess::setBrightnessControl(BrightnessControl *aBrightnessControl)
 {
     theBrightnessControl =  aBrightnessControl;
-    theBrightnessControl->setItsDisplay(this);
+    theBrightnessControl->setItsDisplay(alertController);
 
 }
 
@@ -174,16 +171,6 @@ int MainProcess::launchEverything()
 
         QObject::connect(appWindow, SIGNAL(alertsReportSend(bool,bool,bool,bool)),
                           this, SLOT(onAlertsReport(bool,bool,bool,bool)));
-#if 0
-        if (-1 != appWindow->metaObject()->indexOfSlot(QMetaObject::normalizedSignature("alertsReportSend(bool, bool, bool, bool)")))
-        {
-            coreDebug()<<"alertsReportSend(bool, bool, bool, bool) connected";
-        }
-        else
-        {
-             coreDebug()<<"alertsReportSend(bool, bool, bool, bool) is not present.";
-        }
-#endif
     }
 
 
@@ -211,129 +198,9 @@ void MainProcess::updateDisplay(void)
 {
     if (generalPanelTree)
     {
-        flag_tree_changed = false;
         generalPanelTree->updateVisibility();
 
     }
-}
-
-void MainProcess::activate(DISPLAY_ITEM_ID alert, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
-{
-     activateInternal(alert, false, "", valueInt, valueFrac, unit);
-}
-
-void MainProcess::activate(DISPLAY_ITEM_ID alert, const std::string& stringArg)
-{
-    activateInternal(alert, true, stringArg, 0, 0, 0);
-}
-
-
-void MainProcess::activateInternal(DISPLAY_ITEM_ID alert, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
-{
-
-    if (AlertTypes::ALERT_NONE == alert)
-    {
-        //TODO single return point
-        return;
-    }
-#if 1
-    coreDebug() << "function:" << __func__ << "alert:" << alert;
-    coreDebug() << " activated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
-
-#endif
-
-    IDisplayNode* nodeCGRT = nullptr;
-
-    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
-
-
-    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
-    {
-
-        nodeCGRT = it->second;
-
-        if (nodeCGRT == NULL)
-        {
-            //TODO add exception
-        }
-        else if (nodeCGRT->getActivSem() > 0)
-        {
-            //skip:  activated - no need for re-activation
-        }
-        else
-        {
-            if(isStrArg)
-            {
-                nodeCGRT->setCanEntityArg(strArg);
-            }
-            else
-            {
-                nodeCGRT->setCanEntityArgs(valueInt, valueFrac, unit);
-            }
-            nodeCGRT->activate();
-            flag_tree_changed = true;
-#if 0
-            process();
-#endif
-        }
-    }
-
-    return;
-}
-
-void MainProcess::forceUpdate(void)
-{
-    isDataComplete = true;
-    if(flag_tree_changed)
-    {
-        process();
-    }
-}
-
-void MainProcess::deactivate(DISPLAY_ITEM_ID alert)
-{
-    if (AlertTypes::ALERT_NONE == alert)
-    {
-        //TODO single return point
-        return;
-    }
-
-    coreDebug() << "function:" << __func__ << "alert:" << alert;
-    coreDebug() << "deactivated at:" << core::ElapsedTimer::currentMSecsSinceEpoch();
-
-    IDisplayNode* nodeCGRT = nullptr;
-
-    EntityType::t_TreeNodesInterval itRange = EntityType::findByEntityType(alert);
-
-
-
-    for (EntityType::t_TreeNodesTypeMap::iterator it = itRange.first; it != itRange.second; it++)
-    {
-
-        nodeCGRT = it->second;
-
-        if (nodeCGRT == nullptr)
-        {
-            //TODO add exception
-        }
-
-        if (!(nodeCGRT->getActivSem()))
-        {
-            //skip: deactivated - no need for deactivation
-        }
-        else
-        {
-            nodeCGRT->deactivate();
-            //TODO only when a semaphore is changed
-            flag_tree_changed = true;
-#if 0
-            process();
-#endif
-        }
-    }
-
-    return;
-
 }
 
 
@@ -392,4 +259,3 @@ void MainProcess::onAlertsReport(bool a, bool b, bool c, bool d)
 {
     CANDebugReport::getInstance()->sendAlerts(a, b, c, d);
 }
-
