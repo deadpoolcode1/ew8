@@ -8,7 +8,6 @@
 #include "amjsonsignal.h"
 
 #include "entitytype.h"
-#include "rootedtreenode.h"
 
 #include "canstringargumentsaccumulator.h"
 #include "canintargumentsaccumulator.h"
