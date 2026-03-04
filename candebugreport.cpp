@@ -2,6 +2,11 @@
 #include "canmanager.h"
 #include "core/logger.h"
 
+// Key codes matching Qt::Key_* values (frontend sends these)
+static const int32_t CANREPORT_KEY_RETURN = 0x01000004;
+static const int32_t CANREPORT_KEY_UP     = 0x01000013;
+static const int32_t CANREPORT_KEY_DOWN   = 0x01000015;
+
 CANDebugReport * CANDebugReport::instance = nullptr;
 bool CANDebugReport::doSendKeyReport = false;
 bool CANDebugReport::doSendAlertsReport = false;
@@ -11,7 +16,7 @@ bool CANDebugReport::keyReturn = false;
 bool CANDebugReport::keyUp = false;
 
 
-CANDebugReport::CANDebugReport(QObject *parent) : QObject(parent)
+CANDebugReport::CANDebugReport()
 {
   itsCanManager = nullptr;
 }
@@ -26,11 +31,11 @@ void CANDebugReport::setSendAlertsReport(bool doSend)
     doSendAlertsReport = doSend;
 }
 
-CANDebugReport * CANDebugReport::getInstance(QObject *parent)
+CANDebugReport * CANDebugReport::getInstance()
 {
     if(nullptr == instance)
     {
-        instance = new CANDebugReport(parent);
+        instance = new CANDebugReport();
     }
     return instance;
 }
@@ -121,71 +126,25 @@ void CANDebugReport::sendButtonsReport(void)
 
 
 
-void CANDebugReport::sendButtonPressed(int32_t qtKey)
+void CANDebugReport::sendButtonPressed(int32_t key)
 {
 
-    switch(qtKey)
-    {
-    case Qt::Key_Down:
-
-        keyDown =  true;
-
-        break;
-
-    case Qt::Key_Return:
-        keyReturn = true;
-
-        break;
-
-    case Qt::Key_Up:
-
-        keyUp = true;
-
-        break;
-
-    default:
-
-        LOG_DEBUG("Unsupported key to report");
-
-        break;
-    }
-
-
-   sendButtonsReport();
-
-}
-
-
-void CANDebugReport::sendButtonReleased(int32_t qtKey)
-{
-    switch(qtKey)
-    {
-    case Qt::Key_Down:
-
-        keyDown =  false;
-
-        break;
-
-    case Qt::Key_Return:
-        keyReturn = false;
-
-        break;
-
-    case Qt::Key_Up:
-
-        keyUp = false;
-
-        break;
-
-    default:
-
-        LOG_DEBUG("Unsupported key to report");
-
-        break;
-    }
+    if      (key == CANREPORT_KEY_DOWN)   keyDown   = true;
+    else if (key == CANREPORT_KEY_RETURN) keyReturn = true;
+    else if (key == CANREPORT_KEY_UP)     keyUp     = true;
+    else { LOG_DEBUG("Unsupported key to report"); }
 
     sendButtonsReport();
 
-
 }
 
+
+void CANDebugReport::sendButtonReleased(int32_t key)
+{
+    if      (key == CANREPORT_KEY_DOWN)   keyDown   = false;
+    else if (key == CANREPORT_KEY_RETURN) keyReturn = false;
+    else if (key == CANREPORT_KEY_UP)     keyUp     = false;
+    else { LOG_DEBUG("Unsupported key to report"); }
+
+    sendButtonsReport();
+}

@@ -53,6 +53,10 @@ public slots:
 
     void process();
 
+    void onKeyPressedReport(int32_t key);
+    void onKeyReleasedReport(int32_t key);
+    void onAlertsReport(bool a, bool b, bool c, bool d);
+
 private:
     void activateInternal(DISPLAY_ITEM_ID at, bool isStrArg, const String& strArg, uint8_t valueInt, uint8_t valueFrac, uint8_t unit);
 
