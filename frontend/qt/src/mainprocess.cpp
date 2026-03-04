@@ -68,7 +68,10 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
     EntityType::generateTypes();
 
 // build panels trees
-    generalPanelTree = new RootedTree(rootQobjectGeneralPannel, alertController);
+    generalPanelTree = new RootedTree(rootQobjectGeneralPannel, [this]() {
+        alertController->setTreeChanged();
+        alertController->forceUpdate();
+    });
 
 
     itsThread = new core::Thread();

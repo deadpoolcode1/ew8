@@ -1,19 +1,16 @@
-#include "alertcontroller.h"
-
 #include "rootedtree.h"
 
 
-RootedTree::RootedTree(QObject * qobject, AlertController * aAlertController)
+RootedTree::RootedTree(QObject * qobject, TreeChangedCallback aOnTreeChanged)
+    : onTreeChanged(std::move(aOnTreeChanged))
 {
-    itsAlertController = aAlertController;
     root = new RootedTreeNode(qobject, this);
     root->setParent(NULL);
 }
 
 void RootedTree::setChanged(void)
 {
-    itsAlertController->setTreeChanged();
-    itsAlertController->forceUpdate();
+    if (onTreeChanged) onTreeChanged();
 }
 
 void RootedTree::updateVisibility()
