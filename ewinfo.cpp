@@ -55,43 +55,43 @@ EWInfo::EWInfo(QObject * parent) : QObject(parent)
 #endif
 }
 
-String EWInfo::getEwsn(void)
+QString EWInfo::getEwsn(void)
 {
-  return ewsn_str;
+  return QString::fromStdString(ewsn_str);
 }
 
-String EWInfo::getEngineVer(void)
+QString EWInfo::getEngineVer(void)
 {
-   return ewbin_str;
+   return QString::fromStdString(ewbin_str);
 }
 
-String EWInfo::getConfigVer(void)
+QString EWInfo::getConfigVer(void)
 {
-  return ewcfg_str;
+  return QString::fromStdString(ewcfg_str);
 }
 
-String EWInfo::getSnv(void)
+QString EWInfo::getSnv(void)
 {
 #if 0
     ewsn_str = "3021016070300013";
     setMeSn("0121011070P00524");
     coreDebug()<<"SNV property ="<<snv_str;
 #endif
-  return snv_str;
+  return QString::fromStdString(snv_str);
 }
 
-String EWInfo::getOSBuildTimestamp(void)
+QString EWInfo::getOSBuildTimestamp(void)
 {
-  return ewosbuild_str;
+  return QString::fromStdString(ewosbuild_str);
 }
 
-void EWInfo::setMeSn(const String& aMeSn)
+void EWInfo::setMeSn(const QString& aMeSn)
 {
 
 //TODO compute the snv value
 
     std::string ew = ewsn_str;
-    std::string me = aMeSn;
+    std::string me = aMeSn.toStdString();
 
     //TODO verifications: length etc
     if(me.length() == 16 && ew.length() == 16)
@@ -123,7 +123,7 @@ void EWInfo::setMeSn(const String& aMeSn)
 
     is_snv_ready = true;
 
-    emit snvChanged(snv_str);
+    emit snvChanged(QString::fromStdString(snv_str));
     }
     else
     {

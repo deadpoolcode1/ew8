@@ -8,12 +8,12 @@
 class EWInfo: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(String sn READ getEwsn CONSTANT)
-    Q_PROPERTY(String bin READ getEngineVer CONSTANT)
-    Q_PROPERTY(String cfg READ getConfigVer CONSTANT)
-    Q_PROPERTY(String mesn WRITE setMeSn)
-    Q_PROPERTY(String snv READ getSnv NOTIFY snvChanged)
-    Q_PROPERTY(String osbuild READ getOSBuildTimestamp CONSTANT)
+    Q_PROPERTY(QString sn READ getEwsn CONSTANT)
+    Q_PROPERTY(QString bin READ getEngineVer CONSTANT)
+    Q_PROPERTY(QString cfg READ getConfigVer CONSTANT)
+    Q_PROPERTY(QString mesn WRITE setMeSn)
+    Q_PROPERTY(QString snv READ getSnv NOTIFY snvChanged)
+    Q_PROPERTY(QString osbuild READ getOSBuildTimestamp CONSTANT)
 
 
 public:
@@ -22,16 +22,16 @@ public:
 
     //Single time fired
     static void declareQML();
-    String getEwsn(void);
-    String getEngineVer(void);
-    String getConfigVer(void);
-    String getOSBuildTimestamp(void);
+    QString getEwsn(void);
+    QString getEngineVer(void);
+    QString getConfigVer(void);
+    QString getOSBuildTimestamp(void);
 
-    String getSnv(void);
-    void setMeSn(const String&);
+    QString getSnv(void);
+    void setMeSn(const QString&);
 
 signals:
-    void snvChanged(const String& newSnv);
+    void snvChanged(const QString& newSnv);
 
 private:
 
