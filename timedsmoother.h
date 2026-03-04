@@ -2,7 +2,6 @@
 #define EDSMOOTHER_H
 
 #include "core/types.h"
-#include <QObject>
 #include "ismoother.h"
 
 class ISmoother;

@@ -1,8 +1,6 @@
 #ifndef AMJSONSYSTEMREQUESTACTION_H
 #define AMJSONSYSTEMREQUESTACTION_H
 
-#include <QObject>
-
 #include "defs.h"
 #include "sysreqtype.h"
 #include "core/types.h"
