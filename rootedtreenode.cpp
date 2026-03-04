@@ -214,7 +214,7 @@ void RootedTreeNode::addChildrenFromObject(QObject * qobject)
 
    //WARNING: Dirty Hack
    //TODO: check need to replace QObject-s of QtQuick to QQuickItem-s
-   foreach(QObject * curchild, ((QQuickItem*)qobject)->childItems())
+   for(QObject * curchild : ((QQuickItem*)qobject)->childItems())
    {
 
        curnode = new RootedTreeNode(curchild, itsRootedTree);
