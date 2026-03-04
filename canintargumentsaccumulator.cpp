@@ -4,7 +4,7 @@
 
 const char* CanIntArgumentsAccumulator::argumentsTypeName = "Int";
 
-CanIntArgumentsAccumulator::CanIntArgumentsAccumulator(CanArgumentsAccumulator *parent) : CanArgumentsAccumulator(parent)
+CanIntArgumentsAccumulator::CanIntArgumentsAccumulator() : CanArgumentsAccumulator()
 {
    flagValue[0] = false;
    flagValue[1] = false;
@@ -69,7 +69,7 @@ void CanIntArgumentsAccumulator::insertValueFromSignal(size_t anIndex, int8_t an
             intValue[0] = (uint8_t)((smoother->getSmoothedValue())&0xff);
         }
 
-        argumentComplete(intValue[0], intValue[1], intValue[2]);
+        argumentComplete.fire(intValue[0], intValue[1], intValue[2]);
 
 
 

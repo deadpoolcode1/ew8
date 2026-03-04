@@ -5,7 +5,7 @@
 
 Map<DISPLAY_ITEM_ID,CanArgumentsAccumulator*> CanArgumentsAccumulator::objectsMap;
 
-CanArgumentsAccumulator::CanArgumentsAccumulator(QObject *parent) : QObject(parent)
+CanArgumentsAccumulator::CanArgumentsAccumulator()
 {
      maxIndex = -1;
 }

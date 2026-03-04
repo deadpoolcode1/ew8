@@ -3,7 +3,7 @@
 
 #include "defs.h"
 #include "core/types.h"
-#include <QObject>
+#include "core/signal.h"
 
 #include "canargumentsaccumulator.h"
 
@@ -11,7 +11,6 @@ class CanArgumentsAccumulator;
 
 class CanStringArgumentsAccumulator : public CanArgumentsAccumulator
 {
-    Q_OBJECT
 public:
     static CanStringArgumentsAccumulator * getInstance(DISPLAY_ITEM_ID graphicItem);
 
@@ -19,19 +18,14 @@ public:
 
     virtual const char * getArgumentsTypeName() {return argumentsTypeName;}
 
+    core::Signal<const String&> argumentComplete;
 
 private:
     static const char * argumentsTypeName;
 
-    explicit CanStringArgumentsAccumulator(CanArgumentsAccumulator *parent = nullptr);
+    CanStringArgumentsAccumulator();
 
     Map<size_t,char> charactersMap;
-
-signals:
-
-    void argumentComplete(const String& result);
-
-public slots:
 };
 
 #endif // CANSTRINGARGUMENTSACCUMULATOR_H
