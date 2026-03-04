@@ -148,6 +148,8 @@ DISTFILES =
 
 HEADERS += \
     qt_workarounds.h \
+    alerttypes_core.h \
+    idisplaynode.h \
     bufferedsmoother.h \
     keepalivemsg.h \
     versionmsg.h \

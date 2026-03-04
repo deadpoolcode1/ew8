@@ -45,28 +45,28 @@ void EntityType::generateTypes()
 void EntityType::generateSingleType(DISPLAY_ITEM_ID item_id)
 {
 #ifdef VERIFY_ALL_ALERTS_IMPLEMENTED
-        RootedTreeNode * nodeToInsert = nullptr;  //new RootedTreeNode();
+        IDisplayNode * nodeToInsert = nullptr;
 
         if(0 == EntityType::_typesMap.count(item_id))
         {
-            EntityType::_typesMap.insert(std::pair<DISPLAY_ITEM_ID, RootedTreeNode*>(item_id,nodeToInsert));
+            EntityType::_typesMap.insert(std::pair<DISPLAY_ITEM_ID, IDisplayNode*>(item_id,nodeToInsert));
         }
 #endif
 }
 
 
 #if 0
-DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node)
+DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, IDisplayNode* node)
 {
     if (_typesMap.find(type) != _typesMap.end())
     {
         return GENERAL_ERROR;
     }
 
-    RootedTreeNode* nodeInMap = _typesMap.find(type)->second;
+    IDisplayNode* nodeInMap = _typesMap.find(type)->second;
     if (nodeInMap != NULL)
     {
-        return GENERAL_ERROR;  // RootedTreeNode is unique per type
+        return GENERAL_ERROR;  // node is unique per type
     }
     else
     {
@@ -76,7 +76,7 @@ DISPLAY_ERRORS_t linkByEntityType(DISPLAY_ITEM_ID type, RootedTreeNode* node)
 }
 
 
-RootedTreeNode* EntityType::findEntityType(DISPLAY_ITEM_ID type)
+IDisplayNode* EntityType::findEntityType(DISPLAY_ITEM_ID type)
 {
     return EntityType::_typesMap.find(type)->second;
 }
