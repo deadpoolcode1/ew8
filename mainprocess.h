@@ -2,12 +2,11 @@
 #define MAINPROCESS_H
 
 #include <QObject>
-#include <QThread>
-#include <QTimer>
+#include "core/thread.h"
+#include "core/timer.h"
 #include "canmanager.h"
 #include "ialertdisplay.h"
 #include "core/types.h"
-#include <QQmlApplicationEngine>
 #include "rootedtree.h"
 #include "brightnesscontrol.h"
 
@@ -35,8 +34,6 @@ public:
     static MainProcess* getInstance(QObject * aComponentObject);
 
 signals:
-    void startUpdateDisplayWindow();
-
     void messageDisplayWindow(QVariant aStrMsg);
 
 public slots:
@@ -67,7 +64,6 @@ private:
     //Objects for signals connection:
     BrightnessControl * theBrightnessControl;
 
-//    MainWindow * mw;
     CanManager * canmgr;
 
 // pointers to display static panels trees
@@ -76,9 +72,9 @@ private:
 // pointer to QML defining trees for all panels.
     QObject *componentObject;
 
-    QTimer * updateDisplayTimeWindow;
+    core::Timer * updateDisplayTimeWindow;
 
-    QThread * itsThread;
+    core::Thread * itsThread;
 
     bool flag_tree_changed;
 };
