@@ -37,6 +37,8 @@ add_subdirectory(../../backend backend_build)
 set(FRONTEND_SOURCES
     src/main.cpp
     src/sdl_display.cpp
+    src/lvgl_ui.cpp
+    src/lvgl_main_process.cpp
 )
 
 add_executable(ew8_lvgl ${FRONTEND_SOURCES})
@@ -57,3 +59,6 @@ target_link_libraries(ew8_lvgl PRIVATE
 target_compile_definitions(ew8_lvgl PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
+
+# Copy shared assets to build directory for runtime access
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../assets/images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
