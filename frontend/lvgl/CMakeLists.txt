@@ -37,8 +37,11 @@ add_subdirectory(../../backend backend_build)
 set(FRONTEND_SOURCES
     src/main.cpp
     src/sdl_display.cpp
-    src/lvgl_ui.cpp
+    src/lvgl_display_node.cpp
     src/lvgl_main_process.cpp
+    src/lvgl_widgets.cpp
+    src/lvgl_value_display_node.cpp
+    src/lvgl_string_display_node.cpp
 )
 
 add_executable(ew8_lvgl ${FRONTEND_SOURCES})

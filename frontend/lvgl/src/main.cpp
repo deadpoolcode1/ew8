@@ -1,10 +1,6 @@
 #include "sdl_display.h"
-#include "lvgl_ui.h"
 #include "lvgl_main_process.h"
-#include "lvgl_nocom_bridge.h"
 #include "app_init.h"
-#include "entitytype.h"
-#include "alerttypes_core.h"
 #include "lvgl.h"
 
 #include <cstdio>
@@ -18,8 +14,6 @@ core::ElapsedTimer bootUpTimer;
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
 
-// Global UI instance (accessed by main loop)
-static LvglUI* g_ui = nullptr;
 static volatile sig_atomic_t g_running = 1;
 
 static void signalHandler(int sig)
@@ -68,17 +62,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // Create UI
-    g_ui = new LvglUI();
-    g_ui->init();
+    // Set up screen background
+    lv_obj_t* screen = lv_screen_active();
+    lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
 
-    // Create main process (owns AlertController + CanManager)
-    LvglMainProcess* mainProcess = new LvglMainProcess();
-
-    // Register a temporary NOCOM bridge node so ALERT_NOCOM drives the overlay
-    // (This will be replaced by the proper display tree in Stage 3)
-    LvglNocomBridge* nocomBridge = new LvglNocomBridge(g_ui);
-    EntityType::linkByEntityType(AlertTypes::ALERT_NOCOM, nocomBridge);
+    // Create main process (owns AlertController + CanManager + display tree)
+    LvglMainProcess* mainProcess = new LvglMainProcess(screen);
 
     // Launch backend (starts CAN reader thread, heartbeat timer, etc.)
     mainProcess->launch();
@@ -96,8 +86,8 @@ int main(int argc, char* argv[])
 
         lv_tick_inc(elapsed);
 
-        // Apply pending UI updates from backend threads
-        g_ui->processUpdates();
+        // Apply pending display tree updates from backend threads
+        mainProcess->applyPendingDisplayUpdate();
 
         lv_timer_handler();
         sdl_display_present_if_needed();
