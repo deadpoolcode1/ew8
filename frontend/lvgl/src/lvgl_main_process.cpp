@@ -68,6 +68,7 @@ static lv_obj_t* createRootContainer(lv_obj_t* screen)
     lv_obj_set_style_pad_all(w, 0, 0);
     lv_obj_set_style_radius(w, 0, 0);
     lv_obj_align(w, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_remove_flag(w, LV_OBJ_FLAG_SCROLLABLE);
     return w;
 }
 
@@ -180,6 +181,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // speed (LvglValueDisplayNode, layer=0, INFO_VEH_SPEED)
     auto* speedNode = new LvglValueDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel);
     addChild(statusPanel, speedNode);
+
+    // Always-visible status bar — created last so it renders on top of everything
+    LvglWidgets::createStatusBar(rootWidget);
 }
 
 void LvglMainProcess::launch()

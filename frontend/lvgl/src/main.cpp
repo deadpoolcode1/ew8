@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         lv_timer_handler();
         sdl_display_present_if_needed();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 
     printf("Shutting down...\n");
