@@ -188,6 +188,13 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     DISPLAY_ITEM_ID ID_VOLUME_FAIL            = GraphicItemsEnumMap::getId("VOLUME_FAIL");
     DISPLAY_ITEM_ID ID_INFO_QRCODE            = GraphicItemsEnumMap::getId("INFO_QRCODE");
 
+    // Missing entities: registered as dummy nodes to prevent silent ALERT_NONE fallback
+    DISPLAY_ITEM_ID ID_TEST_SPEED_VALUE       = GraphicItemsEnumMap::getId("TEST_SPEED_VALUE");
+    DISPLAY_ITEM_ID ID_SMART_FATIGUE          = GraphicItemsEnumMap::getId("SMART_FATIGUE");
+    DISPLAY_ITEM_ID ID_SMART_BUMPERS          = GraphicItemsEnumMap::getId("SMART_BUMPERS");
+    DISPLAY_ITEM_ID ID_SMART_FATIGUE_SEC      = GraphicItemsEnumMap::getId("SMART_FATIGUE_SEC");
+    DISPLAY_ITEM_ID ID_SMART_BUMPERS_SEC      = GraphicItemsEnumMap::getId("SMART_BUMPERS_SEC");
+
     // Bulk 6: Diagnostics / Tests
     DISPLAY_ITEM_ID ID_RGB_RED                = GraphicItemsEnumMap::getId("RGB_RED");
     DISPLAY_ITEM_ID ID_RGB_GREEN              = GraphicItemsEnumMap::getId("RGB_GREEN");
@@ -231,7 +238,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* pdzWidget = LvglWidgets::createPDZOverlay(rootWidget);
 
     lv_obj_t* speedValueLabel = nullptr;
-    lv_obj_t* speedWidget     = LvglWidgets::createSpeedDisplay(rootWidget, &speedValueLabel);
+    lv_obj_t* speedUnitLabel = nullptr;
+    lv_obj_t* speedWidget     = LvglWidgets::createSpeedDisplay(rootWidget, &speedValueLabel, &speedUnitLabel);
 
     // Overlay widgets
     lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
@@ -275,7 +283,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* playgroundEndWidget = LvglWidgets::createLeftPanelSign(rootWidget,
         "A:images/left-panel/TSR/left_playgrond_blue_end.png", false);
 
-    // Supplementary signs — lower slot (same images as base signs, supp icon skipped for v1)
+    // Supplementary signs — lower slot (base sign + supp icon overlay)
     lv_obj_t* sliSuppSpeedLabel = nullptr;
     lv_obj_t* sliSuppWidget = LvglWidgets::createSpeedLimitSign(rootWidget,
         "A:images/left-panel/SLI/left_SLI_circ.png", false, &sliSuppSpeedLabel);
@@ -287,6 +295,21 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
         "A:images/left-panel/TSR/left_expressway_beg.png", false);
     lv_obj_t* playgroundSuppWidget = LvglWidgets::createLeftPanelSign(rootWidget,
         "A:images/left-panel/TSR/left_playgrond_blue.png", false);
+
+    // Add supplementary icon overlays to each supp sign (small icon below the sign)
+    auto addSuppIcon = [](lv_obj_t* signWidget) -> lv_obj_t* {
+        lv_obj_t* suppImg = lv_image_create(signWidget);
+        lv_image_set_src(suppImg, "A:images/left-panel/Supp/snow.png"); // default
+        lv_image_set_pivot(suppImg, 0, 0);
+        lv_image_set_scale(suppImg, 100); // small icon ~39% scale
+        lv_obj_align(suppImg, LV_ALIGN_BOTTOM_MID, 0, 20);
+        return suppImg;
+    };
+    lv_obj_t* sliSuppIcon = addSuppIcon(sliSuppWidget);
+    lv_obj_t* noPassSuppIcon = addSuppIcon(noPassSuppWidget);
+    lv_obj_t* motorwaySuppIcon = addSuppIcon(motorwaySuppWidget);
+    lv_obj_t* expresswaySuppIcon = addSuppIcon(expresswaySuppWidget);
+    lv_obj_t* playgroundSuppIcon = addSuppIcon(playgroundSuppWidget);
 
     // Right panel signs — upper slot (primary SmartADAS, mutexGroup=true)
     lv_obj_t* smartCrowdedWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_crowded.png", true);
@@ -448,7 +471,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
 
     // Menu controller (created after everything so menus render on top)
-    menuController_ = new LvglMenuController(rootWidget);
+    menuController_ = new LvglMenuController(rootWidget, canmgr_);
 
     // --- Build display tree ---
     // root (group, layer=0)
@@ -493,13 +516,17 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel);
     addChild(groupCIPV, hmwNode);
 
-    // HMW state nodes (layer=0, no widget — change road GIF on visibility)
+    // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
+    // QML: Alert state: car_margin=47, car_scale=1.0 (256)
     auto* hmwAlertNode = new LvglHmwStateNode(0, ID_ALERT_HMW_ALERT,
-                                               hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif");
+                                               hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif",
+                                               hmw.forwardCar, 47, 256);
     addChild(groupCIPV, hmwAlertNode);
 
+    // QML: Monitor state: car_margin=40, car_scale=0.75 (192)
     auto* hmwMonitorNode = new LvglHmwStateNode(0, ID_ALERT_HMW_MONITOR,
-                                                 hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif");
+                                                 hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif",
+                                                 hmw.forwardCar, 40, 192);
     addChild(groupCIPV, hmwMonitorNode);
 
     // PDZ overlay (layer=0, ALERT_PDZ)
@@ -546,8 +573,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* ldwOnRightNode = new LvglDisplayNode(ldwOnRightWidget, 2, ID_ALERT_RIGHT_LDWON);
     addChild(groupLanesRight, ldwOnRightNode);
 
-    // groupFCW (group, layer=2, mutexGroup=true)
-    auto* groupFCW = new LvglDisplayNode(nullptr, 2, true, false);
+    // groupFCW (group, layer=2, mutexGroup=false — QML has mutexGroup: false)
+    auto* groupFCW = new LvglDisplayNode(nullptr, 2, false, false);
     addChild(generalPanel, groupFCW);
 
     auto* fcwNode = new LvglDisplayNode(fcwWidget, 1, ID_ALERT_FCW);
@@ -560,8 +587,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* statusPanel = new LvglDisplayNode(nullptr, 2, false, false);
     addChild(generalPanel, statusPanel);
 
-    // speed (LvglValueDisplayNode, layer=0, INFO_VEH_SPEED)
-    auto* speedNode = new LvglValueDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel);
+    // speed (LvglSpeedDisplayNode, layer=0, INFO_VEH_SPEED — with MPH conversion support)
+    auto* speedNode = new LvglSpeedDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel, speedUnitLabel);
     addChild(statusPanel, speedNode);
 
     // Beam group (mutexGroup=true)
@@ -628,8 +655,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(statusPanel, gpsOkNode);
 
     // --- Left panel signs (Bulk 3) ---
-    // leftPanel (group, layer=0) under mainPanel
-    auto* leftPanel = new LvglDisplayNode(nullptr, 0, false, false);
+    // leftPanel (group, layer=1) under mainPanel — QML left_panel layer_pri=1
+    auto* leftPanel = new LvglDisplayNode(nullptr, 1, false, false);
     addChild(mainPanel, leftPanel);
 
     // groupTop (group, layer=0, non-mutex: RTW layer=0, SLI layer=1, ISA_SPEED layer=2, ISA_HIGHWAY layer=1)
@@ -652,7 +679,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupBottom = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(leftPanel, groupBottom);
 
-    auto* endAllRestrNode = new LvglDisplayNode(endAllRestrWidget, 0, ID_ALERT_END_ALL_RESTR);
+    // TSR signs with auto-dismiss timers (QML maxduration values)
+    // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
+    auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
     addChild(groupBottom, endAllRestrNode);
 
     auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
@@ -661,58 +690,63 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
     addChild(groupBottom, noPassEndNode);
 
-    auto* motorwayNode = new LvglDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY);
+    auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
     addChild(groupBottom, motorwayNode);
 
-    auto* motorwayEndNode = new LvglDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END);
+    auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
     addChild(groupBottom, motorwayEndNode);
 
-    auto* expresswayNode = new LvglDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY);
+    auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
     addChild(groupBottom, expresswayNode);
 
-    auto* expresswayEndNode = new LvglDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END);
+    auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
     addChild(groupBottom, expresswayEndNode);
 
-    auto* playgroundNode = new LvglDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND);
+    auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
     addChild(groupBottom, playgroundNode);
 
-    auto* playgroundEndNode = new LvglDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END);
+    auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
     addChild(groupBottom, playgroundEndNode);
 
     // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
-    auto* sliSuppNode = new LvglValueDisplayNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppSpeedLabel);
+    // Use LvglSuppSignNode to update the supp icon image based on CAN arg value
+    auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon);
     addChild(groupBottom, sliSuppNode);
 
-    auto* noPassSuppNode = new LvglDisplayNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP);
+    auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
     addChild(groupBottom, noPassSuppNode);
 
-    auto* motorwaySuppNode = new LvglDisplayNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP);
+    auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
     addChild(groupBottom, motorwaySuppNode);
 
-    auto* expresswaySuppNode = new LvglDisplayNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP);
+    auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
     addChild(groupBottom, expresswaySuppNode);
 
-    auto* playgroundSuppNode = new LvglDisplayNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP);
+    auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
     addChild(groupBottom, playgroundSuppNode);
 
-    // RTW alert (full-screen, under generalPanel at layer=0 so it overlays like discon)
+    // RTW alert (full-screen, under mainPanel at layer=0 — QML has it inside main_panel)
     auto* rtwAlertNode = new LvglDisplayNode(rtwAlertWidget, 0, ID_ALERT_RTW_ALERT);
-    addChild(generalPanel, rtwAlertNode);
+    addChild(mainPanel, rtwAlertNode);
 
-    // Dummy nodes for Bulk 3 entities (registered but no visual effect)
-    auto* tsrNotIsaNode = new LvglDisplayNode(nullptr, 0, ID_STATE_TSR_NOT_ISA);
+    // ISA/TSR state machine nodes: notify menu controller of ISA availability
+    auto* tsrNotIsaNode = new LvglTsrStateNode(0, ID_STATE_TSR_NOT_ISA, menuController_);
     addChild(leftPanel, tsrNotIsaNode);
 
-    auto* isaNotTsrNode = new LvglDisplayNode(nullptr, 0, ID_STATE_ISA_NOT_TSR);
+    auto* isaNotTsrNode = new LvglIsaStateNode(0, ID_STATE_ISA_NOT_TSR, menuController_);
     addChild(leftPanel, isaNotTsrNode);
 
     auto* sliShowNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_SLI_SHOW);
     addChild(leftPanel, sliShowNode);
 
-    auto* isaOverspeedNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_ISA_OVERSPEED);
+    auto* isaOverspeedNode = new LvglOverspeedBlinkNode(0, ID_ALERT_ISA_OVERSPEED, sliWidget, isaSpeedWidget);
     addChild(leftPanel, isaOverspeedNode);
 
-    auto* shapeUsaNode = new LvglDisplayNode(nullptr, 0, ID_SHAPE_USA);
+    // SHAPE_USA: switch SLI from circular to rectangular sign image
+    // Get the image child (first child) from each SLI sign container
+    lv_obj_t* sliSignImg = lv_obj_get_child(sliWidget, 0);
+    lv_obj_t* sliSuppSignImg = lv_obj_get_child(sliSuppWidget, 0);
+    auto* shapeUsaNode = new LvglShapeUsaNode(0, ID_SHAPE_USA, sliSignImg, sliSuppSignImg);
     addChild(leftPanel, shapeUsaNode);
 
     auto* isaVersionNode = new LvglDisplayNode(nullptr, 0, ID_INFO_ISA_VERSION);
@@ -800,6 +834,19 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* smartWeaTstmSecNode  = new LvglDisplayNode(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
     addChild(groupBottomSadas, smartWeaTstmSecNode);
 
+    // SMART_FATIGUE / SMART_BUMPERS: in JSON + QML but no UI in QML (placeholders)
+    auto* smartFatigueNode = new LvglDisplayNode(nullptr, 0, ID_SMART_FATIGUE);
+    addChild(groupTopSadas, smartFatigueNode);
+
+    auto* smartBumpersNode = new LvglDisplayNode(nullptr, 0, ID_SMART_BUMPERS);
+    addChild(groupTopSadas, smartBumpersNode);
+
+    auto* smartFatigueSecNode = new LvglDisplayNode(nullptr, 0, ID_SMART_FATIGUE_SEC);
+    addChild(groupBottomSadas, smartFatigueSecNode);
+
+    auto* smartBumpersSecNode = new LvglDisplayNode(nullptr, 0, ID_SMART_BUMPERS_SEC);
+    addChild(groupBottomSadas, smartBumpersSecNode);
+
     // --- Bulk 5: Menu entities (not part of display tree — handled by menu controller) ---
     // FUNC_BUTTONS: registered as dummy (keyboard events handled via SDL)
     auto* funcButtonsNode = new LvglDisplayNode(nullptr, 0, ID_FUNC_BUTTONS);
@@ -855,6 +902,10 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
         speedSmallImg, speedBigImg, speedSmallLabel, speedBigLabel,
         0, ID_TEST_SPEED);
     addChild(signalTestPanel, testSpeedNode);
+
+    // TEST_SPEED_VALUE: in JSON, value-only entity used alongside TEST_SPEED
+    auto* testSpeedValueNode = new LvglDisplayNode(nullptr, 0, ID_TEST_SPEED_VALUE);
+    addChild(signalTestPanel, testSpeedValueNode);
 
     // --- Peripheral test screen (modeGroup) ---
     auto* peripheralTestPanel = new LvglDisplayNode(peripheralTestWidget, 0, ID_INFO_TEST_PERIPHERALS, true);

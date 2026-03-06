@@ -45,4 +45,18 @@ private:
     void handleMutexGroup();
 };
 
+// Display node with auto-dismiss timer (max_duration_timer from QML)
+class LvglTimedDisplayNode : public LvglDisplayNode {
+public:
+    LvglTimedDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, int maxDurationMs);
+
+    void onBecomeVisible() override;
+    void onBecomeInvisible() override;
+
+private:
+    static void timerCb(lv_timer_t* timer);
+    int maxDurationMs_;
+    lv_timer_t* timer_;
+};
+
 #endif // LVGL_DISPLAY_NODE_H

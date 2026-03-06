@@ -170,3 +170,44 @@ void LvglDisplayNode::handleMutexGroup()
         static_cast<LvglDisplayNode*>(*it)->activationSemaphore_ = 0;
     }
 }
+
+// --- LvglTimedDisplayNode ---
+LvglTimedDisplayNode::LvglTimedDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, int maxDurationMs)
+    : LvglDisplayNode(widget, layer, entityType)
+    , maxDurationMs_(maxDurationMs)
+    , timer_(nullptr)
+{
+}
+
+void LvglTimedDisplayNode::timerCb(lv_timer_t* timer)
+{
+    auto* node = static_cast<LvglTimedDisplayNode*>(lv_timer_get_user_data(timer));
+    // Auto-dismiss: deactivate the node (QML: itemActionDeactivate)
+    node->deactivate();
+    node->onBecomeInvisible();
+    node->timer_ = nullptr;
+}
+
+void LvglTimedDisplayNode::onBecomeVisible()
+{
+    LvglDisplayNode::onBecomeVisible();
+
+    // Start auto-dismiss timer
+    if (maxDurationMs_ > 0) {
+        if (timer_) {
+            lv_timer_delete(timer_);
+        }
+        timer_ = lv_timer_create(timerCb, maxDurationMs_, this);
+        lv_timer_set_repeat_count(timer_, 1);
+    }
+}
+
+void LvglTimedDisplayNode::onBecomeInvisible()
+{
+    LvglDisplayNode::onBecomeInvisible();
+
+    if (timer_) {
+        lv_timer_delete(timer_);
+        timer_ = nullptr;
+    }
+}

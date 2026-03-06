@@ -41,8 +41,8 @@ lv_obj_t* createFCWAlert(lv_obj_t* parent);
 // Full-screen PCW alert with animated GIF
 lv_obj_t* createPCWAlert(lv_obj_t* parent);
 
-// Speed display panel at bottom-center; outputs valueLabel for dynamic text
-lv_obj_t* createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabel);
+// Speed display panel at bottom-center; outputs valueLabel and unitLabel for dynamic text
+lv_obj_t* createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabel, lv_obj_t** unitLabel = nullptr);
 
 // HMW distance display with road strip GIF, forward car, host car, and time value
 HMWWidgets createHMWDisplay(lv_obj_t* parent);
