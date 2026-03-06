@@ -32,6 +32,11 @@ private:
     core::Thread* itsThread_;
     LvglDisplayNode* displayRoot_;
     std::atomic<bool> displayDirty_;
+
+    // Host car widget and LDW nodes for shift animation
+    lv_obj_t* hostCar_;
+    LvglDisplayNode* lldwNode_;
+    LvglDisplayNode* rldwNode_;
 };
 
 #endif // LVGL_MAIN_PROCESS_H
