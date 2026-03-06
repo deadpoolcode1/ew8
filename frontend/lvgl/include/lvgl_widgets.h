@@ -68,6 +68,18 @@ lv_obj_t* createOpModeOverlay(lv_obj_t* parent, const char* text);
 // PDZ pedestrian danger zone overlay (positioned in main panel area)
 lv_obj_t* createPDZOverlay(lv_obj_t* parent);
 
+// Left panel sign (image only, e.g. TSR signs). upperSlot=true for top, false for bottom.
+lv_obj_t* createLeftPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot);
+
+// Speed limit sign with numeric overlay (SLI/ISA). Returns container, outputs speedLabel.
+lv_obj_t* createSpeedLimitSign(lv_obj_t* parent, const char* signImgSrc, bool upperSlot, lv_obj_t** speedLabel);
+
+// Full-screen RTW alert (black bg + large traffic light image)
+lv_obj_t* createRTWAlert(lv_obj_t* parent);
+
+// Right panel sign (image only, e.g. SmartADAS icons). upperSlot=true for top, false for bottom.
+lv_obj_t* createRightPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot);
+
 } // namespace LvglWidgets
 
 #endif // LVGL_WIDGETS_H

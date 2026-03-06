@@ -389,3 +389,110 @@ lv_obj_t* LvglWidgets::createPDZOverlay(lv_obj_t* parent)
 
     return cont;
 }
+
+// Left panel sign constants
+// Signs are 112x112 native. QML target_scale=0.732 → 82x82 rendered.
+// LVGL scale: 0.732 * 256 = 187
+static const int LEFT_PANEL_SIGN_SCALE = 187;
+static const int LEFT_PANEL_SIGN_SIZE = 82;  // 112 * 0.732
+
+// Right panel sign constants
+// Signs are 136x136 native. QML target_scale=0.732 → ~100x100 rendered.
+static const int RIGHT_PANEL_SIGN_SCALE = 187;
+static const int RIGHT_PANEL_SIGN_SIZE = 100;  // 136 * 0.732
+// QML: right_panel width=50, rightMargin=0, topMargin=12, bottomMargin=12
+static const int RIGHT_PANEL_MARGIN = 12;
+
+lv_obj_t* LvglWidgets::createLeftPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
+{
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_SIZE, LEFT_PANEL_SIGN_SIZE);
+    int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
+    lv_obj_set_pos(cont, 0, y);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, imageSrc);
+    lv_image_set_pivot(img, 0, 0);
+    lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
+    lv_obj_set_pos(img, 0, 0);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createSpeedLimitSign(lv_obj_t* parent, const char* signImgSrc,
+                                              bool upperSlot, lv_obj_t** speedLabel)
+{
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_SIZE, LEFT_PANEL_SIGN_SIZE);
+    int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
+    lv_obj_set_pos(cont, 0, y);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, signImgSrc);
+    lv_image_set_pivot(img, 0, 0);
+    lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
+    lv_obj_set_pos(img, 0, 0);
+
+    // Speed number text centered on the sign
+    // QML: font.pixelSize 36, scale varies. Effective ~26px at sign scale.
+    lv_obj_t* label = lv_label_create(cont);
+    lv_label_set_text(label, "");
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_color(label, lv_color_black(), 0);
+    lv_obj_align(label, LV_ALIGN_CENTER, 1, 0);
+
+    *speedLabel = label;
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createRTWAlert(lv_obj_t* parent)
+{
+    // QML: full-screen black rectangle with large traffic light centered
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    lv_obj_set_pos(cont, 0, 0);
+    lv_obj_set_style_bg_color(cont, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(cont, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(cont, 0, 0);
+    lv_obj_set_style_radius(cont, 0, 0);
+    lv_obj_set_style_pad_all(cont, 0, 0);
+    lv_obj_remove_flag(cont, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, "A:images/traffic-violation/left_TV_RL_big.png");
+    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createRightPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
+{
+    // QML: SideIcon quadrant 1 (upper-right) / quadrant 4 (lower-right)
+    // right_panel: width=50, x=270, topMargin=12, bottomMargin=12
+    // Icon position: x = parentWidth - scaledSize = 50 - 100 = -50 relative to right panel
+    // Global: x = 270 - 50 = 220
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, RIGHT_PANEL_SIGN_SIZE, RIGHT_PANEL_SIGN_SIZE);
+    int x = DISPLAY_WIDTH - RIGHT_PANEL_SIGN_SIZE;
+    int y = upperSlot ? (MAIN_PANEL_Y + RIGHT_PANEL_MARGIN)
+                      : (DISPLAY_HEIGHT - RIGHT_PANEL_MARGIN - RIGHT_PANEL_SIGN_SIZE);
+    lv_obj_set_pos(cont, x, y);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, imageSrc);
+    lv_image_set_pivot(img, 0, 0);
+    lv_image_set_scale(img, RIGHT_PANEL_SIGN_SCALE);
+    lv_obj_set_pos(img, 0, 0);
+
+    return cont;
+}

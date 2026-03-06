@@ -15,6 +15,9 @@ static int display_height = 0;
 // Flag to track if display needs refresh
 static bool display_needs_refresh = false;
 
+// Last key pressed during poll
+static int last_key_pressed = 0;
+
 /**
  * SDL display flush callback for LVGL
  */
@@ -120,12 +123,21 @@ void sdl_display_present_if_needed()
 
 bool sdl_display_poll_events()
 {
+    last_key_pressed = 0;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT)
             return false;
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-            return false;
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_ESCAPE)
+                return false;
+            last_key_pressed = event.key.keysym.sym;
+        }
     }
     return true;
+}
+
+int sdl_display_get_last_key()
+{
+    return last_key_pressed;
 }

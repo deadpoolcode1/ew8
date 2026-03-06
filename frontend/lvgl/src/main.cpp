@@ -86,6 +86,12 @@ int main(int argc, char* argv[])
 
         lv_tick_inc(elapsed);
 
+        // Route SDL key events to menu controller
+        int key = sdl_display_get_last_key();
+        if (key) {
+            mainProcess->handleKeyEvent(key);
+        }
+
         // Apply pending display tree updates from backend threads
         mainProcess->applyPendingDisplayUpdate();
 
