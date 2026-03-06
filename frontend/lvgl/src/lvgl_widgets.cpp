@@ -36,8 +36,19 @@ static void styleTransparent(lv_obj_t* obj)
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
 }
 
-lv_obj_t* LvglWidgets::createStatusBar(lv_obj_t* parent)
+// Helper: create a hidden image at a given position within a parent
+static lv_obj_t* createHiddenImage(lv_obj_t* parent, const char* src)
 {
+    lv_obj_t* img = lv_image_create(parent);
+    lv_image_set_src(img, src);
+    lv_obj_add_flag(img, LV_OBJ_FLAG_HIDDEN);
+    return img;
+}
+
+LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
+{
+    StatusBarWidgets w = {};
+
     // QML: status_panel height:43, anchors top:8 left:8 right:8
     lv_obj_t* bar = lv_obj_create(parent);
     lv_obj_set_size(bar, DISPLAY_WIDTH - 2 * STATUS_BAR_MARGIN, STATUS_BAR_HEIGHT);
@@ -49,7 +60,58 @@ lv_obj_t* LvglWidgets::createStatusBar(lv_obj_t* parent)
     lv_image_set_src(logo, "A:images/logo/ME_status_logo.png");
     lv_obj_align(logo, LV_ALIGN_TOP_MID, 0, 5);
 
-    return bar;
+    // --- Left row (LV_FLEX_FLOW_ROW, spacing=8) ---
+    lv_obj_t* leftRow = lv_obj_create(bar);
+    lv_obj_set_size(leftRow, LV_SIZE_CONTENT, 42);
+    lv_obj_set_pos(leftRow, 0, -2);
+    styleTransparent(leftRow);
+    lv_obj_set_flex_flow(leftRow, LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(leftRow, 8, 0);
+    lv_obj_set_flex_align(leftRow, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+
+    // Speed placeholder — 42px wide to reserve space (actual speed widget is separate)
+    lv_obj_t* speedSpacer = lv_obj_create(leftRow);
+    lv_obj_set_size(speedSpacer, 42, 35);
+    styleTransparent(speedSpacer);
+
+    // High beam icon
+    w.hiBeamIcon = createHiddenImage(leftRow, "A:images/status-bar/status_IHC_high.png");
+
+    // Low beam icon (same slot position — both hidden by default, mutually exclusive)
+    w.loBeamIcon = createHiddenImage(leftRow, "A:images/status-bar/status_IHC_low.png");
+
+    // Blinker icon (will use blink animation)
+    w.blinkerIcon = createHiddenImage(leftRow, "A:images/status-bar/status_blinker_yellow.png");
+
+    // --- Right row (LV_FLEX_FLOW_ROW_REVERSE, spacing=7) ---
+    lv_obj_t* rightRow = lv_obj_create(bar);
+    lv_obj_set_size(rightRow, LV_SIZE_CONTENT, 42);
+    styleTransparent(rightRow);
+    lv_obj_set_flex_flow(rightRow, LV_FLEX_FLOW_ROW_REVERSE);
+    lv_obj_set_style_pad_column(rightRow, 7, 0);
+    lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+    // Anchor to right edge of status bar
+    lv_obj_align(rightRow, LV_ALIGN_TOP_RIGHT, 0, -2);
+
+    // ISA status icons (47x35 — 4 stacked, mutually exclusive)
+    w.isaErrorIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_error.png");
+    w.isaInactiveIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_full_deact.png");
+    w.isaPartialIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_part_deact.png");
+    w.isaActiveIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_full_act.png");
+
+    // Signed status icons (3 stacked, mutually exclusive)
+    w.signedInIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_in.png");
+    w.signedOutIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_out.png");
+    w.signedProcessIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_process.png");
+
+    // Comm info icons
+    w.gsmIcon = createHiddenImage(rightRow, "A:images/status-bar/status_no_GSM.png");
+    w.gpsIcon = createHiddenImage(rightRow, "A:images/status-bar/status_no_GPS.png");
+
+    // Mute icon
+    w.muteIcon = createHiddenImage(rightRow, "A:images/status-bar/status_mute.png");
+
+    return w;
 }
 
 lv_obj_t* LvglWidgets::createDisconnectOverlay(lv_obj_t* parent)
@@ -139,50 +201,51 @@ lv_obj_t* LvglWidgets::createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabe
     return cont;
 }
 
-lv_obj_t* LvglWidgets::createHMWDisplay(lv_obj_t* parent, lv_obj_t** valueLabel)
+LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
 {
+    HMWWidgets w = {};
+
     // QML: HMW item width:220, height:190, centered in groupCIPV
     // groupCIPV is in main_panel (below status bar)
-    lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, 220, MAIN_PANEL_HEIGHT);
-    lv_obj_set_pos(cont, (DISPLAY_WIDTH - 220) / 2, MAIN_PANEL_Y);
-    styleTransparent(cont);
-    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    w.container = lv_obj_create(parent);
+    lv_obj_set_size(w.container, 220, MAIN_PANEL_HEIGHT);
+    lv_obj_set_pos(w.container, (DISPLAY_WIDTH - 220) / 2, MAIN_PANEL_Y);
+    styleTransparent(w.container);
+    lv_obj_add_flag(w.container, LV_OBJ_FLAG_HIDDEN);
 
-    // Road strip GIF — anchored bottom-center
-    lv_obj_t* roadGif = lv_gif_create(cont);
-    lv_gif_set_src(roadGif, "A:images/hmw/HMW-green-new-2.gif");
-    lv_obj_align(roadGif, LV_ALIGN_BOTTOM_MID, 0, 0);
+    // Road strip GIF — anchored bottom-center (default: green/monitor state)
+    w.roadStrip = lv_gif_create(w.container);
+    lv_gif_set_src(w.roadStrip, "A:images/hmw/HMW-green-new-2.gif");
+    lv_obj_align(w.roadStrip, LV_ALIGN_BOTTOM_MID, 0, 0);
 
     // Forward vehicle — 80x61, top-center, topMargin ~40
-    lv_obj_t* fwdCar = lv_image_create(cont);
-    lv_image_set_src(fwdCar, "A:images/cars/eyewatch_car_red_hmw-01.png");
-    lv_obj_set_size(fwdCar, 80, 61);
-    lv_obj_set_style_image_recolor(fwdCar, lv_color_white(), 0);
-    lv_obj_align(fwdCar, LV_ALIGN_TOP_MID, 0, 40);
+    w.forwardCar = lv_image_create(w.container);
+    lv_image_set_src(w.forwardCar, "A:images/cars/eyewatch_car_red_hmw-01.png");
+    lv_obj_set_size(w.forwardCar, 80, 61);
+    lv_obj_set_style_image_recolor(w.forwardCar, lv_color_white(), 0);
+    lv_obj_align(w.forwardCar, LV_ALIGN_TOP_MID, 0, 40);
 
     // Host car — 160px wide, bottom-center, bottomMargin -5
-    lv_obj_t* hostCar = lv_image_create(cont);
-    lv_image_set_src(hostCar, "A:images/cars/grey_car_bright.png");
-    lv_obj_set_size(hostCar, 160, LV_SIZE_CONTENT);
-    lv_obj_align(hostCar, LV_ALIGN_BOTTOM_MID, 0, 5);
+    w.hostCar = lv_image_create(w.container);
+    lv_image_set_src(w.hostCar, "A:images/cars/grey_car_bright.png");
+    lv_obj_set_size(w.hostCar, 160, LV_SIZE_CONTENT);
+    lv_obj_align(w.hostCar, LV_ALIGN_BOTTOM_MID, 0, 5);
 
     // Units label: "sec", 20px, #e1f1ff, bottomMargin ~38
-    lv_obj_t* unitsLabel = lv_label_create(cont);
+    lv_obj_t* unitsLabel = lv_label_create(w.container);
     lv_label_set_text(unitsLabel, "sec");
     lv_obj_set_style_text_font(unitsLabel, &lv_font_montserrat_20, 0);
     lv_obj_set_style_text_color(unitsLabel, lv_color_hex(0xe1f1ff), 0);
     lv_obj_align(unitsLabel, LV_ALIGN_BOTTOM_MID, 0, -38);
 
     // Time value label: 28px, #e1f1ff, above units
-    lv_obj_t* valLabel = lv_label_create(cont);
-    lv_label_set_text(valLabel, "0");
-    lv_obj_set_style_text_font(valLabel, &lv_font_montserrat_28, 0);
-    lv_obj_set_style_text_color(valLabel, lv_color_hex(0xe1f1ff), 0);
-    lv_obj_align(valLabel, LV_ALIGN_BOTTOM_MID, 0, -55);
+    w.valueLabel = lv_label_create(w.container);
+    lv_label_set_text(w.valueLabel, "0");
+    lv_obj_set_style_text_font(w.valueLabel, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_color(w.valueLabel, lv_color_hex(0xe1f1ff), 0);
+    lv_obj_align(w.valueLabel, LV_ALIGN_BOTTOM_MID, 0, -55);
 
-    *valueLabel = valLabel;
-    return cont;
+    return w;
 }
 
 lv_obj_t* LvglWidgets::createLDWIndicator(lv_obj_t* parent, bool isLeft)
@@ -226,6 +289,103 @@ lv_obj_t* LvglWidgets::createErrorOverlay(lv_obj_t* parent)
     lv_image_set_src(img, "A:images/error/error_full_display_general_yellow.png");
     lv_image_set_scale(img, 129);
     lv_obj_align(img, LV_ALIGN_BOTTOM_LEFT, -2, 20);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createFailsafeOverlay(lv_obj_t* parent)
+{
+    lv_obj_t* cont = createFullScreenContainer(parent);
+
+    // Eye icon: scaled 0.6 (0.6 * 256 = 154), centered horizontally, top=135
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, "A:images/error/icon_eye.png");
+    lv_image_set_scale(img, 154);
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 135);
+
+    // "Low Visibility" label, yellow #fed500, centered, below icon
+    lv_obj_t* label = lv_label_create(cont);
+    lv_label_set_text(label, "Low Visibility");
+    lv_obj_set_style_text_font(label, &intelone_bold_18, 0);
+    lv_obj_set_style_text_color(label, lv_color_hex(0xfed500), 0);
+    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 195);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createOpModeOverlay(lv_obj_t* parent, const char* text)
+{
+    lv_obj_t* cont = createFullScreenContainer(parent);
+
+    lv_obj_t* label = lv_label_create(cont);
+    lv_label_set_text(label, text);
+    lv_obj_set_style_text_font(label, &intelone_bold_20, 0);
+    lv_obj_set_style_text_color(label, lv_color_hex(0x111abc), 0);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 75);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createLDWOffIndicator(lv_obj_t* parent, bool isLeft)
+{
+    // QML: yellow lane indicator (lane not available)
+    // source: "images/ldw/left_lane_yellow-01.png" (mirrored for right side)
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
+    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, "A:images/ldw/left_lane_yellow-01.png");
+    if (isLeft)
+    {
+        lv_obj_align(img, LV_ALIGN_BOTTOM_LEFT, 50 + 32, 0);
+    }
+    else
+    {
+        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
+    }
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createLDWOnIndicator(lv_obj_t* parent, bool isLeft)
+{
+    // QML: green normal lane indicator (lane available, no departure)
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
+    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_t* img = lv_image_create(cont);
+    if (isLeft)
+    {
+        lv_image_set_src(img, "A:images/ldw/normal_lane_left-01.png");
+        lv_obj_align(img, LV_ALIGN_BOTTOM_LEFT, 50 + 32, 0);
+    }
+    else
+    {
+        lv_image_set_src(img, "A:images/ldw/normal_lane_right-01.png");
+        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
+    }
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createPDZOverlay(lv_obj_t* parent)
+{
+    // QML: alert_pdz — pedestrian image centered in groupCIPV, top-8
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
+    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, "A:images/pdz/main_ped_yellow_old.png");
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, -8);
 
     return cont;
 }
