@@ -1,5 +1,8 @@
 #include "lvgl_widgets.h"
 
+LV_FONT_DECLARE(intelone_bold_18);
+LV_FONT_DECLARE(intelone_bold_20);
+
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
 static const int STATUS_BAR_HEIGHT = 43;
@@ -77,9 +80,9 @@ lv_obj_t* LvglWidgets::createDisconnectOverlay(lv_obj_t* parent)
     // offset from screen center (120) = +65
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "Disconnected");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(label, &intelone_bold_20, 0);
     lv_obj_set_style_text_color(label, lv_color_hex(0x111abc), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 65);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 75);
 
     return cont;
 }
