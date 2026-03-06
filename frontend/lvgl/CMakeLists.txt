@@ -42,6 +42,8 @@ set(FRONTEND_SOURCES
     src/lvgl_widgets.cpp
     src/lvgl_value_display_node.cpp
     src/lvgl_string_display_node.cpp
+    src/lv_font_intelone_bold_18.c
+    src/lv_font_intelone_bold_20.c
 )
 
 add_executable(ew8_lvgl ${FRONTEND_SOURCES})
