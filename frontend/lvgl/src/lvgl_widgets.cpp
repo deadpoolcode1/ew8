@@ -398,9 +398,9 @@ static const int LEFT_PANEL_SIGN_SCALE = 187;
 static const int LEFT_PANEL_SIGN_SIZE = 82;  // 112 * 0.732
 
 // Right panel sign constants
-// Signs are 136x136 native. QML target_scale=0.732 → ~100x100 rendered.
-static const int RIGHT_PANEL_SIGN_SCALE = 187;
-static const int RIGHT_PANEL_SIGN_SIZE = 100;  // 136 * 0.732
+// Signs are 136x136 native. QML SideIcon quadrant 1/4: target_scale=0.6028 → ~82x82 rendered.
+static const int RIGHT_PANEL_SIGN_SCALE = 154;  // 0.6028 * 256
+static const int RIGHT_PANEL_SIGN_SIZE = 82;    // 136 * 0.6028
 // QML: right_panel width=50, rightMargin=0, topMargin=12, bottomMargin=12
 static const int RIGHT_PANEL_MARGIN = 12;
 
