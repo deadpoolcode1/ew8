@@ -5,6 +5,9 @@
 
 namespace LvglWidgets {
 
+// Top status bar with logo (always visible, not in display tree)
+lv_obj_t* createStatusBar(lv_obj_t* parent);
+
 // Full-screen disconnect overlay with warning icon and "Disconnected" label
 lv_obj_t* createDisconnectOverlay(lv_obj_t* parent);
 

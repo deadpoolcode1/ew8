@@ -17,7 +17,7 @@
    MEMORY SETTINGS
  *====================*/
 #define LV_MEM_CUSTOM 0
-#define LV_MEM_SIZE (512 * 1024U)
+#define LV_MEM_SIZE (4 * 1024 * 1024U)
 #define LV_MEM_ADR 0
 #define LV_MEM_POOL_INCLUDE <stdlib.h>
 #define LV_MEM_POOL_ALLOC malloc
@@ -71,10 +71,10 @@
 #define LV_FONT_MONTSERRAT_16 1
 #define LV_FONT_MONTSERRAT_18 1
 #define LV_FONT_MONTSERRAT_20 1
-#define LV_FONT_MONTSERRAT_22 0
+#define LV_FONT_MONTSERRAT_22 1
 #define LV_FONT_MONTSERRAT_24 0
 #define LV_FONT_MONTSERRAT_26 0
-#define LV_FONT_MONTSERRAT_28 0
+#define LV_FONT_MONTSERRAT_28 1
 #define LV_FONT_MONTSERRAT_30 0
 #define LV_FONT_MONTSERRAT_32 1
 #define LV_FONT_MONTSERRAT_34 0
@@ -142,6 +142,7 @@
 #define LV_USE_LIBPNG 0
 #define LV_USE_BMP 0
 #define LV_USE_SJPG 0
-#define LV_USE_GIF 0
+#define LV_USE_GIF 1
+#define LV_GIF_CACHE_DECODE_DATA 1
 
 #endif /* LV_CONF_H */
