@@ -33,6 +33,22 @@ LvglDisplayNode::LvglDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID en
     EntityType::linkByEntityType(entityType, this);
 }
 
+// Mode group leaf node constructor — registers entity AND supports modeGroup
+LvglDisplayNode::LvglDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, bool modeGroup)
+    : widget_(widget)
+    , layer_(layer)
+    , activationSemaphore_(0)
+    , mutexGroup_(false)
+    , modeGroup_(modeGroup)
+    , parent_(nullptr)
+    , children_(new LayersPriorityQ())
+    , valueInt_(0)
+    , valueFrac_(0)
+    , unit_(0)
+{
+    EntityType::linkByEntityType(entityType, this);
+}
+
 void LvglDisplayNode::activate()
 {
     if (parent_ != nullptr && parent_->mutexGroup_)

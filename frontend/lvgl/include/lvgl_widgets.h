@@ -80,6 +80,22 @@ lv_obj_t* createRTWAlert(lv_obj_t* parent);
 // Right panel sign (image only, e.g. SmartADAS icons). upperSlot=true for top, false for bottom.
 lv_obj_t* createRightPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot);
 
+// Full-screen colored rectangle overlay (for RGB display tests)
+lv_obj_t* createColorOverlay(lv_obj_t* parent, lv_color_t color);
+
+// Full-screen TV pattern overlay (SMPTE test image)
+lv_obj_t* createTVPatternOverlay(lv_obj_t* parent);
+
+// Signal test background (320x240 image, used as modeGroup container)
+lv_obj_t* createSignalTestScreen(lv_obj_t* parent);
+
+// Peripheral test background (320x240 image, used as modeGroup container)
+lv_obj_t* createPeripheralTestScreen(lv_obj_t* parent);
+
+// Peripheral test group row container (title + sub-items area, 320x80)
+// yPos: vertical position (0=top, 80=middle, 160=bottom)
+lv_obj_t* createPeripheralTestGroupRow(lv_obj_t* parent, const char* title, int yPos);
+
 } // namespace LvglWidgets
 
 #endif // LVGL_WIDGETS_H
