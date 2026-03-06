@@ -4,9 +4,11 @@
 #include "lvgl.h"
 #include <string>
 
+class CanManager;
+
 class LvglMenuController {
 public:
-    LvglMenuController(lv_obj_t* parent);
+    LvglMenuController(lv_obj_t* parent, CanManager* canmgr);
 
     // SDL key event handler (SDLK_UP, SDLK_DOWN, SDLK_RETURN)
     void handleKeyEvent(int sdlKey);
@@ -20,8 +22,12 @@ public:
     void showQRCode(const std::string& data);
     void hideQRCode();
 
+    // ISA state machine: ISA available when STATE_ISA_NOT_TSR activated
+    void setIsaAvailable(bool available);
+    bool isIsaAvailable() const { return isaAvailable_; }
+
 private:
-    enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT };
+    enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT, MENU_VOLUME };
 
     void showMenu(MenuPage page);
     void hideAllMenus();
@@ -48,6 +54,7 @@ private:
     static void autoHideTimerCb(lv_timer_t* timer);
 
     lv_obj_t* parent_;
+    CanManager* canmgr_;
     MenuPage currentMenu_;
 
     // Brightness (levels 1-5)
@@ -76,6 +83,10 @@ private:
     // QR code
     lv_obj_t* qrScreen_;
     lv_obj_t* qrLabel_;
+    lv_obj_t* qrCode_;
+
+    // ISA availability (driven by STATE_ISA_NOT_TSR / STATE_TSR_NOT_ISA)
+    bool isaAvailable_;
 
     // Auto-hide timer
     lv_timer_t* autoHideTimer_;

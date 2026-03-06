@@ -173,7 +173,7 @@ lv_obj_t* LvglWidgets::createPCWAlert(lv_obj_t* parent)
     return cont;
 }
 
-lv_obj_t* LvglWidgets::createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabel)
+lv_obj_t* LvglWidgets::createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabel, lv_obj_t** unitLabelOut)
 {
     // QML: speed Rectangle in status bar left_row
     // width:42, height:35, transparent, positioned top-left of status bar
@@ -198,6 +198,7 @@ lv_obj_t* LvglWidgets::createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabe
     lv_obj_align(unitLabel, LV_ALIGN_BOTTOM_MID, 0, 0);
 
     *valueLabel = valLabel;
+    if (unitLabelOut) *unitLabelOut = unitLabel;
     return cont;
 }
 

@@ -1,4 +1,5 @@
 #include "lvgl_menu_controller.h"
+#include "canmanager.h"
 #include <SDL2/SDL.h>
 #include <cstdio>
 
@@ -64,12 +65,14 @@ static lv_obj_t* createMenuScreen(lv_obj_t* parent)
     return cont;
 }
 
-LvglMenuController::LvglMenuController(lv_obj_t* parent)
+LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     : parent_(parent)
+    , canmgr_(canmgr)
     , currentMenu_(MENU_NONE)
     , brightnessLevel_(5)
     , volumeValue_(0), volumeMin_(0), volumeMax_(5)
     , isaMode_(0)
+    , isaAvailable_(false)
     , autoHideTimer_(nullptr)
 {
     // --- Brightness menu ---
@@ -175,12 +178,21 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent)
     lv_image_set_src(qrLogo, "A:images/logo/ME_status_logo.png");
     lv_obj_align(qrLogo, LV_ALIGN_TOP_MID, 0, 5);
 
-    // QR label (placeholder - actual QR code rendering would need QR library)
+    // QR code widget (real QR rendering via LVGL lv_qrcode)
+    qrCode_ = lv_qrcode_create(qrScreen_);
+    lv_qrcode_set_size(qrCode_, 150);
+    lv_qrcode_set_dark_color(qrCode_, lv_color_black());
+    lv_qrcode_set_light_color(qrCode_, lv_color_white());
+    lv_obj_align(qrCode_, LV_ALIGN_CENTER, 0, 15);
+    // Default placeholder text
+    lv_qrcode_update(qrCode_, "https://mobileye.com", 20);
+
+    // Fallback label (shown below QR code for URL text)
     qrLabel_ = lv_label_create(qrScreen_);
-    lv_label_set_text(qrLabel_, "QR Code");
-    lv_obj_set_style_text_font(qrLabel_, &intelone_bold_20, 0);
+    lv_label_set_text(qrLabel_, "");
+    lv_obj_set_style_text_font(qrLabel_, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(qrLabel_, COLOR_WHITE, 0);
-    lv_obj_align(qrLabel_, LV_ALIGN_CENTER, 0, 20);
+    lv_obj_align(qrLabel_, LV_ALIGN_BOTTOM_MID, 0, -10);
 }
 
 LvglMenuController::ProgressBar LvglMenuController::createProgressBar(
@@ -387,19 +399,28 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
 {
     switch (sdlKey) {
     case SDLK_RETURN:
-        // Cycle menus: none → brightness → ISA → about → none
+        // Cycle menus: none → brightness → [ISA if available] → about → none
+        // Volume menu is entered externally via VOLUME_DONE CAN; Return sends mute
         switch (currentMenu_) {
         case MENU_NONE:
             showMenu(MENU_BRIGHTNESS);
             break;
         case MENU_BRIGHTNESS:
-            showMenu(MENU_ISA);
+            if (isaAvailable_)
+                showMenu(MENU_ISA);
+            else
+                showMenu(MENU_ABOUT);
             break;
         case MENU_ISA:
             showMenu(MENU_ABOUT);
             break;
         case MENU_ABOUT:
             hideAllMenus();
+            break;
+        case MENU_VOLUME:
+            // QML: Return in volume menu → sendVolumeGet() (mute toggle)
+            if (canmgr_) canmgr_->sendVolumeGet();
+            restartAutoHide(5000);
             break;
         }
         break;
@@ -417,7 +438,16 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             if (isaMode_ < 2) {
                 isaMode_++;
                 updateISADisplay();
+                // Send ISA CAN command (QML: isaMenu.up())
+                if (canmgr_) {
+                    if (isaMode_ == 1) canmgr_->sendISAPartDeact();      // was 0, now 1
+                    else if (isaMode_ == 2) canmgr_->sendISAFullActivate(); // was 1, now 2
+                }
             }
+            restartAutoHide(5000);
+            break;
+        case MENU_VOLUME:
+            if (canmgr_) canmgr_->sendVolumeUp();
             restartAutoHide(5000);
             break;
         default:
@@ -438,7 +468,16 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             if (isaMode_ > 0) {
                 isaMode_--;
                 updateISADisplay();
+                // Send ISA CAN command (QML: isaMenu.down())
+                if (canmgr_) {
+                    if (isaMode_ == 0) canmgr_->sendISAFullDeact();      // was 1, now 0
+                    else if (isaMode_ == 1) canmgr_->sendISAPartDeact(); // was 2, now 1
+                }
             }
+            restartAutoHide(5000);
+            break;
+        case MENU_VOLUME:
+            if (canmgr_) canmgr_->sendVolumeDown();
             restartAutoHide(5000);
             break;
         default:
@@ -455,6 +494,7 @@ void LvglMenuController::showVolumeMenu(uint8_t value, uint8_t min, uint8_t max)
     volumeMax_ = max;
 
     hideAllMenus();
+    currentMenu_ = MENU_VOLUME;
     lv_obj_remove_flag(volumeScreen_, LV_OBJ_FLAG_HIDDEN);
     updateVolumeDisplay();
     restartAutoHide(5000);
@@ -475,11 +515,23 @@ void LvglMenuController::showVolumeFail()
 
 void LvglMenuController::showQRCode(const std::string& data)
 {
-    lv_label_set_text(qrLabel_, data.empty() ? "QR Code" : data.c_str());
+    if (!data.empty()) {
+        lv_qrcode_update(qrCode_, data.c_str(), data.size());
+        lv_label_set_text(qrLabel_, data.c_str());
+    }
     lv_obj_remove_flag(qrScreen_, LV_OBJ_FLAG_HIDDEN);
 }
 
 void LvglMenuController::hideQRCode()
 {
     lv_obj_add_flag(qrScreen_, LV_OBJ_FLAG_HIDDEN);
+}
+
+void LvglMenuController::setIsaAvailable(bool available)
+{
+    isaAvailable_ = available;
+    // If ISA just became unavailable while ISA menu is showing, skip to about
+    if (!available && currentMenu_ == MENU_ISA) {
+        showMenu(MENU_ABOUT);
+    }
 }

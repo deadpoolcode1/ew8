@@ -144,5 +144,6 @@
 #define LV_USE_SJPG 0
 #define LV_USE_GIF 1
 #define LV_GIF_CACHE_DECODE_DATA 1
+#define LV_USE_QRCODE 1
 
 #endif /* LV_CONF_H */
