@@ -6,6 +6,7 @@
 #include "lvgl_hmw_state_node.h"
 #include "lvgl_menu_controller.h"
 #include "lvgl_menu_display_node.h"
+#include "lvgl_test_display_node.h"
 #include "lvgl_widgets.h"
 #include "entitytype.h"
 #include "alerttypes_core.h"
@@ -187,6 +188,25 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     DISPLAY_ITEM_ID ID_VOLUME_FAIL            = GraphicItemsEnumMap::getId("VOLUME_FAIL");
     DISPLAY_ITEM_ID ID_INFO_QRCODE            = GraphicItemsEnumMap::getId("INFO_QRCODE");
 
+    // Bulk 6: Diagnostics / Tests
+    DISPLAY_ITEM_ID ID_RGB_RED                = GraphicItemsEnumMap::getId("RGB_RED");
+    DISPLAY_ITEM_ID ID_RGB_GREEN              = GraphicItemsEnumMap::getId("RGB_GREEN");
+    DISPLAY_ITEM_ID ID_RGB_BLUE               = GraphicItemsEnumMap::getId("RGB_BLUE");
+    DISPLAY_ITEM_ID ID_RGB_WHITE              = GraphicItemsEnumMap::getId("RGB_WHITE");
+    DISPLAY_ITEM_ID ID_TV_PATTERN             = GraphicItemsEnumMap::getId("TV_PATTERN");
+    DISPLAY_ITEM_ID ID_INFO_TEST_SIGNALS      = GraphicItemsEnumMap::getId("INFO_TEST_SIGNALS");
+    DISPLAY_ITEM_ID ID_TEST_BRAKES            = GraphicItemsEnumMap::getId("TEST_BRAKES");
+    DISPLAY_ITEM_ID ID_TEST_WIPERS            = GraphicItemsEnumMap::getId("TEST_WIPERS");
+    DISPLAY_ITEM_ID ID_TEST_HIGH_BEAM         = GraphicItemsEnumMap::getId("TEST_HIGH_BEAM");
+    DISPLAY_ITEM_ID ID_TEST_BLINKER_LEFT      = GraphicItemsEnumMap::getId("TEST_BLINKER_LEFT");
+    DISPLAY_ITEM_ID ID_TEST_BLINKER_RIGHT     = GraphicItemsEnumMap::getId("TEST_BLINKER_RIGHT");
+    DISPLAY_ITEM_ID ID_TEST_REVERSE           = GraphicItemsEnumMap::getId("TEST_REVERSE");
+    DISPLAY_ITEM_ID ID_TEST_SPEED             = GraphicItemsEnumMap::getId("TEST_SPEED");
+    DISPLAY_ITEM_ID ID_INFO_TEST_PERIPHERALS  = GraphicItemsEnumMap::getId("INFO_TEST_PERIPHERALS");
+    DISPLAY_ITEM_ID ID_INFO_TEST_GSM          = GraphicItemsEnumMap::getId("INFO_TEST_GSM");
+    DISPLAY_ITEM_ID ID_INFO_TEST_GPS          = GraphicItemsEnumMap::getId("INFO_TEST_GPS");
+    DISPLAY_ITEM_ID ID_INFO_TEST_GYRO         = GraphicItemsEnumMap::getId("INFO_TEST_GYRO");
+
     // --- Create LVGL widgets ---
     lv_obj_t* rootWidget = createRootContainer(screen);
 
@@ -293,6 +313,136 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* smartWeaTstmSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_lightening.png", false);
     lv_obj_t* smartHarshDzSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_harsh_break.png", false);
     lv_obj_t* smartCaSecWidget        = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ca.png", false);
+
+    // --- Bulk 6: Display test overlays ---
+    lv_obj_t* rgbRedWidget   = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(255, 0, 0));
+    lv_obj_t* rgbGreenWidget = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(0, 128, 0));
+    lv_obj_t* rgbBlueWidget  = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(0, 0, 255));
+    lv_obj_t* rgbWhiteWidget = LvglWidgets::createColorOverlay(rootWidget, lv_color_white());
+    lv_obj_t* tvPatternWidget = LvglWidgets::createTVPatternOverlay(rootWidget);
+
+    // Signal test screen (modeGroup container with background)
+    lv_obj_t* signalTestWidget = LvglWidgets::createSignalTestScreen(rootWidget);
+
+    // Signal test small icons in grid (2x5 grid at x=40, y=12 within signalTestWidget)
+    // Grid: row 0 cols 0-4, row 1 cols 0-1. Each cell 50x50, spacing 0.
+    struct { const char* wildcard; int gridX; int gridY; } signalItems[] = {
+        {"Brake",  40,  12},   // row 0, col 0
+        {"Whip",   90,  12},   // row 0, col 1
+        {"Lights", 140, 12},   // row 0, col 2
+        {"Left",   190, 12},   // row 0, col 3
+        {"Right",  240, 12},   // row 0, col 4
+        {"R",      40,  62},   // row 1, col 0
+    };
+
+    lv_obj_t* sigSmallImgs[6];
+    lv_obj_t* sigBigImgs[6];
+    for (int i = 0; i < 6; i++) {
+        // Small icon (50x50 in grid)
+        sigSmallImgs[i] = lv_image_create(signalTestWidget);
+        char defaultPath[128];
+        snprintf(defaultPath, sizeof(defaultPath), "A:images/signal-test/EW8_%s-gry.png",
+                 signalItems[i].wildcard);
+        lv_image_set_src(sigSmallImgs[i], defaultPath);
+        lv_obj_set_pos(sigSmallImgs[i], signalItems[i].gridX, signalItems[i].gridY);
+        lv_obj_set_size(sigSmallImgs[i], 50, 50);
+
+        // Big icon (120x120 centered, verticalCenterOffset=49)
+        sigBigImgs[i] = lv_image_create(signalTestWidget);
+        lv_image_set_src(sigBigImgs[i], defaultPath);
+        lv_obj_align(sigBigImgs[i], LV_ALIGN_CENTER, 0, 49);
+        lv_obj_set_size(sigBigImgs[i], 120, 120);
+        lv_obj_add_flag(sigBigImgs[i], LV_OBJ_FLAG_HIDDEN);
+    }
+
+    // Speed small + big icons with text labels
+    lv_obj_t* speedSmallImg = lv_image_create(signalTestWidget);
+    lv_image_set_src(speedSmallImg, "A:images/signal-test/EW8_Empty-gry.png");
+    lv_obj_set_pos(speedSmallImg, 90, 62);  // row 1, col 1
+    lv_obj_set_size(speedSmallImg, 50, 50);
+
+    lv_obj_t* speedSmallLabel = lv_label_create(signalTestWidget);
+    lv_label_set_text(speedSmallLabel, "X");
+    lv_obj_set_style_text_font(speedSmallLabel, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_color(speedSmallLabel, lv_color_hex(0x99a0a6), 0);
+    lv_obj_set_pos(speedSmallLabel, 90 + 25, 62 + 25);
+    lv_obj_align(speedSmallLabel, LV_ALIGN_DEFAULT, 0, 0);
+    lv_obj_set_pos(speedSmallLabel, 90, 62);
+    lv_obj_set_size(speedSmallLabel, 50, 50);
+    lv_obj_set_style_text_align(speedSmallLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_align(speedSmallLabel, LV_ALIGN_DEFAULT, 0, 0);
+    // Center the text within the 50x50 area
+    lv_obj_set_pos(speedSmallLabel, 90, 62 + 15);
+
+    lv_obj_t* speedBigImg = lv_image_create(signalTestWidget);
+    lv_image_set_src(speedBigImg, "A:images/signal-test/EW8_Empty-gry.png");
+    lv_obj_align(speedBigImg, LV_ALIGN_CENTER, 0, 49);
+    lv_obj_set_size(speedBigImg, 120, 120);
+    lv_obj_add_flag(speedBigImg, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_t* speedBigLabel = lv_label_create(signalTestWidget);
+    lv_label_set_text(speedBigLabel, "X");
+    lv_obj_set_style_text_font(speedBigLabel, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_color(speedBigLabel, lv_color_hex(0x99a0a6), 0);
+    lv_obj_align(speedBigLabel, LV_ALIGN_CENTER, 0, 49);
+    lv_obj_add_flag(speedBigLabel, LV_OBJ_FLAG_HIDDEN);
+
+    // Peripheral test screen (modeGroup container with background)
+    lv_obj_t* peripheralTestWidget = LvglWidgets::createPeripheralTestScreen(rootWidget);
+
+    // GSM group row (y=0, top)
+    lv_obj_t* gsmRow = LvglWidgets::createPeripheralTestGroupRow(peripheralTestWidget, "GSM", 0);
+    lv_obj_t* gsmIcons[3];
+    for (int i = 0; i < 3; i++) {
+        gsmIcons[i] = lv_image_create(gsmRow);
+        char path[128];
+        snprintf(path, sizeof(path), "A:images/peripheral-test/Peripherals_Test_GSM_%d_blu.png", i + 1);
+        lv_image_set_src(gsmIcons[i], path);
+        lv_obj_set_size(gsmIcons[i], 60, 60);
+        lv_obj_set_pos(gsmIcons[i], 70 + i * 65, 10);
+        lv_obj_add_flag(gsmIcons[i], LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_t* gsmResult = lv_image_create(gsmRow);
+    lv_image_set_src(gsmResult, "A:images/peripheral-test/Peripherals_Result_blu.png");
+    lv_obj_set_size(gsmResult, 39, 39);
+    lv_obj_align(gsmResult, LV_ALIGN_RIGHT_MID, -15, 0);
+    lv_obj_add_flag(gsmResult, LV_OBJ_FLAG_HIDDEN);
+
+    // GPS group row (y=80, middle)
+    lv_obj_t* gpsRow = LvglWidgets::createPeripheralTestGroupRow(peripheralTestWidget, "GPS", 80);
+    lv_obj_t* gpsIcons[2];
+    for (int i = 0; i < 2; i++) {
+        gpsIcons[i] = lv_image_create(gpsRow);
+        char path[128];
+        snprintf(path, sizeof(path), "A:images/peripheral-test/Peripherals_Test_GPS_%d_blu.png", i + 1);
+        lv_image_set_src(gpsIcons[i], path);
+        lv_obj_set_size(gpsIcons[i], 60, 60);
+        lv_obj_set_pos(gpsIcons[i], 70 + i * 65, 10);
+        lv_obj_add_flag(gpsIcons[i], LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_t* gpsResult = lv_image_create(gpsRow);
+    lv_image_set_src(gpsResult, "A:images/peripheral-test/Peripherals_Result_blu.png");
+    lv_obj_set_size(gpsResult, 39, 39);
+    lv_obj_align(gpsResult, LV_ALIGN_RIGHT_MID, -15, 0);
+    lv_obj_add_flag(gpsResult, LV_OBJ_FLAG_HIDDEN);
+
+    // Gyro group row (y=160, bottom)
+    lv_obj_t* gyroRow = LvglWidgets::createPeripheralTestGroupRow(peripheralTestWidget, "Gyro", 160);
+    lv_obj_t* gyroIcons[2];
+    for (int i = 0; i < 2; i++) {
+        gyroIcons[i] = lv_image_create(gyroRow);
+        char path[128];
+        snprintf(path, sizeof(path), "A:images/peripheral-test/Peripherals_Test_Gyro_%d_blu.png", i + 1);
+        lv_image_set_src(gyroIcons[i], path);
+        lv_obj_set_size(gyroIcons[i], 60, 60);
+        lv_obj_set_pos(gyroIcons[i], 70 + i * 65, 10);
+        lv_obj_add_flag(gyroIcons[i], LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_t* gyroResult = lv_image_create(gyroRow);
+    lv_image_set_src(gyroResult, "A:images/peripheral-test/Peripherals_Result_blu.png");
+    lv_obj_set_size(gyroResult, 39, 39);
+    lv_obj_align(gyroResult, LV_ALIGN_RIGHT_MID, -15, 0);
+    lv_obj_add_flag(gyroResult, LV_OBJ_FLAG_HIDDEN);
 
     // Status bar with all icons (created last so it renders on top)
     LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
@@ -666,6 +816,74 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // INFO_QRCODE: forwards activation to menu controller
     auto* qrCodeNode = new LvglQRCodeNode(0, ID_INFO_QRCODE, menuController_);
     addChild(statusPanel, qrCodeNode);
+
+    // --- Bulk 6: Display tests (full-screen overlays, high z-order) ---
+    // These are full-screen test screens at the top of the tree (under generalPanel)
+    auto* rgbRedNode   = new LvglDisplayNode(rgbRedWidget,   0, ID_RGB_RED);
+    addChild(generalPanel, rgbRedNode);
+
+    auto* rgbGreenNode = new LvglDisplayNode(rgbGreenWidget, 0, ID_RGB_GREEN);
+    addChild(generalPanel, rgbGreenNode);
+
+    auto* rgbBlueNode  = new LvglDisplayNode(rgbBlueWidget,  0, ID_RGB_BLUE);
+    addChild(generalPanel, rgbBlueNode);
+
+    auto* rgbWhiteNode = new LvglDisplayNode(rgbWhiteWidget, 0, ID_RGB_WHITE);
+    addChild(generalPanel, rgbWhiteNode);
+
+    auto* tvPatternNode = new LvglDisplayNode(tvPatternWidget, 0, ID_TV_PATTERN);
+    addChild(generalPanel, tvPatternNode);
+
+    // --- Signal test screen (modeGroup: children only visible when parent active) ---
+    auto* signalTestPanel = new LvglDisplayNode(signalTestWidget, 0, ID_INFO_TEST_SIGNALS, true);
+    addChild(generalPanel, signalTestPanel);
+
+    // Signal test items: each has small + big icon
+    DISPLAY_ITEM_ID signalEntityIds[] = {
+        ID_TEST_BRAKES, ID_TEST_WIPERS, ID_TEST_HIGH_BEAM,
+        ID_TEST_BLINKER_LEFT, ID_TEST_BLINKER_RIGHT, ID_TEST_REVERSE
+    };
+    for (int i = 0; i < 6; i++) {
+        auto* node = new LvglSignalTestItemNode(
+            sigSmallImgs[i], sigBigImgs[i], 0, signalEntityIds[i],
+            signalItems[i].wildcard);
+        addChild(signalTestPanel, node);
+    }
+
+    // Signal test speed node
+    auto* testSpeedNode = new LvglSignalTestSpeedNode(
+        speedSmallImg, speedBigImg, speedSmallLabel, speedBigLabel,
+        0, ID_TEST_SPEED);
+    addChild(signalTestPanel, testSpeedNode);
+
+    // --- Peripheral test screen (modeGroup) ---
+    auto* peripheralTestPanel = new LvglDisplayNode(peripheralTestWidget, 0, ID_INFO_TEST_PERIPHERALS, true);
+    addChild(generalPanel, peripheralTestPanel);
+
+    // GSM group: Module(_left=1,_right=3), N/W(_left=4,_right=7), Upload(_left=8,_right=9)
+    std::vector<PeripheralSubItem> gsmItems = {
+        {gsmIcons[0], "Test_GSM_1", 1, 3},
+        {gsmIcons[1], "Test_GSM_2", 4, 7},
+        {gsmIcons[2], "Test_GSM_3", 8, 9},
+    };
+    auto* gsmTestNode = new LvglPeripheralTestGroupNode(gsmRow, 0, ID_INFO_TEST_GSM, gsmItems, gsmResult);
+    addChild(peripheralTestPanel, gsmTestNode);
+
+    // GPS group: MSGs(_left=1,_right=2), Locked(_left=3,_right=4)
+    std::vector<PeripheralSubItem> gpsItems = {
+        {gpsIcons[0], "Test_GPS_1", 1, 2},
+        {gpsIcons[1], "Test_GPS_2", 3, 4},
+    };
+    auto* gpsTestNode = new LvglPeripheralTestGroupNode(gpsRow, 0, ID_INFO_TEST_GPS, gpsItems, gpsResult);
+    addChild(peripheralTestPanel, gpsTestNode);
+
+    // Gyro group: MSG(_left=1,_right=1), Range(_left=2,_right=2)
+    std::vector<PeripheralSubItem> gyroItems = {
+        {gyroIcons[0], "Test_Gyro_1", 1, 1},
+        {gyroIcons[1], "Test_Gyro_2", 2, 2},
+    };
+    auto* gyroTestNode = new LvglPeripheralTestGroupNode(gyroRow, 0, ID_INFO_TEST_GYRO, gyroItems, gyroResult);
+    addChild(peripheralTestPanel, gyroTestNode);
 }
 
 void LvglMainProcess::handleKeyEvent(int sdlKey)

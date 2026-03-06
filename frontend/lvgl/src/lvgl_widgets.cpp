@@ -472,6 +472,85 @@ lv_obj_t* LvglWidgets::createRTWAlert(lv_obj_t* parent)
     return cont;
 }
 
+lv_obj_t* LvglWidgets::createColorOverlay(lv_obj_t* parent, lv_color_t color)
+{
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    lv_obj_set_pos(cont, 0, 0);
+    lv_obj_set_style_bg_color(cont, color, 0);
+    lv_obj_set_style_bg_opa(cont, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(cont, 0, 0);
+    lv_obj_set_style_radius(cont, 0, 0);
+    lv_obj_set_style_pad_all(cont, 0, 0);
+    lv_obj_remove_flag(cont, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createTVPatternOverlay(lv_obj_t* parent)
+{
+    lv_obj_t* cont = createFullScreenContainer(parent);
+
+    lv_obj_t* img = lv_image_create(cont);
+    lv_image_set_src(img, "A:images/test/SMPTE.jpg");
+    lv_obj_align(img, LV_ALIGN_TOP_LEFT, 0, 0);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createSignalTestScreen(lv_obj_t* parent)
+{
+    // Full-screen container with Background.png
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    lv_obj_set_pos(cont, 0, 0);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+
+    lv_obj_t* bg = lv_image_create(cont);
+    lv_image_set_src(bg, "A:images/signal-test/Background.png");
+    lv_obj_align(bg, LV_ALIGN_TOP_LEFT, 0, 0);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createPeripheralTestScreen(lv_obj_t* parent)
+{
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    lv_obj_set_pos(cont, 0, 0);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+
+    lv_obj_t* bg = lv_image_create(cont);
+    lv_image_set_src(bg, "A:images/peripheral-test/Peripherals_Test_Background.png");
+    lv_obj_align(bg, LV_ALIGN_TOP_LEFT, 0, 0);
+
+    return cont;
+}
+
+lv_obj_t* LvglWidgets::createPeripheralTestGroupRow(lv_obj_t* parent, const char* title, int yPos)
+{
+    // 320x80 transparent row
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, 320, 80);
+    lv_obj_set_pos(cont, 0, yPos);
+    styleTransparent(cont);
+    lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    // Title text at left
+    lv_obj_t* label = lv_label_create(cont);
+    lv_label_set_text(label, title);
+    lv_obj_set_style_text_font(label, &intelone_bold_18, 0);
+    lv_obj_set_style_text_color(label, lv_color_white(), 0);
+    lv_obj_set_pos(label, 15, 0);
+    lv_obj_align(label, LV_ALIGN_LEFT_MID, 15, 0);
+
+    return cont;
+}
+
 lv_obj_t* LvglWidgets::createRightPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
 {
     // QML: SideIcon quadrant 1 (upper-right) / quadrant 4 (lower-right)

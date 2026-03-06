@@ -13,6 +13,9 @@ public:
     // Leaf node (registers with EntityType via linkByEntityType)
     LvglDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType);
 
+    // Mode group leaf node (registers entity AND supports modeGroup children)
+    LvglDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, bool modeGroup);
+
     // IDisplayNode interface
     void activate() override;
     void deactivate() override;

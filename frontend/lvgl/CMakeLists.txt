@@ -46,6 +46,7 @@ set(FRONTEND_SOURCES
     src/lvgl_hmw_state_node.cpp
     src/lvgl_menu_controller.cpp
     src/lvgl_menu_display_node.cpp
+    src/lvgl_test_display_node.cpp
     src/lv_font_intelone_bold_18.c
     src/lv_font_intelone_bold_20.c
 )
