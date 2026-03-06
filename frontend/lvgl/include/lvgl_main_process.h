@@ -10,6 +10,7 @@
 #include <atomic>
 
 class LvglDisplayNode;
+class LvglMenuController;
 
 class LvglMainProcess {
 public:
@@ -22,6 +23,9 @@ public:
     void applyPendingDisplayUpdate();
 
     AlertController* getAlertController() { return alertController_; }
+    LvglMenuController* getMenuController() { return menuController_; }
+
+    void handleKeyEvent(int sdlKey);
 
 private:
     void buildDisplayTree(lv_obj_t* screen);
@@ -37,6 +41,9 @@ private:
     lv_obj_t* hostCar_;
     LvglDisplayNode* lldwNode_;
     LvglDisplayNode* rldwNode_;
+
+    // Menu controller
+    LvglMenuController* menuController_;
 };
 
 #endif // LVGL_MAIN_PROCESS_H

@@ -16,4 +16,7 @@ void sdl_display_present_if_needed();
 // Poll SDL events. Returns false if quit requested (window close or Escape).
 bool sdl_display_poll_events();
 
+// Get last key pressed during poll (SDL key code, or 0 if none).
+int sdl_display_get_last_key();
+
 #endif // SDL_DISPLAY_H
