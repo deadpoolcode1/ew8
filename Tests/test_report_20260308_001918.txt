@@ -1,0 +1,114 @@
+EW8 Entity Test Report — Sun Mar  8 12:19:18 AM IST 2026
+CAN interface: can0
+========================================
+Step 1: Send keepalive (normal mode, valid) + base frames — OK
+Step 2: Verify disconnect overlay appears when keepalive stops — OK
+Step 3: Re-establish keepalive — OK
+Step 4: ALERT_HI_BEAM — High beam ON — OK
+Step 5: ALERT_LOW_BEAM — Low beam ON (Hi_Low_BeamControl=0, inverted) — OK
+Step 6: ALERT_BLINKERS — Blinker reminder ON — OK
+Step 7: INFO_NO_GSM — GSM disconnected (CellularCommunicationStatus=2) — OK
+Step 8: INFO_NO_GSM — GSM critical error (CellularCommunicationStatus=4) — OK
+Step 9: Clear GSM status — OK
+Step 10: INFO_DRIVER_AUTH_OUT — Driver not assigned — ISSUE: Blinking faster on qt
+Step 11: INFO_DRIVER_AUTH_PROCESS — Assignment in process — OK
+Step 12: INFO_DRIVER_AUTH_IN — Driver assigned — OK
+Step 12: INFO_DRIVER_AUTH_IN — Driver assigned — OK
+Step 13: INFO_ISA_INACTIVE — ISA full deactivation (STATE=1) — ISSUE: Cropped from the right
+Step 14: INFO_ISA_PARTIAL — ISA partial deactivation (STATE=2) — ISSUE: as 13
+Step 15: INFO_ISA_FULL_ACTIVE — ISA active (STATE=3) — ISSUE: as 13
+Step 16: ALERT_ISA_ERROR — ISA error (STATE=4) — ISSUE: as 13
+Step 17: INFO_VEH_SPEED — Speed 0 km/h — OK
+Step 18: INFO_VEH_SPEED — Speed 60 km/h — OK
+Step 19: INFO_VEH_SPEED — Speed 120 km/h — ISSUE: Not shown on both frontends. need to update test script to actually make it visible
+Step 20: Speed cycling 0 → 120 km/h — ISSUE: as 19
+Step 21: ALERT_HMW_MONITOR — Monitor mode, distance=1.2s — ISSUE: Right / Left yellow lanes arent shown (hidden)
+Step 22: ALERT_HMW_MONITOR — Distance=0.6s — OK
+Step 23: ALERT_HMW_ALERT — Alert mode (red road) — ISSUE: Forward car a bit closer to the bottom than it should be, bottom larger car should be more bottom than it currently right now, but its much better than before.
+Step 24: ALERT_HMW_DISTANCE — Distance=1.8s text — OK
+Step 25: ALERT_LEFT_LDWOFF — Left lane not available (yellow left) — OK
+Step 26: ALERT_LEFT_LDWON — Left lane available (green left, yellow right) — OK
+Step 27: ALERT_RIGHT_LDWON — Right lane available (yellow left, green right) — OK
+Step 28: Both LDWON — Both lanes available (green+green) — OK
+Step 29: ALERT_LLDW — Left LDW active alert (blinking left) — ISSUE: Lane blinks slower than in qt
+Step 30: ALERT_RLDW — Right LDW active alert (blinking right) — ISSUE: as 29
+Step 31: Both LDW alerts simultaneously — ISSUE: as
+Step 32: ALERT_FCW — Forward Collision Warning — ISSUE: 2
+Step 33: Clear FCW — OK
+Step 34: ALERT_PCW — Pedestrian Collision Warning (PCW_PedDZ=1) — OK
+Step 35: ALERT_PDZ — Pedestrian in Danger Zone (PCW_PedDZ=2) — OK
+Step 36: ALERT_PCW — PCW value=3 (also PCW) — OK
+Step 37: Enable TSR — show SLI 50 km/h — OK
+Step 38: ALERT_SLI — Speed limit 80 km/h (value=7) — OK
+Step 39: ALERT_SLI — Speed limit 130 km/h (value=12) — OK
+Step 40: ALERT_SLI — Speed limit 5 km/h (value=100=0x64) — ISSUE: No animation
+Step 41: ALERT_SLI — Electronic sign 60 (value=33=0x21) — ISSUE: no animation
+Step 42: ALERT_SLI + ALERT_SLI_SUPP — SLI 60 + supp 60 — ISSUE: bad locations, no animation
+Step 43: ALERT_MOTORWAY — Motorway sign (value=173=0xAD) — ISSUE: bad animation - wrong direction of animation
+Step 44: ALERT_MOTORWAY_END — End of motorway (174=0xAE) — ISSUE: as 43
+Step 45: ALERT_EXPRESSWAY — Expressway (171=0xAB) — ISSUE: as 43
+Step 46: ALERT_EXPRESSWAY_END — End of expressway (172=0xAC) — ISSUE: as 43
+Step 47: ALERT_PLAYGROUND — Playground zone (175=0xAF) — ISSUE: as 43
+Step 48: ALERT_PLAYGROUND_END — End playground (176=0xB0) — ISSUE: as 43
+Step 49: ALERT_NO_PASS — No passing (200=0xC8) — ISSUE: as 43
+Step 50: ALERT_NO_PASS_END — End no passing (201=0xC9) — ISSUE: as 43
+Step 51: ALERT_END_ALL_RESTR — End all restrictions (64=0x40) — ISSUE: as 43
+Step 52: Multiple signs: SLI 50 (D1) + Motorway (D2) — ISSUE: as 43
+Step 53: ISA speed sign — 80 km/h (via 0x7BC) — OK
+Step 54: ISA highway sign (Legal_Speed_Validity=3) — ISSUE: as 43
+Step 55: Clear signs — OK
+Step 56: SMART_CROWDED — Crowd zone (FirstIcon=1) — OK
+Step 57: SMART_PED_HWY — Pedestrian on highway (2) — ISSUE: animation is better, but the image animation should start big from he middle of the entire scree end location on the left (which is ok right now)
+Step 58: SMART_CYC_HWY — Cyclist on highway (3) — ISSUE: same as 57
+Step 59: SMART_WEA_ROAD — Weather: Road (4) — ISSUE: as 57
+Step 60: SMART_WEA_HYDRO — Weather: Hydroplaning (5) — ISSUE: as 57
+Step 61: SMART_WEA_FG — Weather: Fog (6) — ISSUE: as 57
+Step 62: SMART_WEA_WND — Weather: Wind (7) — ISSUE: as 57
+Step 63: SMART_WEA_HAIL — Weather: Hail (8) — ISSUE: as 57
+Step 64: SMART_WEA_TSTM — Weather: Thunderstorm (9) — ISSUE: as 57
+Step 65: SMART_HARSH_DZ — Harsh braking zone (12=0x0C) — ISSUE: as 57
+Step 66: SMART_CA — Construction area (14=0x0E) — ISSUE: as 57
+Step 67: Two SADAS: Crowd(1) + Pedestrian(2) — ISSUE: as 57
+Step 68: Two SADAS: Construction(14) + Fog(6) — ISSUE: as 57
+Step 69: ALERT_RTW_WARN — Warning (TrafficLightWarning=1) — ISSUE: animation isn't accurate
+Step 70: ALERT_RTW_ALERT — Alert (TrafficLightWarning=2) — OK
+Step 71: ALERT_RTW_ALERT — Alert (TrafficLightWarning=3) — OK
+Step 72: ALERT_ERROR — Error overlay — ISSUE: Error image not shown, instead of "DA" text shown "0"
+Step 73: Clear error — restore Error_Active=1 — OK
+Step 74: INFO_FAILSAFE — Failsafe overlay — ISSUE: Low visibility icon shoud be higher, text location is OK
+Step 75: Clear failsafe — OK
+Step 76: OM_POWEROFF — Operation mode: Power off (RunningMode=0) — OK
+Step 77: OM_NORMAL — Operation mode: Normal (RunningMode=1) — OK
+Step 78: OM_MUTE — Operation mode: Mute (RunningMode=2) — OK
+Step 79: OM_KEEPPWR — Operation mode: Keep power (RunningMode=3) — OK
+Step 80: OM_PILOT — Operation mode: Pilot (RunningMode=4) — OK
+Step 80: OM_PILOT — Operation mode: Pilot (RunningMode=4) — OK
+Step 81: RGB_RED — Full screen red (TestDisplay=1) — OK
+Step 82: RGB_GREEN — Full screen green (TestDisplay=2) — OK
+Step 83: RGB_BLUE — Full screen blue (TestDisplay=3) — OK
+Step 84: RGB_WHITE — Full screen white (TestDisplay=4) — OK
+Step 85: TV_PATTERN — SMPTE test pattern (TestDisplay=5) — OK
+Step 86: Clear test display — OK
+Step 87: VOLUME_DONE — Volume menu: value=3, min=0, max=5 — OK
+Step 88: VOLUME_FAIL — Volume fail (Reply_status=0) — OK
+Step 89: INFO_QRCODE — QR code display (Zero_speed=1) — OK
+Step 90: Clear QR code — OK
+Step 91: ALERT_ISA_OVERSPEED — Blink (ISA_SLWF=2) — OK
+Step 92: ALERT_ISA_OVERSPEED — With sound (ISA_SLWF=3) — OK
+Step 93: STATE_ISA_NOT_TSR — ISA available (ISA_STATE != 0, inverted) — OK
+Step 94: STATE_TSR_NOT_ISA — TSR mode (ISA_STATE=0) — OK
+Step 95: Speed 80 + HMW monitor + SLI 80 + SADAS Crowd — ISSUE: Missing yellow right and left lanes
+Step 96: FCW overlay on top of everything — OK
+Step 97: Clear FCW, rest remains — OK
+Step 98: Error overlay over everything — ISSUE: Error image isn't shown
+Step 99: Clear error, restore normal — OK
+Step 100: Failsafe over normal content — ISSUE: Low visibility text should be below the icon, when low visibility icon and text shown, the 1.2sec text should be hidden
+Step 101: RTW alert full-screen overlay — OK
+Step 103: SeeQInfo Part2 — Manufacturer + serial — OK
+Step 104: SHAPE_USA=1 — Rectangular sign shape + SLI 50 — ISSUE: Speed limit text isn't in the center of the image, it's aligned to the right
+Step 105: SHAPE_USA=0 — Circular sign shape (default) + SLI 50 — OK
+Step 106: INFO_ISA_VERSION — ISA v3.15 — OK
+Step 107: INFO_ISA_BUNDLE — Bundle 2025-03 — OK
+
+========================================
+SUMMARY: 108 steps reviewed, 46 issues found
