@@ -2,9 +2,11 @@
 #include <cstdio>
 #include <cstring>
 
-LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* valueLabel)
+LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                             lv_obj_t* valueLabel, int divideFactor)
     : LvglDisplayNode(widget, layer, entityType)
     , valueLabel_(valueLabel)
+    , divideFactor_(divideFactor)
 {
 }
 
@@ -15,7 +17,14 @@ void LvglValueDisplayNode::onBecomeVisible()
     if (valueLabel_)
     {
         char buf[16];
-        snprintf(buf, sizeof(buf), "%d", valueInt_);
+        if (divideFactor_ > 0) {
+            // QML: (canEntityArg/10).toFixed(1) → e.g., 12 → "1.2"
+            int whole = valueInt_ / divideFactor_;
+            int frac = valueInt_ % divideFactor_;
+            snprintf(buf, sizeof(buf), "%d.%d", whole, frac);
+        } else {
+            snprintf(buf, sizeof(buf), "%d", valueInt_);
+        }
         if (strcmp(lv_label_get_text(valueLabel_), buf) != 0) {
             lv_label_set_text(valueLabel_, buf);
         }
@@ -33,6 +42,16 @@ LvglSpeedDisplayNode::LvglSpeedDisplayNode(lv_obj_t* widget, int layer, DISPLAY_
 
 void LvglSpeedDisplayNode::onBecomeVisible()
 {
+    // QML: opacity = speed_available && show_speed.visible
+    // Speed only shows when both INFO_VEH_SPEED and INFO_SPEED_SHOW are active
+    if (speedShowNode_ && speedShowNode_->getActivSem() <= 0) {
+        // INFO_SPEED_SHOW not active — hide speed display
+        if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN)) {
+            lv_obj_add_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+        }
+        return;
+    }
+
     LvglDisplayNode::onBecomeVisible();
 
     // QML: is_mph = (is_mph_arg === 1); valueFrac_ carries the is_mph flag

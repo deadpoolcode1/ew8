@@ -6,9 +6,20 @@
 # categories from the audit plan. Run both Qt and LVGL frontends against
 # the same CAN bus and compare visually.
 #
-# Usage:  ./test_all_entities.sh [can_interface] [delay]
+# Usage:  ./test_all_entities.sh [can_interface] [delay] [flags]
 #   can_interface: defaults to "can0" (use "vcan0" for virtual CAN)
 #   delay:         seconds between test steps (default 2)
+#   flags:
+#     -t    Enable signal/peripheral test sections (app must run with -t)
+#     -r    Review mode: pause after each step for manual inspection.
+#           Type an issue description and press Enter, or just Enter for OK.
+#           Generates a timestamped report file in the current directory.
+#
+# Examples:
+#   ./test_all_entities.sh can0 2           # auto mode, skip test screens
+#   ./test_all_entities.sh can0 2 -r        # review mode with report
+#   ./test_all_entities.sh can0 2 -t        # include test screen sections
+#   ./test_all_entities.sh can0 2 "-t -r"   # review + test screens
 #
 # IMPORTANT: Each CAN frame carries ALL signals for that message ID.
 # When a frame is sent, ALL bits are processed — zeroed bits deactivate
@@ -22,6 +33,17 @@
 
 CAN=${1:-can0}
 DELAY=${2:-2}
+FLAGS=${3:-}
+
+# Parse flags
+TEST_MODE=""
+REVIEW_MODE=""
+for flag in $FLAGS; do
+    case "$flag" in
+        -t) TEST_MODE="-t" ;;
+        -r) REVIEW_MODE="-r" ;;
+    esac
+done
 
 RED='\033[0;31m'
 GRN='\033[0;32m'
@@ -30,21 +52,58 @@ CYN='\033[0;36m'
 NC='\033[0m'
 
 step=0
+step_name=""
+issues_found=0
+total_reviewed=0
+
+# Report file (only in review mode)
+if [ -n "$REVIEW_MODE" ]; then
+    REPORT_FILE="test_report_$(date +%Y%m%d_%H%M%S).txt"
+    echo "EW8 Entity Test Report — $(date)" > "$REPORT_FILE"
+    echo "CAN interface: $CAN" >> "$REPORT_FILE"
+    echo "========================================" >> "$REPORT_FILE"
+    echo ""
+    echo -e "${GRN}Review mode enabled. Report will be saved to: ${REPORT_FILE}${NC}"
+fi
 
 send() {
     cansend "$CAN" "$1"
 }
 
 pause() {
-    sleep "$DELAY"
+    if [ -n "$REVIEW_MODE" ]; then
+        review_step
+    else
+        sleep "$DELAY"
+    fi
 }
 
 short_pause() {
-    sleep 0.5
+    if [ -n "$REVIEW_MODE" ]; then
+        sleep 0.3
+    else
+        sleep 0.5
+    fi
+}
+
+review_step() {
+    echo ""
+    echo -e "  ${CYN}Enter issue (or press Enter for OK):${NC} "
+    read -r feedback
+    total_reviewed=$((total_reviewed + 1))
+    if [ -z "$feedback" ]; then
+        echo -e "  ${GRN}[OK]${NC}"
+        echo "Step $step: $step_name — OK" >> "$REPORT_FILE"
+    else
+        issues_found=$((issues_found + 1))
+        echo -e "  ${RED}[ISSUE] $feedback${NC}"
+        echo "Step $step: $step_name — ISSUE: $feedback" >> "$REPORT_FILE"
+    fi
 }
 
 announce() {
     step=$((step + 1))
+    step_name="$1"
     echo ""
     echo -e "${CYN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${YEL}  Step $step: $1${NC}"
@@ -817,6 +876,10 @@ keepalive
 pause
 
 # --- Signal Test Screen ---
+# NOTE: Present_app=2/3 triggers SwitchModeTest→exit(0) in normal mode.
+# These test sections require the app to be started with -t flag.
+if [ -n "$TEST_MODE" ]; then
+
 announce "INFO_TEST_SIGNALS — Enter signal test mode"
 info "0x412: Present_app=2(Signals_Test)"
 send "$(build_keepalive 1 2 0 0)"
@@ -933,6 +996,13 @@ send "700#${BASE_700}"
 pause
 
 clear_all
+
+else
+    echo ""
+    echo -e "${YEL}  SKIPPED: Signal/Peripheral test sections (require app started with -t flag)${NC}"
+    echo -e "${YEL}  Run:  ./test_all_entities.sh $CAN $DELAY -t${NC}"
+    echo ""
+fi
 
 ###############################################################################
 # SECTION 11: MENU TRIGGERS (Volume, QR Code)
@@ -1130,8 +1200,21 @@ clear_all
 echo ""
 echo -e "${RED}╔═══════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${RED}║     TEST COMPLETE — $step steps executed                          ║${NC}"
-echo -e "${RED}║                                                                   ║${NC}"
-echo -e "${RED}║     Compare Qt/QML and LVGL frontends for each step.             ║${NC}"
-echo -e "${RED}║     Check: positions, sizes, colors, fonts, animations,          ║${NC}"
-echo -e "${RED}║     visibility, priority/overlap behavior.                       ║${NC}"
 echo -e "${RED}╚═══════════════════════════════════════════════════════════════════╝${NC}"
+
+if [ -n "$REVIEW_MODE" ]; then
+    echo "" >> "$REPORT_FILE"
+    echo "========================================" >> "$REPORT_FILE"
+    echo "SUMMARY: $total_reviewed steps reviewed, $issues_found issues found" >> "$REPORT_FILE"
+    echo ""
+    echo -e "${GRN}Report saved to: ${REPORT_FILE}${NC}"
+    echo -e "${YEL}  Steps reviewed: $total_reviewed${NC}"
+    if [ "$issues_found" -gt 0 ]; then
+        echo -e "${RED}  Issues found:   $issues_found${NC}"
+        echo ""
+        echo -e "${RED}Issues:${NC}"
+        grep "ISSUE:" "$REPORT_FILE"
+    else
+        echo -e "${GRN}  Issues found:   0${NC}"
+    fi
+fi

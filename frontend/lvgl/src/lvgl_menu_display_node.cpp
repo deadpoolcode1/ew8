@@ -45,12 +45,12 @@ LvglQRCodeNode::LvglQRCodeNode(int layer, DISPLAY_ITEM_ID entityType, LvglMenuCo
 
 void LvglQRCodeNode::onBecomeVisible()
 {
-    ctrl_->showQRCode(stringArg_);
+    ctrl_->activateQRCode(stringArg_);
 }
 
 void LvglQRCodeNode::onBecomeInvisible()
 {
-    ctrl_->hideQRCode();
+    ctrl_->deactivateQRCode();
 }
 
 // --- Supplementary sign node ---
@@ -95,10 +95,12 @@ void LvglSuppSignNode::onBecomeVisible()
 
 // --- SHAPE_USA ---
 LvglShapeUsaNode::LvglShapeUsaNode(int layer, DISPLAY_ITEM_ID entityType,
-                                     lv_obj_t* sliSignImg, lv_obj_t* sliSuppSignImg)
+                                     lv_obj_t* sliSignImg, lv_obj_t* sliSuppSignImg,
+                                     lv_obj_t* sliSpeedLabel)
     : LvglDisplayNode(nullptr, layer, entityType)
     , sliSignImg_(sliSignImg)
     , sliSuppSignImg_(sliSuppSignImg)
+    , sliSpeedLabel_(sliSpeedLabel)
 {
 }
 
@@ -108,6 +110,11 @@ void LvglShapeUsaNode::onBecomeVisible()
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_rect.png");
     if (sliSuppSignImg_)
         lv_image_set_src(sliSuppSignImg_, "A:images/left-panel/SLI/left_SLI_rect.png");
+    // QML: USA rect shape moves speed text down by 17px and uses smaller font
+    if (sliSpeedLabel_) {
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 1, 17);
+        lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_20, 0);
+    }
 }
 
 void LvglShapeUsaNode::onBecomeInvisible()
@@ -116,6 +123,11 @@ void LvglShapeUsaNode::onBecomeInvisible()
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
     if (sliSuppSignImg_)
         lv_image_set_src(sliSuppSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
+    // Restore circular sign text position and font
+    if (sliSpeedLabel_) {
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 1, 0);
+        lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_22, 0);
+    }
 }
 
 // --- ALERT_ISA_OVERSPEED ---

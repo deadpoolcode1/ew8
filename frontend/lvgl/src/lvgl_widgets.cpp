@@ -63,7 +63,7 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     // --- Left row (LV_FLEX_FLOW_ROW, spacing=8) ---
     lv_obj_t* leftRow = lv_obj_create(bar);
     lv_obj_set_size(leftRow, LV_SIZE_CONTENT, 42);
-    lv_obj_set_pos(leftRow, 0, -2);
+    lv_obj_set_pos(leftRow, 0, 0);
     styleTransparent(leftRow);
     lv_obj_set_flex_flow(leftRow, LV_FLEX_FLOW_ROW);
     lv_obj_set_style_pad_column(leftRow, 8, 0);
@@ -91,25 +91,41 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     lv_obj_set_style_pad_column(rightRow, 7, 0);
     lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
     // Anchor to right edge of status bar
-    lv_obj_align(rightRow, LV_ALIGN_TOP_RIGHT, 0, -2);
+    lv_obj_align(rightRow, LV_ALIGN_TOP_RIGHT, 0, 0);
 
-    // ISA status icons (47x35 — 4 stacked, mutually exclusive)
-    w.isaErrorIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_error.png");
-    w.isaInactiveIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_full_deact.png");
-    w.isaPartialIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_part_deact.png");
-    w.isaActiveIcon = createHiddenImage(rightRow, "A:images/status-bar/ISA_full_act.png");
+    // Helper: create a fixed-size slot in the flex row, stacking icons inside
+    auto createSlot = [&](int width, int height) -> lv_obj_t* {
+        lv_obj_t* slot = lv_obj_create(rightRow);
+        lv_obj_set_size(slot, width, height);
+        styleTransparent(slot);
+        return slot;
+    };
 
-    // Signed status icons (3 stacked, mutually exclusive)
-    w.signedInIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_in.png");
-    w.signedOutIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_out.png");
-    w.signedProcessIcon = createHiddenImage(rightRow, "A:images/status-bar/status_Signed_process.png");
+    // ISA status icons (stacked in one 56x35 slot, mutually exclusive)
+    // QML: isa_status rectangle holds all ISA icons
+    lv_obj_t* isaSlot = createSlot(56, 35);
+    w.isaErrorIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_error.png");
+    w.isaInactiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_deact.png");
+    w.isaPartialIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_part_deact.png");
+    w.isaActiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_act.png");
 
-    // Comm info icons
-    w.gsmIcon = createHiddenImage(rightRow, "A:images/status-bar/status_no_GSM.png");
-    w.gpsIcon = createHiddenImage(rightRow, "A:images/status-bar/status_no_GPS.png");
+    // Signed status icons (stacked in one 17x35 slot, mutually exclusive)
+    // QML: SignedStatus rectangle holds all signed icons
+    lv_obj_t* signedSlot = createSlot(17, 35);
+    w.signedInIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_in.png");
+    w.signedOutIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_out.png");
+    w.signedProcessIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_process.png");
 
-    // Mute icon
-    w.muteIcon = createHiddenImage(rightRow, "A:images/status-bar/status_mute.png");
+    // Comm info icons (stacked in one 23x35 slot)
+    // QML: comm_info rectangle holds GSM and GPS
+    lv_obj_t* commSlot = createSlot(23, 35);
+    w.gsmIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GSM.png");
+    w.gpsIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GPS.png");
+
+    // Mute icon (in its own 28x35 slot)
+    // QML: separate rectangle with mute anchored to right
+    lv_obj_t* muteSlot = createSlot(28, 35);
+    w.muteIcon = createHiddenImage(muteSlot, "A:images/status-bar/status_mute.png");
 
     return w;
 }
@@ -226,11 +242,7 @@ LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
     lv_obj_set_style_image_recolor(w.forwardCar, lv_color_white(), 0);
     lv_obj_align(w.forwardCar, LV_ALIGN_TOP_MID, 0, 40);
 
-    // Host car — 160px wide, bottom-center, bottomMargin -5
-    w.hostCar = lv_image_create(w.container);
-    lv_image_set_src(w.hostCar, "A:images/cars/grey_car_bright.png");
-    lv_obj_set_size(w.hostCar, 160, LV_SIZE_CONTENT);
-    lv_obj_align(w.hostCar, LV_ALIGN_BOTTOM_MID, 0, 5);
+    // Note: host car is created separately (always visible, not HMW-dependent)
 
     // Units label: "sec", 20px, #e1f1ff, bottomMargin ~38
     lv_obj_t* unitsLabel = lv_label_create(w.container);
@@ -338,13 +350,15 @@ lv_obj_t* LvglWidgets::createLDWOffIndicator(lv_obj_t* parent, bool isLeft)
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
 
     lv_obj_t* img = lv_image_create(cont);
-    lv_image_set_src(img, "A:images/ldw/left_lane_yellow-01.png");
     if (isLeft)
     {
+        lv_image_set_src(img, "A:images/ldw/left_lane_yellow-01.png");
         lv_obj_align(img, LV_ALIGN_BOTTOM_LEFT, 50 + 32, 0);
     }
     else
     {
+        // QML uses left_lane_yellow-01.png with mirror:true; right_lane-01.png is pre-mirrored
+        lv_image_set_src(img, "A:images/ldw/right_lane-01.png");
         lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
     }
 
@@ -377,16 +391,17 @@ lv_obj_t* LvglWidgets::createLDWOnIndicator(lv_obj_t* parent, bool isLeft)
 
 lv_obj_t* LvglWidgets::createPDZOverlay(lv_obj_t* parent)
 {
-    // QML: alert_pdz — pedestrian image centered in groupCIPV, top-8
+    // QML: alert_pdz — pedestrian image centered in groupCIPV, topMargin: -8
+    // Container starts 8px higher to avoid LVGL clipping (QML allows overflow)
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
-    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT + 8);
+    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 8);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
 
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/pdz/main_ped_yellow_old.png");
-    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, -8);
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 0);
 
     return cont;
 }
@@ -468,7 +483,8 @@ lv_obj_t* LvglWidgets::createRTWAlert(lv_obj_t* parent)
 
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/traffic-violation/left_TV_RL_big.png");
-    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+    // QML: centered within main_panel (y: 50..240), offset = (50/2) = 25px down from screen center
+    lv_obj_align(img, LV_ALIGN_CENTER, 0, 25);
 
     return cont;
 }
@@ -493,7 +509,7 @@ lv_obj_t* LvglWidgets::createTVPatternOverlay(lv_obj_t* parent)
     lv_obj_t* cont = createFullScreenContainer(parent);
 
     lv_obj_t* img = lv_image_create(cont);
-    lv_image_set_src(img, "A:images/test/SMPTE.jpg");
+    lv_image_set_src(img, "A:images/test/SMPTE.png");
     lv_obj_align(img, LV_ALIGN_TOP_LEFT, 0, 0);
 
     return cont;

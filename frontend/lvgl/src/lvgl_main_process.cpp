@@ -24,8 +24,11 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     : displayRoot_(nullptr)
     , displayDirty_(false)
     , hostCar_(nullptr)
+    , lastCarOffset_(0)
     , lldwNode_(nullptr)
     , rldwNode_(nullptr)
+    , groupGAG_(nullptr)
+    , groupCIPV_(nullptr)
     , menuController_(nullptr)
 {
     coreDebug() << "LvglMainProcess init begin, time:" << bootUpTimer.elapsed();
@@ -215,13 +218,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     DISPLAY_ITEM_ID ID_INFO_TEST_GYRO         = GraphicItemsEnumMap::getId("INFO_TEST_GYRO");
 
     // --- Create LVGL widgets ---
+    // Widget creation order determines LVGL visual stacking (later = on top).
+    // Ordered to match QML z-values: content(1-6) < status(1) < failsafe(10) <
+    // disconnect(11) < tests(12) < FCW/PCW(15) < error(20) < menus(20+)
     lv_obj_t* rootWidget = createRootContainer(screen);
 
-    lv_obj_t* disconWidget  = LvglWidgets::createDisconnectOverlay(rootWidget);
-    lv_obj_t* errorWidget   = LvglWidgets::createErrorOverlay(rootWidget);
-    lv_obj_t* fcwWidget     = LvglWidgets::createFCWAlert(rootWidget);
-    lv_obj_t* pcwWidget     = LvglWidgets::createPCWAlert(rootWidget);
-
+    // 1. Content widgets (lowest visual layer)
     // LDW indicators: off (yellow), active (blinking), on (green)
     lv_obj_t* ldwOffLeftWidget  = LvglWidgets::createLDWOffIndicator(rootWidget, true);
     lv_obj_t* ldwOffRightWidget = LvglWidgets::createLDWOffIndicator(rootWidget, false);
@@ -232,7 +234,13 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // HMW display (returns struct with sub-widget pointers)
     LvglWidgets::HMWWidgets hmw = LvglWidgets::createHMWDisplay(rootWidget);
-    hostCar_ = hmw.hostCar;
+
+    // Host car — always visible at bottom-center, independent of HMW state
+    // QML: HostCar is sibling of groupCIPV, not a child
+    hostCar_ = lv_image_create(rootWidget);
+    lv_image_set_src(hostCar_, "A:images/cars/grey_car_bright.png");
+    lv_obj_set_size(hostCar_, 160, LV_SIZE_CONTENT);
+    lv_obj_align(hostCar_, LV_ALIGN_BOTTOM_MID, 0, 5);
 
     // PDZ overlay
     lv_obj_t* pdzWidget = LvglWidgets::createPDZOverlay(rootWidget);
@@ -241,16 +249,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* speedUnitLabel = nullptr;
     lv_obj_t* speedWidget     = LvglWidgets::createSpeedDisplay(rootWidget, &speedValueLabel, &speedUnitLabel);
 
-    // Overlay widgets
-    lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
-    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power Off");
-    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power");
-    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot Mode");
-
     // Left panel signs — upper slot (RTW, SLI, ISA)
     lv_obj_t* rtwWarnWidget = LvglWidgets::createLeftPanelSign(rootWidget,
         "A:images/traffic-violation/left_TV_RL_small.png", true);
-    lv_obj_t* rtwAlertWidget = LvglWidgets::createRTWAlert(rootWidget);
 
     lv_obj_t* sliSpeedLabel = nullptr;
     lv_obj_t* sliWidget = LvglWidgets::createSpeedLimitSign(rootWidget,
@@ -337,7 +338,23 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* smartHarshDzSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_harsh_break.png", false);
     lv_obj_t* smartCaSecWidget        = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ca.png", false);
 
-    // --- Bulk 6: Display test overlays ---
+    // 2. Status bar (QML z=1: above content, below full-screen overlays)
+    LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
+
+    // 3. Full-screen overlays (created after content so they render on top)
+    // Failsafe (QML z=10)
+    lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
+    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power Off");
+    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power");
+    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot Mode");
+
+    // RTW alert (QML z=10)
+    lv_obj_t* rtwAlertWidget = LvglWidgets::createRTWAlert(rootWidget);
+
+    // Disconnect overlay (QML z=11)
+    lv_obj_t* disconWidget  = LvglWidgets::createDisconnectOverlay(rootWidget);
+
+    // --- Bulk 6: Display test overlays (QML z=12) ---
     lv_obj_t* rgbRedWidget   = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(255, 0, 0));
     lv_obj_t* rgbGreenWidget = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(0, 128, 0));
     lv_obj_t* rgbBlueWidget  = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(0, 0, 255));
@@ -467,10 +484,14 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_align(gyroResult, LV_ALIGN_RIGHT_MID, -15, 0);
     lv_obj_add_flag(gyroResult, LV_OBJ_FLAG_HIDDEN);
 
-    // Status bar with all icons (created last so it renders on top)
-    LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
+    // FCW/PCW (QML z=15: above all content, status bar, and test overlays)
+    lv_obj_t* fcwWidget     = LvglWidgets::createFCWAlert(rootWidget);
+    lv_obj_t* pcwWidget     = LvglWidgets::createPCWAlert(rootWidget);
 
-    // Menu controller (created after everything so menus render on top)
+    // Error overlay (QML z=20: above everything except menus)
+    lv_obj_t* errorWidget   = LvglWidgets::createErrorOverlay(rootWidget);
+
+    // Menu controller (QML z=20+: highest z-order)
     menuController_ = new LvglMenuController(rootWidget, canmgr_);
 
     // --- Build display tree ---
@@ -510,10 +531,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // groupCIPV (group, layer=1)
     auto* groupCIPV = new LvglDisplayNode(nullptr, 1, false, false);
+    groupCIPV_ = groupCIPV;
     addChild(mainPanel, groupCIPV);
 
     // HMW distance (LvglValueDisplayNode, layer=0, ALERT_HMW_DISTANCE)
-    auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel);
+    // QML: (canEntityArg/10).toFixed(1) — CAN arg 12 displays as "1.2"
+    auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel, 10);
     addChild(groupCIPV, hmwNode);
 
     // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
@@ -535,6 +558,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // groupGAG (group, layer=1)
     auto* groupGAG = new LvglDisplayNode(nullptr, 1, false, false);
+    groupGAG_ = groupGAG;
     addChild(mainPanel, groupGAG);
 
     // groupLanes (group, layer=0)
@@ -647,6 +671,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Dummy leaf nodes (entity registered, no visual)
     auto* showSpeedNode = new LvglDisplayNode(nullptr, 0, ID_INFO_SPEED_SHOW);
     addChild(statusPanel, showSpeedNode);
+    speedNode->setSpeedShowNode(showSpeedNode);
 
     auto* normalModeNode = new LvglDisplayNode(nullptr, 0, ID_OM_NORMAL);
     addChild(statusPanel, normalModeNode);
@@ -663,7 +688,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupTop = new LvglDisplayNode(nullptr, 0, false, false);
     addChild(leftPanel, groupTop);
 
-    auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
+    // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
+    auto* rtwWarnNode = new LvglAnimatedSignNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN,
+        lv_obj_get_child(rtwWarnWidget, 0), 256, 187);
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
@@ -672,7 +699,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
     addChild(groupTop, isaSpeedNode);
 
-    auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
+    auto* isaHighwayNode = new LvglAnimatedSignNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY,
+        lv_obj_get_child(isaHighwayWidget, 0), 256, 187);
     addChild(groupTop, isaHighwayNode);
 
     // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
@@ -684,10 +712,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
     addChild(groupBottom, endAllRestrNode);
 
-    auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
+    auto* noPassNode = new LvglAnimatedSignNode(noPassWidget, 0, ID_ALERT_NO_PASS,
+        lv_obj_get_child(noPassWidget, 0), 256, 187);
     addChild(groupBottom, noPassNode);
 
-    auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
+    auto* noPassEndNode = new LvglAnimatedSignNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END,
+        lv_obj_get_child(noPassEndWidget, 0), 256, 187);
     addChild(groupBottom, noPassEndNode);
 
     auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
@@ -746,7 +776,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Get the image child (first child) from each SLI sign container
     lv_obj_t* sliSignImg = lv_obj_get_child(sliWidget, 0);
     lv_obj_t* sliSuppSignImg = lv_obj_get_child(sliSuppWidget, 0);
-    auto* shapeUsaNode = new LvglShapeUsaNode(0, ID_SHAPE_USA, sliSignImg, sliSuppSignImg);
+    auto* shapeUsaNode = new LvglShapeUsaNode(0, ID_SHAPE_USA, sliSignImg, sliSuppSignImg, sliSpeedLabel);
     addChild(leftPanel, shapeUsaNode);
 
     auto* isaVersionNode = new LvglDisplayNode(nullptr, 0, ID_INFO_ISA_VERSION);
@@ -764,74 +794,80 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupTopSadas = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(rightPanel, groupTopSadas);
 
-    auto* smartCrowdedNode  = new LvglDisplayNode(smartCrowdedWidget,  1, ID_SMART_CROWDED);
+    // Right panel signs: intro animation scale 256 (1.0) → 154 (0.6028), 500ms OutQuad
+    // Helper to create animated SADAS sign node
+    auto mkSadas = [](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
+        return new LvglAnimatedSignNode(w, layer, id, lv_obj_get_child(w, 0), 256, 154);
+    };
+
+    auto* smartCrowdedNode  = mkSadas(smartCrowdedWidget,  1, ID_SMART_CROWDED);
     addChild(groupTopSadas, smartCrowdedNode);
 
-    auto* smartPedHwyNode   = new LvglDisplayNode(smartPedHwyWidget,   2, ID_SMART_PED_HWY);
+    auto* smartPedHwyNode   = mkSadas(smartPedHwyWidget,   2, ID_SMART_PED_HWY);
     addChild(groupTopSadas, smartPedHwyNode);
 
-    auto* smartCycHwyNode   = new LvglDisplayNode(smartCycHwyWidget,   3, ID_SMART_CYC_HWY);
+    auto* smartCycHwyNode   = mkSadas(smartCycHwyWidget,   3, ID_SMART_CYC_HWY);
     addChild(groupTopSadas, smartCycHwyNode);
 
-    auto* smartHarshDzNode  = new LvglDisplayNode(smartHarshDzWidget,  4, ID_SMART_HARSH_DZ);
+    auto* smartHarshDzNode  = mkSadas(smartHarshDzWidget,  4, ID_SMART_HARSH_DZ);
     addChild(groupTopSadas, smartHarshDzNode);
 
-    auto* smartCaNode       = new LvglDisplayNode(smartCaWidget,       4, ID_SMART_CA);
+    auto* smartCaNode       = mkSadas(smartCaWidget,       4, ID_SMART_CA);
     addChild(groupTopSadas, smartCaNode);
 
-    auto* smartWeaRoadNode  = new LvglDisplayNode(smartWeaRoadWidget,  5, ID_SMART_WEA_ROAD);
+    auto* smartWeaRoadNode  = mkSadas(smartWeaRoadWidget,  5, ID_SMART_WEA_ROAD);
     addChild(groupTopSadas, smartWeaRoadNode);
 
-    auto* smartWeaHydroNode = new LvglDisplayNode(smartWeaHydroWidget, 5, ID_SMART_WEA_HYDRO);
+    auto* smartWeaHydroNode = mkSadas(smartWeaHydroWidget, 5, ID_SMART_WEA_HYDRO);
     addChild(groupTopSadas, smartWeaHydroNode);
 
-    auto* smartWeaFgNode    = new LvglDisplayNode(smartWeaFgWidget,    6, ID_SMART_WEA_FG);
+    auto* smartWeaFgNode    = mkSadas(smartWeaFgWidget,    6, ID_SMART_WEA_FG);
     addChild(groupTopSadas, smartWeaFgNode);
 
-    auto* smartWeaWndNode   = new LvglDisplayNode(smartWeaWndWidget,   7, ID_SMART_WEA_WND);
+    auto* smartWeaWndNode   = mkSadas(smartWeaWndWidget,   7, ID_SMART_WEA_WND);
     addChild(groupTopSadas, smartWeaWndNode);
 
-    auto* smartWeaHailNode  = new LvglDisplayNode(smartWeaHailWidget,  7, ID_SMART_WEA_HAIL);
+    auto* smartWeaHailNode  = mkSadas(smartWeaHailWidget,  7, ID_SMART_WEA_HAIL);
     addChild(groupTopSadas, smartWeaHailNode);
 
-    auto* smartWeaTstmNode  = new LvglDisplayNode(smartWeaTstmWidget,  7, ID_SMART_WEA_TSTM);
+    auto* smartWeaTstmNode  = mkSadas(smartWeaTstmWidget,  7, ID_SMART_WEA_TSTM);
     addChild(groupTopSadas, smartWeaTstmNode);
 
     // groupBottomSadas (mutexGroup=false): secondary icons, multiple can be visible
     auto* groupBottomSadas = new LvglDisplayNode(nullptr, 0, false, false);
     addChild(rightPanel, groupBottomSadas);
 
-    auto* smartCrowdedSecNode  = new LvglDisplayNode(smartCrowdedSecWidget,  1, ID_SMART_CROWDED_SEC);
+    auto* smartCrowdedSecNode  = mkSadas(smartCrowdedSecWidget,  1, ID_SMART_CROWDED_SEC);
     addChild(groupBottomSadas, smartCrowdedSecNode);
 
-    auto* smartPedHwySecNode   = new LvglDisplayNode(smartPedHwySecWidget,   2, ID_SMART_PED_HWY_SEC);
+    auto* smartPedHwySecNode   = mkSadas(smartPedHwySecWidget,   2, ID_SMART_PED_HWY_SEC);
     addChild(groupBottomSadas, smartPedHwySecNode);
 
-    auto* smartCycHwySecNode   = new LvglDisplayNode(smartCycHwySecWidget,   3, ID_SMART_CYC_HWY_SEC);
+    auto* smartCycHwySecNode   = mkSadas(smartCycHwySecWidget,   3, ID_SMART_CYC_HWY_SEC);
     addChild(groupBottomSadas, smartCycHwySecNode);
 
-    auto* smartHarshDzSecNode  = new LvglDisplayNode(smartHarshDzSecWidget,  4, ID_SMART_HARSH_DZ_SEC);
+    auto* smartHarshDzSecNode  = mkSadas(smartHarshDzSecWidget,  4, ID_SMART_HARSH_DZ_SEC);
     addChild(groupBottomSadas, smartHarshDzSecNode);
 
-    auto* smartCaSecNode       = new LvglDisplayNode(smartCaSecWidget,       4, ID_SMART_CA_SEC);
+    auto* smartCaSecNode       = mkSadas(smartCaSecWidget,       4, ID_SMART_CA_SEC);
     addChild(groupBottomSadas, smartCaSecNode);
 
-    auto* smartWeaRoadSecNode  = new LvglDisplayNode(smartWeaRoadSecWidget,  5, ID_SMART_WEA_ROAD_SEC);
+    auto* smartWeaRoadSecNode  = mkSadas(smartWeaRoadSecWidget,  5, ID_SMART_WEA_ROAD_SEC);
     addChild(groupBottomSadas, smartWeaRoadSecNode);
 
-    auto* smartWeaHydroSecNode = new LvglDisplayNode(smartWeaHydroSecWidget, 5, ID_SMART_WEA_HYDRO_SEC);
+    auto* smartWeaHydroSecNode = mkSadas(smartWeaHydroSecWidget, 5, ID_SMART_WEA_HYDRO_SEC);
     addChild(groupBottomSadas, smartWeaHydroSecNode);
 
-    auto* smartWeaFgSecNode    = new LvglDisplayNode(smartWeaFgSecWidget,    6, ID_SMART_WEA_FG_SEC);
+    auto* smartWeaFgSecNode    = mkSadas(smartWeaFgSecWidget,    6, ID_SMART_WEA_FG_SEC);
     addChild(groupBottomSadas, smartWeaFgSecNode);
 
-    auto* smartWeaWndSecNode   = new LvglDisplayNode(smartWeaWndSecWidget,   7, ID_SMART_WEA_WND_SEC);
+    auto* smartWeaWndSecNode   = mkSadas(smartWeaWndSecWidget,   7, ID_SMART_WEA_WND_SEC);
     addChild(groupBottomSadas, smartWeaWndSecNode);
 
-    auto* smartWeaHailSecNode  = new LvglDisplayNode(smartWeaHailSecWidget,  7, ID_SMART_WEA_HAIL_SEC);
+    auto* smartWeaHailSecNode  = mkSadas(smartWeaHailSecWidget,  7, ID_SMART_WEA_HAIL_SEC);
     addChild(groupBottomSadas, smartWeaHailSecNode);
 
-    auto* smartWeaTstmSecNode  = new LvglDisplayNode(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
+    auto* smartWeaTstmSecNode  = mkSadas(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
     addChild(groupBottomSadas, smartWeaTstmSecNode);
 
     // SMART_FATIGUE / SMART_BUMPERS: in JSON + QML but no UI in QML (placeholders)
@@ -944,6 +980,13 @@ void LvglMainProcess::handleKeyEvent(int sdlKey)
     }
 }
 
+void LvglMainProcess::handleDualKeyPress()
+{
+    if (menuController_) {
+        menuController_->handleDualKeyPress();
+    }
+}
+
 void LvglMainProcess::launch()
 {
     canmgr_->launch();
@@ -970,6 +1013,11 @@ void LvglMainProcess::updateDisplay()
     displayDirty_.store(true);
 }
 
+void LvglMainProcess::carShiftAnimCb(void* obj, int32_t val)
+{
+    lv_obj_align(static_cast<lv_obj_t*>(obj), LV_ALIGN_BOTTOM_MID, val, 5);
+}
+
 void LvglMainProcess::applyPendingDisplayUpdate()
 {
     if (displayDirty_.exchange(false))
@@ -978,17 +1026,39 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         updateTreeVisibility(displayRoot_, DO_NOT_FORCE_INVISIBILITY);
         alertController_->mutex.unlock();
 
-        // Host car shift based on LDW activation
+        // Host car visibility: QML shows when groupGAG or groupCIPV is active
+        if (hostCar_) {
+            bool gagActive = groupGAG_ && groupGAG_->getActivSem() > 0;
+            bool cipvActive = groupCIPV_ && groupCIPV_->getActivSem() > 0;
+            if (gagActive || cipvActive)
+                lv_obj_remove_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
+            else
+                lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
+        }
+
+        // Host car shift based on LDW activation (QML: 200ms shift, 600ms return)
         if (hostCar_ && lldwNode_ && rldwNode_)
         {
             bool leftActive = lldwNode_->getActivSem() > 0;
             bool rightActive = rldwNode_->getActivSem() > 0;
-            int offset = 0;
+            int targetOffset = 0;
             if (leftActive && !rightActive)
-                offset = -41;
+                targetOffset = -41;
             else if (rightActive && !leftActive)
-                offset = 41;
-            lv_obj_align(hostCar_, LV_ALIGN_BOTTOM_MID, offset, 5);
+                targetOffset = 41;
+
+            if (targetOffset != lastCarOffset_) {
+                int duration = (targetOffset == 0) ? 600 : 200;
+                lv_anim_t anim;
+                lv_anim_init(&anim);
+                lv_anim_set_var(&anim, hostCar_);
+                lv_anim_set_values(&anim, lastCarOffset_, targetOffset);
+                lv_anim_set_duration(&anim, duration);
+                lv_anim_set_path_cb(&anim, lv_anim_path_ease_in_out);
+                lv_anim_set_exec_cb(&anim, carShiftAnimCb);
+                lv_anim_start(&anim);
+                lastCarOffset_ = targetOffset;
+            }
         }
     }
 }

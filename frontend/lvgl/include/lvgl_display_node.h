@@ -71,4 +71,20 @@ private:
     lv_obj_t* gifWidget_;
 };
 
+// Display node with sign intro animation (scale from start to target over 500ms)
+class LvglAnimatedSignNode : public LvglDisplayNode {
+public:
+    LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                          lv_obj_t* imgWidget, int startScale, int targetScale);
+
+    void onBecomeVisible() override;
+    void onBecomeInvisible() override;
+
+private:
+    lv_obj_t* imgWidget_;
+    int startScale_;
+    int targetScale_;
+    static void scaleAnimCb(void* obj, int32_t val);
+};
+
 #endif // LVGL_DISPLAY_NODE_H

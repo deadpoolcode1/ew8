@@ -19,8 +19,11 @@ public:
     void showVolumeFail();
 
     // QR code entity triggers
-    void showQRCode(const std::string& data);
-    void hideQRCode();
+    void activateQRCode(const std::string& data);
+    void deactivateQRCode();
+
+    // Dual-key press handler for QR activation (Up+Down held simultaneously)
+    void handleDualKeyPress();
 
     // ISA state machine: ISA available when STATE_ISA_NOT_TSR activated
     void setIsaAvailable(bool available);
@@ -52,6 +55,8 @@ private:
     lv_obj_t* createFooterDots(lv_obj_t* parent, int numDots, int activeDot);
 
     static void autoHideTimerCb(lv_timer_t* timer);
+    static void qrActivateTimerCb(lv_timer_t* timer);
+    static void qrDeactivateTimerCb(lv_timer_t* timer);
 
     lv_obj_t* parent_;
     CanManager* canmgr_;
@@ -84,6 +89,10 @@ private:
     lv_obj_t* qrScreen_;
     lv_obj_t* qrLabel_;
     lv_obj_t* qrCode_;
+    bool qrActive_;                // INFO_QRCODE entity is active (data ready)
+    std::string qrData_;           // stored QR data string
+    lv_timer_t* qrActivateTimer_;  // 5-second press-to-activate timer
+    lv_timer_t* qrDeactivateTimer_; // 20-second auto-hide timer
 
     // ISA availability (driven by STATE_ISA_NOT_TSR / STATE_TSR_NOT_ISA)
     bool isaAvailable_;

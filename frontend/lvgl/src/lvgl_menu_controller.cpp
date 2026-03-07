@@ -74,6 +74,9 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     , isaMode_(0)
     , isaAvailable_(false)
     , autoHideTimer_(nullptr)
+    , qrActive_(false)
+    , qrActivateTimer_(nullptr)
+    , qrDeactivateTimer_(nullptr)
 {
     // --- Brightness menu ---
     brightnessScreen_ = createMenuScreen(parent);
@@ -513,18 +516,63 @@ void LvglMenuController::showVolumeFail()
     restartAutoHide(5000);
 }
 
-void LvglMenuController::showQRCode(const std::string& data)
+void LvglMenuController::activateQRCode(const std::string& data)
 {
-    if (!data.empty()) {
-        lv_qrcode_update(qrCode_, data.c_str(), data.size());
-        lv_label_set_text(qrLabel_, data.c_str());
-    }
-    lv_obj_remove_flag(qrScreen_, LV_OBJ_FLAG_HIDDEN);
+    // QML: setVisibleSlotStr stores data and sets is_active = true, but does NOT show QR
+    qrData_ = data;
+    qrActive_ = true;
 }
 
-void LvglMenuController::hideQRCode()
+void LvglMenuController::deactivateQRCode()
 {
+    // QML: setInvisibleSlot — hide QR, clear active, stop timers
+    qrActive_ = false;
     lv_obj_add_flag(qrScreen_, LV_OBJ_FLAG_HIDDEN);
+    if (qrActivateTimer_) {
+        lv_timer_delete(qrActivateTimer_);
+        qrActivateTimer_ = nullptr;
+    }
+    if (qrDeactivateTimer_) {
+        lv_timer_delete(qrDeactivateTimer_);
+        qrDeactivateTimer_ = nullptr;
+    }
+}
+
+void LvglMenuController::handleDualKeyPress()
+{
+    // QML: Up+Down simultaneous press while is_active starts 5-second timer
+    if (!qrActive_) return;
+    if (qrActivateTimer_) return; // already counting down
+
+    qrActivateTimer_ = lv_timer_create(qrActivateTimerCb, 5000, this);
+    lv_timer_set_repeat_count(qrActivateTimer_, 1);
+}
+
+void LvglMenuController::qrActivateTimerCb(lv_timer_t* timer)
+{
+    auto* ctrl = static_cast<LvglMenuController*>(lv_timer_get_user_data(timer));
+    ctrl->qrActivateTimer_ = nullptr;
+
+    // Show QR code
+    if (!ctrl->qrData_.empty()) {
+        lv_qrcode_update(ctrl->qrCode_, ctrl->qrData_.c_str(), ctrl->qrData_.size());
+        lv_label_set_text(ctrl->qrLabel_, ctrl->qrData_.c_str());
+    }
+    lv_obj_remove_flag(ctrl->qrScreen_, LV_OBJ_FLAG_HIDDEN);
+
+    // Start 20-second auto-hide timer
+    if (ctrl->qrDeactivateTimer_) {
+        lv_timer_delete(ctrl->qrDeactivateTimer_);
+    }
+    ctrl->qrDeactivateTimer_ = lv_timer_create(qrDeactivateTimerCb, 20000, ctrl);
+    lv_timer_set_repeat_count(ctrl->qrDeactivateTimer_, 1);
+}
+
+void LvglMenuController::qrDeactivateTimerCb(lv_timer_t* timer)
+{
+    auto* ctrl = static_cast<LvglMenuController*>(lv_timer_get_user_data(timer));
+    ctrl->qrDeactivateTimer_ = nullptr;
+    lv_obj_add_flag(ctrl->qrScreen_, LV_OBJ_FLAG_HIDDEN);
 }
 
 void LvglMenuController::setIsaAvailable(bool available)

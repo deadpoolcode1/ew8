@@ -5,12 +5,14 @@
 
 class LvglValueDisplayNode : public LvglDisplayNode {
 public:
-    LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* valueLabel);
+    LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                          lv_obj_t* valueLabel, int divideFactor = 0);
 
     void onBecomeVisible() override;
 
 private:
     lv_obj_t* valueLabel_;
+    int divideFactor_;  // If >0, display valueInt_/factor with 1 decimal (e.g., 12 → "1.2")
 };
 
 // Speed display node with MPH conversion support
@@ -20,11 +22,13 @@ public:
     LvglSpeedDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                           lv_obj_t* valueLabel, lv_obj_t* unitLabel);
 
+    void setSpeedShowNode(LvglDisplayNode* node) { speedShowNode_ = node; }
     void onBecomeVisible() override;
 
 private:
     lv_obj_t* valueLabel_;
     lv_obj_t* unitLabel_;
+    LvglDisplayNode* speedShowNode_ = nullptr;
 };
 
 #endif // LVGL_VALUE_DISPLAY_NODE_H

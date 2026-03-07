@@ -26,6 +26,7 @@ public:
     LvglMenuController* getMenuController() { return menuController_; }
 
     void handleKeyEvent(int sdlKey);
+    void handleDualKeyPress();
 
 private:
     void buildDisplayTree(lv_obj_t* screen);
@@ -41,6 +42,10 @@ private:
     lv_obj_t* hostCar_;
     LvglDisplayNode* lldwNode_;
     LvglDisplayNode* rldwNode_;
+    LvglDisplayNode* groupGAG_;
+    LvglDisplayNode* groupCIPV_;
+    int lastCarOffset_;
+    static void carShiftAnimCb(void* obj, int32_t val);
 
     // Menu controller
     LvglMenuController* menuController_;
