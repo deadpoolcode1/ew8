@@ -91,6 +91,10 @@ int main(int argc, char* argv[])
         if (key) {
             mainProcess->handleKeyEvent(key);
         }
+        // Dual-key press (Up+Down) for QR code activation
+        if (sdl_display_get_dual_key_press()) {
+            mainProcess->handleDualKeyPress();
+        }
 
         // Apply pending display tree updates from backend threads
         mainProcess->applyPendingDisplayUpdate();

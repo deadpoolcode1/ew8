@@ -49,12 +49,14 @@ private:
 class LvglShapeUsaNode : public LvglDisplayNode {
 public:
     LvglShapeUsaNode(int layer, DISPLAY_ITEM_ID entityType,
-                     lv_obj_t* sliSignImg, lv_obj_t* sliSuppSignImg);
+                     lv_obj_t* sliSignImg, lv_obj_t* sliSuppSignImg,
+                     lv_obj_t* sliSpeedLabel = nullptr);
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
 private:
     lv_obj_t* sliSignImg_;
     lv_obj_t* sliSuppSignImg_;
+    lv_obj_t* sliSpeedLabel_;
 };
 
 // Display node for ALERT_ISA_OVERSPEED — blinks SLI/ISA speed signs when active

@@ -19,4 +19,7 @@ bool sdl_display_poll_events();
 // Get last key pressed during poll (SDL key code, or 0 if none).
 int sdl_display_get_last_key();
 
+// Returns true if Up+Down are held simultaneously (for QR code activation).
+bool sdl_display_get_dual_key_press();
+
 #endif // SDL_DISPLAY_H

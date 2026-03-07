@@ -241,3 +241,51 @@ void LvglGifDisplayNode::onBecomeInvisible()
     }
     LvglDisplayNode::onBecomeInvisible();
 }
+
+// --- LvglAnimatedSignNode ---
+LvglAnimatedSignNode::LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                             lv_obj_t* imgWidget, int startScale, int targetScale)
+    : LvglDisplayNode(widget, layer, entityType)
+    , imgWidget_(imgWidget)
+    , startScale_(startScale)
+    , targetScale_(targetScale)
+{
+}
+
+void LvglAnimatedSignNode::scaleAnimCb(void* obj, int32_t val)
+{
+    lv_image_set_scale(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglAnimatedSignNode::onBecomeVisible()
+{
+    bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+
+    if (wasHidden && imgWidget_) {
+        // Start at enlarged scale, then animate to target
+        lv_image_set_scale(imgWidget_, startScale_);
+    }
+
+    LvglDisplayNode::onBecomeVisible();
+
+    if (wasHidden && imgWidget_) {
+        // QML SideIcon: 500ms OutQuad scale animation from start_scale to target_scale
+        lv_anim_t anim;
+        lv_anim_init(&anim);
+        lv_anim_set_var(&anim, imgWidget_);
+        lv_anim_set_values(&anim, startScale_, targetScale_);
+        lv_anim_set_duration(&anim, 500);
+        lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
+        lv_anim_set_exec_cb(&anim, scaleAnimCb);
+        lv_anim_start(&anim);
+    }
+}
+
+void LvglAnimatedSignNode::onBecomeInvisible()
+{
+    if (imgWidget_) {
+        lv_anim_delete(imgWidget_, scaleAnimCb);
+        lv_image_set_scale(imgWidget_, targetScale_);
+    }
+    LvglDisplayNode::onBecomeInvisible();
+}

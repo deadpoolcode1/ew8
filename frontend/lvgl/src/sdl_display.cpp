@@ -19,6 +19,11 @@ static bool display_needs_refresh = false;
 // Last key pressed during poll
 static int last_key_pressed = 0;
 
+// Track held keys for dual-key detection
+static bool key_up_held = false;
+static bool key_down_held = false;
+static bool dual_key_detected = false;
+
 /**
  * SDL display flush callback for LVGL
  */
@@ -130,6 +135,7 @@ void sdl_display_present_if_needed()
 bool sdl_display_poll_events()
 {
     last_key_pressed = 0;
+    dual_key_detected = false;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT)
@@ -138,12 +144,25 @@ bool sdl_display_poll_events()
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 return false;
             last_key_pressed = event.key.keysym.sym;
+            if (event.key.keysym.sym == SDLK_UP) key_up_held = true;
+            if (event.key.keysym.sym == SDLK_DOWN) key_down_held = true;
+        }
+        if (event.type == SDL_KEYUP) {
+            if (event.key.keysym.sym == SDLK_UP) key_up_held = false;
+            if (event.key.keysym.sym == SDLK_DOWN) key_down_held = false;
         }
     }
+    if (key_up_held && key_down_held)
+        dual_key_detected = true;
     return true;
 }
 
 int sdl_display_get_last_key()
 {
     return last_key_pressed;
+}
+
+bool sdl_display_get_dual_key_press()
+{
+    return dual_key_detected;
 }
