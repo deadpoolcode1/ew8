@@ -12,7 +12,7 @@ LvglBlinkDisplayNode::LvglBlinkDisplayNode(lv_obj_t* widget, int layer, DISPLAY_
 
 void LvglBlinkDisplayNode::onBecomeVisible()
 {
-    if (widget_)
+    if (widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_set_style_opa(widget_, LV_OPA_COVER, 0);
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
@@ -34,7 +34,7 @@ void LvglBlinkDisplayNode::onBecomeVisible()
 
 void LvglBlinkDisplayNode::onBecomeInvisible()
 {
-    if (widget_)
+    if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_anim_delete(widget_, blinkAnimCb);
         lv_obj_set_style_opa(widget_, LV_OPA_COVER, 0);

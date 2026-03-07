@@ -67,6 +67,7 @@ public:
 private:
     lv_obj_t* sliWidget_;
     lv_obj_t* isaSpeedWidget_;
+    bool blinking_ = false;
     static void blinkAnimCb(void* obj, int32_t val);
     void startBlink(lv_obj_t* widget);
     void stopBlink(lv_obj_t* widget);

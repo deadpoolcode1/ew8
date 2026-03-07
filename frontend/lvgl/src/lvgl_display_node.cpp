@@ -113,7 +113,7 @@ void LvglDisplayNode::setCanEntityArg(const String& stringArg)
 
 void LvglDisplayNode::onBecomeVisible()
 {
-    if (widget_)
+    if (widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
@@ -121,7 +121,7 @@ void LvglDisplayNode::onBecomeVisible()
 
 void LvglDisplayNode::onBecomeInvisible()
 {
-    if (widget_)
+    if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_add_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
@@ -190,10 +190,11 @@ void LvglTimedDisplayNode::timerCb(lv_timer_t* timer)
 
 void LvglTimedDisplayNode::onBecomeVisible()
 {
+    bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     LvglDisplayNode::onBecomeVisible();
 
-    // Start auto-dismiss timer
-    if (maxDurationMs_ > 0) {
+    // Start auto-dismiss timer only on actual visibility change
+    if (wasHidden && maxDurationMs_ > 0) {
         if (timer_) {
             lv_timer_delete(timer_);
         }
@@ -210,4 +211,33 @@ void LvglTimedDisplayNode::onBecomeInvisible()
         lv_timer_delete(timer_);
         timer_ = nullptr;
     }
+}
+
+// --- LvglGifDisplayNode ---
+LvglGifDisplayNode::LvglGifDisplayNode(lv_obj_t* container, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* gifWidget)
+    : LvglDisplayNode(container, layer, entityType)
+    , gifWidget_(gifWidget)
+{
+    // GIF starts hidden, so pause its timer immediately
+    if (gifWidget_) {
+        lv_gif_pause(gifWidget_);
+    }
+}
+
+void LvglGifDisplayNode::onBecomeVisible()
+{
+    bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+    LvglDisplayNode::onBecomeVisible();
+    if (wasHidden && gifWidget_) {
+        lv_gif_resume(gifWidget_);
+    }
+}
+
+void LvglGifDisplayNode::onBecomeInvisible()
+{
+    bool wasVisible = widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+    if (wasVisible && gifWidget_) {
+        lv_gif_pause(gifWidget_);
+    }
+    LvglDisplayNode::onBecomeInvisible();
 }

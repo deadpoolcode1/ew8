@@ -59,4 +59,16 @@ private:
     lv_timer_t* timer_;
 };
 
+// Display node that pauses/resumes a child GIF widget on visibility changes
+class LvglGifDisplayNode : public LvglDisplayNode {
+public:
+    LvglGifDisplayNode(lv_obj_t* container, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* gifWidget);
+
+    void onBecomeVisible() override;
+    void onBecomeInvisible() override;
+
+private:
+    lv_obj_t* gifWidget_;
+};
+
 #endif // LVGL_DISPLAY_NODE_H
