@@ -577,10 +577,10 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupFCW = new LvglDisplayNode(nullptr, 2, false, false);
     addChild(generalPanel, groupFCW);
 
-    auto* fcwNode = new LvglDisplayNode(fcwWidget, 1, ID_ALERT_FCW);
+    auto* fcwNode = new LvglGifDisplayNode(fcwWidget, 1, ID_ALERT_FCW, lv_obj_get_child(fcwWidget, 0));
     addChild(groupFCW, fcwNode);
 
-    auto* pcwNode = new LvglDisplayNode(pcwWidget, 0, ID_ALERT_PCW);
+    auto* pcwNode = new LvglGifDisplayNode(pcwWidget, 0, ID_ALERT_PCW, lv_obj_get_child(pcwWidget, 0));
     addChild(groupFCW, pcwNode);
 
     // status_panel (group, layer=2)

@@ -213,7 +213,7 @@ void LvglPeripheralTestGroupNode::updateItems()
 
 void LvglPeripheralTestGroupNode::onBecomeVisible()
 {
-    if (widget_) {
+    if (widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
     updateItems();
@@ -221,13 +221,15 @@ void LvglPeripheralTestGroupNode::onBecomeVisible()
 
 void LvglPeripheralTestGroupNode::onBecomeInvisible()
 {
-    if (widget_) {
+    if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_add_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
     for (auto& item : items_) {
-        lv_obj_add_flag(item.icon, LV_OBJ_FLAG_HIDDEN);
+        if (!lv_obj_has_flag(item.icon, LV_OBJ_FLAG_HIDDEN)) {
+            lv_obj_add_flag(item.icon, LV_OBJ_FLAG_HIDDEN);
+        }
     }
-    if (resultIcon_) {
+    if (resultIcon_ && !lv_obj_has_flag(resultIcon_, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_add_flag(resultIcon_, LV_OBJ_FLAG_HIDDEN);
     }
 }

@@ -1,5 +1,6 @@
 #include "lvgl_value_display_node.h"
 #include <cstdio>
+#include <cstring>
 
 LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* valueLabel)
     : LvglDisplayNode(widget, layer, entityType)
@@ -15,7 +16,9 @@ void LvglValueDisplayNode::onBecomeVisible()
     {
         char buf[16];
         snprintf(buf, sizeof(buf), "%d", valueInt_);
-        lv_label_set_text(valueLabel_, buf);
+        if (strcmp(lv_label_get_text(valueLabel_), buf) != 0) {
+            lv_label_set_text(valueLabel_, buf);
+        }
     }
 }
 
@@ -40,11 +43,16 @@ void LvglSpeedDisplayNode::onBecomeVisible()
     {
         char buf[16];
         snprintf(buf, sizeof(buf), "%d", displaySpeed);
-        lv_label_set_text(valueLabel_, buf);
+        if (strcmp(lv_label_get_text(valueLabel_), buf) != 0) {
+            lv_label_set_text(valueLabel_, buf);
+        }
     }
 
     if (unitLabel_)
     {
-        lv_label_set_text(unitLabel_, isMph ? "MPH" : "km/h");
+        const char* unitText = isMph ? "MPH" : "km/h";
+        if (strcmp(lv_label_get_text(unitLabel_), unitText) != 0) {
+            lv_label_set_text(unitLabel_, unitText);
+        }
     }
 }

@@ -160,14 +160,20 @@ void LvglOverspeedBlinkNode::stopBlink(lv_obj_t* widget)
 
 void LvglOverspeedBlinkNode::onBecomeVisible()
 {
-    startBlink(sliWidget_);
-    startBlink(isaSpeedWidget_);
+    if (!blinking_) {
+        blinking_ = true;
+        startBlink(sliWidget_);
+        startBlink(isaSpeedWidget_);
+    }
 }
 
 void LvglOverspeedBlinkNode::onBecomeInvisible()
 {
-    stopBlink(sliWidget_);
-    stopBlink(isaSpeedWidget_);
+    if (blinking_) {
+        blinking_ = false;
+        stopBlink(sliWidget_);
+        stopBlink(isaSpeedWidget_);
+    }
 }
 
 // --- STATE_ISA_NOT_TSR ---
