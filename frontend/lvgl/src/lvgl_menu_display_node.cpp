@@ -106,26 +106,39 @@ LvglShapeUsaNode::LvglShapeUsaNode(int layer, DISPLAY_ITEM_ID entityType,
 
 void LvglShapeUsaNode::onBecomeVisible()
 {
-    if (sliSignImg_)
+    // Switch to rectangular sign image (98x112 vs circular 112x112)
+    if (sliSignImg_) {
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_rect.png");
-    if (sliSuppSignImg_)
+        // Rect image center is at (49,56), not (56,56). Adjust pivot for correct centering.
+        lv_image_set_pivot(sliSignImg_, 49, 56);
+    }
+    if (sliSuppSignImg_) {
         lv_image_set_src(sliSuppSignImg_, "A:images/left-panel/SLI/left_SLI_rect.png");
-    // QML: USA rect shape moves speed text down by 17px and uses smaller font
+        lv_image_set_pivot(sliSuppSignImg_, 49, 56);
+    }
+    // QML: USA rect shape: verticalCenterOffset=17, horizontalCenterOffset=2, font=30
+    // With rect pivot (49,56), the sign visual center shifts ~5px left vs circular.
+    // Compensate label position: offset -3 instead of +2 to stay centered on rect sign.
     if (sliSpeedLabel_) {
-        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 1, 17);
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, -3, 17);
         lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_20, 0);
     }
 }
 
 void LvglShapeUsaNode::onBecomeInvisible()
 {
-    if (sliSignImg_)
+    // Restore circular sign image and pivot
+    if (sliSignImg_) {
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
-    if (sliSuppSignImg_)
+        lv_image_set_pivot(sliSignImg_, 56, 56);
+    }
+    if (sliSuppSignImg_) {
         lv_image_set_src(sliSuppSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
-    // Restore circular sign text position and font
+        lv_image_set_pivot(sliSuppSignImg_, 56, 56);
+    }
+    // Restore circular sign text position and font (QML: horizontalCenterOffset=2)
     if (sliSpeedLabel_) {
-        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 1, 0);
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 0, 0);
         lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_22, 0);
     }
 }

@@ -30,6 +30,10 @@ public:
     void setParent(LvglDisplayNode* parent);
     void appendChild(LvglDisplayNode* child);
 
+    // Set an intro animation image widget + scale targets. When set, onBecomeVisible()
+    // will animate scale from startScale to targetScale over 500ms OutQuad.
+    void setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale);
+
 protected:
     lv_obj_t* widget_;
     int layer_;
@@ -40,6 +44,13 @@ protected:
     LayersPriorityQ* children_;
     uint8_t valueInt_, valueFrac_, unit_;
     String stringArg_;
+
+    // Intro animation (optional, set via setIntroAnim)
+    lv_obj_t* introAnimImg_ = nullptr;
+    int introStartScale_ = 256;
+    int introTargetScale_ = 256;
+    static void introScaleAnimCb(void* obj, int32_t val);
+    void playIntroAnim();
 
 private:
     void handleMutexGroup();
@@ -72,10 +83,12 @@ private:
 };
 
 // Display node with sign intro animation (scale from start to target over 500ms)
+// Optionally also animates x-position (for right-panel signs moving from center to edge)
 class LvglAnimatedSignNode : public LvglDisplayNode {
 public:
     LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
-                          lv_obj_t* imgWidget, int startScale, int targetScale);
+                          lv_obj_t* imgWidget, int startScale, int targetScale,
+                          int startX = -1, int targetX = -1, int delayMs = 0);
 
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
@@ -84,7 +97,11 @@ private:
     lv_obj_t* imgWidget_;
     int startScale_;
     int targetScale_;
+    int startX_;   // -1 means no position animation
+    int targetX_;
+    int delayMs_;  // QML pause_duration before animation starts
     static void scaleAnimCb(void* obj, int32_t val);
+    static void posAnimCb(void* obj, int32_t val);
 };
 
 #endif // LVGL_DISPLAY_NODE_H

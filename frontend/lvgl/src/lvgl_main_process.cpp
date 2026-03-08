@@ -29,6 +29,9 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , rldwNode_(nullptr)
     , groupGAG_(nullptr)
     , groupCIPV_(nullptr)
+    , disconPanel_(nullptr)
+    , failsafeNode_(nullptr)
+    , hmwValueLabel_(nullptr)
     , menuController_(nullptr)
 {
     coreDebug() << "LvglMainProcess init begin, time:" << bootUpTimer.elapsed();
@@ -224,7 +227,14 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* rootWidget = createRootContainer(screen);
 
     // 1. Content widgets (lowest visual layer)
-    // LDW indicators: off (yellow), active (blinking), on (green)
+    // Creation order = LVGL visual z-order (later = on top).
+    // QML z-values: HMW(1) < lanes(4) < forward_car(5) < host_car(6)
+    LvglWidgets::HMWWidgets hmw = LvglWidgets::createHMWDisplay(rootWidget);
+
+    // PDZ overlay
+    lv_obj_t* pdzWidget = LvglWidgets::createPDZOverlay(rootWidget);
+
+    // LDW indicators: created after HMW so they render on top (QML z:4)
     lv_obj_t* ldwOffLeftWidget  = LvglWidgets::createLDWOffIndicator(rootWidget, true);
     lv_obj_t* ldwOffRightWidget = LvglWidgets::createLDWOffIndicator(rootWidget, false);
     lv_obj_t* ldwLeftWidget     = LvglWidgets::createLDWIndicator(rootWidget, true);
@@ -232,18 +242,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* ldwOnLeftWidget   = LvglWidgets::createLDWOnIndicator(rootWidget, true);
     lv_obj_t* ldwOnRightWidget  = LvglWidgets::createLDWOnIndicator(rootWidget, false);
 
-    // HMW display (returns struct with sub-widget pointers)
-    LvglWidgets::HMWWidgets hmw = LvglWidgets::createHMWDisplay(rootWidget);
-
-    // Host car — always visible at bottom-center, independent of HMW state
-    // QML: HostCar is sibling of groupCIPV, not a child
+    // Host car — created after lanes so it renders on top (QML z:6 > lanes z:4)
+    // QML: anchors.bottom: parent.bottom, bottomMargin: -5, width: 160
     hostCar_ = lv_image_create(rootWidget);
     lv_image_set_src(hostCar_, "A:images/cars/grey_car_bright.png");
-    lv_obj_set_size(hostCar_, 160, LV_SIZE_CONTENT);
+    lv_image_set_scale(hostCar_, 208);  // 197→160px (160/197*256)
     lv_obj_align(hostCar_, LV_ALIGN_BOTTOM_MID, 0, 5);
-
-    // PDZ overlay
-    lv_obj_t* pdzWidget = LvglWidgets::createPDZOverlay(rootWidget);
 
     lv_obj_t* speedValueLabel = nullptr;
     lv_obj_t* speedUnitLabel = nullptr;
@@ -297,6 +301,19 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* playgroundSuppWidget = LvglWidgets::createLeftPanelSign(rootWidget,
         "A:images/left-panel/TSR/left_playgrond_blue.png", false);
 
+    // QML supp signs use smaller scale: target_scale = 0.6028 * 0.9 = 0.54252 → 139/256
+    // Rescale sign images from standard 187 to 139
+    static const int SUPP_SIGN_SCALE = 139;
+    auto rescaleSupp = [](lv_obj_t* signWidget) {
+        lv_obj_t* signImg = lv_obj_get_child(signWidget, 0);
+        if (signImg) lv_image_set_scale(signImg, SUPP_SIGN_SCALE);
+    };
+    rescaleSupp(sliSuppWidget);
+    rescaleSupp(noPassSuppWidget);
+    rescaleSupp(motorwaySuppWidget);
+    rescaleSupp(expresswaySuppWidget);
+    rescaleSupp(playgroundSuppWidget);
+
     // Add supplementary icon overlays to each supp sign (small icon below the sign)
     auto addSuppIcon = [](lv_obj_t* signWidget) -> lv_obj_t* {
         lv_obj_t* suppImg = lv_image_create(signWidget);
@@ -345,7 +362,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Failsafe (QML z=10)
     lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
     lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power Off");
-    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power");
+    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power On");
     lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot Mode");
 
     // RTW alert (QML z=10)
@@ -489,7 +506,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* pcwWidget     = LvglWidgets::createPCWAlert(rootWidget);
 
     // Error overlay (QML z=20: above everything except menus)
-    lv_obj_t* errorWidget   = LvglWidgets::createErrorOverlay(rootWidget);
+    LvglWidgets::ErrorOverlayWidgets err = LvglWidgets::createErrorOverlay(rootWidget);
+    lv_obj_t* errorWidget = err.container;
 
     // Menu controller (QML z=20+: highest z-order)
     menuController_ = new LvglMenuController(rootWidget, canmgr_);
@@ -504,9 +522,10 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // discon_panel (group, layer=0)
     auto* disconPanel = new LvglDisplayNode(nullptr, 0, false, false);
+    disconPanel_ = disconPanel;
     addChild(generalPanel, disconPanel);
 
-    auto* errorNode = new LvglDisplayNode(errorWidget, 0, ID_ALERT_ERROR);
+    auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, err.errorCodeLabel);
     addChild(disconPanel, errorNode);
 
     auto* disconNode = new LvglDisplayNode(disconWidget, 0, AlertTypes::ALERT_NOCOM);
@@ -525,8 +544,10 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* mainPanel = new LvglDisplayNode(nullptr, 2, false, false);
     addChild(generalPanel, mainPanel);
 
-    // failsafe overlay (leaf, layer=1, INFO_FAILSAFE)
-    auto* failsafeNode = new LvglDisplayNode(failsafeWidget, 1, ID_INFO_FAILSAFE);
+    // failsafe overlay (leaf, layer=2 — same as mainPanel, coexists with it)
+    // QML: failsafe is transparent overlay, lanes/car visible behind it
+    auto* failsafeNode = new LvglDisplayNode(failsafeWidget, 2, ID_INFO_FAILSAFE);
+    failsafeNode_ = failsafeNode;
     addChild(generalPanel, failsafeNode);
 
     // groupCIPV (group, layer=1)
@@ -536,20 +557,21 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // HMW distance (LvglValueDisplayNode, layer=0, ALERT_HMW_DISTANCE)
     // QML: (canEntityArg/10).toFixed(1) — CAN arg 12 displays as "1.2"
+    hmwValueLabel_ = hmw.valueLabel;
     auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel, 10);
     addChild(groupCIPV, hmwNode);
 
     // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
-    // QML: Alert state: car_margin=47, car_scale=1.0 (256)
+    // QML: Alert state: car_margin=47, car_scale=1.0 → image 129x111, display 80x61 → scale=159
     auto* hmwAlertNode = new LvglHmwStateNode(0, ID_ALERT_HMW_ALERT,
                                                hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif",
-                                               hmw.forwardCar, 47, 256);
+                                               hmw.forwardCar, 47, 159);
     addChild(groupCIPV, hmwAlertNode);
 
-    // QML: Monitor state: car_margin=40, car_scale=0.75 (192)
+    // QML: Monitor state: car_margin=40, car_scale=0.75 → display 60x46 → scale=119
     auto* hmwMonitorNode = new LvglHmwStateNode(0, ID_ALERT_HMW_MONITOR,
                                                  hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif",
-                                                 hmw.forwardCar, 40, 192);
+                                                 hmw.forwardCar, 40, 119);
     addChild(groupCIPV, hmwMonitorNode);
 
     // PDZ overlay (layer=0, ALERT_PDZ)
@@ -694,9 +716,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
+    sliNode->setIntroAnim(lv_obj_get_child(sliWidget, 0), 256, 187);
     addChild(groupTop, sliNode);
 
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
+    isaSpeedNode->setIntroAnim(lv_obj_get_child(isaSpeedWidget, 0), 256, 187);
     addChild(groupTop, isaSpeedNode);
 
     auto* isaHighwayNode = new LvglAnimatedSignNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY,
@@ -710,6 +734,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // TSR signs with auto-dismiss timers (QML maxduration values)
     // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
     auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
+    endAllRestrNode->setIntroAnim(lv_obj_get_child(endAllRestrWidget, 0), 256, 187);
     addChild(groupBottom, endAllRestrNode);
 
     auto* noPassNode = new LvglAnimatedSignNode(noPassWidget, 0, ID_ALERT_NO_PASS,
@@ -721,38 +746,50 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(groupBottom, noPassEndNode);
 
     auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
+    motorwayNode->setIntroAnim(lv_obj_get_child(motorwayWidget, 0), 256, 187);
     addChild(groupBottom, motorwayNode);
 
     auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
+    motorwayEndNode->setIntroAnim(lv_obj_get_child(motorwayEndWidget, 0), 256, 187);
     addChild(groupBottom, motorwayEndNode);
 
     auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
+    expresswayNode->setIntroAnim(lv_obj_get_child(expresswayWidget, 0), 256, 187);
     addChild(groupBottom, expresswayNode);
 
     auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
+    expresswayEndNode->setIntroAnim(lv_obj_get_child(expresswayEndWidget, 0), 256, 187);
     addChild(groupBottom, expresswayEndNode);
 
     auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
+    playgroundNode->setIntroAnim(lv_obj_get_child(playgroundWidget, 0), 256, 187);
     addChild(groupBottom, playgroundNode);
 
     auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
+    playgroundEndNode->setIntroAnim(lv_obj_get_child(playgroundEndWidget, 0), 256, 187);
     addChild(groupBottom, playgroundEndNode);
 
     // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
     // Use LvglSuppSignNode to update the supp icon image based on CAN arg value
+    // QML supp intro: start_scale=0.82(210), target_scale=0.54252(139)
     auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon);
+    sliSuppNode->setIntroAnim(lv_obj_get_child(sliSuppWidget, 0), 210, SUPP_SIGN_SCALE);
     addChild(groupBottom, sliSuppNode);
 
     auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
+    noPassSuppNode->setIntroAnim(lv_obj_get_child(noPassSuppWidget, 0), 210, SUPP_SIGN_SCALE);
     addChild(groupBottom, noPassSuppNode);
 
     auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
+    motorwaySuppNode->setIntroAnim(lv_obj_get_child(motorwaySuppWidget, 0), 210, SUPP_SIGN_SCALE);
     addChild(groupBottom, motorwaySuppNode);
 
     auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
+    expresswaySuppNode->setIntroAnim(lv_obj_get_child(expresswaySuppWidget, 0), 210, SUPP_SIGN_SCALE);
     addChild(groupBottom, expresswaySuppNode);
 
     auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
+    playgroundSuppNode->setIntroAnim(lv_obj_get_child(playgroundSuppWidget, 0), 210, SUPP_SIGN_SCALE);
     addChild(groupBottom, playgroundSuppNode);
 
     // RTW alert (full-screen, under mainPanel at layer=0 — QML has it inside main_panel)
@@ -794,10 +831,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupTopSadas = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(rightPanel, groupTopSadas);
 
-    // Right panel signs: intro animation scale 256 (1.0) → 154 (0.6028), 500ms OutQuad
-    // Helper to create animated SADAS sign node
+    // Right panel signs: intro animation scale 256→154, x-position from center→right
+    // QML: sign center starts at screen center (160). Image is 136px, center at 68.
+    // Container startX = 160 - 68 = 92, targetX = 238 (DISPLAY_WIDTH - RIGHT_PANEL_SIGN_SIZE)
+    // QML SideIcon.qml: pause_duration=1500ms for Q1/Q4 (right panel) before animating
     auto mkSadas = [](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
-        return new LvglAnimatedSignNode(w, layer, id, lv_obj_get_child(w, 0), 256, 154);
+        return new LvglAnimatedSignNode(w, layer, id, lv_obj_get_child(w, 0), 256, 154, 92, 238, 1500);
     };
 
     auto* smartCrowdedNode  = mkSadas(smartCrowdedWidget,  1, ID_SMART_CROWDED);
@@ -1027,13 +1066,33 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         alertController_->mutex.unlock();
 
         // Host car visibility: QML shows when groupGAG or groupCIPV is active
+        // and no disconnect overlay (poweroff/keeppwr/pilot) is showing
         if (hostCar_) {
+            bool disconActive = disconPanel_ && disconPanel_->getActivSem() > 0;
             bool gagActive = groupGAG_ && groupGAG_->getActivSem() > 0;
             bool cipvActive = groupCIPV_ && groupCIPV_->getActivSem() > 0;
-            if (gagActive || cipvActive)
+            if ((gagActive || cipvActive) && !disconActive)
                 lv_obj_remove_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
             else
                 lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
+        }
+
+        // QML: HMW text hidden when failsafe visible (is_text_hidden: vsn.visible)
+        if (hmwValueLabel_ && failsafeNode_) {
+            bool failsafeActive = failsafeNode_->getActivSem() > 0;
+            lv_obj_t* hmwContainer = lv_obj_get_parent(hmwValueLabel_);
+            if (hmwContainer) {
+                // Hide the "sec" and value labels (children 2 and 3 of HMW container)
+                // Child 0 = road GIF, child 1 = forward car, child 2 = sec label, child 3 = value label
+                lv_obj_t* secLabel = lv_obj_get_child(hmwContainer, 2);
+                if (failsafeActive) {
+                    if (secLabel) lv_obj_add_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    if (secLabel) lv_obj_remove_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_remove_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
         }
 
         // Host car shift based on LDW activation (QML: 200ms shift, 600ms return)

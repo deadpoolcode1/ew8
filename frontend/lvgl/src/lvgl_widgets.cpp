@@ -2,6 +2,7 @@
 
 LV_FONT_DECLARE(intelone_bold_18);
 LV_FONT_DECLARE(intelone_bold_20);
+LV_FONT_DECLARE(intelone_bold_28);
 
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
@@ -83,15 +84,18 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     // Blinker icon (will use blink animation)
     w.blinkerIcon = createHiddenImage(leftRow, "A:images/status-bar/status_blinker_yellow.png");
 
-    // --- Right row (LV_FLEX_FLOW_ROW_REVERSE, spacing=7) ---
+    // --- Right row (ROW_REVERSE, spacing=7) ---
+    // QML: layoutDirection RightToLeft, left=logo.right+8, right=parent.right
+    // Items placed from right edge leftward: ISA(rightmost) → signed → comm → mute(leftmost)
+    int barWidth = DISPLAY_WIDTH - 2 * STATUS_BAR_MARGIN;
+    int logoRightEdge = barWidth / 2 + 20 + 8; // logo half-width(20) + margin(8)
     lv_obj_t* rightRow = lv_obj_create(bar);
-    lv_obj_set_size(rightRow, LV_SIZE_CONTENT, 42);
+    lv_obj_set_size(rightRow, barWidth - logoRightEdge, 42);
+    lv_obj_set_pos(rightRow, logoRightEdge, 0);
     styleTransparent(rightRow);
     lv_obj_set_flex_flow(rightRow, LV_FLEX_FLOW_ROW_REVERSE);
     lv_obj_set_style_pad_column(rightRow, 7, 0);
     lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
-    // Anchor to right edge of status bar
-    lv_obj_align(rightRow, LV_ALIGN_TOP_RIGHT, 0, 0);
 
     // Helper: create a fixed-size slot in the flex row, stacking icons inside
     auto createSlot = [&](int width, int height) -> lv_obj_t* {
@@ -101,29 +105,29 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
         return slot;
     };
 
-    // ISA status icons (stacked in one 56x35 slot, mutually exclusive)
-    // QML: isa_status rectangle holds all ISA icons
-    lv_obj_t* isaSlot = createSlot(56, 35);
+    // Items ordered for ROW_REVERSE: first added = rightmost
+    // QML order: ISA(rightmost), signed, comm, mute(leftmost=closest to logo)
+
+    // ISA status icons (stacked in one 47x35 slot, mutually exclusive)
+    // QML ISAStatus: width=47, height=20, centered in 47x35 rect
+    lv_obj_t* isaSlot = createSlot(47, 35);
     w.isaErrorIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_error.png");
     w.isaInactiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_deact.png");
     w.isaPartialIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_part_deact.png");
     w.isaActiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_act.png");
 
     // Signed status icons (stacked in one 17x35 slot, mutually exclusive)
-    // QML: SignedStatus rectangle holds all signed icons
     lv_obj_t* signedSlot = createSlot(17, 35);
     w.signedInIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_in.png");
     w.signedOutIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_out.png");
     w.signedProcessIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_process.png");
 
     // Comm info icons (stacked in one 23x35 slot)
-    // QML: comm_info rectangle holds GSM and GPS
     lv_obj_t* commSlot = createSlot(23, 35);
     w.gsmIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GSM.png");
     w.gpsIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GPS.png");
 
-    // Mute icon (in its own 28x35 slot)
-    // QML: separate rectangle with mute anchored to right
+    // Mute icon (in its own 28x35 slot — leftmost, closest to logo)
     lv_obj_t* muteSlot = createSlot(28, 35);
     w.muteIcon = createHiddenImage(muteSlot, "A:images/status-bar/status_mute.png");
 
@@ -143,6 +147,11 @@ lv_obj_t* LvglWidgets::createDisconnectOverlay(lv_obj_t* parent)
     lv_obj_set_style_pad_all(cont, 0, 0);
     lv_obj_remove_flag(cont, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    // QML: discon_status_panel with ME logo at top (same as status bar)
+    lv_obj_t* disconLogo = lv_image_create(cont);
+    lv_image_set_src(disconLogo, "A:images/logo/ME_status_logo.png");
+    lv_obj_align(disconLogo, LV_ALIGN_TOP_MID, 0, STATUS_BAR_MARGIN + 5);
 
     // QML: discon_alert Image width:150 height:150
     // anchors.horizontalCenter + verticalCenter → exactly centered at (160,120)
@@ -235,26 +244,27 @@ LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
     lv_gif_set_src(w.roadStrip, "A:images/hmw/HMW-green-new-2.gif");
     lv_obj_align(w.roadStrip, LV_ALIGN_BOTTOM_MID, 0, 0);
 
-    // Forward vehicle — 80x61, top-center, topMargin ~40
+    // Forward vehicle — QML: 80x61 at scale=1.0, image is 129x111
+    // Scale set by LvglHmwStateNode::onBecomeVisible (alert=159, monitor=119)
     w.forwardCar = lv_image_create(w.container);
     lv_image_set_src(w.forwardCar, "A:images/cars/eyewatch_car_red_hmw-01.png");
-    lv_obj_set_size(w.forwardCar, 80, 61);
-    lv_obj_set_style_image_recolor(w.forwardCar, lv_color_white(), 0);
+    lv_image_set_pivot(w.forwardCar, 65, 0);  // pivot at top-center of 129px image
+    lv_image_set_scale(w.forwardCar, 159);    // default: alert scale
     lv_obj_align(w.forwardCar, LV_ALIGN_TOP_MID, 0, 40);
 
     // Note: host car is created separately (always visible, not HMW-dependent)
 
-    // Units label: "sec", 20px, #e1f1ff, bottomMargin ~38
+    // Units label: "sec", QML: font.pixelSize=20, Font.Medium, intelFont
     lv_obj_t* unitsLabel = lv_label_create(w.container);
     lv_label_set_text(unitsLabel, "sec");
-    lv_obj_set_style_text_font(unitsLabel, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(unitsLabel, &intelone_bold_20, 0);
     lv_obj_set_style_text_color(unitsLabel, lv_color_hex(0xe1f1ff), 0);
     lv_obj_align(unitsLabel, LV_ALIGN_BOTTOM_MID, 0, -38);
 
-    // Time value label: 28px, #e1f1ff, above units
+    // Time value label: QML: font.pixelSize=28, intelFont
     w.valueLabel = lv_label_create(w.container);
     lv_label_set_text(w.valueLabel, "0");
-    lv_obj_set_style_text_font(w.valueLabel, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(w.valueLabel, &intelone_bold_28, 0);
     lv_obj_set_style_text_color(w.valueLabel, lv_color_hex(0xe1f1ff), 0);
     lv_obj_align(w.valueLabel, LV_ALIGN_BOTTOM_MID, 0, -55);
 
@@ -263,14 +273,11 @@ LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
 
 lv_obj_t* LvglWidgets::createLDWIndicator(lv_obj_t* parent, bool isLeft)
 {
-    // QML: groupLanes in main_panel center area
-    // Lane images (56x192) anchored to left/right within center column
-    // QML margins: leftMargin 32, rightMargin 32 from center column
-    // Center column: between left_panel(50px) and right_panel(50px) → x=50, width=220
-    // With lane margins: x=50+32=82, width=220-64=156
+    // QML: groupLanes fills main_panel with topMargin:-5, bottom at screen edge
+    // Lane images anchored bottom within container
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
-    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);  // QML topMargin: -5
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT - (MAIN_PANEL_Y - 5));
+    lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
 
@@ -291,37 +298,68 @@ lv_obj_t* LvglWidgets::createLDWIndicator(lv_obj_t* parent, bool isLeft)
     return cont;
 }
 
-lv_obj_t* LvglWidgets::createErrorOverlay(lv_obj_t* parent)
+LvglWidgets::ErrorOverlayWidgets LvglWidgets::createErrorOverlay(lv_obj_t* parent)
 {
+    ErrorOverlayWidgets w = {};
+
     // QML: width:324, height:240, anchors.bottom, bottomMargin:-20, leftMargin:-2
-    lv_obj_t* cont = createFullScreenContainer(parent);
+    w.container = lv_obj_create(parent);
+    lv_obj_set_size(w.container, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    lv_obj_set_pos(w.container, 0, 0);
+    lv_obj_set_style_bg_opa(w.container, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(w.container, 0, 0);
+    lv_obj_set_style_pad_all(w.container, 0, 0);
+    lv_obj_set_style_radius(w.container, 0, 0);
+    lv_obj_remove_flag(w.container, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(w.container, LV_OBJ_FLAG_HIDDEN);
 
-    // Image is 641x481 native → scale to ~324x240
-    // Scale factor: 324/641 * 256 ≈ 129, or 240/481 * 256 ≈ 128
-    lv_obj_t* img = lv_image_create(cont);
-    lv_image_set_src(img, "A:images/error/error_full_display_general_yellow.png");
-    lv_image_set_scale(img, 129);
-    lv_obj_align(img, LV_ALIGN_BOTTOM_LEFT, -2, 20);
+    // QML: alert_err image — fillMode: PreserveAspectCrop, width:324, height:240
+    // Native 641x481 → scale to cover 320x240: 320/641=0.499 → scale=128
+    w.errorImg = lv_image_create(w.container);
+    lv_image_set_src(w.errorImg, "A:images/error/error_full_display_general_yellow.png");
+    lv_image_set_pivot(w.errorImg, 0, 0);
+    lv_image_set_scale(w.errorImg, 128);
+    lv_obj_set_pos(w.errorImg, -2, 0);
 
-    return cont;
+    // QML: ME logo at top center (discon_status_panel has logo during error too)
+    lv_obj_t* errLogo = lv_image_create(w.container);
+    lv_image_set_src(errLogo, "A:images/logo/ME_status_logo.png");
+    lv_obj_align(errLogo, LV_ALIGN_TOP_MID, 0, STATUS_BAR_MARGIN + 5);
+
+    // QML: err_code text — hex value of error arg, displayed in status bar area
+    // 24px font, white, anchored horizontalCenter of 28x35 rect, topPadding 4
+    w.errorCodeLabel = lv_label_create(w.container);
+    lv_label_set_text(w.errorCodeLabel, "");
+    lv_obj_set_style_text_font(w.errorCodeLabel, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_color(w.errorCodeLabel, lv_color_white(), 0);
+    // QML: right side of status bar, x ≈ 260, y ≈ 12
+    lv_obj_set_pos(w.errorCodeLabel, 256, 12);
+
+    return w;
 }
 
 lv_obj_t* LvglWidgets::createFailsafeOverlay(lv_obj_t* parent)
 {
     lv_obj_t* cont = createFullScreenContainer(parent);
 
-    // Eye icon: scaled 0.6 (0.6 * 256 = 154), centered horizontally, top=135
+    // Eye icon: scaled 0.6 (0.6 * 256 = 154), centered horizontally
+    // QML: anchors.top: parent.top, topMargin: 135, scale: 0.6
+    // QML scales from center: 89x53 icon, unscaled top=135, center=135+26.5=161.5
+    // In LVGL with pivot (0,0): visual spans from y to y+32. To match QML visual center
+    // at 161.5: y = 161.5 - 16 ≈ 146. But icon bottom = 146+32 = 178.
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/error/icon_eye.png");
     lv_image_set_scale(img, 154);
-    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 135);
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 146);
 
     // "Low Visibility" label, yellow #fed500, centered, below icon
+    // QML: anchors.top: lv_icon.bottom (unscaled=188), topMargin: -12 → y=176
+    // LVGL: place text just below visual icon bottom (178), with small gap
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "Low Visibility");
-    lv_obj_set_style_text_font(label, &intelone_bold_18, 0);
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_16, 0);
     lv_obj_set_style_text_color(label, lv_color_hex(0xfed500), 0);
-    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 195);
+    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 178);
 
     return cont;
 }
@@ -341,10 +379,9 @@ lv_obj_t* LvglWidgets::createOpModeOverlay(lv_obj_t* parent, const char* text)
 
 lv_obj_t* LvglWidgets::createLDWOffIndicator(lv_obj_t* parent, bool isLeft)
 {
-    // QML: yellow lane indicator (lane not available)
-    // source: "images/ldw/left_lane_yellow-01.png" (mirrored for right side)
+    // QML: yellow lane indicator, fills main_panel with topMargin:-5, bottom at screen edge
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT - (MAIN_PANEL_Y - 5));
     lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
@@ -367,9 +404,9 @@ lv_obj_t* LvglWidgets::createLDWOffIndicator(lv_obj_t* parent, bool isLeft)
 
 lv_obj_t* LvglWidgets::createLDWOnIndicator(lv_obj_t* parent, bool isLeft)
 {
-    // QML: green normal lane indicator (lane available, no departure)
+    // QML: green lane indicator, fills main_panel with topMargin:-5, bottom at screen edge
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, DISPLAY_WIDTH, MAIN_PANEL_HEIGHT);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, DISPLAY_HEIGHT - (MAIN_PANEL_Y - 5));
     lv_obj_set_pos(cont, 0, MAIN_PANEL_Y - 5);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
@@ -431,9 +468,11 @@ lv_obj_t* LvglWidgets::createLeftPanelSign(lv_obj_t* parent, const char* imageSr
 
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, imageSrc);
-    lv_image_set_pivot(img, 0, 0);
+    // Center pivot for natural shrink-from-center animation
+    // Position offset (-15,-15) compensates so at target scale image aligns to (0,0)
+    lv_image_set_pivot(img, 56, 56);
     lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
-    lv_obj_set_pos(img, 0, 0);
+    lv_obj_set_pos(img, -15, -15);
 
     return cont;
 }
@@ -451,17 +490,18 @@ lv_obj_t* LvglWidgets::createSpeedLimitSign(lv_obj_t* parent, const char* signIm
 
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, signImgSrc);
-    lv_image_set_pivot(img, 0, 0);
+    // Center pivot for natural shrink-from-center animation
+    lv_image_set_pivot(img, 56, 56);
     lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
-    lv_obj_set_pos(img, 0, 0);
+    lv_obj_set_pos(img, -15, -15);
 
-    // Speed number text centered on the sign
+    // Speed number text centered on the sign (82x82 container)
     // QML: font.pixelSize 36, scale varies. Effective ~26px at sign scale.
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "");
     lv_obj_set_style_text_font(label, &lv_font_montserrat_22, 0);
     lv_obj_set_style_text_color(label, lv_color_black(), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 1, 0);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
     *speedLabel = label;
     return cont;
@@ -480,6 +520,12 @@ lv_obj_t* LvglWidgets::createRTWAlert(lv_obj_t* parent)
     lv_obj_set_style_pad_all(cont, 0, 0);
     lv_obj_remove_flag(cont, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
+
+    // QML: RTW alert is inside main_panel, status bar (with ME logo) remains visible above it.
+    // Since LVGL RTW is full-screen black, add a logo at top to replicate the status bar look.
+    lv_obj_t* rtwLogo = lv_image_create(cont);
+    lv_image_set_src(rtwLogo, "A:images/logo/ME_status_logo.png");
+    lv_obj_align(rtwLogo, LV_ALIGN_TOP_MID, 0, STATUS_BAR_MARGIN + 5);
 
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/traffic-violation/left_TV_RL_big.png");

@@ -111,16 +111,55 @@ void LvglDisplayNode::setCanEntityArg(const String& stringArg)
     stringArg_ = stringArg;
 }
 
+void LvglDisplayNode::setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale)
+{
+    introAnimImg_ = imgWidget;
+    introStartScale_ = startScale;
+    introTargetScale_ = targetScale;
+}
+
+void LvglDisplayNode::introScaleAnimCb(void* obj, int32_t val)
+{
+    lv_image_set_scale(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglDisplayNode::playIntroAnim()
+{
+    if (!introAnimImg_) return;
+    lv_anim_t anim;
+    lv_anim_init(&anim);
+    lv_anim_set_var(&anim, introAnimImg_);
+    lv_anim_set_values(&anim, introStartScale_, introTargetScale_);
+    lv_anim_set_duration(&anim, 500);
+    lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
+    lv_anim_set_exec_cb(&anim, introScaleAnimCb);
+    lv_anim_start(&anim);
+}
+
 void LvglDisplayNode::onBecomeVisible()
 {
+    bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+
+    if (wasHidden && introAnimImg_) {
+        lv_image_set_scale(introAnimImg_, introStartScale_);
+    }
+
     if (widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    if (wasHidden && introAnimImg_) {
+        playIntroAnim();
     }
 }
 
 void LvglDisplayNode::onBecomeInvisible()
 {
+    if (introAnimImg_) {
+        lv_anim_delete(introAnimImg_, introScaleAnimCb);
+        lv_image_set_scale(introAnimImg_, introTargetScale_);
+    }
     if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_add_flag(widget_, LV_OBJ_FLAG_HIDDEN);
@@ -244,11 +283,15 @@ void LvglGifDisplayNode::onBecomeInvisible()
 
 // --- LvglAnimatedSignNode ---
 LvglAnimatedSignNode::LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
-                                             lv_obj_t* imgWidget, int startScale, int targetScale)
+                                             lv_obj_t* imgWidget, int startScale, int targetScale,
+                                             int startX, int targetX, int delayMs)
     : LvglDisplayNode(widget, layer, entityType)
     , imgWidget_(imgWidget)
     , startScale_(startScale)
     , targetScale_(targetScale)
+    , startX_(startX)
+    , targetX_(targetX)
+    , delayMs_(delayMs)
 {
 }
 
@@ -257,27 +300,45 @@ void LvglAnimatedSignNode::scaleAnimCb(void* obj, int32_t val)
     lv_image_set_scale(static_cast<lv_obj_t*>(obj), val);
 }
 
+void LvglAnimatedSignNode::posAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_x(static_cast<lv_obj_t*>(obj), val);
+}
+
 void LvglAnimatedSignNode::onBecomeVisible()
 {
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
 
     if (wasHidden && imgWidget_) {
-        // Start at enlarged scale, then animate to target
         lv_image_set_scale(imgWidget_, startScale_);
+    }
+    if (wasHidden && startX_ >= 0 && widget_) {
+        lv_obj_set_x(widget_, startX_);
     }
 
     LvglDisplayNode::onBecomeVisible();
 
     if (wasHidden && imgWidget_) {
-        // QML SideIcon: 500ms OutQuad scale animation from start_scale to target_scale
         lv_anim_t anim;
         lv_anim_init(&anim);
         lv_anim_set_var(&anim, imgWidget_);
         lv_anim_set_values(&anim, startScale_, targetScale_);
         lv_anim_set_duration(&anim, 500);
+        lv_anim_set_delay(&anim, delayMs_);
         lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
         lv_anim_set_exec_cb(&anim, scaleAnimCb);
         lv_anim_start(&anim);
+    }
+    if (wasHidden && startX_ >= 0 && targetX_ >= 0 && widget_) {
+        lv_anim_t posAnim;
+        lv_anim_init(&posAnim);
+        lv_anim_set_var(&posAnim, widget_);
+        lv_anim_set_values(&posAnim, startX_, targetX_);
+        lv_anim_set_duration(&posAnim, 500);
+        lv_anim_set_delay(&posAnim, delayMs_);
+        lv_anim_set_path_cb(&posAnim, lv_anim_path_ease_out);
+        lv_anim_set_exec_cb(&posAnim, posAnimCb);
+        lv_anim_start(&posAnim);
     }
 }
 
@@ -286,6 +347,10 @@ void LvglAnimatedSignNode::onBecomeInvisible()
     if (imgWidget_) {
         lv_anim_delete(imgWidget_, scaleAnimCb);
         lv_image_set_scale(imgWidget_, targetScale_);
+    }
+    if (startX_ >= 0 && widget_) {
+        lv_anim_delete(widget_, posAnimCb);
+        if (targetX_ >= 0) lv_obj_set_x(widget_, targetX_);
     }
     LvglDisplayNode::onBecomeInvisible();
 }
