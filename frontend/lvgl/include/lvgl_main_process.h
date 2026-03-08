@@ -44,6 +44,9 @@ private:
     LvglDisplayNode* rldwNode_;
     LvglDisplayNode* groupGAG_;
     LvglDisplayNode* groupCIPV_;
+    LvglDisplayNode* disconPanel_;
+    LvglDisplayNode* failsafeNode_;
+    lv_obj_t* hmwValueLabel_;
     int lastCarOffset_;
     static void carShiftAnimCb(void* obj, int32_t val);
 

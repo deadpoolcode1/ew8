@@ -31,4 +31,14 @@ private:
     LvglDisplayNode* speedShowNode_ = nullptr;
 };
 
+// Error overlay node — shows hex error code in label
+class LvglErrorDisplayNode : public LvglDisplayNode {
+public:
+    LvglErrorDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                          lv_obj_t* codeLabel);
+    void onBecomeVisible() override;
+private:
+    lv_obj_t* codeLabel_;
+};
+
 #endif // LVGL_VALUE_DISPLAY_NODE_H

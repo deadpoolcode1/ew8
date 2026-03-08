@@ -56,8 +56,14 @@ lv_obj_t* createLDWOffIndicator(lv_obj_t* parent, bool isLeft);
 // LDW lane on indicator (green normal lane — isLeft=true for left, false for right)
 lv_obj_t* createLDWOnIndicator(lv_obj_t* parent, bool isLeft);
 
-// Full-screen error overlay with yellow error image
-lv_obj_t* createErrorOverlay(lv_obj_t* parent);
+struct ErrorOverlayWidgets {
+    lv_obj_t* container;
+    lv_obj_t* errorImg;
+    lv_obj_t* errorCodeLabel;
+};
+
+// Full-screen error overlay with yellow error image + error code text
+ErrorOverlayWidgets createErrorOverlay(lv_obj_t* parent);
 
 // Full-screen failsafe overlay with eye icon and "Low Visibility" label
 lv_obj_t* createFailsafeOverlay(lv_obj_t* parent);

@@ -31,6 +31,24 @@ void LvglValueDisplayNode::onBecomeVisible()
     }
 }
 
+// --- Error display with hex code ---
+LvglErrorDisplayNode::LvglErrorDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                             lv_obj_t* codeLabel)
+    : LvglDisplayNode(widget, layer, entityType)
+    , codeLabel_(codeLabel)
+{
+}
+
+void LvglErrorDisplayNode::onBecomeVisible()
+{
+    LvglDisplayNode::onBecomeVisible();
+    if (codeLabel_) {
+        char buf[8];
+        snprintf(buf, sizeof(buf), "%X", valueInt_);
+        lv_label_set_text(codeLabel_, buf);
+    }
+}
+
 // --- Speed display with MPH conversion ---
 LvglSpeedDisplayNode::LvglSpeedDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                                             lv_obj_t* valueLabel, lv_obj_t* unitLabel)
