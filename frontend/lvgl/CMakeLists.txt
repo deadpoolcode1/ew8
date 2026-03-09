@@ -52,6 +52,7 @@ set(FRONTEND_SOURCES
     fonts/lv_font_intelone_bold_28.c
     fonts/intelone_medium_14.c
     fonts/intelone_medium_20.c
+    fonts/intelone_medium_24.c
     fonts/intelone_medium_22.c
     fonts/intelone_medium_28.c
     fonts/intelone_bold_26.c

@@ -10,6 +10,7 @@ LV_FONT_DECLARE(intelone_medium_28);
 LV_FONT_DECLARE(intelone_bold_26);
 LV_FONT_DECLARE(intelone_bold_32);
 LV_FONT_DECLARE(intelone_bold_37);
+LV_FONT_DECLARE(intelone_medium_24);
 LV_FONT_DECLARE(intelone_medium_26);
 LV_FONT_DECLARE(intelone_medium_32);
 LV_FONT_DECLARE(intelone_medium_36);
@@ -334,7 +335,7 @@ LvglWidgets::ErrorOverlayWidgets LvglWidgets::createErrorOverlay(lv_obj_t* paren
     // QML position: leftMargin:-2, bottom of parent with bottomMargin:-20
     w.errorImg = lv_image_create(w.container);
     lv_image_set_src(w.errorImg, "A:images/error/error_full_display_324x240.png");
-    lv_obj_set_pos(w.errorImg, -2, 0);
+    lv_obj_set_pos(w.errorImg, -2, 20);
 
     // QML: ME logo at top center (discon_status_panel has logo during error too)
     lv_obj_t* errLogo = lv_image_create(w.container);
@@ -342,13 +343,14 @@ LvglWidgets::ErrorOverlayWidgets LvglWidgets::createErrorOverlay(lv_obj_t* paren
     lv_obj_align(errLogo, LV_ALIGN_TOP_MID, 0, STATUS_BAR_MARGIN + 5);
 
     // QML: err_code text — hex value of error arg, displayed in status bar area
-    // 24px font, white, anchored horizontalCenter of 28x35 rect, topPadding 4
+    // Font: IntelOne Display Medium 24px (closest: intelone_medium_26)
+    // QML layout: discon_right_row (RTL), status_err_right_pad(71) + 7px spacing + status_error(28)
+    // status_error center x ≈ 8 + 304 - 71 - 7 - 14 = 220, y = 8 (topMargin) + 4 (topPadding) = 12
     w.errorCodeLabel = lv_label_create(w.container);
     lv_label_set_text(w.errorCodeLabel, "");
-    lv_obj_set_style_text_font(w.errorCodeLabel, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_font(w.errorCodeLabel, &intelone_medium_24, 0);
     lv_obj_set_style_text_color(w.errorCodeLabel, lv_color_white(), 0);
-    // QML: right side of status bar, x ≈ 260, y ≈ 12
-    lv_obj_set_pos(w.errorCodeLabel, 256, 12);
+    lv_obj_set_pos(w.errorCodeLabel, 205, 16);
 
     return w;
 }
