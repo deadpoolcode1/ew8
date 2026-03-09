@@ -167,11 +167,35 @@ void LvglDisplayNode::setContainerIntroAnim(int startScale, int targetScale, int
     introDelayMs_ = delayMs;
 }
 
+void LvglDisplayNode::setContainerIntroYAnim(int startY, int targetY)
+{
+    introContainerYAnim_ = true;
+    introContainerStartY_ = startY;
+    introContainerTargetY_ = targetY;
+}
+
 void LvglDisplayNode::introContainerScaleAnimCb(void* obj, int32_t val)
 {
     lv_obj_t* cont = static_cast<lv_obj_t*>(obj);
     lv_obj_set_style_transform_scale_x(cont, val, 0);
     lv_obj_set_style_transform_scale_y(cont, val, 0);
+}
+
+void LvglDisplayNode::introContainerYAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_y(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglDisplayNode::setContainerIntroXAnim(int startX, int targetX)
+{
+    introContainerXAnim_ = true;
+    introContainerStartX_ = startX;
+    introContainerTargetX_ = targetX;
+}
+
+void LvglDisplayNode::introContainerXAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_x(static_cast<lv_obj_t*>(obj), val);
 }
 
 void LvglDisplayNode::playIntroAnim()
@@ -188,6 +212,32 @@ void LvglDisplayNode::playIntroAnim()
         lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
         lv_anim_set_exec_cb(&anim, introContainerScaleAnimCb);
         lv_anim_start(&anim);
+
+        // Optional Y position animation (for bottom-slot signs)
+        if (introContainerYAnim_) {
+            lv_anim_t yAnim;
+            lv_anim_init(&yAnim);
+            lv_anim_set_var(&yAnim, widget_);
+            lv_anim_set_values(&yAnim, introContainerStartY_, introContainerTargetY_);
+            lv_anim_set_duration(&yAnim, 500);
+            lv_anim_set_delay(&yAnim, introDelayMs_);
+            lv_anim_set_path_cb(&yAnim, lv_anim_path_ease_out);
+            lv_anim_set_exec_cb(&yAnim, introContainerYAnimCb);
+            lv_anim_start(&yAnim);
+        }
+
+        // Optional X position animation (for bottom-slot signs)
+        if (introContainerXAnim_) {
+            lv_anim_t xAnim;
+            lv_anim_init(&xAnim);
+            lv_anim_set_var(&xAnim, widget_);
+            lv_anim_set_values(&xAnim, introContainerStartX_, introContainerTargetX_);
+            lv_anim_set_duration(&xAnim, 500);
+            lv_anim_set_delay(&xAnim, introDelayMs_);
+            lv_anim_set_path_cb(&xAnim, lv_anim_path_ease_out);
+            lv_anim_set_exec_cb(&xAnim, introContainerXAnimCb);
+            lv_anim_start(&xAnim);
+        }
         return;
     }
 
@@ -237,6 +287,12 @@ void LvglDisplayNode::onBecomeVisible()
         // Container mode: set container to start scale
         lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
         lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
+        if (introContainerYAnim_) {
+            lv_obj_set_y(widget_, introContainerStartY_);
+        }
+        if (introContainerXAnim_) {
+            lv_obj_set_x(widget_, introContainerStartX_);
+        }
     } else if (wasHidden && introAnimImg_) {
         lv_image_set_scale(introAnimImg_, introStartScale_);
         if (introTargetImgX_ != 0 || introTargetImgY_ != 0) {
@@ -267,6 +323,14 @@ void LvglDisplayNode::onBecomeInvisible()
         lv_anim_delete(widget_, introContainerScaleAnimCb);
         lv_obj_set_style_transform_scale_x(widget_, introTargetScale_, 0);
         lv_obj_set_style_transform_scale_y(widget_, introTargetScale_, 0);
+        if (introContainerYAnim_) {
+            lv_anim_delete(widget_, introContainerYAnimCb);
+            lv_obj_set_y(widget_, introContainerTargetY_);
+        }
+        if (introContainerXAnim_) {
+            lv_anim_delete(widget_, introContainerXAnimCb);
+            lv_obj_set_x(widget_, introContainerTargetX_);
+        }
     } else if (introAnimImg_) {
         lv_anim_delete(introAnimImg_, introScaleAnimCb);
         lv_image_set_scale(introAnimImg_, introTargetScale_);

@@ -2,18 +2,31 @@
 #include <cstdio>
 #include <cstring>
 
+LV_FONT_DECLARE(intelone_medium_36);
+LV_FONT_DECLARE(intelone_medium_44);
+
 // QML: IntelOne Display Medium, pixelSize 36, scale 1.6-(len*0.2), SideIcon 0.732
-// Base font: 44px. Container transform scales at 0.732 → 44*0.732 = 32.2px (2-digit target).
+// Container transform at 0.732 scales all children.
 // QML effective on-screen: 1-digit ~37px, 2-digit ~32px, 3-digit ~26px
-// Label transform_scale adjusts for digit count:
-//   1-digit: 37/32.2 = 1.15 → 294
-//   2-digit: 32/32.2 = 1.0  → 256 (no transform)
-//   3-digit: 26/32.2 = 0.81 → 207
-static int speedSignTextScale(int textLen)
+// Strategy: switch font + transform_scale per digit count to match QML.
+//   1-digit: 44px font, scale 294 (1.15x) → 44*0.732*1.15 = 37px
+//   2-digit: 44px font, scale 256 (1.0x)  → 44*0.732 = 32px
+//   3-digit: 36px font, scale 256 (1.0x)  → 36*0.732 = 26px
+static void applySpeedTextStyle(lv_obj_t* label, int textLen)
 {
-    if (textLen <= 1) return 294;
-    if (textLen == 2) return 256;
-    return 207;
+    if (textLen <= 1) {
+        lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
+        lv_obj_set_style_transform_scale_x(label, 294, 0);
+        lv_obj_set_style_transform_scale_y(label, 294, 0);
+    } else if (textLen == 2) {
+        lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
+        lv_obj_set_style_transform_scale_x(label, 256, 0);
+        lv_obj_set_style_transform_scale_y(label, 256, 0);
+    } else {
+        lv_obj_set_style_text_font(label, &intelone_medium_36, 0);
+        lv_obj_set_style_transform_scale_x(label, 256, 0);
+        lv_obj_set_style_transform_scale_y(label, 256, 0);
+    }
 }
 
 LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
@@ -46,6 +59,12 @@ void LvglValueDisplayNode::onBecomeVisible()
             if (!wasHidden && introContainerMode_ && widget_) {
                 lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
                 lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
+                if (introContainerYAnim_) {
+                    lv_obj_set_y(widget_, introContainerStartY_);
+                }
+                if (introContainerXAnim_) {
+                    lv_obj_set_x(widget_, introContainerStartX_);
+                }
                 playIntroAnim();
             } else if (!wasHidden && introAnimImg_) {
                 lv_image_set_scale(introAnimImg_, introStartScale_);
@@ -55,10 +74,10 @@ void LvglValueDisplayNode::onBecomeVisible()
                 playIntroAnim();
             }
             lv_label_set_text(valueLabel_, buf);
-            int ts = speedSignTextScale(strlen(buf));
-            lv_obj_set_style_transform_scale_x(valueLabel_, ts, 0);
-            lv_obj_set_style_transform_scale_y(valueLabel_, ts, 0);
-            lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 0);
+            if (divideFactor_ == 0) {
+                applySpeedTextStyle(valueLabel_, strlen(buf));
+                lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 2);
+            }
         }
     }
 }

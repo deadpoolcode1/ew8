@@ -308,7 +308,7 @@ lv_obj_t* LvglWidgets::createLDWIndicator(lv_obj_t* parent, bool isLeft)
         lv_image_set_src(img, "A:images/ldw/ldw_right-01.png");
         // QML: groupLanes has rightMargin:32 from groupGAG, which ends at right_panel.left(270)
         // lane right edge = 270 - 32 = 238 from left = -(DISPLAY_WIDTH - 238) = -82 from right
-        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
+        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 30), 0);
     }
 
     return cont;
@@ -412,7 +412,7 @@ lv_obj_t* LvglWidgets::createLDWOffIndicator(lv_obj_t* parent, bool isLeft)
     {
         // QML uses left_lane_yellow-01.png with mirror:true; right_lane-01.png is pre-mirrored
         lv_image_set_src(img, "A:images/ldw/right_lane-01.png");
-        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
+        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 30), 0);
     }
 
     return cont;
@@ -436,7 +436,7 @@ lv_obj_t* LvglWidgets::createLDWOnIndicator(lv_obj_t* parent, bool isLeft)
     else
     {
         lv_image_set_src(img, "A:images/ldw/normal_lane_right-01.png");
-        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
+        lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 30), 0);
     }
 
     return cont;
@@ -465,6 +465,8 @@ lv_obj_t* LvglWidgets::createPDZOverlay(lv_obj_t* parent)
 static const int LEFT_PANEL_SIGN_SCALE = 187;
 static const int LEFT_PANEL_SIGN_SIZE = 82;   // 112 * 0.732 (visual size at target scale)
 static const int LEFT_PANEL_SIGN_NATIVE = 112; // native image size (container size for anim)
+// Bottom-slot containers need extra height for supp icon (112x62, positioned at y=97)
+static const int LEFT_PANEL_SUPP_HEIGHT = 160; // 112 sign + 62 icon - 14 overlap
 
 // Right panel sign constants
 // Signs are 136x136 native. QML SideIcon quadrant 1/4: target_scale=0.6028 → ~82x82 rendered.
@@ -476,16 +478,19 @@ static const int RIGHT_PANEL_MARGIN = 12;
 lv_obj_t* LvglWidgets::createLeftPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
 {
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, LEFT_PANEL_SIGN_NATIVE);
-    int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
-    lv_obj_set_pos(cont, 0, y);
+    int contH = upperSlot ? LEFT_PANEL_SIGN_NATIVE : LEFT_PANEL_SUPP_HEIGHT;
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, contH);
+    int x = upperSlot ? 0 : 10;
+    int y = upperSlot ? (MAIN_PANEL_Y + 12) : 95;
+    lv_obj_set_pos(cont, x, y);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
     // Container transform scales all children (image + label) together
+    // Upper slot: pivot top-left (shrinks upward). Lower slot: pivot bottom-left (shrinks downward).
     lv_obj_set_style_transform_pivot_x(cont, 0, 0);
-    lv_obj_set_style_transform_pivot_y(cont, 0, 0);
+    lv_obj_set_style_transform_pivot_y(cont, upperSlot ? 0 : LEFT_PANEL_SIGN_NATIVE, 0);
     lv_obj_set_style_transform_scale_x(cont, LEFT_PANEL_SIGN_SCALE, 0);
     lv_obj_set_style_transform_scale_y(cont, LEFT_PANEL_SIGN_SCALE, 0);
 
@@ -500,16 +505,19 @@ lv_obj_t* LvglWidgets::createSpeedLimitSign(lv_obj_t* parent, const char* signIm
                                               bool upperSlot, lv_obj_t** speedLabel)
 {
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, LEFT_PANEL_SIGN_NATIVE);
-    int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
-    lv_obj_set_pos(cont, 0, y);
+    int contH = upperSlot ? LEFT_PANEL_SIGN_NATIVE : LEFT_PANEL_SUPP_HEIGHT;
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, contH);
+    int x = upperSlot ? 0 : 10;
+    int y = upperSlot ? (MAIN_PANEL_Y + 12) : 95;
+    lv_obj_set_pos(cont, x, y);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
     // Container transform scales all children (image + label) together
+    // Upper slot: pivot top-left (shrinks upward). Lower slot: pivot bottom-left (shrinks downward).
     lv_obj_set_style_transform_pivot_x(cont, 0, 0);
-    lv_obj_set_style_transform_pivot_y(cont, 0, 0);
+    lv_obj_set_style_transform_pivot_y(cont, upperSlot ? 0 : LEFT_PANEL_SIGN_NATIVE, 0);
     lv_obj_set_style_transform_scale_x(cont, LEFT_PANEL_SIGN_SCALE, 0);
     lv_obj_set_style_transform_scale_y(cont, LEFT_PANEL_SIGN_SCALE, 0);
 
@@ -524,7 +532,7 @@ lv_obj_t* LvglWidgets::createSpeedLimitSign(lv_obj_t* parent, const char* signIm
     lv_label_set_text(label, "");
     lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
     lv_obj_set_style_text_color(label, lv_color_black(), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 2);
 
     *speedLabel = label;
     return cont;
