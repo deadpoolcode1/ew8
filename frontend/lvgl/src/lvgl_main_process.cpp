@@ -721,19 +721,19 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
     // QML SideIcon pause_duration = 700ms for left panel (quadrants 2/3)
     auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
-    rtwWarnNode->setContainerIntroAnim(256, 187, 700);
+    rtwWarnNode->setContainerIntroAnim(256, 187, 600);
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
-    sliNode->setContainerIntroAnim(256, 187, 700);
+    sliNode->setContainerIntroAnim(256, 187, 600);
     addChild(groupTop, sliNode);
 
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
-    isaSpeedNode->setContainerIntroAnim(256, 187, 700);
+    isaSpeedNode->setContainerIntroAnim(256, 187, 600);
     addChild(groupTop, isaSpeedNode);
 
     auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
-    isaHighwayNode->setContainerIntroAnim(256, 187, 700);
+    isaHighwayNode->setContainerIntroAnim(256, 187, 600);
     addChild(groupTop, isaHighwayNode);
 
     // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
@@ -757,55 +757,55 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // TSR signs with auto-dismiss timers (QML maxduration values)
     // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
     auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
-    endAllRestrNode->setContainerIntroAnim(256, 187, 700);
+    endAllRestrNode->setContainerIntroAnim(256, 187, 600);
     endAllRestrNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     endAllRestrNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, endAllRestrNode);
 
     auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
-    noPassNode->setContainerIntroAnim(256, 187, 700);
+    noPassNode->setContainerIntroAnim(256, 187, 600);
     noPassNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     noPassNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, noPassNode);
 
     auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
-    noPassEndNode->setContainerIntroAnim(256, 187, 700);
+    noPassEndNode->setContainerIntroAnim(256, 187, 600);
     noPassEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     noPassEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, noPassEndNode);
 
     auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
-    motorwayNode->setContainerIntroAnim(256, 187, 700);
+    motorwayNode->setContainerIntroAnim(256, 187, 600);
     motorwayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     motorwayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, motorwayNode);
 
     auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
-    motorwayEndNode->setContainerIntroAnim(256, 187, 700);
+    motorwayEndNode->setContainerIntroAnim(256, 187, 600);
     motorwayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     motorwayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, motorwayEndNode);
 
     auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
-    expresswayNode->setContainerIntroAnim(256, 187, 700);
+    expresswayNode->setContainerIntroAnim(256, 187, 600);
     expresswayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     expresswayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, expresswayNode);
 
     auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
-    expresswayEndNode->setContainerIntroAnim(256, 187, 700);
+    expresswayEndNode->setContainerIntroAnim(256, 187, 600);
     expresswayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     expresswayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, expresswayEndNode);
 
     auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
-    playgroundNode->setContainerIntroAnim(256, 187, 700);
+    playgroundNode->setContainerIntroAnim(256, 187, 600);
     playgroundNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     playgroundNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, playgroundNode);
 
     auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
-    playgroundEndNode->setContainerIntroAnim(256, 187, 700);
+    playgroundEndNode->setContainerIntroAnim(256, 187, 600);
     playgroundEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
     playgroundEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, playgroundEndNode);
@@ -817,31 +817,31 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Mapped to LVGL pivot (0,112): start visual top=97, end visual top=162
 
     auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon, sliSuppSpeedLabel);
-    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
+    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
     sliSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     sliSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, sliSuppNode);
 
     auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
-    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
+    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
     noPassSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     noPassSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, noPassSuppNode);
 
     auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
-    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
+    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
     motorwaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     motorwaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, motorwaySuppNode);
 
     auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
-    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
+    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
     expresswaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     expresswaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, expresswaySuppNode);
 
     auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
-    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
+    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
     playgroundSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     playgroundSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, playgroundSuppNode);
@@ -885,82 +885,99 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* groupTopSadas = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(rightPanel, groupTopSadas);
 
-    // Right panel signs: intro animation scale 256→154, x-position from center→right
-    // QML: sign center starts at screen center (160). Image is 136px, center at 68.
-    // Container startX = 160 - 68 = 92, targetX = 238 (DISPLAY_WIDTH - RIGHT_PANEL_SIGN_SIZE)
+    // Right panel signs: container transform_scale intro animation 256→154
+    // Container is 136x136 with pivot top-right. At start (scale 256=1.0x), sign is full 136px.
+    // Start X: sign center at screen center → 160 - 68 = 92. End X: 320 - 136 = 184.
     // QML SideIcon.qml: pause_duration=1500ms for Q1/Q4 (right panel) before animating
-    auto mkSadas = [](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
-        return new LvglAnimatedSignNode(w, layer, id, lv_obj_get_child(w, 0), 256, 154, 92, 238, 1500);
+    static const int SADAS_START_X = 92;
+    static const int SADAS_TARGET_X = 184;  // DISPLAY_WIDTH - RIGHT_PANEL_SIGN_NATIVE
+    // Top SADAS: y=63 (MAIN_PANEL_Y+12). Bottom SADAS: y=92 (240-12-136).
+    // Both start from same screen position (top sign's coords).
+    static const int SADAS_TOP_Y = 63;      // MAIN_PANEL_Y + RIGHT_PANEL_MARGIN
+    static const int SADAS_BOTTOM_Y = 92;    // DISPLAY_HEIGHT - RIGHT_PANEL_MARGIN - 136
+    auto mkSadasTop = [&](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
+        auto* node = new LvglDisplayNode(w, layer, id);
+        node->setContainerIntroAnim(256, 154, 1100);
+        node->setContainerIntroXAnim(SADAS_START_X, SADAS_TARGET_X);
+        return node;
+    };
+    auto mkSadasBottom = [&](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
+        auto* node = new LvglDisplayNode(w, layer, id);
+        node->setContainerIntroAnim(256, 154, 1100);
+        node->setContainerIntroXAnim(SADAS_START_X, SADAS_TARGET_X);
+        node->setContainerIntroYAnim(SADAS_TOP_Y, SADAS_BOTTOM_Y);
+        return node;
     };
 
-    auto* smartCrowdedNode  = mkSadas(smartCrowdedWidget,  1, ID_SMART_CROWDED);
+    auto* smartCrowdedNode  = mkSadasTop(smartCrowdedWidget,  1, ID_SMART_CROWDED);
     addChild(groupTopSadas, smartCrowdedNode);
 
-    auto* smartPedHwyNode   = mkSadas(smartPedHwyWidget,   2, ID_SMART_PED_HWY);
+    auto* smartPedHwyNode   = mkSadasTop(smartPedHwyWidget,   2, ID_SMART_PED_HWY);
     addChild(groupTopSadas, smartPedHwyNode);
 
-    auto* smartCycHwyNode   = mkSadas(smartCycHwyWidget,   3, ID_SMART_CYC_HWY);
+    auto* smartCycHwyNode   = mkSadasTop(smartCycHwyWidget,   3, ID_SMART_CYC_HWY);
     addChild(groupTopSadas, smartCycHwyNode);
 
-    auto* smartHarshDzNode  = mkSadas(smartHarshDzWidget,  4, ID_SMART_HARSH_DZ);
+    auto* smartHarshDzNode  = mkSadasTop(smartHarshDzWidget,  4, ID_SMART_HARSH_DZ);
     addChild(groupTopSadas, smartHarshDzNode);
 
-    auto* smartCaNode       = mkSadas(smartCaWidget,       4, ID_SMART_CA);
+    auto* smartCaNode       = mkSadasTop(smartCaWidget,       4, ID_SMART_CA);
     addChild(groupTopSadas, smartCaNode);
 
-    auto* smartWeaRoadNode  = mkSadas(smartWeaRoadWidget,  5, ID_SMART_WEA_ROAD);
+    auto* smartWeaRoadNode  = mkSadasTop(smartWeaRoadWidget,  5, ID_SMART_WEA_ROAD);
     addChild(groupTopSadas, smartWeaRoadNode);
 
-    auto* smartWeaHydroNode = mkSadas(smartWeaHydroWidget, 5, ID_SMART_WEA_HYDRO);
+    auto* smartWeaHydroNode = mkSadasTop(smartWeaHydroWidget, 5, ID_SMART_WEA_HYDRO);
     addChild(groupTopSadas, smartWeaHydroNode);
 
-    auto* smartWeaFgNode    = mkSadas(smartWeaFgWidget,    6, ID_SMART_WEA_FG);
+    auto* smartWeaFgNode    = mkSadasTop(smartWeaFgWidget,    6, ID_SMART_WEA_FG);
     addChild(groupTopSadas, smartWeaFgNode);
 
-    auto* smartWeaWndNode   = mkSadas(smartWeaWndWidget,   7, ID_SMART_WEA_WND);
+    auto* smartWeaWndNode   = mkSadasTop(smartWeaWndWidget,   7, ID_SMART_WEA_WND);
     addChild(groupTopSadas, smartWeaWndNode);
 
-    auto* smartWeaHailNode  = mkSadas(smartWeaHailWidget,  7, ID_SMART_WEA_HAIL);
+    auto* smartWeaHailNode  = mkSadasTop(smartWeaHailWidget,  7, ID_SMART_WEA_HAIL);
     addChild(groupTopSadas, smartWeaHailNode);
 
-    auto* smartWeaTstmNode  = mkSadas(smartWeaTstmWidget,  7, ID_SMART_WEA_TSTM);
+    auto* smartWeaTstmNode  = mkSadasTop(smartWeaTstmWidget,  7, ID_SMART_WEA_TSTM);
     addChild(groupTopSadas, smartWeaTstmNode);
 
     // groupBottomSadas (mutexGroup=false): secondary icons, multiple can be visible
+    // Bottom signs start from same screen coords as top, then animate to lower position
     auto* groupBottomSadas = new LvglDisplayNode(nullptr, 0, false, false);
     addChild(rightPanel, groupBottomSadas);
 
-    auto* smartCrowdedSecNode  = mkSadas(smartCrowdedSecWidget,  1, ID_SMART_CROWDED_SEC);
+    auto* smartCrowdedSecNode  = mkSadasBottom(smartCrowdedSecWidget,  1, ID_SMART_CROWDED_SEC);
     addChild(groupBottomSadas, smartCrowdedSecNode);
 
-    auto* smartPedHwySecNode   = mkSadas(smartPedHwySecWidget,   2, ID_SMART_PED_HWY_SEC);
+    auto* smartPedHwySecNode   = mkSadasBottom(smartPedHwySecWidget,   2, ID_SMART_PED_HWY_SEC);
     addChild(groupBottomSadas, smartPedHwySecNode);
 
-    auto* smartCycHwySecNode   = mkSadas(smartCycHwySecWidget,   3, ID_SMART_CYC_HWY_SEC);
+    auto* smartCycHwySecNode   = mkSadasBottom(smartCycHwySecWidget,   3, ID_SMART_CYC_HWY_SEC);
     addChild(groupBottomSadas, smartCycHwySecNode);
 
-    auto* smartHarshDzSecNode  = mkSadas(smartHarshDzSecWidget,  4, ID_SMART_HARSH_DZ_SEC);
+    auto* smartHarshDzSecNode  = mkSadasBottom(smartHarshDzSecWidget,  4, ID_SMART_HARSH_DZ_SEC);
     addChild(groupBottomSadas, smartHarshDzSecNode);
 
-    auto* smartCaSecNode       = mkSadas(smartCaSecWidget,       4, ID_SMART_CA_SEC);
+    auto* smartCaSecNode       = mkSadasBottom(smartCaSecWidget,       4, ID_SMART_CA_SEC);
     addChild(groupBottomSadas, smartCaSecNode);
 
-    auto* smartWeaRoadSecNode  = mkSadas(smartWeaRoadSecWidget,  5, ID_SMART_WEA_ROAD_SEC);
+    auto* smartWeaRoadSecNode  = mkSadasBottom(smartWeaRoadSecWidget,  5, ID_SMART_WEA_ROAD_SEC);
     addChild(groupBottomSadas, smartWeaRoadSecNode);
 
-    auto* smartWeaHydroSecNode = mkSadas(smartWeaHydroSecWidget, 5, ID_SMART_WEA_HYDRO_SEC);
+    auto* smartWeaHydroSecNode = mkSadasBottom(smartWeaHydroSecWidget, 5, ID_SMART_WEA_HYDRO_SEC);
     addChild(groupBottomSadas, smartWeaHydroSecNode);
 
-    auto* smartWeaFgSecNode    = mkSadas(smartWeaFgSecWidget,    6, ID_SMART_WEA_FG_SEC);
+    auto* smartWeaFgSecNode    = mkSadasBottom(smartWeaFgSecWidget,    6, ID_SMART_WEA_FG_SEC);
     addChild(groupBottomSadas, smartWeaFgSecNode);
 
-    auto* smartWeaWndSecNode   = mkSadas(smartWeaWndSecWidget,   7, ID_SMART_WEA_WND_SEC);
+    auto* smartWeaWndSecNode   = mkSadasBottom(smartWeaWndSecWidget,   7, ID_SMART_WEA_WND_SEC);
     addChild(groupBottomSadas, smartWeaWndSecNode);
 
-    auto* smartWeaHailSecNode  = mkSadas(smartWeaHailSecWidget,  7, ID_SMART_WEA_HAIL_SEC);
+    auto* smartWeaHailSecNode  = mkSadasBottom(smartWeaHailSecWidget,  7, ID_SMART_WEA_HAIL_SEC);
     addChild(groupBottomSadas, smartWeaHailSecNode);
 
-    auto* smartWeaTstmSecNode  = mkSadas(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
+    auto* smartWeaTstmSecNode  = mkSadasBottom(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
     addChild(groupBottomSadas, smartWeaTstmSecNode);
 
     // SMART_FATIGUE / SMART_BUMPERS: in JSON + QML but no UI in QML (placeholders)
