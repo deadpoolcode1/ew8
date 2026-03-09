@@ -228,6 +228,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* rootWidget = createRootContainer(screen);
     // Allow children to overflow for sign intro animations (image at start scale
     // extends beyond its container bounds)
+    lv_obj_add_flag(screen, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
     lv_obj_add_flag(rootWidget, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
     // 1. Content widgets (lowest visual layer)
@@ -307,11 +308,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
         "A:images/left-panel/TSR/left_playgrond_blue.png", false);
 
     // QML supp signs use smaller scale: target_scale = 0.6028 * 0.9 = 0.54252 → 139/256
-    // Rescale sign images from standard 187 to 139
+    // Override container transform_scale from standard 187 to 139
     static const int SUPP_SIGN_SCALE = 139;
     auto rescaleSupp = [](lv_obj_t* signWidget) {
-        lv_obj_t* signImg = lv_obj_get_child(signWidget, 0);
-        if (signImg) lv_image_set_scale(signImg, SUPP_SIGN_SCALE);
+        lv_obj_set_style_transform_scale_x(signWidget, SUPP_SIGN_SCALE, 0);
+        lv_obj_set_style_transform_scale_y(signWidget, SUPP_SIGN_SCALE, 0);
     };
     rescaleSupp(sliSuppWidget);
     rescaleSupp(noPassSuppWidget);
@@ -715,26 +716,26 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* leftPanel = new LvglDisplayNode(nullptr, 1, false, false);
     addChild(mainPanel, leftPanel);
 
-    // groupTop (group, layer=0, non-mutex: RTW layer=0, SLI layer=1, ISA_SPEED layer=2, ISA_HIGHWAY layer=1)
-    auto* groupTop = new LvglDisplayNode(nullptr, 0, false, false);
+    // groupTop (group, layer=0, mutexGroup: RTW layer=0, SLI layer=1, ISA_SPEED layer=2, ISA_HIGHWAY layer=1)
+    auto* groupTop = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(leftPanel, groupTop);
 
     // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
     // QML SideIcon pause_duration = 1000ms for left panel (quadrants 2/3)
-    auto* rtwWarnNode = new LvglAnimatedSignNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN,
-        lv_obj_get_child(rtwWarnWidget, 0), 256, 187, -1, -1, 1000);
+    auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
+    rtwWarnNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
-    sliNode->setIntroAnim(lv_obj_get_child(sliWidget, 0), 256, 187, 1000);
+    sliNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupTop, sliNode);
 
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
-    isaSpeedNode->setIntroAnim(lv_obj_get_child(isaSpeedWidget, 0), 256, 187, 1000);
+    isaSpeedNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupTop, isaSpeedNode);
 
-    auto* isaHighwayNode = new LvglAnimatedSignNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY,
-        lv_obj_get_child(isaHighwayWidget, 0), 256, 187, -1, -1, 1000);
+    auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
+    isaHighwayNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupTop, isaHighwayNode);
 
     // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
@@ -744,62 +745,62 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // TSR signs with auto-dismiss timers (QML maxduration values)
     // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
     auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
-    endAllRestrNode->setIntroAnim(lv_obj_get_child(endAllRestrWidget, 0), 256, 187, 1000);
+    endAllRestrNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, endAllRestrNode);
 
-    auto* noPassNode = new LvglAnimatedSignNode(noPassWidget, 0, ID_ALERT_NO_PASS,
-        lv_obj_get_child(noPassWidget, 0), 256, 187, -1, -1, 1000);
+    auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
+    noPassNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, noPassNode);
 
-    auto* noPassEndNode = new LvglAnimatedSignNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END,
-        lv_obj_get_child(noPassEndWidget, 0), 256, 187, -1, -1, 1000);
+    auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
+    noPassEndNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, noPassEndNode);
 
     auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
-    motorwayNode->setIntroAnim(lv_obj_get_child(motorwayWidget, 0), 256, 187, 1000);
+    motorwayNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, motorwayNode);
 
     auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
-    motorwayEndNode->setIntroAnim(lv_obj_get_child(motorwayEndWidget, 0), 256, 187, 1000);
+    motorwayEndNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, motorwayEndNode);
 
     auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
-    expresswayNode->setIntroAnim(lv_obj_get_child(expresswayWidget, 0), 256, 187, 1000);
+    expresswayNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, expresswayNode);
 
     auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
-    expresswayEndNode->setIntroAnim(lv_obj_get_child(expresswayEndWidget, 0), 256, 187, 1000);
+    expresswayEndNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, expresswayEndNode);
 
     auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
-    playgroundNode->setIntroAnim(lv_obj_get_child(playgroundWidget, 0), 256, 187, 1000);
+    playgroundNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, playgroundNode);
 
     auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
-    playgroundEndNode->setIntroAnim(lv_obj_get_child(playgroundEndWidget, 0), 256, 187, 1000);
+    playgroundEndNode->setContainerIntroAnim(256, 187, 1000);
     addChild(groupBottom, playgroundEndNode);
 
     // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
     // Use LvglSuppSignNode to update the supp icon image based on CAN arg value
     // QML supp intro: start_scale=0.82(210), target_scale=0.54252(139)
     auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon, sliSuppSpeedLabel);
-    sliSuppNode->setIntroAnim(lv_obj_get_child(sliSuppWidget, 0), 210, SUPP_SIGN_SCALE, 1000);
+    sliSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
     addChild(groupBottom, sliSuppNode);
 
     auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
-    noPassSuppNode->setIntroAnim(lv_obj_get_child(noPassSuppWidget, 0), 210, SUPP_SIGN_SCALE, 1000);
+    noPassSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
     addChild(groupBottom, noPassSuppNode);
 
     auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
-    motorwaySuppNode->setIntroAnim(lv_obj_get_child(motorwaySuppWidget, 0), 210, SUPP_SIGN_SCALE, 1000);
+    motorwaySuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
     addChild(groupBottom, motorwaySuppNode);
 
     auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
-    expresswaySuppNode->setIntroAnim(lv_obj_get_child(expresswaySuppWidget, 0), 210, SUPP_SIGN_SCALE, 1000);
+    expresswaySuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
     addChild(groupBottom, expresswaySuppNode);
 
     auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
-    playgroundSuppNode->setIntroAnim(lv_obj_get_child(playgroundSuppWidget, 0), 210, SUPP_SIGN_SCALE, 1000);
+    playgroundSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
     addChild(groupBottom, playgroundSuppNode);
 
     // RTW alert (full-screen, under mainPanel at layer=0 — QML has it inside main_panel)

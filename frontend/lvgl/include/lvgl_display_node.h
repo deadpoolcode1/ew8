@@ -30,9 +30,15 @@ public:
     void setParent(LvglDisplayNode* parent);
     void appendChild(LvglDisplayNode* child);
 
-    // Set an intro animation image widget + scale targets. When set, onBecomeVisible()
-    // will animate scale from startScale to targetScale over 500ms OutQuad.
-    void setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs = 0);
+    // Set an intro animation on the image widget (scale from start to target).
+    void setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs = 0,
+                      int targetImgX = 0, int targetImgY = 0);
+    // Set a label widget that should scale/move with the intro animation
+    void setIntroAnimLabel(lv_obj_t* label);
+
+    // Set container-based intro animation: transform_scale on widget_ itself.
+    // All children (image + label) scale together via LVGL render layer.
+    void setContainerIntroAnim(int startScale, int targetScale, int delayMs = 0);
 
 protected:
     lv_obj_t* widget_;
@@ -47,10 +53,20 @@ protected:
 
     // Intro animation (optional, set via setIntroAnim)
     lv_obj_t* introAnimImg_ = nullptr;
+    lv_obj_t* introAnimLabel_ = nullptr;
+    bool introContainerMode_ = false;  // true = animate widget_ transform_scale
     int introStartScale_ = 256;
     int introTargetScale_ = 256;
     int introDelayMs_ = 0;
+    int introTargetImgX_ = 0;
+    int introTargetImgY_ = 0;
     static void introScaleAnimCb(void* obj, int32_t val);
+    static void introImgXAnimCb(void* obj, int32_t val);
+    static void introImgYAnimCb(void* obj, int32_t val);
+    static void introLabelScaleAnimCb(void* obj, int32_t val);
+    static void introLabelTransXAnimCb(void* obj, int32_t val);
+    static void introLabelTransYAnimCb(void* obj, int32_t val);
+    static void introContainerScaleAnimCb(void* obj, int32_t val);
     void playIntroAnim();
 
 private:
@@ -84,12 +100,20 @@ private:
 };
 
 // Display node with sign intro animation (scale from start to target over 500ms)
-// Optionally also animates x-position (for right-panel signs moving from center to edge)
+// Supports two modes:
+//   1. Container x-position animation (right-panel signs moving from center to edge)
+//   2. Image x/y offset animation (left-panel signs: image moves from (0,0) to final offset)
 class LvglAnimatedSignNode : public LvglDisplayNode {
 public:
+    // Right-panel style: container moves in X (startX/targetX for container position)
     LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                           lv_obj_t* imgWidget, int startScale, int targetScale,
-                          int startX = -1, int targetX = -1, int delayMs = 0);
+                          int startX, int targetX, int delayMs);
+
+    // Left-panel style: image moves from (0,0) to (targetImgX, targetImgY) while scaling
+    static LvglAnimatedSignNode* createLeftPanel(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                                  lv_obj_t* imgWidget, int startScale, int targetScale,
+                                                  int delayMs, int targetImgX, int targetImgY);
 
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
@@ -98,11 +122,15 @@ private:
     lv_obj_t* imgWidget_;
     int startScale_;
     int targetScale_;
-    int startX_;   // -1 means no position animation
+    int startX_;      // -1 means no container position animation
     int targetX_;
-    int delayMs_;  // QML pause_duration before animation starts
+    int targetImgX_;  // image offset animation target (0 = no anim)
+    int targetImgY_;
+    int delayMs_;     // QML pause_duration before animation starts
     static void scaleAnimCb(void* obj, int32_t val);
     static void posAnimCb(void* obj, int32_t val);
+    static void imgXAnimCb(void* obj, int32_t val);
+    static void imgYAnimCb(void* obj, int32_t val);
 };
 
 #endif // LVGL_DISPLAY_NODE_H

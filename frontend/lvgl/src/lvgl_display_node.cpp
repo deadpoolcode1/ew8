@@ -111,12 +111,15 @@ void LvglDisplayNode::setCanEntityArg(const String& stringArg)
     stringArg_ = stringArg;
 }
 
-void LvglDisplayNode::setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs)
+void LvglDisplayNode::setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs,
+                                    int targetImgX, int targetImgY)
 {
     introAnimImg_ = imgWidget;
     introStartScale_ = startScale;
     introTargetScale_ = targetScale;
     introDelayMs_ = delayMs;
+    introTargetImgX_ = targetImgX;
+    introTargetImgY_ = targetImgY;
 }
 
 void LvglDisplayNode::introScaleAnimCb(void* obj, int32_t val)
@@ -124,9 +127,72 @@ void LvglDisplayNode::introScaleAnimCb(void* obj, int32_t val)
     lv_image_set_scale(static_cast<lv_obj_t*>(obj), val);
 }
 
+void LvglDisplayNode::introImgXAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_x(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglDisplayNode::introImgYAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_y(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglDisplayNode::introLabelScaleAnimCb(void* obj, int32_t val)
+{
+    lv_obj_t* label = static_cast<lv_obj_t*>(obj);
+    lv_obj_set_style_transform_scale_x(label, val, 0);
+    lv_obj_set_style_transform_scale_y(label, val, 0);
+}
+
+void LvglDisplayNode::introLabelTransXAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_style_translate_x(static_cast<lv_obj_t*>(obj), val, 0);
+}
+
+void LvglDisplayNode::introLabelTransYAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_style_translate_y(static_cast<lv_obj_t*>(obj), val, 0);
+}
+
+void LvglDisplayNode::setIntroAnimLabel(lv_obj_t* label)
+{
+    introAnimLabel_ = label;
+}
+
+void LvglDisplayNode::setContainerIntroAnim(int startScale, int targetScale, int delayMs)
+{
+    introContainerMode_ = true;
+    introStartScale_ = startScale;
+    introTargetScale_ = targetScale;
+    introDelayMs_ = delayMs;
+}
+
+void LvglDisplayNode::introContainerScaleAnimCb(void* obj, int32_t val)
+{
+    lv_obj_t* cont = static_cast<lv_obj_t*>(obj);
+    lv_obj_set_style_transform_scale_x(cont, val, 0);
+    lv_obj_set_style_transform_scale_y(cont, val, 0);
+}
+
 void LvglDisplayNode::playIntroAnim()
 {
+    if (introContainerMode_ && widget_) {
+        // Container mode: single animation on container transform_scale
+        // Children (image + label) scale together via LVGL render layer
+        lv_anim_t anim;
+        lv_anim_init(&anim);
+        lv_anim_set_var(&anim, widget_);
+        lv_anim_set_values(&anim, introStartScale_, introTargetScale_);
+        lv_anim_set_duration(&anim, 500);
+        lv_anim_set_delay(&anim, introDelayMs_);
+        lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
+        lv_anim_set_exec_cb(&anim, introContainerScaleAnimCb);
+        lv_anim_start(&anim);
+        return;
+    }
+
     if (!introAnimImg_) return;
+    // Image scale animation
     lv_anim_t anim;
     lv_anim_init(&anim);
     lv_anim_set_var(&anim, introAnimImg_);
@@ -136,14 +202,53 @@ void LvglDisplayNode::playIntroAnim()
     lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
     lv_anim_set_exec_cb(&anim, introScaleAnimCb);
     lv_anim_start(&anim);
+
+    // Image position X animation
+    if (introTargetImgX_ != 0) {
+        lv_anim_t xAnim;
+        lv_anim_init(&xAnim);
+        lv_anim_set_var(&xAnim, introAnimImg_);
+        lv_anim_set_values(&xAnim, 0, introTargetImgX_);
+        lv_anim_set_duration(&xAnim, 500);
+        lv_anim_set_delay(&xAnim, introDelayMs_);
+        lv_anim_set_path_cb(&xAnim, lv_anim_path_ease_out);
+        lv_anim_set_exec_cb(&xAnim, introImgXAnimCb);
+        lv_anim_start(&xAnim);
+    }
+    // Image position Y animation
+    if (introTargetImgY_ != 0) {
+        lv_anim_t yAnim;
+        lv_anim_init(&yAnim);
+        lv_anim_set_var(&yAnim, introAnimImg_);
+        lv_anim_set_values(&yAnim, 0, introTargetImgY_);
+        lv_anim_set_duration(&yAnim, 500);
+        lv_anim_set_delay(&yAnim, introDelayMs_);
+        lv_anim_set_path_cb(&yAnim, lv_anim_path_ease_out);
+        lv_anim_set_exec_cb(&yAnim, introImgYAnimCb);
+        lv_anim_start(&yAnim);
+    }
 }
 
 void LvglDisplayNode::onBecomeVisible()
 {
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
 
-    if (wasHidden && introAnimImg_) {
+    if (wasHidden && introContainerMode_ && widget_) {
+        // Container mode: set container to start scale
+        lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
+        lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
+    } else if (wasHidden && introAnimImg_) {
         lv_image_set_scale(introAnimImg_, introStartScale_);
+        if (introTargetImgX_ != 0 || introTargetImgY_ != 0) {
+            lv_obj_set_pos(introAnimImg_, 0, 0);
+        }
+        if (introAnimLabel_) {
+            int labelStartScale = introStartScale_ * 256 / introTargetScale_;
+            lv_obj_set_style_transform_scale_x(introAnimLabel_, labelStartScale, 0);
+            lv_obj_set_style_transform_scale_y(introAnimLabel_, labelStartScale, 0);
+            lv_obj_set_style_translate_x(introAnimLabel_, 0, 0);
+            lv_obj_set_style_translate_y(introAnimLabel_, 0, 0);
+        }
     }
 
     if (widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
@@ -151,16 +256,24 @@ void LvglDisplayNode::onBecomeVisible()
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
 
-    if (wasHidden && introAnimImg_) {
+    if (wasHidden && (introContainerMode_ || introAnimImg_)) {
         playIntroAnim();
     }
 }
 
 void LvglDisplayNode::onBecomeInvisible()
 {
-    if (introAnimImg_) {
+    if (introContainerMode_ && widget_) {
+        lv_anim_delete(widget_, introContainerScaleAnimCb);
+        lv_obj_set_style_transform_scale_x(widget_, introTargetScale_, 0);
+        lv_obj_set_style_transform_scale_y(widget_, introTargetScale_, 0);
+    } else if (introAnimImg_) {
         lv_anim_delete(introAnimImg_, introScaleAnimCb);
         lv_image_set_scale(introAnimImg_, introTargetScale_);
+        lv_anim_delete(introAnimImg_, introImgXAnimCb);
+        lv_anim_delete(introAnimImg_, introImgYAnimCb);
+        if (introTargetImgX_ != 0) lv_obj_set_x(introAnimImg_, introTargetImgX_);
+        if (introTargetImgY_ != 0) lv_obj_set_y(introAnimImg_, introTargetImgY_);
     }
     if (widget_ && !lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
     {
@@ -284,6 +397,7 @@ void LvglGifDisplayNode::onBecomeInvisible()
 }
 
 // --- LvglAnimatedSignNode ---
+// Right-panel constructor: container moves in X
 LvglAnimatedSignNode::LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                                              lv_obj_t* imgWidget, int startScale, int targetScale,
                                              int startX, int targetX, int delayMs)
@@ -293,8 +407,21 @@ LvglAnimatedSignNode::LvglAnimatedSignNode(lv_obj_t* widget, int layer, DISPLAY_
     , targetScale_(targetScale)
     , startX_(startX)
     , targetX_(targetX)
+    , targetImgX_(0)
+    , targetImgY_(0)
     , delayMs_(delayMs)
 {
+}
+
+// Left-panel factory: image moves from (0,0) to (targetImgX, targetImgY) while scaling
+LvglAnimatedSignNode* LvglAnimatedSignNode::createLeftPanel(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                                             lv_obj_t* imgWidget, int startScale, int targetScale,
+                                                             int delayMs, int targetImgX, int targetImgY)
+{
+    auto* node = new LvglAnimatedSignNode(widget, layer, entityType, imgWidget, startScale, targetScale, -1, -1, delayMs);
+    node->targetImgX_ = targetImgX;
+    node->targetImgY_ = targetImgY;
+    return node;
 }
 
 void LvglAnimatedSignNode::scaleAnimCb(void* obj, int32_t val)
@@ -307,6 +434,16 @@ void LvglAnimatedSignNode::posAnimCb(void* obj, int32_t val)
     lv_obj_set_x(static_cast<lv_obj_t*>(obj), val);
 }
 
+void LvglAnimatedSignNode::imgXAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_x(static_cast<lv_obj_t*>(obj), val);
+}
+
+void LvglAnimatedSignNode::imgYAnimCb(void* obj, int32_t val)
+{
+    lv_obj_set_y(static_cast<lv_obj_t*>(obj), val);
+}
+
 void LvglAnimatedSignNode::onBecomeVisible()
 {
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
@@ -317,10 +454,15 @@ void LvglAnimatedSignNode::onBecomeVisible()
     if (wasHidden && startX_ >= 0 && widget_) {
         lv_obj_set_x(widget_, startX_);
     }
+    // Left-panel mode: set image to start position (0,0)
+    if (wasHidden && (targetImgX_ != 0 || targetImgY_ != 0) && imgWidget_) {
+        lv_obj_set_pos(imgWidget_, 0, 0);
+    }
 
     LvglDisplayNode::onBecomeVisible();
 
     if (wasHidden && imgWidget_) {
+        // Scale animation
         lv_anim_t anim;
         lv_anim_init(&anim);
         lv_anim_set_var(&anim, imgWidget_);
@@ -331,6 +473,7 @@ void LvglAnimatedSignNode::onBecomeVisible()
         lv_anim_set_exec_cb(&anim, scaleAnimCb);
         lv_anim_start(&anim);
     }
+    // Right-panel mode: container X animation
     if (wasHidden && startX_ >= 0 && targetX_ >= 0 && widget_) {
         lv_anim_t posAnim;
         lv_anim_init(&posAnim);
@@ -342,6 +485,31 @@ void LvglAnimatedSignNode::onBecomeVisible()
         lv_anim_set_exec_cb(&posAnim, posAnimCb);
         lv_anim_start(&posAnim);
     }
+    // Left-panel mode: image X/Y offset animation
+    if (wasHidden && imgWidget_) {
+        if (targetImgX_ != 0) {
+            lv_anim_t xAnim;
+            lv_anim_init(&xAnim);
+            lv_anim_set_var(&xAnim, imgWidget_);
+            lv_anim_set_values(&xAnim, 0, targetImgX_);
+            lv_anim_set_duration(&xAnim, 500);
+            lv_anim_set_delay(&xAnim, delayMs_);
+            lv_anim_set_path_cb(&xAnim, lv_anim_path_ease_out);
+            lv_anim_set_exec_cb(&xAnim, imgXAnimCb);
+            lv_anim_start(&xAnim);
+        }
+        if (targetImgY_ != 0) {
+            lv_anim_t yAnim;
+            lv_anim_init(&yAnim);
+            lv_anim_set_var(&yAnim, imgWidget_);
+            lv_anim_set_values(&yAnim, 0, targetImgY_);
+            lv_anim_set_duration(&yAnim, 500);
+            lv_anim_set_delay(&yAnim, delayMs_);
+            lv_anim_set_path_cb(&yAnim, lv_anim_path_ease_out);
+            lv_anim_set_exec_cb(&yAnim, imgYAnimCb);
+            lv_anim_start(&yAnim);
+        }
+    }
 }
 
 void LvglAnimatedSignNode::onBecomeInvisible()
@@ -349,6 +517,11 @@ void LvglAnimatedSignNode::onBecomeInvisible()
     if (imgWidget_) {
         lv_anim_delete(imgWidget_, scaleAnimCb);
         lv_image_set_scale(imgWidget_, targetScale_);
+        // Clean up image position animations
+        lv_anim_delete(imgWidget_, imgXAnimCb);
+        lv_anim_delete(imgWidget_, imgYAnimCb);
+        if (targetImgX_ != 0) lv_obj_set_x(imgWidget_, targetImgX_);
+        if (targetImgY_ != 0) lv_obj_set_y(imgWidget_, targetImgY_);
     }
     if (startX_ >= 0 && widget_) {
         lv_anim_delete(widget_, posAnimCb);
