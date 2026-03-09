@@ -44,7 +44,13 @@ void LvglErrorDisplayNode::onBecomeVisible()
     LvglDisplayNode::onBecomeVisible();
     if (codeLabel_) {
         char buf[8];
-        snprintf(buf, sizeof(buf), "%X", valueInt_);
+        // QML: isTamperAlert → canEntityArg = 0xDA, else show error code in hex
+        // Backend passes: valueInt_=errorCode, valueFrac_=isTamperAlert
+        if (valueFrac_) {
+            snprintf(buf, sizeof(buf), "DA");
+        } else {
+            snprintf(buf, sizeof(buf), "%X", valueInt_);
+        }
         lv_label_set_text(codeLabel_, buf);
     }
 }

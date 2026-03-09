@@ -32,7 +32,7 @@ public:
 
     // Set an intro animation image widget + scale targets. When set, onBecomeVisible()
     // will animate scale from startScale to targetScale over 500ms OutQuad.
-    void setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale);
+    void setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs = 0);
 
 protected:
     lv_obj_t* widget_;
@@ -49,6 +49,7 @@ protected:
     lv_obj_t* introAnimImg_ = nullptr;
     int introStartScale_ = 256;
     int introTargetScale_ = 256;
+    int introDelayMs_ = 0;
     static void introScaleAnimCb(void* obj, int32_t val);
     void playIntroAnim();
 

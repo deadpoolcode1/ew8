@@ -111,11 +111,12 @@ void LvglDisplayNode::setCanEntityArg(const String& stringArg)
     stringArg_ = stringArg;
 }
 
-void LvglDisplayNode::setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale)
+void LvglDisplayNode::setIntroAnim(lv_obj_t* imgWidget, int startScale, int targetScale, int delayMs)
 {
     introAnimImg_ = imgWidget;
     introStartScale_ = startScale;
     introTargetScale_ = targetScale;
+    introDelayMs_ = delayMs;
 }
 
 void LvglDisplayNode::introScaleAnimCb(void* obj, int32_t val)
@@ -131,6 +132,7 @@ void LvglDisplayNode::playIntroAnim()
     lv_anim_set_var(&anim, introAnimImg_);
     lv_anim_set_values(&anim, introStartScale_, introTargetScale_);
     lv_anim_set_duration(&anim, 500);
+    lv_anim_set_delay(&anim, introDelayMs_);
     lv_anim_set_path_cb(&anim, lv_anim_path_ease_out);
     lv_anim_set_exec_cb(&anim, introScaleAnimCb);
     lv_anim_start(&anim);

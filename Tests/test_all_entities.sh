@@ -10,16 +10,21 @@
 #   can_interface: defaults to "can0" (use "vcan0" for virtual CAN)
 #   delay:         seconds between test steps (default 2)
 #   flags:
-#     -t    Enable signal/peripheral test sections (app must run with -t)
-#     -r    Review mode: pause after each step for manual inspection.
-#           Type an issue description and press Enter, or just Enter for OK.
-#           Generates a timestamped report file in the current directory.
+#     -t        Enable signal/peripheral test sections (app must run with -t)
+#     -r        Review mode: pause after each step for manual inspection.
+#               Type an issue description and press Enter, or just Enter for OK.
+#               Generates a timestamped report file in the current directory.
+#     -s N      Run only step N. Sends keepalive + base frames first, then
+#               executes that single step and exits.
+#     -h/--help Show this help message.
 #
 # Examples:
+#   ./test_all_entities.sh                  # defaults: can0, 2s delay
 #   ./test_all_entities.sh can0 2           # auto mode, skip test screens
 #   ./test_all_entities.sh can0 2 -r        # review mode with report
-#   ./test_all_entities.sh can0 2 -t        # include test screen sections
-#   ./test_all_entities.sh can0 2 "-t -r"   # review + test screens
+#   ./test_all_entities.sh can0 2 -t -r     # review + test screens
+#   ./test_all_entities.sh -s 42            # run only step 42
+#   ./test_all_entities.sh can0 2 -s 42 -r  # run step 42 in review mode
 #
 # IMPORTANT: Each CAN frame carries ALL signals for that message ID.
 # When a frame is sent, ALL bits are processed — zeroed bits deactivate
@@ -31,19 +36,37 @@
 #   - CAN interface up:  sudo ip link set up type vcan dev vcan0
 ###############################################################################
 
-CAN=${1:-can0}
-DELAY=${2:-2}
-FLAGS=${3:-}
-
-# Parse flags
+# Parse all arguments: positional (can_interface, delay) and flags (-t, -r, -s N)
+CAN="can0"
+DELAY=2
 TEST_MODE=""
 REVIEW_MODE=""
-for flag in $FLAGS; do
-    case "$flag" in
+TARGET_STEP=""
+STEP_ACTIVE=1
+_positional=0
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --help|-h)
+            sed -n '3,35p' "$0" | sed 's/^# \?//'
+            exit 0
+            ;;
         -t) TEST_MODE="-t" ;;
         -r) REVIEW_MODE="-r" ;;
+        -s) shift; TARGET_STEP="$1" ;;
+        *)
+            # Positional args: first=CAN, second=DELAY
+            if [ "$_positional" -eq 0 ]; then
+                CAN="$1"
+            elif [ "$_positional" -eq 1 ]; then
+                DELAY="$1"
+            fi
+            _positional=$((_positional + 1))
+            ;;
     esac
+    shift
 done
+unset _positional
 
 RED='\033[0;31m'
 GRN='\033[0;32m'
@@ -67,18 +90,33 @@ if [ -n "$REVIEW_MODE" ]; then
 fi
 
 send() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     cansend "$CAN" "$1"
 }
 
 pause() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     if [ -n "$REVIEW_MODE" ]; then
         review_step
     else
         sleep "$DELAY"
     fi
+    # In single-step mode, exit after the target step completes
+    if [ -n "$TARGET_STEP" ] && [ "$step" -eq "$TARGET_STEP" ]; then
+        echo ""
+        echo -e "${GRN}Step $step completed. Exiting single-step mode.${NC}"
+        if [ -n "$REVIEW_MODE" ] && [ -n "$REPORT_FILE" ]; then
+            echo "" >> "$REPORT_FILE"
+            echo "========================================" >> "$REPORT_FILE"
+            echo "SUMMARY (single step $TARGET_STEP): $total_reviewed steps reviewed, $issues_found issues found" >> "$REPORT_FILE"
+            echo -e "${GRN}Report saved to: ${REPORT_FILE}${NC}"
+        fi
+        exit 0
+    fi
 }
 
 short_pause() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     if [ -n "$REVIEW_MODE" ]; then
         sleep 0.3
     else
@@ -104,6 +142,12 @@ review_step() {
 announce() {
     step=$((step + 1))
     step_name="$1"
+    # In single-step mode, skip non-matching steps
+    if [ -n "$TARGET_STEP" ] && [ "$step" -ne "$TARGET_STEP" ]; then
+        STEP_ACTIVE=0
+        return
+    fi
+    STEP_ACTIVE=1
     echo ""
     echo -e "${CYN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${YEL}  Step $step: $1${NC}"
@@ -111,6 +155,7 @@ announce() {
 }
 
 section() {
+    [ -n "$TARGET_STEP" ] && return
     echo ""
     echo -e "${GRN}═══════════════════════════════════════════════════════════════════${NC}"
     echo -e "${GRN}  SECTION: $1${NC}"
@@ -118,6 +163,7 @@ section() {
 }
 
 info() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     echo -e "  ${NC}$1${NC}"
 }
 
@@ -220,6 +266,7 @@ build_keepalive() {
 
 # Send keepalive (normal mode, valid)
 keepalive() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     send "$(build_keepalive 1 0 0 0)"
 }
 
@@ -238,6 +285,7 @@ send_base() {
 
 # Clear all and wait
 clear_all() {
+    [ "$STEP_ACTIVE" -eq 0 ] && return
     info "Clearing all signals..."
     send_base
     short_pause
@@ -248,10 +296,23 @@ echo -e "${RED}╔════════════════════�
 echo -e "${RED}║     EW8 Comprehensive Entity Test Script                        ║${NC}"
 echo -e "${RED}║     CAN interface: $CAN                                         ║${NC}"
 echo -e "${RED}║     Delay between steps: ${DELAY}s                                     ║${NC}"
+if [ -n "$TARGET_STEP" ]; then
+echo -e "${RED}║     Single step mode: step $TARGET_STEP                                  ║${NC}"
+fi
 echo -e "${RED}╚═══════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
-echo "Press ENTER to start, Ctrl+C to abort..."
-read -r
+
+if [ -n "$TARGET_STEP" ]; then
+    # Single-step mode: send keepalive + base frames, then run target step
+    echo -e "${GRN}Sending keepalive + base frames...${NC}"
+    STEP_ACTIVE=1
+    send_base
+    sleep 1
+    STEP_ACTIVE=0
+else
+    echo "Press ENTER to start, Ctrl+C to abort..."
+    read -r
+fi
 
 ###############################################################################
 # SECTION 0: KEEPALIVE — Establish connection
@@ -378,20 +439,21 @@ section "2. SPEED DISPLAY"
 
 announce "INFO_VEH_SPEED — Speed 0 km/h"
 info "0x760: Speed_availabled=1(byte1=0x80), Speed=0"
+info "0x700: SpeedIndication=1(byte4 bit4=0x10) + LDW_Left_NA=1 => byte4=0x11"
 send "760#0080000000000000"
-send "700#${BASE_700}"
+send "700#0000010111010000"
 keepalive
 pause
 
 announce "INFO_VEH_SPEED — Speed 60 km/h"
 send "760#00803C0000000000"
-send "700#${BASE_700}"
+send "700#0000010111010000"
 keepalive
 pause
 
 announce "INFO_VEH_SPEED — Speed 120 km/h"
 send "760#0080780000000000"
-send "700#${BASE_700}"
+send "700#0000010111010000"
 keepalive
 pause
 
@@ -400,7 +462,7 @@ for spd in 0 20 40 60 80 100 120; do
     local_hex=$(printf "%02X" $spd)
     info "  Speed = $spd km/h"
     send "760#0080${local_hex}0000000000"
-    send "700#${BASE_700}"
+    send "700#0000010111010000"
     keepalive
     short_pause
 done

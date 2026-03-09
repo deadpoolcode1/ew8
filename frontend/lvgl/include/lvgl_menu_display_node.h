@@ -36,12 +36,15 @@ private:
 };
 
 // Display node for supplementary signs — changes image based on CAN arg value
+// For SLI_SUPP: valueInt_ = speed value, valueFrac_ = supp type
 class LvglSuppSignNode : public LvglDisplayNode {
 public:
-    LvglSuppSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* suppImg);
+    LvglSuppSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                     lv_obj_t* suppImg, lv_obj_t* speedLabel = nullptr);
     void onBecomeVisible() override;
 private:
     lv_obj_t* suppImg_;
+    lv_obj_t* speedLabel_;
     static const char* getSuppImagePath(int suppValue);
 };
 

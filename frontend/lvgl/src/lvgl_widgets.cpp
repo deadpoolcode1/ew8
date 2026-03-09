@@ -3,6 +3,10 @@
 LV_FONT_DECLARE(intelone_bold_18);
 LV_FONT_DECLARE(intelone_bold_20);
 LV_FONT_DECLARE(intelone_bold_28);
+LV_FONT_DECLARE(intelone_medium_14);
+LV_FONT_DECLARE(intelone_medium_20);
+LV_FONT_DECLARE(intelone_medium_22);
+LV_FONT_DECLARE(intelone_medium_28);
 
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
@@ -84,18 +88,18 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     // Blinker icon (will use blink animation)
     w.blinkerIcon = createHiddenImage(leftRow, "A:images/status-bar/status_blinker_yellow.png");
 
-    // --- Right row (ROW_REVERSE, spacing=7) ---
+    // --- Right row (ROW, aligned to END so items pack toward right edge) ---
     // QML: layoutDirection RightToLeft, left=logo.right+8, right=parent.right
-    // Items placed from right edge leftward: ISA(rightmost) → signed → comm → mute(leftmost)
+    // Items ordered left-to-right: mute(closest to logo) → comm → signed → ISA(rightmost)
     int barWidth = DISPLAY_WIDTH - 2 * STATUS_BAR_MARGIN;
     int logoRightEdge = barWidth / 2 + 20 + 8; // logo half-width(20) + margin(8)
     lv_obj_t* rightRow = lv_obj_create(bar);
     lv_obj_set_size(rightRow, barWidth - logoRightEdge, 42);
-    lv_obj_set_pos(rightRow, logoRightEdge, 0);
+    lv_obj_set_pos(rightRow, logoRightEdge + 2, -5);
     styleTransparent(rightRow);
-    lv_obj_set_flex_flow(rightRow, LV_FLEX_FLOW_ROW_REVERSE);
-    lv_obj_set_style_pad_column(rightRow, 7, 0);
-    lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+    lv_obj_set_flex_flow(rightRow, LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(rightRow, 3, 0);
+    lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_END);
 
     // Helper: create a fixed-size slot in the flex row, stacking icons inside
     auto createSlot = [&](int width, int height) -> lv_obj_t* {
@@ -105,16 +109,15 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
         return slot;
     };
 
-    // Items ordered for ROW_REVERSE: first added = rightmost
-    // QML order: ISA(rightmost), signed, comm, mute(leftmost=closest to logo)
+    // Items ordered left-to-right (FLEX_ALIGN_END packs them to the right edge)
+    // Mute icon (leftmost, closest to logo)
+    lv_obj_t* muteSlot = createSlot(28, 35);
+    w.muteIcon = createHiddenImage(muteSlot, "A:images/status-bar/status_mute.png");
 
-    // ISA status icons (stacked in one 47x35 slot, mutually exclusive)
-    // QML ISAStatus: width=47, height=20, centered in 47x35 rect
-    lv_obj_t* isaSlot = createSlot(47, 35);
-    w.isaErrorIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_error.png");
-    w.isaInactiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_deact.png");
-    w.isaPartialIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_part_deact.png");
-    w.isaActiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_act.png");
+    // Comm info icons (stacked in one 23x35 slot)
+    lv_obj_t* commSlot = createSlot(23, 35);
+    w.gsmIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GSM.png");
+    w.gpsIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GPS.png");
 
     // Signed status icons (stacked in one 17x35 slot, mutually exclusive)
     lv_obj_t* signedSlot = createSlot(17, 35);
@@ -122,14 +125,18 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     w.signedOutIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_out.png");
     w.signedProcessIcon = createHiddenImage(signedSlot, "A:images/status-bar/status_Signed_process.png");
 
-    // Comm info icons (stacked in one 23x35 slot)
-    lv_obj_t* commSlot = createSlot(23, 35);
-    w.gsmIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GSM.png");
-    w.gpsIcon = createHiddenImage(commSlot, "A:images/status-bar/status_no_GPS.png");
+    // ISA status icons (rightmost — stacked in one slot, mutually exclusive)
+    // Native image sizes: 49-56px wide. No scaling.
+    lv_obj_t* isaSlot = createSlot(56, 35);
 
-    // Mute icon (in its own 28x35 slot — leftmost, closest to logo)
-    lv_obj_t* muteSlot = createSlot(28, 35);
-    w.muteIcon = createHiddenImage(muteSlot, "A:images/status-bar/status_mute.png");
+    w.isaErrorIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_error.png");
+    lv_obj_align(w.isaErrorIcon, LV_ALIGN_CENTER, 0, 0);
+    w.isaInactiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_deact.png");
+    lv_obj_align(w.isaInactiveIcon, LV_ALIGN_CENTER, 0, 0);
+    w.isaPartialIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_part_deact.png");
+    lv_obj_align(w.isaPartialIcon, LV_ALIGN_CENTER, 0, 0);
+    w.isaActiveIcon = createHiddenImage(isaSlot, "A:images/status-bar/ISA_full_act.png");
+    lv_obj_align(w.isaActiveIcon, LV_ALIGN_CENTER, 0, 0);
 
     return w;
 }
@@ -208,17 +215,17 @@ lv_obj_t* LvglWidgets::createSpeedDisplay(lv_obj_t* parent, lv_obj_t** valueLabe
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
 
-    // QML: speed_value font.pixelSize:22, white, horizontalCenter
+    // QML: speed_value font.pixelSize:22, Font.Medium, intelFont, white
     lv_obj_t* valLabel = lv_label_create(cont);
     lv_label_set_text(valLabel, "0");
-    lv_obj_set_style_text_font(valLabel, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_font(valLabel, &intelone_medium_22, 0);
     lv_obj_set_style_text_color(valLabel, lv_color_white(), 0);
-    lv_obj_align(valLabel, LV_ALIGN_TOP_MID, -2, -4);
+    lv_obj_align(valLabel, LV_ALIGN_TOP_MID, -2, 0);
 
-    // QML: speed_units font.pixelSize:14, white, below value
+    // QML: speed_units font.pixelSize:14, Font.Medium, intelFont, white
     lv_obj_t* unitLabel = lv_label_create(cont);
     lv_label_set_text(unitLabel, "km/h");
-    lv_obj_set_style_text_font(unitLabel, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(unitLabel, &intelone_medium_14, 0);
     lv_obj_set_style_text_color(unitLabel, lv_color_white(), 0);
     lv_obj_align(unitLabel, LV_ALIGN_BOTTOM_MID, 0, 0);
 
@@ -257,14 +264,14 @@ LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
     // Units label: "sec", QML: font.pixelSize=20, Font.Medium, intelFont
     lv_obj_t* unitsLabel = lv_label_create(w.container);
     lv_label_set_text(unitsLabel, "sec");
-    lv_obj_set_style_text_font(unitsLabel, &intelone_bold_20, 0);
+    lv_obj_set_style_text_font(unitsLabel, &intelone_medium_20, 0);
     lv_obj_set_style_text_color(unitsLabel, lv_color_hex(0xe1f1ff), 0);
     lv_obj_align(unitsLabel, LV_ALIGN_BOTTOM_MID, 0, -38);
 
-    // Time value label: QML: font.pixelSize=28, intelFont
+    // Time value label: QML: font.pixelSize=28, intelFont, Font.Medium weight
     w.valueLabel = lv_label_create(w.container);
     lv_label_set_text(w.valueLabel, "0");
-    lv_obj_set_style_text_font(w.valueLabel, &intelone_bold_28, 0);
+    lv_obj_set_style_text_font(w.valueLabel, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(w.valueLabel, lv_color_hex(0xe1f1ff), 0);
     lv_obj_align(w.valueLabel, LV_ALIGN_BOTTOM_MID, 0, -55);
 
@@ -291,7 +298,8 @@ lv_obj_t* LvglWidgets::createLDWIndicator(lv_obj_t* parent, bool isLeft)
     else
     {
         lv_image_set_src(img, "A:images/ldw/ldw_right-01.png");
-        // QML: anchors.right of groupLanesRight, which ends at right_panel.left - 32
+        // QML: groupLanes has rightMargin:32 from groupGAG, which ends at right_panel.left(270)
+        // lane right edge = 270 - 32 = 238 from left = -(DISPLAY_WIDTH - 238) = -82 from right
         lv_obj_align(img, LV_ALIGN_BOTTOM_RIGHT, -(50 + 32), 0);
     }
 
@@ -314,11 +322,10 @@ LvglWidgets::ErrorOverlayWidgets LvglWidgets::createErrorOverlay(lv_obj_t* paren
     lv_obj_add_flag(w.container, LV_OBJ_FLAG_HIDDEN);
 
     // QML: alert_err image — fillMode: PreserveAspectCrop, width:324, height:240
-    // Native 641x481 → scale to cover 320x240: 320/641=0.499 → scale=128
+    // Pre-resized to 324x240 (from 641x481) to avoid large image decode issues.
+    // QML position: leftMargin:-2, bottom of parent with bottomMargin:-20
     w.errorImg = lv_image_create(w.container);
-    lv_image_set_src(w.errorImg, "A:images/error/error_full_display_general_yellow.png");
-    lv_image_set_pivot(w.errorImg, 0, 0);
-    lv_image_set_scale(w.errorImg, 128);
+    lv_image_set_src(w.errorImg, "A:images/error/error_full_display_324x240.png");
     lv_obj_set_pos(w.errorImg, -2, 0);
 
     // QML: ME logo at top center (discon_status_panel has logo during error too)
@@ -344,17 +351,18 @@ lv_obj_t* LvglWidgets::createFailsafeOverlay(lv_obj_t* parent)
 
     // Eye icon: scaled 0.6 (0.6 * 256 = 154), centered horizontally
     // QML: anchors.top: parent.top, topMargin: 135, scale: 0.6
-    // QML scales from center: 89x53 icon, unscaled top=135, center=135+26.5=161.5
-    // In LVGL with pivot (0,0): visual spans from y to y+32. To match QML visual center
-    // at 161.5: y = 161.5 - 16 ≈ 146. But icon bottom = 146+32 = 178.
+    // Image is 89x53. At scale 0.6 with pivot(0,0): visual size = 53x32.
+    // Place icon so its visual bottom is just above the text (at y=178).
+    // With pivot(0,0): visual bottom = y + 53*0.6 = y + 32. Need y+32 < 178 → y ≤ 145.
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/error/icon_eye.png");
     lv_image_set_scale(img, 154);
-    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 146);
+    lv_image_set_pivot(img, 0, 0);
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 144);
 
     // "Low Visibility" label, yellow #fed500, centered, below icon
-    // QML: anchors.top: lv_icon.bottom (unscaled=188), topMargin: -12 → y=176
-    // LVGL: place text just below visual icon bottom (178), with small gap
+    // QML: font.pixelSize: 17, intelFont (bold). anchors.top: icon.bottom, topMargin: -12
+    // Text at y=178 (user confirmed this position is good)
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "Low Visibility");
     lv_obj_set_style_text_font(label, &lv_font_montserrat_16, 0);

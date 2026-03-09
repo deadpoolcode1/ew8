@@ -44,6 +44,7 @@ private:
     LvglDisplayNode* rldwNode_;
     LvglDisplayNode* groupGAG_;
     LvglDisplayNode* groupCIPV_;
+    LvglDisplayNode* groupFCW_;
     LvglDisplayNode* disconPanel_;
     LvglDisplayNode* failsafeNode_;
     lv_obj_t* hmwValueLabel_;
