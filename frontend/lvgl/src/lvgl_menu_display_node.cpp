@@ -87,16 +87,26 @@ const char* LvglSuppSignNode::getSuppImagePath(int suppValue)
 }
 
 // QML: IntelOne Display Medium, pixelSize 36, scale 1.6-(len*0.2), SideIcon 0.732
-// Base font: 44px. Container transform at 0.732 → 32.2px base (2-digit target).
-// Label transform_scale adjusts for digit count:
-//   1-digit: 37/32.2 = 1.15 → 294
-//   2-digit: 32/32.2 = 1.0  → 256 (no transform)
-//   3-digit: 26/32.2 = 0.81 → 207
-static int speedSignTextScale(int textLen)
+// Container transform at 0.732 scales all children.
+//   1-digit: 44px font, scale 294 → 37px on screen
+//   2-digit: 44px font, scale 256 → 32px on screen
+//   3-digit: 36px font, scale 256 → 26px on screen
+LV_FONT_DECLARE(intelone_medium_36);
+static void applySpeedTextStyle(lv_obj_t* label, int textLen)
 {
-    if (textLen <= 1) return 294;
-    if (textLen == 2) return 256;
-    return 207;
+    if (textLen <= 1) {
+        lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
+        lv_obj_set_style_transform_scale_x(label, 294, 0);
+        lv_obj_set_style_transform_scale_y(label, 294, 0);
+    } else if (textLen == 2) {
+        lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
+        lv_obj_set_style_transform_scale_x(label, 256, 0);
+        lv_obj_set_style_transform_scale_y(label, 256, 0);
+    } else {
+        lv_obj_set_style_text_font(label, &intelone_medium_36, 0);
+        lv_obj_set_style_transform_scale_x(label, 256, 0);
+        lv_obj_set_style_transform_scale_y(label, 256, 0);
+    }
 }
 
 void LvglSuppSignNode::onBecomeVisible()
@@ -114,10 +124,10 @@ void LvglSuppSignNode::onBecomeVisible()
         char buf[8];
         snprintf(buf, sizeof(buf), "%d", valueInt_);
         lv_label_set_text(speedLabel_, buf);
-        int ts = speedSignTextScale(strlen(buf));
-        lv_obj_set_style_transform_scale_x(speedLabel_, ts, 0);
-        lv_obj_set_style_transform_scale_y(speedLabel_, ts, 0);
-        lv_obj_align(speedLabel_, LV_ALIGN_CENTER, 0, 0);
+        applySpeedTextStyle(speedLabel_, strlen(buf));
+        // Container is 160px tall for supp (to fit icon below), but sign image is 112px.
+        // Sign center is at y=56, container center at y=80. Offset: 56-80+2 = -22.
+        lv_obj_align(speedLabel_, LV_ALIGN_CENTER, 0, -22);
     }
     LvglDisplayNode::onBecomeVisible();
 }
@@ -167,7 +177,7 @@ void LvglShapeUsaNode::onBecomeInvisible()
     }
     // Restore circular sign text position and font
     if (sliSpeedLabel_) {
-        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 0, 2);
         lv_obj_set_style_text_font(sliSpeedLabel_, &intelone_medium_44, 0);
     }
 }

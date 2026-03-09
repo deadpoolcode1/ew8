@@ -321,14 +321,12 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     rescaleSupp(playgroundSuppWidget);
 
     // Add supplementary icon overlays to each supp sign (small icon below the sign)
+    // QML: Supp anchors.top=parent.bottom, topMargin=-15 → y=112-15=97 in container coords
+    // Icons are 112x62 native, same width as container. Container transform scales everything.
     auto addSuppIcon = [](lv_obj_t* signWidget) -> lv_obj_t* {
         lv_obj_t* suppImg = lv_image_create(signWidget);
         lv_image_set_src(suppImg, "A:images/left-panel/Supp/snow.png"); // default
-        lv_image_set_pivot(suppImg, 0, 0);
-        lv_image_set_scale(suppImg, 100); // small icon ~39% scale
-        // Position below the sign: sign at scale 139 occupies ~61px of 82px container.
-        // Icon must be below sign bottom. Offset 32 ensures icon top > sign bottom.
-        lv_obj_align(suppImg, LV_ALIGN_BOTTOM_MID, 0, 32);
+        lv_obj_set_pos(suppImg, 0, 102);
         return suppImg;
     };
     lv_obj_t* sliSuppIcon = addSuppIcon(sliSuppWidget);
@@ -783,24 +781,41 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
     // Use LvglSuppSignNode to update the supp icon image based on CAN arg value
     // QML supp intro: start_scale=0.82(210), target_scale=0.54252(139)
+    // QML: bottomMargin 41→-7.7, scale 0.82→0.54, transform origin=center
+    // Mapped to LVGL pivot (0,112): start visual top=97, end visual top=162
+    static const int SUPP_START_Y = 60;
+    static const int SUPP_TARGET_Y = 95;
+    static const int SUPP_START_X = 4;
+    static const int SUPP_TARGET_X = 10;
+
     auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon, sliSuppSpeedLabel);
-    sliSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
+    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    sliSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
+    sliSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, sliSuppNode);
 
     auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
-    noPassSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
+    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    noPassSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
+    noPassSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, noPassSuppNode);
 
     auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
-    motorwaySuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
+    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    motorwaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
+    motorwaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, motorwaySuppNode);
 
     auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
-    expresswaySuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
+    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    expresswaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
+    expresswaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, expresswaySuppNode);
 
     auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
-    playgroundSuppNode->setContainerIntroAnim(210, SUPP_SIGN_SCALE, 1000);
+    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    playgroundSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
+    playgroundSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, playgroundSuppNode);
 
     // RTW alert (full-screen, under mainPanel at layer=0 — QML has it inside main_panel)

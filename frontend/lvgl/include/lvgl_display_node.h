@@ -39,6 +39,10 @@ public:
     // Set container-based intro animation: transform_scale on widget_ itself.
     // All children (image + label) scale together via LVGL render layer.
     void setContainerIntroAnim(int startScale, int targetScale, int delayMs = 0);
+    // Optional Y position animation alongside container scale animation.
+    void setContainerIntroYAnim(int startY, int targetY);
+    // Optional X position animation alongside container scale animation.
+    void setContainerIntroXAnim(int startX, int targetX);
 
 protected:
     lv_obj_t* widget_;
@@ -60,6 +64,12 @@ protected:
     int introDelayMs_ = 0;
     int introTargetImgX_ = 0;
     int introTargetImgY_ = 0;
+    int introContainerStartY_ = 0;
+    int introContainerTargetY_ = 0;
+    bool introContainerYAnim_ = false;
+    int introContainerStartX_ = 0;
+    int introContainerTargetX_ = 0;
+    bool introContainerXAnim_ = false;
     static void introScaleAnimCb(void* obj, int32_t val);
     static void introImgXAnimCb(void* obj, int32_t val);
     static void introImgYAnimCb(void* obj, int32_t val);
@@ -67,6 +77,8 @@ protected:
     static void introLabelTransXAnimCb(void* obj, int32_t val);
     static void introLabelTransYAnimCb(void* obj, int32_t val);
     static void introContainerScaleAnimCb(void* obj, int32_t val);
+    static void introContainerYAnimCb(void* obj, int32_t val);
+    static void introContainerXAnimCb(void* obj, int32_t val);
     void playIntroAnim();
 
 private:
