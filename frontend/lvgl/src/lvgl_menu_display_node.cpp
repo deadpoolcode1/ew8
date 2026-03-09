@@ -54,9 +54,11 @@ void LvglQRCodeNode::onBecomeInvisible()
 }
 
 // --- Supplementary sign node ---
-LvglSuppSignNode::LvglSuppSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType, lv_obj_t* suppImg)
+LvglSuppSignNode::LvglSuppSignNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
+                                   lv_obj_t* suppImg, lv_obj_t* speedLabel)
     : LvglDisplayNode(widget, layer, entityType)
     , suppImg_(suppImg)
+    , speedLabel_(speedLabel)
 {
 }
 
@@ -83,12 +85,19 @@ const char* LvglSuppSignNode::getSuppImagePath(int suppValue)
 
 void LvglSuppSignNode::onBecomeVisible()
 {
-    // Update supplementary sign image based on CAN arg before showing
+    // Backend: activate(id, argInt=speed, suppType) → valueInt_=speed, valueFrac_=suppType
+    // Update supplementary icon image based on supp type (valueFrac_)
     if (suppImg_) {
-        const char* path = getSuppImagePath(valueInt_);
+        const char* path = getSuppImagePath(valueFrac_);
         if (path) {
             lv_image_set_src(suppImg_, path);
         }
+    }
+    // Update speed label if present (SLI_SUPP shows speed inside the sign)
+    if (speedLabel_) {
+        char buf[8];
+        snprintf(buf, sizeof(buf), "%d", valueInt_);
+        lv_label_set_text(speedLabel_, buf);
     }
     LvglDisplayNode::onBecomeVisible();
 }

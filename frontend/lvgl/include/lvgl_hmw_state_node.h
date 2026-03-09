@@ -10,7 +10,8 @@ class LvglHmwStateNode : public LvglDisplayNode {
 public:
     LvglHmwStateNode(int layer, DISPLAY_ITEM_ID entityType,
                      lv_obj_t* roadStrip, const char* gifSrc,
-                     lv_obj_t* forwardCar = nullptr, int carMargin = 40, int carScale = 192);
+                     lv_obj_t* forwardCar = nullptr, int carMargin = 40,
+                     int carScaleX = 192, int carScaleY = 192);
 
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
@@ -19,8 +20,11 @@ private:
     lv_obj_t* roadStrip_;
     const char* gifSrc_;
     lv_obj_t* forwardCar_;
-    int carMargin_;     // QML: car_margin (top margin for forward car)
-    int carScale_;      // LVGL scale factor (256 = 1.0)
+    int carMargin_;      // QML: car_margin (top margin for forward car)
+    int carScaleX_;      // LVGL X scale factor (256 = 1.0)
+    int carScaleY_;      // LVGL Y scale factor (256 = 1.0)
+    static bool carInitialized_;   // Track if car has been positioned at least once
+    static int  carTargetScale_;   // Currently animating/set target scale
 };
 
 #endif // LVGL_HMW_STATE_NODE_H
