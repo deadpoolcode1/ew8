@@ -54,6 +54,14 @@ set(FRONTEND_SOURCES
     fonts/intelone_medium_20.c
     fonts/intelone_medium_22.c
     fonts/intelone_medium_28.c
+    fonts/intelone_bold_26.c
+    fonts/intelone_bold_32.c
+    fonts/intelone_bold_37.c
+    fonts/intelone_medium_26.c
+    fonts/intelone_medium_32.c
+    fonts/intelone_medium_36.c
+    fonts/intelone_medium_44.c
+    fonts/intelone_medium_37.c
 )
 
 add_executable(ew8_lvgl ${FRONTEND_SOURCES})

@@ -2,6 +2,20 @@
 #include <cstdio>
 #include <cstring>
 
+// QML: IntelOne Display Medium, pixelSize 36, scale 1.6-(len*0.2), SideIcon 0.732
+// Base font: 44px. Container transform scales at 0.732 → 44*0.732 = 32.2px (2-digit target).
+// QML effective on-screen: 1-digit ~37px, 2-digit ~32px, 3-digit ~26px
+// Label transform_scale adjusts for digit count:
+//   1-digit: 37/32.2 = 1.15 → 294
+//   2-digit: 32/32.2 = 1.0  → 256 (no transform)
+//   3-digit: 26/32.2 = 0.81 → 207
+static int speedSignTextScale(int textLen)
+{
+    if (textLen <= 1) return 294;
+    if (textLen == 2) return 256;
+    return 207;
+}
+
 LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                                              lv_obj_t* valueLabel, int divideFactor)
     : LvglDisplayNode(widget, layer, entityType)
@@ -12,6 +26,8 @@ LvglValueDisplayNode::LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_
 
 void LvglValueDisplayNode::onBecomeVisible()
 {
+    bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+
     LvglDisplayNode::onBecomeVisible();
 
     if (valueLabel_)
@@ -26,7 +42,23 @@ void LvglValueDisplayNode::onBecomeVisible()
             snprintf(buf, sizeof(buf), "%d", valueInt_);
         }
         if (strcmp(lv_label_get_text(valueLabel_), buf) != 0) {
+            // Value changed while already visible — replay intro animation
+            if (!wasHidden && introContainerMode_ && widget_) {
+                lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
+                lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
+                playIntroAnim();
+            } else if (!wasHidden && introAnimImg_) {
+                lv_image_set_scale(introAnimImg_, introStartScale_);
+                if (introTargetImgX_ != 0 || introTargetImgY_ != 0) {
+                    lv_obj_set_pos(introAnimImg_, 0, 0);
+                }
+                playIntroAnim();
+            }
             lv_label_set_text(valueLabel_, buf);
+            int ts = speedSignTextScale(strlen(buf));
+            lv_obj_set_style_transform_scale_x(valueLabel_, ts, 0);
+            lv_obj_set_style_transform_scale_y(valueLabel_, ts, 0);
+            lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 0);
         }
     }
 }

@@ -7,6 +7,14 @@ LV_FONT_DECLARE(intelone_medium_14);
 LV_FONT_DECLARE(intelone_medium_20);
 LV_FONT_DECLARE(intelone_medium_22);
 LV_FONT_DECLARE(intelone_medium_28);
+LV_FONT_DECLARE(intelone_bold_26);
+LV_FONT_DECLARE(intelone_bold_32);
+LV_FONT_DECLARE(intelone_bold_37);
+LV_FONT_DECLARE(intelone_medium_26);
+LV_FONT_DECLARE(intelone_medium_32);
+LV_FONT_DECLARE(intelone_medium_36);
+LV_FONT_DECLARE(intelone_medium_37);
+LV_FONT_DECLARE(intelone_medium_44);
 
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
@@ -455,7 +463,8 @@ lv_obj_t* LvglWidgets::createPDZOverlay(lv_obj_t* parent)
 // Signs are 112x112 native. QML target_scale=0.732 → 82x82 rendered.
 // LVGL scale: 0.732 * 256 = 187
 static const int LEFT_PANEL_SIGN_SCALE = 187;
-static const int LEFT_PANEL_SIGN_SIZE = 82;  // 112 * 0.732
+static const int LEFT_PANEL_SIGN_SIZE = 82;   // 112 * 0.732 (visual size at target scale)
+static const int LEFT_PANEL_SIGN_NATIVE = 112; // native image size (container size for anim)
 
 // Right panel sign constants
 // Signs are 136x136 native. QML SideIcon quadrant 1/4: target_scale=0.6028 → ~82x82 rendered.
@@ -467,20 +476,22 @@ static const int RIGHT_PANEL_MARGIN = 12;
 lv_obj_t* LvglWidgets::createLeftPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
 {
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, LEFT_PANEL_SIGN_SIZE, LEFT_PANEL_SIGN_SIZE);
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, LEFT_PANEL_SIGN_NATIVE);
     int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
     lv_obj_set_pos(cont, 0, y);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
+    // Container transform scales all children (image + label) together
+    lv_obj_set_style_transform_pivot_x(cont, 0, 0);
+    lv_obj_set_style_transform_pivot_y(cont, 0, 0);
+    lv_obj_set_style_transform_scale_x(cont, LEFT_PANEL_SIGN_SCALE, 0);
+    lv_obj_set_style_transform_scale_y(cont, LEFT_PANEL_SIGN_SCALE, 0);
+
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, imageSrc);
-    // Center pivot for natural shrink-from-center animation
-    // Position offset (-15,-15) compensates so at target scale image aligns to (0,0)
-    lv_image_set_pivot(img, 56, 56);
-    lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
-    lv_obj_set_pos(img, -15, -15);
+    lv_obj_set_pos(img, 0, 0);
 
     return cont;
 }
@@ -489,25 +500,29 @@ lv_obj_t* LvglWidgets::createSpeedLimitSign(lv_obj_t* parent, const char* signIm
                                               bool upperSlot, lv_obj_t** speedLabel)
 {
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, LEFT_PANEL_SIGN_SIZE, LEFT_PANEL_SIGN_SIZE);
+    lv_obj_set_size(cont, LEFT_PANEL_SIGN_NATIVE, LEFT_PANEL_SIGN_NATIVE);
     int y = upperSlot ? (MAIN_PANEL_Y + 12) : (DISPLAY_HEIGHT - 12 - LEFT_PANEL_SIGN_SIZE);
     lv_obj_set_pos(cont, 0, y);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
+    // Container transform scales all children (image + label) together
+    lv_obj_set_style_transform_pivot_x(cont, 0, 0);
+    lv_obj_set_style_transform_pivot_y(cont, 0, 0);
+    lv_obj_set_style_transform_scale_x(cont, LEFT_PANEL_SIGN_SCALE, 0);
+    lv_obj_set_style_transform_scale_y(cont, LEFT_PANEL_SIGN_SCALE, 0);
+
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, signImgSrc);
-    // Center pivot for natural shrink-from-center animation
-    lv_image_set_pivot(img, 56, 56);
-    lv_image_set_scale(img, LEFT_PANEL_SIGN_SCALE);
-    lv_obj_set_pos(img, -15, -15);
+    lv_obj_set_pos(img, 0, 0);
 
-    // Speed number text centered on the sign (82x82 container)
-    // QML: font.pixelSize 36, scale varies. Effective ~26px at sign scale.
+    // QML: IntelOne Display Medium, pixelSize 36, scale 1.6-(len*0.2)
+    // Container transform at 0.732 brings native sizes to final on-screen size.
+    // Font selected at runtime by LvglValueDisplayNode based on text length.
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_font(label, &intelone_medium_44, 0);
     lv_obj_set_style_text_color(label, lv_color_black(), 0);
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 

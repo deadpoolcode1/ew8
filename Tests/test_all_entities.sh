@@ -16,6 +16,8 @@
 #               Generates a timestamped report file in the current directory.
 #     -s N      Run only step N. Sends keepalive + base frames first, then
 #               executes that single step and exits.
+#     -f N      Start from step N. Skips all steps before N, then runs
+#               everything from N onward.
 #     -h/--help Show this help message.
 #
 # Examples:
@@ -24,6 +26,7 @@
 #   ./test_all_entities.sh can0 2 -r        # review mode with report
 #   ./test_all_entities.sh can0 2 -t -r     # review + test screens
 #   ./test_all_entities.sh -s 42            # run only step 42
+#   ./test_all_entities.sh -f 30 -r         # start from step 30 in review mode
 #   ./test_all_entities.sh can0 2 -s 42 -r  # run step 42 in review mode
 #
 # IMPORTANT: Each CAN frame carries ALL signals for that message ID.
@@ -42,6 +45,7 @@ DELAY=2
 TEST_MODE=""
 REVIEW_MODE=""
 TARGET_STEP=""
+START_FROM=""
 STEP_ACTIVE=1
 _positional=0
 
@@ -54,6 +58,7 @@ while [ $# -gt 0 ]; do
         -t) TEST_MODE="-t" ;;
         -r) REVIEW_MODE="-r" ;;
         -s) shift; TARGET_STEP="$1" ;;
+        -f) shift; START_FROM="$1" ;;
         *)
             # Positional args: first=CAN, second=DELAY
             if [ "$_positional" -eq 0 ]; then
@@ -147,6 +152,11 @@ announce() {
         STEP_ACTIVE=0
         return
     fi
+    # In start-from mode, skip steps before the target
+    if [ -n "$START_FROM" ] && [ "$step" -lt "$START_FROM" ]; then
+        STEP_ACTIVE=0
+        return
+    fi
     STEP_ACTIVE=1
     echo ""
     echo -e "${CYN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -156,6 +166,7 @@ announce() {
 
 section() {
     [ -n "$TARGET_STEP" ] && return
+    [ -n "$START_FROM" ] && [ "$step" -lt "$START_FROM" ] && return
     echo ""
     echo -e "${GRN}═══════════════════════════════════════════════════════════════════${NC}"
     echo -e "${GRN}  SECTION: $1${NC}"
@@ -299,12 +310,22 @@ echo -e "${RED}║     Delay between steps: ${DELAY}s                           
 if [ -n "$TARGET_STEP" ]; then
 echo -e "${RED}║     Single step mode: step $TARGET_STEP                                  ║${NC}"
 fi
+if [ -n "$START_FROM" ]; then
+echo -e "${RED}║     Starting from step $START_FROM                                       ║${NC}"
+fi
 echo -e "${RED}╚═══════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
 if [ -n "$TARGET_STEP" ]; then
     # Single-step mode: send keepalive + base frames, then run target step
     echo -e "${GRN}Sending keepalive + base frames...${NC}"
+    STEP_ACTIVE=1
+    send_base
+    sleep 1
+    STEP_ACTIVE=0
+elif [ -n "$START_FROM" ]; then
+    # Start-from mode: send keepalive + base frames, then skip to target step
+    echo -e "${GRN}Sending keepalive + base frames, starting from step $START_FROM...${NC}"
     STEP_ACTIVE=1
     send_base
     sleep 1

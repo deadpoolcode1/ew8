@@ -1,5 +1,8 @@
 #include "lvgl_menu_display_node.h"
 #include "lvgl_menu_controller.h"
+#include <cstring>
+
+LV_FONT_DECLARE(intelone_medium_44);
 
 // --- VOLUME_DONE ---
 LvglVolumeDoneNode::LvglVolumeDoneNode(int layer, DISPLAY_ITEM_ID entityType, LvglMenuController* ctrl)
@@ -83,6 +86,19 @@ const char* LvglSuppSignNode::getSuppImagePath(int suppValue)
     }
 }
 
+// QML: IntelOne Display Medium, pixelSize 36, scale 1.6-(len*0.2), SideIcon 0.732
+// Base font: 44px. Container transform at 0.732 → 32.2px base (2-digit target).
+// Label transform_scale adjusts for digit count:
+//   1-digit: 37/32.2 = 1.15 → 294
+//   2-digit: 32/32.2 = 1.0  → 256 (no transform)
+//   3-digit: 26/32.2 = 0.81 → 207
+static int speedSignTextScale(int textLen)
+{
+    if (textLen <= 1) return 294;
+    if (textLen == 2) return 256;
+    return 207;
+}
+
 void LvglSuppSignNode::onBecomeVisible()
 {
     // Backend: activate(id, argInt=speed, suppType) → valueInt_=speed, valueFrac_=suppType
@@ -98,6 +114,10 @@ void LvglSuppSignNode::onBecomeVisible()
         char buf[8];
         snprintf(buf, sizeof(buf), "%d", valueInt_);
         lv_label_set_text(speedLabel_, buf);
+        int ts = speedSignTextScale(strlen(buf));
+        lv_obj_set_style_transform_scale_x(speedLabel_, ts, 0);
+        lv_obj_set_style_transform_scale_y(speedLabel_, ts, 0);
+        lv_obj_align(speedLabel_, LV_ALIGN_CENTER, 0, 0);
     }
     LvglDisplayNode::onBecomeVisible();
 }
@@ -145,10 +165,10 @@ void LvglShapeUsaNode::onBecomeInvisible()
         lv_image_set_src(sliSuppSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
         lv_image_set_pivot(sliSuppSignImg_, 56, 56);
     }
-    // Restore circular sign text position and font (QML: horizontalCenterOffset=2)
+    // Restore circular sign text position and font
     if (sliSpeedLabel_) {
         lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 0, 0);
-        lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_22, 0);
+        lv_obj_set_style_text_font(sliSpeedLabel_, &intelone_medium_44, 0);
     }
 }
 
