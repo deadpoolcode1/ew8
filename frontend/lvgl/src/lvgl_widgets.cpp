@@ -645,26 +645,33 @@ lv_obj_t* LvglWidgets::createPeripheralTestGroupRow(lv_obj_t* parent, const char
     return cont;
 }
 
+static const int RIGHT_PANEL_SIGN_NATIVE = 136; // native image size
+
 lv_obj_t* LvglWidgets::createRightPanelSign(lv_obj_t* parent, const char* imageSrc, bool upperSlot)
 {
     // QML: SideIcon quadrant 1 (upper-right) / quadrant 4 (lower-right)
-    // right_panel: width=50, x=270, topMargin=12, bottomMargin=12
-    // Icon position: x = parentWidth - scaledSize = 50 - 100 = -50 relative to right panel
-    // Global: x = 270 - 50 = 220
+    // Container is native image size (136x136) to prevent clipping during intro animation.
+    // Container transform_scale shrinks to final size. Pivot top-right so sign anchors to right edge.
     lv_obj_t* cont = lv_obj_create(parent);
-    lv_obj_set_size(cont, RIGHT_PANEL_SIGN_SIZE, RIGHT_PANEL_SIGN_SIZE);
-    int x = DISPLAY_WIDTH - RIGHT_PANEL_SIGN_SIZE;
+    lv_obj_set_size(cont, RIGHT_PANEL_SIGN_NATIVE, RIGHT_PANEL_SIGN_NATIVE);
+    // Final position: right edge at screen edge → x = 320 - 136 = 184
+    // y: align visual top/bottom with margins
+    int x = DISPLAY_WIDTH - RIGHT_PANEL_SIGN_NATIVE;
     int y = upperSlot ? (MAIN_PANEL_Y + RIGHT_PANEL_MARGIN)
-                      : (DISPLAY_HEIGHT - RIGHT_PANEL_MARGIN - RIGHT_PANEL_SIGN_SIZE);
+                      : (DISPLAY_HEIGHT - RIGHT_PANEL_MARGIN - RIGHT_PANEL_SIGN_NATIVE);
     lv_obj_set_pos(cont, x, y);
     styleTransparent(cont);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(cont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
+    // Pivot top-right: sign scales toward the right edge of screen
+    lv_obj_set_style_transform_pivot_x(cont, RIGHT_PANEL_SIGN_NATIVE, 0);
+    lv_obj_set_style_transform_pivot_y(cont, upperSlot ? 0 : RIGHT_PANEL_SIGN_NATIVE, 0);
+    lv_obj_set_style_transform_scale_x(cont, RIGHT_PANEL_SIGN_SCALE, 0);
+    lv_obj_set_style_transform_scale_y(cont, RIGHT_PANEL_SIGN_SCALE, 0);
+
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, imageSrc);
-    lv_image_set_pivot(img, 0, 0);
-    lv_image_set_scale(img, RIGHT_PANEL_SIGN_SCALE);
     lv_obj_set_pos(img, 0, 0);
 
     return cont;
