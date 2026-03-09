@@ -719,63 +719,95 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(leftPanel, groupTop);
 
     // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
-    // QML SideIcon pause_duration = 1000ms for left panel (quadrants 2/3)
+    // QML SideIcon pause_duration = 700ms for left panel (quadrants 2/3)
     auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
-    rtwWarnNode->setContainerIntroAnim(256, 187, 1000);
+    rtwWarnNode->setContainerIntroAnim(256, 187, 700);
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
-    sliNode->setContainerIntroAnim(256, 187, 1000);
+    sliNode->setContainerIntroAnim(256, 187, 700);
     addChild(groupTop, sliNode);
 
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
-    isaSpeedNode->setContainerIntroAnim(256, 187, 1000);
+    isaSpeedNode->setContainerIntroAnim(256, 187, 700);
     addChild(groupTop, isaSpeedNode);
 
     auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
-    isaHighwayNode->setContainerIntroAnim(256, 187, 1000);
+    isaHighwayNode->setContainerIntroAnim(256, 187, 700);
     addChild(groupTop, isaHighwayNode);
 
     // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
     auto* groupBottom = new LvglDisplayNode(nullptr, 0, true, false);
     addChild(leftPanel, groupBottom);
 
+    // Bottom-slot animation constants
+    // Non-supp TSR signs: same size/x as top sign, positioned just below it
+    // Top sign: x=0, y=63, visual height=82px → bottom edge at 145
+    // With pivot (0,112) and scale 187: visual top = y+30, so y=115 → top at 145
+    static const int BOTTOM_TSR_TARGET_Y = 115;
+    static const int BOTTOM_TSR_TARGET_X = 0;
+    static const int BOTTOM_TSR_START_Y = 60;
+    static const int BOTTOM_TSR_START_X = 0;
+    // Supp signs: smaller scale, offset position for supp icon
+    static const int SUPP_START_Y = 60;
+    static const int SUPP_TARGET_Y = 95;
+    static const int SUPP_START_X = 4;
+    static const int SUPP_TARGET_X = 10;
+
     // TSR signs with auto-dismiss timers (QML maxduration values)
     // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
     auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
-    endAllRestrNode->setContainerIntroAnim(256, 187, 1000);
+    endAllRestrNode->setContainerIntroAnim(256, 187, 700);
+    endAllRestrNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    endAllRestrNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, endAllRestrNode);
 
     auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
-    noPassNode->setContainerIntroAnim(256, 187, 1000);
+    noPassNode->setContainerIntroAnim(256, 187, 700);
+    noPassNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    noPassNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, noPassNode);
 
     auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
-    noPassEndNode->setContainerIntroAnim(256, 187, 1000);
+    noPassEndNode->setContainerIntroAnim(256, 187, 700);
+    noPassEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    noPassEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, noPassEndNode);
 
     auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
-    motorwayNode->setContainerIntroAnim(256, 187, 1000);
+    motorwayNode->setContainerIntroAnim(256, 187, 700);
+    motorwayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    motorwayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, motorwayNode);
 
     auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
-    motorwayEndNode->setContainerIntroAnim(256, 187, 1000);
+    motorwayEndNode->setContainerIntroAnim(256, 187, 700);
+    motorwayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    motorwayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, motorwayEndNode);
 
     auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
-    expresswayNode->setContainerIntroAnim(256, 187, 1000);
+    expresswayNode->setContainerIntroAnim(256, 187, 700);
+    expresswayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    expresswayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, expresswayNode);
 
     auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
-    expresswayEndNode->setContainerIntroAnim(256, 187, 1000);
+    expresswayEndNode->setContainerIntroAnim(256, 187, 700);
+    expresswayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    expresswayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, expresswayEndNode);
 
     auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
-    playgroundNode->setContainerIntroAnim(256, 187, 1000);
+    playgroundNode->setContainerIntroAnim(256, 187, 700);
+    playgroundNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    playgroundNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, playgroundNode);
 
     auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
-    playgroundEndNode->setContainerIntroAnim(256, 187, 1000);
+    playgroundEndNode->setContainerIntroAnim(256, 187, 700);
+    playgroundEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
+    playgroundEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
     addChild(groupBottom, playgroundEndNode);
 
     // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
@@ -783,37 +815,33 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // QML supp intro: start_scale=0.82(210), target_scale=0.54252(139)
     // QML: bottomMargin 41→-7.7, scale 0.82→0.54, transform origin=center
     // Mapped to LVGL pivot (0,112): start visual top=97, end visual top=162
-    static const int SUPP_START_Y = 60;
-    static const int SUPP_TARGET_Y = 95;
-    static const int SUPP_START_X = 4;
-    static const int SUPP_TARGET_X = 10;
 
     auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon, sliSuppSpeedLabel);
-    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
     sliSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     sliSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, sliSuppNode);
 
     auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
-    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
     noPassSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     noPassSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, noPassSuppNode);
 
     auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
-    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
     motorwaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     motorwaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, motorwaySuppNode);
 
     auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
-    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
     expresswaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     expresswaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, expresswaySuppNode);
 
     auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
-    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 1000);
+    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 700);
     playgroundSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
     playgroundSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
     addChild(groupBottom, playgroundSuppNode);
