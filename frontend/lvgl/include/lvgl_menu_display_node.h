@@ -62,6 +62,7 @@ private:
     lv_obj_t* sliSuppSignImg_;
     lv_obj_t* sliSpeedLabel_;
     LvglDisplayNode* sliNode_ = nullptr;
+    bool wasUsaActive_ = false;
 };
 
 // Display node for ALERT_ISA_OVERSPEED — blinks SLI/ISA speed signs when active
@@ -81,13 +82,33 @@ private:
 };
 
 // Display node for STATE_ISA_NOT_TSR — notifies menu controller of ISA availability
+// QML: on first activation, forces ALERT_ISA_ERROR icon visible for 1000ms ("isa_init" state)
 class LvglIsaStateNode : public LvglDisplayNode {
 public:
     LvglIsaStateNode(int layer, DISPLAY_ITEM_ID entityType, LvglMenuController* ctrl);
+    void setIsaWidgets(lv_obj_t* errorWidget, lv_obj_t* inactiveWidget) {
+        isaErrorWidget_ = errorWidget;
+        isaInactiveWidget_ = inactiveWidget;
+    }
+    void setIsaSignNodes(LvglDisplayNode* isaSpeedNode, LvglDisplayNode* isaHighwayNode) {
+        isaSpeedNode_ = isaSpeedNode;
+        isaHighwayNode_ = isaHighwayNode;
+    }
+    void setIsaInactiveNode(LvglDisplayNode* node) { isaInactiveNode_ = node; }
     void onBecomeVisible() override;
     void onBecomeInvisible() override;
 private:
+    bool shouldShowInitPhase() const;
+    static void initTimerCb(lv_timer_t* timer);
     LvglMenuController* ctrl_;
+    lv_obj_t* isaErrorWidget_ = nullptr;
+    lv_obj_t* isaInactiveWidget_ = nullptr;
+    LvglDisplayNode* isaSpeedNode_ = nullptr;
+    LvglDisplayNode* isaHighwayNode_ = nullptr;
+    LvglDisplayNode* isaInactiveNode_ = nullptr;
+    lv_timer_t* initTimer_ = nullptr;
+    bool isaInitPhase_ = false;
+    bool wasIsaActive_ = false;  // tracks previous visibility for hidden→visible detection
 };
 
 // Display node for STATE_TSR_NOT_ISA — notifies menu controller of TSR mode (ISA unavailable)

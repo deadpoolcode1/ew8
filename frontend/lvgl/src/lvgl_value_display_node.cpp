@@ -41,6 +41,11 @@ void LvglValueDisplayNode::onBecomeVisible()
 {
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
 
+    // Skip intro animation if value hasn't changed (sign reappearing with same speed)
+    if (wasHidden && !justArgsChanged_ && !wasForceHidden_) {
+        wasForceHidden_ = true;  // suppress intro animation in base class
+    }
+
     LvglDisplayNode::onBecomeVisible();
 
     if (valueLabel_)
@@ -81,7 +86,11 @@ void LvglValueDisplayNode::onBecomeVisible()
                     lv_obj_align(valueLabel_, LV_ALIGN_CENTER, -8, 22);
                 } else {
                     applySpeedTextStyle(valueLabel_, strlen(buf));
-                    lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 2);
+                    if (strlen(buf) <= 1) {
+                        lv_obj_align(valueLabel_, LV_ALIGN_CENTER, -3, -1);
+                    } else {
+                        lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 2);
+                    }
                 }
             }
         }

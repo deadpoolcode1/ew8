@@ -47,6 +47,7 @@ private:
     LvglDisplayNode* groupCIPV_;
     LvglDisplayNode* groupFCW_;
     LvglDisplayNode* disconPanel_;
+    LvglDisplayNode* mainPanel_;
     LvglDisplayNode* failsafeNode_;
     lv_obj_t* hmwValueLabel_;
     int lastCarOffset_;
