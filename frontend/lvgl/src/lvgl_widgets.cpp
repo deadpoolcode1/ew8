@@ -369,7 +369,7 @@ lv_obj_t* LvglWidgets::createFailsafeOverlay(lv_obj_t* parent)
     lv_image_set_src(img, "A:images/error/icon_eye.png");
     lv_image_set_scale(img, 154);
     lv_image_set_pivot(img, 44, 26);  // center pivot so scaling keeps visual centered
-    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 130);
+    lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 134);
 
     // "Low Visibility" label, yellow #fed500, centered, below icon
     // QML: font.pixelSize: 17, intelFont (bold). anchors.top: icon.bottom, topMargin: -12
