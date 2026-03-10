@@ -37,6 +37,7 @@ private:
     core::Thread* itsThread_;
     LvglDisplayNode* displayRoot_;
     std::atomic<bool> displayDirty_;
+    bool pendingDisplayUpdate_ = false;
 
     // Host car widget and LDW nodes for shift animation
     lv_obj_t* hostCar_;
@@ -50,6 +51,10 @@ private:
     lv_obj_t* hmwValueLabel_;
     int lastCarOffset_;
     static void carShiftAnimCb(void* obj, int32_t val);
+
+    // Left panel sign groups for z-order management
+    LvglDisplayNode* groupTop_;
+    LvglDisplayNode* groupBottom_;
 
     // Menu controller
     LvglMenuController* menuController_;

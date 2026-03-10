@@ -91,6 +91,9 @@ void LvglDisplayNode::deactivate()
 
 int LvglDisplayNode::getActivSem()
 {
+    // If a blocking node is active, report 0 so tree traversal force-hides children
+    if (blockingNode_ && blockingNode_->getActivSem() > 0)
+        return 0;
     return activationSemaphore_;
 }
 
@@ -101,6 +104,8 @@ int LvglDisplayNode::getLayer() const
 
 void LvglDisplayNode::setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit)
 {
+    if (valueInt != valueInt_ || valueFrac != valueFrac_ || unit != unit_)
+        justArgsChanged_ = true;
     valueInt_ = valueInt;
     valueFrac_ = valueFrac;
     unit_ = unit;
@@ -279,11 +284,48 @@ void LvglDisplayNode::playIntroAnim()
     }
 }
 
+void LvglDisplayNode::replayIntroAnim()
+{
+    // Only replay if widget is currently visible
+    if (!widget_ || lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN))
+        return;
+
+    if (introContainerMode_) {
+        lv_anim_delete(widget_, introContainerScaleAnimCb);
+        lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
+        lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
+        if (introContainerYAnim_) {
+            lv_anim_delete(widget_, introContainerYAnimCb);
+            lv_obj_set_y(widget_, introContainerStartY_);
+        }
+        if (introContainerXAnim_) {
+            lv_anim_delete(widget_, introContainerXAnimCb);
+            lv_obj_set_x(widget_, introContainerStartX_);
+        }
+        playIntroAnim();
+    } else if (introAnimImg_) {
+        lv_anim_delete(introAnimImg_, introScaleAnimCb);
+        lv_image_set_scale(introAnimImg_, introStartScale_);
+        if (introTargetImgX_ != 0 || introTargetImgY_ != 0) {
+            lv_anim_delete(introAnimImg_, introImgXAnimCb);
+            lv_anim_delete(introAnimImg_, introImgYAnimCb);
+            lv_obj_set_pos(introAnimImg_, 0, 0);
+        }
+        playIntroAnim();
+    }
+}
+
 void LvglDisplayNode::onBecomeVisible()
 {
+    // If recently force-hidden, delay showing by one frame to allow pending
+    // CAN messages to be processed (prevents flash during CAN batch transitions).
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+    // Skip intro animation if we were force-hidden (still CAN-active but hidden by
+    // layer priority or blocking). Prevents flashing when higher-priority sibling deactivates.
+    bool skipAnim = wasForceHidden_;
+    wasForceHidden_ = false;
 
-    if (wasHidden && introContainerMode_ && widget_) {
+    if (wasHidden && !skipAnim && introContainerMode_ && widget_) {
         // Container mode: set container to start scale
         lv_obj_set_style_transform_scale_x(widget_, introStartScale_, 0);
         lv_obj_set_style_transform_scale_y(widget_, introStartScale_, 0);
@@ -293,7 +335,7 @@ void LvglDisplayNode::onBecomeVisible()
         if (introContainerXAnim_) {
             lv_obj_set_x(widget_, introContainerStartX_);
         }
-    } else if (wasHidden && introAnimImg_) {
+    } else if (wasHidden && !skipAnim && introAnimImg_) {
         lv_image_set_scale(introAnimImg_, introStartScale_);
         if (introTargetImgX_ != 0 || introTargetImgY_ != 0) {
             lv_obj_set_pos(introAnimImg_, 0, 0);
@@ -312,13 +354,28 @@ void LvglDisplayNode::onBecomeVisible()
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
     }
 
-    if (wasHidden && (introContainerMode_ || introAnimImg_)) {
+    // Track that this node just transitioned to visible (for post-traversal z-ordering)
+    if (wasHidden && widget_) {
+        justBecameVisible_ = true;
+    }
+
+    if (wasHidden && !skipAnim && (introContainerMode_ || introAnimImg_)) {
         playIntroAnim();
     }
 }
 
 void LvglDisplayNode::onBecomeInvisible()
 {
+    // Track if we're being force-hidden specifically by the parent's blocking node
+    // (ISA/TSR mutual exclusion). Only skip intro animation in this case — not when
+    // hidden by a higher-priority overlay (FCW) where we want animations to replay.
+    if (activationSemaphore_ > 0 && parent_ && parent_->getBlockingNode()
+        && parent_->getBlockingNode()->getActivSem() > 0) {
+        wasForceHidden_ = true;
+    } else {
+        wasForceHidden_ = false;
+    }
+
     if (introContainerMode_ && widget_) {
         lv_anim_delete(widget_, introContainerScaleAnimCb);
         lv_obj_set_style_transform_scale_x(widget_, introTargetScale_, 0);
@@ -511,21 +568,23 @@ void LvglAnimatedSignNode::imgYAnimCb(void* obj, int32_t val)
 void LvglAnimatedSignNode::onBecomeVisible()
 {
     bool wasHidden = widget_ && lv_obj_has_flag(widget_, LV_OBJ_FLAG_HIDDEN);
+    bool skipAnim = wasForceHidden_;
+    // Note: wasForceHidden_ is reset by LvglDisplayNode::onBecomeVisible() below
 
-    if (wasHidden && imgWidget_) {
+    if (wasHidden && !skipAnim && imgWidget_) {
         lv_image_set_scale(imgWidget_, startScale_);
     }
-    if (wasHidden && startX_ >= 0 && widget_) {
+    if (wasHidden && !skipAnim && startX_ >= 0 && widget_) {
         lv_obj_set_x(widget_, startX_);
     }
     // Left-panel mode: set image to start position (0,0)
-    if (wasHidden && (targetImgX_ != 0 || targetImgY_ != 0) && imgWidget_) {
+    if (wasHidden && !skipAnim && (targetImgX_ != 0 || targetImgY_ != 0) && imgWidget_) {
         lv_obj_set_pos(imgWidget_, 0, 0);
     }
 
     LvglDisplayNode::onBecomeVisible();
 
-    if (wasHidden && imgWidget_) {
+    if (wasHidden && !skipAnim && imgWidget_) {
         // Scale animation
         lv_anim_t anim;
         lv_anim_init(&anim);
@@ -538,7 +597,7 @@ void LvglAnimatedSignNode::onBecomeVisible()
         lv_anim_start(&anim);
     }
     // Right-panel mode: container X animation
-    if (wasHidden && startX_ >= 0 && targetX_ >= 0 && widget_) {
+    if (wasHidden && !skipAnim && startX_ >= 0 && targetX_ >= 0 && widget_) {
         lv_anim_t posAnim;
         lv_anim_init(&posAnim);
         lv_anim_set_var(&posAnim, widget_);
@@ -550,7 +609,7 @@ void LvglAnimatedSignNode::onBecomeVisible()
         lv_anim_start(&posAnim);
     }
     // Left-panel mode: image X/Y offset animation
-    if (wasHidden && imgWidget_) {
+    if (wasHidden && !skipAnim && imgWidget_) {
         if (targetImgX_ != 0) {
             lv_anim_t xAnim;
             lv_anim_init(&xAnim);
@@ -578,6 +637,12 @@ void LvglAnimatedSignNode::onBecomeVisible()
 
 void LvglAnimatedSignNode::onBecomeInvisible()
 {
+    if (activationSemaphore_ > 0 && parent_ && parent_->getBlockingNode()
+        && parent_->getBlockingNode()->getActivSem() > 0) {
+        wasForceHidden_ = true;
+    } else {
+        wasForceHidden_ = false;
+    }
     if (imgWidget_) {
         lv_anim_delete(imgWidget_, scaleAnimCb);
         lv_image_set_scale(imgWidget_, targetScale_);

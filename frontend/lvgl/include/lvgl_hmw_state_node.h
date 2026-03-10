@@ -23,8 +23,9 @@ private:
     int carMargin_;      // QML: car_margin (top margin for forward car)
     int carScaleX_;      // LVGL X scale factor (256 = 1.0)
     int carScaleY_;      // LVGL Y scale factor (256 = 1.0)
-    static bool carInitialized_;   // Track if car has been positioned at least once
-    static int  carTargetScale_;   // Currently animating/set target scale
+    static bool carInitialized_;       // Track if car has been positioned at least once
+    static int  carTargetScale_;       // Currently animating/set target scale
+    static const char* currentGifSrc_; // Track current GIF to avoid restart
 };
 
 #endif // LVGL_HMW_STATE_NODE_H

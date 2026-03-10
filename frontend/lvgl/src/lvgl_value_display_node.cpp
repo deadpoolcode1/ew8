@@ -75,8 +75,14 @@ void LvglValueDisplayNode::onBecomeVisible()
             }
             lv_label_set_text(valueLabel_, buf);
             if (divideFactor_ == 0) {
-                applySpeedTextStyle(valueLabel_, strlen(buf));
-                lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 2);
+                bool isUsa = shapeUsaNode_ && shapeUsaNode_->getActivSem() > 0;
+                if (isUsa) {
+                    applySpeedTextStyle(valueLabel_, strlen(buf));
+                    lv_obj_align(valueLabel_, LV_ALIGN_CENTER, -8, 22);
+                } else {
+                    applySpeedTextStyle(valueLabel_, strlen(buf));
+                    lv_obj_align(valueLabel_, LV_ALIGN_CENTER, 0, 2);
+                }
             }
         }
     }

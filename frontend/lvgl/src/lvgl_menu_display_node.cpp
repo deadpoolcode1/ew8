@@ -159,8 +159,11 @@ void LvglShapeUsaNode::onBecomeVisible()
     // With rect pivot (49,56), the sign visual center shifts ~5px left vs circular.
     // Compensate label position: offset -3 instead of +2 to stay centered on rect sign.
     if (sliSpeedLabel_) {
-        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, -3, 17);
-        lv_obj_set_style_text_font(sliSpeedLabel_, &lv_font_montserrat_20, 0);
+        lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, -8, 22);
+    }
+    // Replay SLI intro animation when shape changes
+    if (sliNode_) {
+        sliNode_->replayIntroAnim();
     }
 }
 
@@ -179,6 +182,10 @@ void LvglShapeUsaNode::onBecomeInvisible()
     if (sliSpeedLabel_) {
         lv_obj_align(sliSpeedLabel_, LV_ALIGN_CENTER, 0, 2);
         lv_obj_set_style_text_font(sliSpeedLabel_, &intelone_medium_44, 0);
+    }
+    // Replay SLI intro animation when shape changes back
+    if (sliNode_) {
+        sliNode_->replayIntroAnim();
     }
 }
 
@@ -206,10 +213,10 @@ void LvglOverspeedBlinkNode::startBlink(lv_obj_t* widget)
     lv_anim_init(&anim);
     lv_anim_set_var(&anim, widget);
     lv_anim_set_values(&anim, LV_OPA_COVER, LV_OPA_TRANSP);
-    lv_anim_set_duration(&anim, 300);
-    lv_anim_set_playback_duration(&anim, 300);
-    lv_anim_set_playback_delay(&anim, 500);   // pause after fade-out (at transparent)
-    lv_anim_set_repeat_delay(&anim, 500);      // pause after fade-in (at opaque) before next cycle
+    lv_anim_set_duration(&anim, 180);
+    lv_anim_set_playback_duration(&anim, 180);
+    lv_anim_set_playback_delay(&anim, 550);   // pause after fade-out (at transparent)
+    lv_anim_set_repeat_delay(&anim, 550);      // pause after fade-in (at opaque) before next cycle
     lv_anim_set_repeat_count(&anim, LV_ANIM_REPEAT_INFINITE);
     lv_anim_set_exec_cb(&anim, blinkAnimCb);
     lv_anim_start(&anim);

@@ -8,11 +8,13 @@ public:
     LvglValueDisplayNode(lv_obj_t* widget, int layer, DISPLAY_ITEM_ID entityType,
                           lv_obj_t* valueLabel, int divideFactor = 0);
 
+    void setShapeUsaNode(LvglDisplayNode* node) { shapeUsaNode_ = node; }
     void onBecomeVisible() override;
 
 private:
     lv_obj_t* valueLabel_;
     int divideFactor_;  // If >0, display valueInt_/factor with 1 decimal (e.g., 12 → "1.2")
+    LvglDisplayNode* shapeUsaNode_ = nullptr;
 };
 
 // Speed display node with MPH conversion support
