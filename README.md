@@ -22,7 +22,7 @@ ew8/
 ├── configs/              # Runtime configuration
 │   └── EW8_Config.json
 ├── DBC/                  # CAN database files (.dbc) for all protocols
-├── Tests/                # CAN-based integration test scripts
+├── Tests/                # Integration tests (Python + shell scripts)
 ├── tools/                # Build and asset helper utilities
 ├── CMakeLists.txt        # Top-level CMake (builds Qt frontend by default)
 └── EW8Linux_ReadMe.txt   # Legacy Yocto SDK setup notes
@@ -71,6 +71,9 @@ Each frontend has its own CMake build. See the frontend-specific READMEs:
 # Install dependencies
 sudo apt install build-essential cmake libsdl2-dev libsocketcan-dev
 
+# Clone with submodules (LVGL library)
+git clone --recurse-submodules <repo-url>
+
 # Build
 cd frontend/lvgl
 mkdir -p build && cd build
@@ -86,19 +89,50 @@ sudo ip link set up vcan0
 
 ## Testing
 
-Integration tests use `cansend` to inject CAN messages and visually verify display output.
+Two types of integration tests are available:
+
+### Shell scripts (cansend-based)
+
+Located in `Tests/scripts/`. Use `cansend` to inject raw CAN frames and visually verify display output.
 
 ```bash
-# Run the comprehensive entity test (108 steps)
-cd Tests
+cd Tests/scripts
+
+# Comprehensive entity test (108 steps)
 ./test_all_entities.sh can0 2          # auto mode, 2s between steps
 ./test_all_entities.sh can0 2 -r       # review mode with report generation
+./test_all_entities.sh -s 42           # run only step 42
+./test_all_entities.sh -f 30 -r        # start from step 30 in review mode
 
 # Basic smoke test
 ./basic.sh
+
+# CAN replay scripts (recorded real-world scenarios)
+./replay_FCW.sh
+./replay_HMW_Alert.sh
+./replay_HMW_Repeatable.sh
 ```
 
-The test scripts work with both Qt and LVGL frontends running on the same CAN bus.
+### Python scripts (DBC-based)
+
+Located in `Tests/`. Use `python-can` and `cantools` with DBC files for structured message construction.
+
+```bash
+# Install dependencies (Windows)
+depinstall.bat
+# Or manually:
+pip install cantools python-can
+
+# General test — cycles through common alerts
+python general_test.py
+
+# ISA-to-TSR transition test
+python isa2tsr_test.py
+```
+
+The `can2ew8testlib.py` module provides the `EW8test` class that loads DBC files from `~/canquick/DBC/` and constructs CAN frames by signal name.
+
+All test scripts work with both Qt and LVGL frontends running on the same CAN bus.
 
 ## Target Hardware
 

@@ -13,12 +13,12 @@ set(LV_CONF_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lv_conf.h" CACHE STRING "" FORCE)
 set(LV_CONF_BUILD_DISABLE_EXAMPLES ON CACHE BOOL "" FORCE)
 set(LV_CONF_BUILD_DISABLE_DEMOS ON CACHE BOOL "" FORCE)
 
-# Vendored LVGL (shared with lvgl_poc)
+# Vendored LVGL library (submodule)
 # Disable ASM language to prevent LVGL from compiling ARM .S files on x86
 # The LVGL CMakeLists.txt enables ASM and globs all .S files, but
 # the helium/neon .S files are ARM-only and fail on x86_64.
 set(CMAKE_ASM_COMPILER_WORKS TRUE)  # Skip ASM compiler check
-add_subdirectory(../../lvgl_poc/lvgl lvgl_build)
+add_subdirectory(lvgl lvgl_build)
 
 # Remove ARM assembly sources that were globbed by LVGL's cmake
 get_target_property(LVGL_SOURCES lvgl SOURCES)
@@ -49,28 +49,21 @@ set(FRONTEND_SOURCES
     src/lvgl_test_display_node.cpp
     fonts/lv_font_intelone_bold_18.c
     fonts/lv_font_intelone_bold_20.c
-    fonts/lv_font_intelone_bold_28.c
     fonts/intelone_medium_14.c
     fonts/intelone_medium_17.c
     fonts/intelone_medium_20.c
-    fonts/intelone_medium_24.c
     fonts/intelone_medium_22.c
+    fonts/intelone_medium_24.c
     fonts/intelone_medium_28.c
-    fonts/intelone_bold_26.c
-    fonts/intelone_bold_32.c
-    fonts/intelone_bold_37.c
-    fonts/intelone_medium_26.c
-    fonts/intelone_medium_32.c
     fonts/intelone_medium_36.c
     fonts/intelone_medium_44.c
-    fonts/intelone_medium_37.c
 )
 
 add_executable(ew8_lvgl ${FRONTEND_SOURCES})
 
 target_include_directories(ew8_lvgl PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../lvgl_poc/lvgl
+    ${CMAKE_CURRENT_SOURCE_DIR}/lvgl
     ${SDL2_INCLUDE_DIRS}
 )
 

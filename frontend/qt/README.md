@@ -107,9 +107,16 @@ sudo ip link set up vcan0
 ## Testing
 
 ```bash
-# From the Tests/ directory, with canquick running:
-../Tests/test_all_entities.sh can0 2       # auto mode
-../Tests/test_all_entities.sh can0 2 -r    # review mode with report
+# Shell-based tests (from Tests/scripts/), with canquick running:
+cd Tests/scripts
+./test_all_entities.sh can0 2       # auto mode
+./test_all_entities.sh can0 2 -r    # review mode with report
+./basic.sh                          # basic smoke test
+
+# Python-based tests (from Tests/)
+cd Tests
+python general_test.py              # cycles through common alerts
+python isa2tsr_test.py              # ISA-to-TSR transition test
 ```
 
 ## Dependencies
