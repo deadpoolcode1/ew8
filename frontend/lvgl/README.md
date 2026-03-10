@@ -31,8 +31,9 @@ frontend/lvgl/
 │   ├── lvgl_hmw_state_node.cpp     # HMW monitor/alert car transitions
 │   ├── lvgl_test_display_node.cpp  # Test screen rendering
 │   ├── lvgl_string_display_node.cpp
-│   ├── lv_font_intelone_bold_18.c  # Custom font (IntelOne Bold 18px)
-│   └── lv_font_intelone_bold_20.c  # Custom font (IntelOne Bold 20px)
+│   └── lvgl_string_display_node.cpp
+├── fonts/                          # Custom IntelOne font files (.c)
+├── lvgl/                           # LVGL v9.2 library (git submodule)
 ├── lv_conf.h                       # LVGL configuration
 ├── build/                          # Out-of-source build directory
 │   └── images/                     # Copied from assets/ at cmake time
@@ -72,7 +73,7 @@ QML animations are replicated using `lv_anim_t`:
 sudo apt install build-essential cmake pkg-config libsdl2-dev libsocketcan-dev
 ```
 
-LVGL is vendored at `../../lvgl_poc/lvgl/` (shared with the LVGL proof-of-concept project).
+LVGL v9.2 is vendored as a git submodule at `frontend/lvgl/lvgl/`.
 
 ### Build
 
@@ -117,12 +118,16 @@ An SDL2 window opens at 320x240 pixels showing the EW8 display.
 Run the shared CAN test scripts while `ew8_lvgl` is running:
 
 ```bash
-# From the Tests/ directory
+# Shell-based tests (from Tests/scripts/)
+cd Tests/scripts
 ./test_all_entities.sh can0 2          # auto mode, 2s per step
 ./test_all_entities.sh can0 2 -r       # review mode with report
+./basic.sh                             # basic smoke test
 
-# Basic smoke test
-./basic.sh
+# Python-based tests (from Tests/)
+cd Tests
+python general_test.py                 # cycles through common alerts
+python isa2tsr_test.py                 # ISA-to-TSR transition test
 ```
 
 ### Side-by-Side Comparison
@@ -136,12 +141,19 @@ cd frontend/qt/build && ./canquick
 cd frontend/lvgl/build && ./ew8_lvgl
 
 # Terminal 3: Send test CAN messages
-cd Tests && ./test_all_entities.sh can0 2 -r
+cd Tests/scripts && ./test_all_entities.sh can0 2 -r
 ```
 
 ## Dependencies
 
-- **LVGL 9.2** — UI framework (vendored)
+- **LVGL 9.2** — UI framework (vendored as git submodule, `ew8-fixes` branch)
 - **SDL2** — Display driver and input handling
 - **SocketCAN** + **pthreads** — Via backend library
 - **C++17** — Required standard
+
+## LVGL Submodule
+
+The LVGL library is vendored at `frontend/lvgl/lvgl/` as a git submodule based on LVGL v9.2.2 with two local fixes on the `ew8-fixes` branch:
+
+1. **GIF decoder buffer overflow fix** (`src/libs/gif/gifdec.c`) — Clamps LZW decoded data and frame dimensions to buffer bounds instead of aborting, preventing crashes on edge-case GIF files.
+2. **Skip hidden GIF decoding** (`src/libs/gif/lv_gif.c`) — Skips frame decoding when the GIF widget or any ancestor is hidden, avoiding wasted CPU on invisible animations (e.g., FCW/PCW overlays when not active).
