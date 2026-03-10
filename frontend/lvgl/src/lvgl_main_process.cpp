@@ -31,6 +31,7 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , groupCIPV_(nullptr)
     , groupFCW_(nullptr)
     , disconPanel_(nullptr)
+    , mainPanel_(nullptr)
     , failsafeNode_(nullptr)
     , hmwValueLabel_(nullptr)
     , menuController_(nullptr)
@@ -254,6 +255,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_image_set_src(hostCar_, "A:images/cars/grey_car_bright.png");
     lv_image_set_scale(hostCar_, 208);  // 197→160px (160/197*256)
     lv_obj_align(hostCar_, LV_ALIGN_BOTTOM_MID, 0, 13);
+    lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);  // QML: visible only when groupGAG || groupCIPV
 
     lv_obj_t* speedValueLabel = nullptr;
     lv_obj_t* speedUnitLabel = nullptr;
@@ -367,9 +369,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // 3. Full-screen overlays (created after content so they render on top)
     // Failsafe (QML z=10)
     lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
-    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power Off");
+    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power off");
     lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power On");
-    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot Mode");
+    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot mode");
 
     // RTW alert (QML z=10)
     lv_obj_t* rtwAlertWidget = LvglWidgets::createRTWAlert(rootWidget);
@@ -548,6 +550,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // main_panel (group, layer=2)
     auto* mainPanel = new LvglDisplayNode(nullptr, 2, false, false);
+    mainPanel_ = mainPanel;
     addChild(generalPanel, mainPanel);
 
     // failsafe overlay (leaf, layer=2 — same as mainPanel, coexists with it)
@@ -869,6 +872,9 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(leftPanel, tsrNotIsaNode);
 
     auto* isaNotTsrNode = new LvglIsaStateNode(0, ID_STATE_ISA_NOT_TSR, menuController_);
+    isaNotTsrNode->setIsaWidgets(sb.isaErrorIcon, sb.isaInactiveIcon);
+    isaNotTsrNode->setIsaSignNodes(isaSpeedNode, isaHighwayNode);
+    isaNotTsrNode->setIsaInactiveNode(isaInactiveNode);
     addChild(leftPanel, isaNotTsrNode);
 
     // ISA/TSR mutual exclusion: when ISA is active, groupBottom should appear inactive
@@ -1163,15 +1169,16 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         updateTreeVisibility(displayRoot_, DO_NOT_FORCE_INVISIBILITY);
         alertController_->mutex.unlock();
 
-        // Host car visibility: QML groupGAG is always visible, so host car shows
-        // whenever mainPanel is active (no disconnect/error/FCW overlay hiding it).
-        // QML: visible: groupGAG.visible || groupCIPV.visible
-        // Since groupGAG.visible=true by default, host car is always visible
-        // unless a higher-priority overlay (disconnect, FCW, error) is active.
+        // QML: HostCar visible: groupGAG.visible || groupCIPV.visible
+        // In QML, these groups become invisible when mainPanel is hidden
+        // (e.g., by disconPanel activating OM_POWEROFF/OM_KEEPPWR/OM_PILOT).
+        // Check both: mainPanel must be tree-visible AND groups must be active.
         if (hostCar_) {
-            bool disconActive = disconPanel_ && disconPanel_->getActivSem() > 0;
-            bool fcwActive = groupFCW_ && groupFCW_->getActivSem() > 0;
-            if (!disconActive && !fcwActive)
+            bool mainPanelVisible = mainPanel_ && mainPanel_->getActivSem() > 0
+                                 && !(disconPanel_ && disconPanel_->getActivSem() > 0);
+            bool gagActive = mainPanelVisible && groupGAG_ && groupGAG_->getActivSem() > 0;
+            bool cipvActive = mainPanelVisible && groupCIPV_ && groupCIPV_->getActivSem() > 0;
+            if (gagActive || cipvActive)
                 lv_obj_remove_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
             else
                 lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);

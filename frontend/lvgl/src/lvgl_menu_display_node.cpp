@@ -145,6 +145,7 @@ LvglShapeUsaNode::LvglShapeUsaNode(int layer, DISPLAY_ITEM_ID entityType,
 
 void LvglShapeUsaNode::onBecomeVisible()
 {
+    wasUsaActive_ = true;
     // Switch to rectangular sign image (98x112 vs circular 112x112)
     if (sliSignImg_) {
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_rect.png");
@@ -169,6 +170,10 @@ void LvglShapeUsaNode::onBecomeVisible()
 
 void LvglShapeUsaNode::onBecomeInvisible()
 {
+    // Only act on actual visible→invisible transitions
+    if (!wasUsaActive_) return;
+    wasUsaActive_ = false;
+
     // Restore circular sign image and pivot
     if (sliSignImg_) {
         lv_image_set_src(sliSignImg_, "A:images/left-panel/SLI/left_SLI_circ.png");
@@ -254,14 +259,72 @@ LvglIsaStateNode::LvglIsaStateNode(int layer, DISPLAY_ITEM_ID entityType, LvglMe
 {
 }
 
+void LvglIsaStateNode::initTimerCb(lv_timer_t* timer)
+{
+    auto* node = static_cast<LvglIsaStateNode*>(lv_timer_get_user_data(timer));
+    node->isaInitPhase_ = false;
+    node->initTimer_ = nullptr;
+    // End forced display — hide error widget and restore the inactive widget
+    if (node->isaErrorWidget_) {
+        lv_obj_add_flag(node->isaErrorWidget_, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (node->isaInactiveWidget_) {
+        lv_obj_remove_flag(node->isaInactiveWidget_, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+bool LvglIsaStateNode::shouldShowInitPhase() const
+{
+    // Condition 1: No ISA sign image is currently visible in the left panel
+    bool isaSignVisible = (isaSpeedNode_ && isaSpeedNode_->getActivSem() > 0)
+                       || (isaHighwayNode_ && isaHighwayNode_->getActivSem() > 0);
+    if (isaSignVisible) return false;
+
+    // Condition 2: ISA_INACTIVE was requested from CAN
+    if (!isaInactiveNode_ || isaInactiveNode_->getActivSem() <= 0) return false;
+
+    return true;
+}
+
 void LvglIsaStateNode::onBecomeVisible()
 {
+    bool firstShow = !wasIsaActive_;
+    wasIsaActive_ = true;
+
     ctrl_->setIsaAvailable(true);
+
+    // QML: "isa_init" state — force ALERT_ISA_ERROR widget visible for 700ms
+    // Only on hidden→visible transition, when no ISA sign is showing and inactive was requested
+    if (isaErrorWidget_ && firstShow && shouldShowInitPhase()) {
+        isaInitPhase_ = true;
+        lv_obj_remove_flag(isaErrorWidget_, LV_OBJ_FLAG_HIDDEN);
+        if (isaInactiveWidget_) {
+            lv_obj_add_flag(isaInactiveWidget_, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (initTimer_) {
+            lv_timer_delete(initTimer_);
+        }
+        initTimer_ = lv_timer_create(initTimerCb, 700, this);
+        lv_timer_set_repeat_count(initTimer_, 1);
+    }
 }
 
 void LvglIsaStateNode::onBecomeInvisible()
 {
+    wasIsaActive_ = false;
     ctrl_->setIsaAvailable(false);
+
+    // Cancel init timer if still running
+    if (initTimer_) {
+        lv_timer_delete(initTimer_);
+        initTimer_ = nullptr;
+    }
+    if (isaInitPhase_) {
+        isaInitPhase_ = false;
+        if (isaErrorWidget_) {
+            lv_obj_add_flag(isaErrorWidget_, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
 
 // --- STATE_TSR_NOT_ISA ---
