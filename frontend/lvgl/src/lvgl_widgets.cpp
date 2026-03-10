@@ -4,6 +4,7 @@ LV_FONT_DECLARE(intelone_bold_18);
 LV_FONT_DECLARE(intelone_bold_20);
 LV_FONT_DECLARE(intelone_bold_28);
 LV_FONT_DECLARE(intelone_medium_14);
+LV_FONT_DECLARE(intelone_medium_17);
 LV_FONT_DECLARE(intelone_medium_20);
 LV_FONT_DECLARE(intelone_medium_22);
 LV_FONT_DECLARE(intelone_medium_28);
@@ -169,13 +170,13 @@ lv_obj_t* LvglWidgets::createDisconnectOverlay(lv_obj_t* parent)
     lv_image_set_src(disconLogo, "A:images/logo/ME_status_logo.png");
     lv_obj_align(disconLogo, LV_ALIGN_TOP_MID, 0, STATUS_BAR_MARGIN + 5);
 
-    // QML: discon_alert Image width:150 height:150
-    // anchors.horizontalCenter + verticalCenter → exactly centered at (160,120)
-    // Native PNG is 181x199 — scale by height to fit 150: 150/199 * 256 ≈ 193
+    // QML: discon_alert Image width:150 height:150 (stretches 181x199 to square)
+    // LVGL can't stretch non-uniformly. Scale to match QML width: 150/181*256 ≈ 212
+    // Rendered: 150x165 (height slightly taller than QML's 150, but width matches)
     lv_obj_t* img = lv_image_create(cont);
     lv_image_set_src(img, "A:images/error/disconnect-alert.png");
-    lv_image_set_scale(img, 193);
-    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+    lv_image_set_scale(img, 212);
+    lv_obj_align(img, LV_ALIGN_CENTER, 0, 5);
 
     // QML: discon_label is child of discon_alert (150×150 image centered at 120)
     // anchors.top: parent.bottom → label top at image bottom (120+75=195)
@@ -375,7 +376,7 @@ lv_obj_t* LvglWidgets::createFailsafeOverlay(lv_obj_t* parent)
     // Text at y=178 (user confirmed this position is good)
     lv_obj_t* label = lv_label_create(cont);
     lv_label_set_text(label, "Low Visibility");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(label, &intelone_medium_17, 0);
     lv_obj_set_style_text_color(label, lv_color_hex(0xfed500), 0);
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 178);
 
