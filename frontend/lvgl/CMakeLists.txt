@@ -13,7 +13,26 @@ set(LV_CONF_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lv_conf.h" CACHE STRING "" FORCE)
 set(LV_CONF_BUILD_DISABLE_EXAMPLES ON CACHE BOOL "" FORCE)
 set(LV_CONF_BUILD_DISABLE_DEMOS ON CACHE BOOL "" FORCE)
 
-# Vendored LVGL library (submodule)
+# Vendored LVGL library (submodule at v9.2.2)
+# Apply local patches (GIF decoder fixes) if not already applied
+execute_process(
+    COMMAND git apply --check --directory=frontend/lvgl/lvgl
+        ${CMAKE_CURRENT_SOURCE_DIR}/patches/lvgl-gif-fixes.patch
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../..
+    RESULT_VARIABLE PATCH_CHECK_RESULT
+    ERROR_QUIET OUTPUT_QUIET
+)
+if(PATCH_CHECK_RESULT EQUAL 0)
+    execute_process(
+        COMMAND git apply --directory=frontend/lvgl/lvgl
+            ${CMAKE_CURRENT_SOURCE_DIR}/patches/lvgl-gif-fixes.patch
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../..
+    )
+    message(STATUS "Applied LVGL GIF patches")
+else()
+    message(STATUS "LVGL GIF patches already applied or not needed")
+endif()
+
 # Disable ASM language to prevent LVGL from compiling ARM .S files on x86
 # The LVGL CMakeLists.txt enables ASM and globs all .S files, but
 # the helium/neon .S files are ARM-only and fail on x86_64.

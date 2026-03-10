@@ -73,7 +73,7 @@ QML animations are replicated using `lv_anim_t`:
 sudo apt install build-essential cmake pkg-config libsdl2-dev libsocketcan-dev
 ```
 
-LVGL v9.2 is vendored as a git submodule at `frontend/lvgl/lvgl/`.
+LVGL v9.2.2 is vendored as a git submodule at `frontend/lvgl/lvgl/`. Local patches in `patches/` are auto-applied during CMake configuration.
 
 ### Build
 
@@ -146,14 +146,15 @@ cd Tests/scripts && ./test_all_entities.sh can0 2 -r
 
 ## Dependencies
 
-- **LVGL 9.2** — UI framework (vendored as git submodule, `ew8-fixes` branch)
+- **LVGL 9.2** — UI framework (vendored as git submodule at v9.2.2)
 - **SDL2** — Display driver and input handling
 - **SocketCAN** + **pthreads** — Via backend library
 - **C++17** — Required standard
 
-## LVGL Submodule
+## LVGL Patches
 
-The LVGL library is vendored at `frontend/lvgl/lvgl/` as a git submodule based on LVGL v9.2.2 with two local fixes on the `ew8-fixes` branch:
+The LVGL submodule is kept at the upstream v9.2.2 tag. Local fixes are maintained as patch files in `patches/` and auto-applied during CMake configuration:
 
-1. **GIF decoder buffer overflow fix** (`src/libs/gif/gifdec.c`) — Clamps LZW decoded data and frame dimensions to buffer bounds instead of aborting, preventing crashes on edge-case GIF files.
-2. **Skip hidden GIF decoding** (`src/libs/gif/lv_gif.c`) — Skips frame decoding when the GIF widget or any ancestor is hidden, avoiding wasted CPU on invisible animations (e.g., FCW/PCW overlays when not active).
+- **`lvgl-gif-fixes.patch`** — Two GIF decoder fixes:
+  1. `gifdec.c`: Clamps LZW decoded data and frame dimensions to buffer bounds instead of aborting, preventing crashes on edge-case GIF files.
+  2. `lv_gif.c`: Skips frame decoding when the GIF widget or any ancestor is hidden, avoiding wasted CPU on invisible animations (e.g., FCW/PCW overlays when not active).

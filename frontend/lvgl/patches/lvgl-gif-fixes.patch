@@ -1,0 +1,67 @@
+diff --git a/src/libs/gif/gifdec.c b/src/libs/gif/gifdec.c
+index ffe9ec1f5..0df68eaa6 100644
+--- a/src/libs/gif/gifdec.c
++++ b/src/libs/gif/gifdec.c
+@@ -596,17 +596,19 @@ read_image_data(gd_GIF * gif, int interlace)
+         if(ret == 1) key_size++;
+         entry = table->entries[key];
+         str_len = entry.length;
+-	if(frm_off + str_len >= frm_size){
+-		LV_LOG_WARN("LZW table token overflows the frame buffer");
+-		return -1;
+-	}
++        if(frm_off + str_len > frm_size) {
++            str_len = frm_size - frm_off;
++            if(str_len <= 0) break;
++        }
+         for(i = 0; i < str_len; i++) {
+             p = frm_off + entry.length - 1;
+-            x = p % gif->fw;
+-            y = p / gif->fw;
+-            if(interlace)
+-                y = interlaced_line_index((int) gif->fh, y);
+-            gif->frame[(gif->fy + y) * gif->width + gif->fx + x] = entry.suffix;
++            if(p < frm_size) {
++                x = p % gif->fw;
++                y = p / gif->fw;
++                if(interlace)
++                    y = interlaced_line_index((int) gif->fh, y);
++                gif->frame[(gif->fy + y) * gif->width + gif->fx + x] = entry.suffix;
++            }
+             if(entry.prefix == 0xFFF)
+                 break;
+             else
+@@ -637,10 +639,10 @@ read_image(gd_GIF * gif)
+     gif->fy = read_num(gif);
+     gif->fw = read_num(gif);
+     gif->fh = read_num(gif);
+-    if(gif->fx + (uint32_t)gif->fw > gif->width || gif->fy + (uint32_t)gif->fh > gif->height){
+-        LV_LOG_WARN("Frame coordinates out of image bounds");
+-        return -1;
+-    }
++    if(gif->fx + (uint32_t)gif->fw > gif->width)
++        gif->fw = gif->width - gif->fx;
++    if(gif->fy + (uint32_t)gif->fh > gif->height)
++        gif->fh = gif->height - gif->fy;
+     f_gif_read(gif, &fisrz, 1);
+     interlace = fisrz & 0x40;
+     /* Ignore Sort Flag. */
+diff --git a/src/libs/gif/lv_gif.c b/src/libs/gif/lv_gif.c
+index 920f77689..247e84e8c 100644
+--- a/src/libs/gif/lv_gif.c
++++ b/src/libs/gif/lv_gif.c
+@@ -198,6 +198,14 @@ static void next_frame_task_cb(lv_timer_t * t)
+ {
+     lv_obj_t * obj = t->user_data;
+     lv_gif_t * gifobj = (lv_gif_t *) obj;
++
++    /* Skip frame decoding if the GIF or any ancestor is hidden */
++    lv_obj_t * check = obj;
++    while(check) {
++        if(lv_obj_has_flag(check, LV_OBJ_FLAG_HIDDEN)) return;
++        check = lv_obj_get_parent(check);
++    }
++
+     uint32_t elaps = lv_tick_elaps(gifobj->last_call);
+     if(elaps < gifobj->gif->gce.delay * 10) return;
+ 
