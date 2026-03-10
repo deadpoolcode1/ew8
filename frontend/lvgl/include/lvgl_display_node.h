@@ -21,6 +21,20 @@ public:
     void deactivate() override;
     int getActivSem() override;
     int getLayer() const override;
+
+    // When set, this node reports activSem=0 while blockingNode is active,
+    // causing the tree traversal to force-hide all children (ISA/TSR mutual exclusion).
+    void setBlockingNode(LvglDisplayNode* blockingNode) { blockingNode_ = blockingNode; }
+    LvglDisplayNode* getBlockingNode() const { return blockingNode_; }
+
+    // When set, widget is moved to LVGL foreground on each show transition,
+    // so the most recently shown sign renders on top of overlapping signs.
+    void setMoveToFrontOnShow(bool v) { moveToFrontOnShow_ = v; }
+    lv_obj_t* getWidget() const { return widget_; }
+    // Replay intro animation on an already-visible widget (e.g., when shape changes)
+    void replayIntroAnim();
+    bool justChanged() const { return justBecameVisible_ || justArgsChanged_; }
+    void clearJustChanged() { justBecameVisible_ = false; justArgsChanged_ = false; }
     void setCanEntityArgs(uint8_t valueInt, uint8_t valueFrac, uint8_t unit) override;
     void setCanEntityArg(const String& stringArg) override;
     void onBecomeVisible() override;
@@ -51,6 +65,7 @@ protected:
     bool mutexGroup_;
     bool modeGroup_;
     LvglDisplayNode* parent_;
+    LvglDisplayNode* blockingNode_ = nullptr;
     LayersPriorityQ* children_;
     uint8_t valueInt_, valueFrac_, unit_;
     String stringArg_;
@@ -70,6 +85,10 @@ protected:
     int introContainerStartX_ = 0;
     int introContainerTargetX_ = 0;
     bool introContainerXAnim_ = false;
+    bool wasForceHidden_ = false;   // skip intro anim when transitioning from force-hidden
+    bool moveToFrontOnShow_ = false; // move widget to LVGL foreground on show
+    bool justBecameVisible_ = false; // set during onBecomeVisible when transitioning from hidden
+    bool justArgsChanged_ = false;   // set when CAN entity args change (value update)
     static void introScaleAnimCb(void* obj, int32_t val);
     static void introImgXAnimCb(void* obj, int32_t val);
     static void introImgYAnimCb(void* obj, int32_t val);

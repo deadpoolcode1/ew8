@@ -51,7 +51,7 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     // Thread + debounce timer (same pattern as Qt MainProcess)
     itsThread_ = new core::Thread();
     updateDisplayTimeWindow_ = new core::Timer();
-    updateDisplayTimeWindow_->setInterval(30);
+    updateDisplayTimeWindow_->setInterval(10);
     updateDisplayTimeWindow_->setSingleShot(true);
 
     itsThread_->started.connect([this]() { process(); });
@@ -626,8 +626,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* ldwOnRightNode = new LvglDisplayNode(ldwOnRightWidget, 2, ID_ALERT_RIGHT_LDWON);
     addChild(groupLanesRight, ldwOnRightNode);
 
-    // groupFCW (group, layer=2, mutexGroup=false — QML has mutexGroup: false)
-    auto* groupFCW = new LvglDisplayNode(nullptr, 2, false, false);
+    // groupFCW (group, layer=1, mutexGroup=false — QML has mutexGroup: false)
+    // Layer=1 (higher priority than mainPanel/statusPanel at layer=2) so that
+    // when FCW/PCW activates, the tree force-hides all layer=2 siblings
+    // (signs, status bar, etc.), matching QML z=15 behavior.
+    auto* groupFCW = new LvglDisplayNode(nullptr, 1, false, false);
     groupFCW_ = groupFCW;
     addChild(generalPanel, groupFCW);
 
@@ -715,29 +718,40 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(mainPanel, leftPanel);
 
     // groupTop (group, layer=0, mutexGroup: RTW layer=0, SLI layer=1, ISA_SPEED layer=2, ISA_HIGHWAY layer=1)
+    // NOTE: groupTop is added to leftPanel AFTER groupBottom (below) so that when both
+    // top and bottom signs change simultaneously, the tree processes groupBottom first,
+    // then groupTop — making the top sign's lv_obj_move_foreground the last call,
+    // ensuring the top-left sign renders on top (matching Qt behavior).
     auto* groupTop = new LvglDisplayNode(nullptr, 0, true, false);
-    addChild(leftPanel, groupTop);
+    groupTop_ = groupTop;
 
     // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
     // QML SideIcon pause_duration = 700ms for left panel (quadrants 2/3)
     auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
     rtwWarnNode->setContainerIntroAnim(256, 187, 600);
+
     addChild(groupTop, rtwWarnNode);
 
     auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
     sliNode->setContainerIntroAnim(256, 187, 600);
+
     addChild(groupTop, sliNode);
 
     auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
     isaSpeedNode->setContainerIntroAnim(256, 187, 600);
+
     addChild(groupTop, isaSpeedNode);
 
     auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
     isaHighwayNode->setContainerIntroAnim(256, 187, 600);
+
     addChild(groupTop, isaHighwayNode);
 
     // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
+    // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
     auto* groupBottom = new LvglDisplayNode(nullptr, 0, true, false);
+    groupBottom_ = groupBottom;
+    addChild(leftPanel, groupTop);
     addChild(leftPanel, groupBottom);
 
     // Bottom-slot animation constants
@@ -746,10 +760,10 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // With pivot (0,112) and scale 187: visual top = y+30, so y=115 → top at 145
     static const int BOTTOM_TSR_TARGET_Y = 115;
     static const int BOTTOM_TSR_TARGET_X = 0;
-    static const int BOTTOM_TSR_START_Y = 60;
+    static const int BOTTOM_TSR_START_Y = 75;
     static const int BOTTOM_TSR_START_X = 0;
     // Supp signs: smaller scale, offset position for supp icon
-    static const int SUPP_START_Y = 60;
+    static const int SUPP_START_Y = 75;
     static const int SUPP_TARGET_Y = 95;
     static const int SUPP_START_X = 4;
     static const int SUPP_TARGET_X = 10;
@@ -857,6 +871,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* isaNotTsrNode = new LvglIsaStateNode(0, ID_STATE_ISA_NOT_TSR, menuController_);
     addChild(leftPanel, isaNotTsrNode);
 
+    // ISA/TSR mutual exclusion: when ISA is active, groupBottom should appear inactive
+    // to the tree traversal, preventing TSR signs from being shown (matches Qt behavior
+    // where left_panel_tsr.is_available = false when ISA is active)
+    groupBottom->setBlockingNode(isaNotTsrNode);
+
     auto* sliShowNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_SLI_SHOW);
     addChild(leftPanel, sliShowNode);
 
@@ -869,6 +888,8 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* sliSuppSignImg = lv_obj_get_child(sliSuppWidget, 0);
     auto* shapeUsaNode = new LvglShapeUsaNode(0, ID_SHAPE_USA, sliSignImg, sliSuppSignImg, sliSpeedLabel);
     addChild(leftPanel, shapeUsaNode);
+    sliNode->setShapeUsaNode(shapeUsaNode);
+    shapeUsaNode->setSliNode(sliNode);
 
     auto* isaVersionNode = new LvglDisplayNode(nullptr, 0, ID_INFO_ISA_VERSION);
     addChild(leftPanel, isaVersionNode);
@@ -1107,14 +1128,20 @@ void LvglMainProcess::process()
 {
     if (alertController_->needsDisplayUpdate())
     {
-        if (!updateDisplayTimeWindow_->isActive())
-        {
-            alertController_->markUpdateComplete();
-            updateDisplayTimeWindow_->start();
-            alertController_->mutex.lock();
-            updateDisplay();
-            alertController_->mutex.unlock();
-        }
+        // New CAN message(s) arrived — absorb and restart debounce timer.
+        // Don't set displayDirty_ yet; wait for timer to expire with no new messages.
+        alertController_->markUpdateComplete();
+        pendingDisplayUpdate_ = true;
+        updateDisplayTimeWindow_->start();
+    }
+    else if (pendingDisplayUpdate_)
+    {
+        // Timer fired with no new CAN messages — safe to commit display update.
+        // All CAN messages in the batch have been processed.
+        pendingDisplayUpdate_ = false;
+        alertController_->mutex.lock();
+        updateDisplay();
+        alertController_->mutex.unlock();
     }
 }
 
@@ -1165,6 +1192,52 @@ void LvglMainProcess::applyPendingDisplayUpdate()
                     if (secLabel) lv_obj_remove_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_remove_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
                 }
+            }
+        }
+
+        // Left panel z-ordering: the most recently changed sign renders on top.
+        // When both groupTop and groupBottom signs change in the same frame, groupTop wins.
+        if (groupBottom_ && groupTop_) {
+            bool bottomChanged = false, topChanged = false;
+            lv_obj_t* bottomWidget = nullptr;
+            lv_obj_t* topWidget = nullptr;
+
+            auto* bottomQ = groupBottom_->getChildren()->getQueue();
+            for (auto it = bottomQ->begin(); it != bottomQ->end(); ++it) {
+                auto* node = static_cast<LvglDisplayNode*>(*it);
+                if (node->justChanged()) {
+                    lv_obj_t* w = node->getWidget();
+                    if (w && !lv_obj_has_flag(w, LV_OBJ_FLAG_HIDDEN)) {
+                        bottomChanged = true;
+                        bottomWidget = w;
+                    }
+                }
+                node->clearJustChanged();
+            }
+            auto* topQ = groupTop_->getChildren()->getQueue();
+            for (auto it = topQ->begin(); it != topQ->end(); ++it) {
+                auto* node = static_cast<LvglDisplayNode*>(*it);
+                if (node->justChanged()) {
+                    lv_obj_t* w = node->getWidget();
+                    if (w && !lv_obj_has_flag(w, LV_OBJ_FLAG_HIDDEN)) {
+                        topChanged = true;
+                        topWidget = w;
+                    }
+                }
+                node->clearJustChanged();
+            }
+
+            // Move changed signs to foreground. Process the one that should
+            // be BEHIND first, so the last move_foreground wins.
+            // Rule: latest changed sign on top; if both changed, top wins.
+            if (bottomChanged && topChanged) {
+                // Both changed: bottom first, then top (top wins)
+                lv_obj_move_foreground(bottomWidget);
+                lv_obj_move_foreground(topWidget);
+            } else if (bottomChanged && bottomWidget) {
+                lv_obj_move_foreground(bottomWidget);
+            } else if (topChanged && topWidget) {
+                lv_obj_move_foreground(topWidget);
             }
         }
 

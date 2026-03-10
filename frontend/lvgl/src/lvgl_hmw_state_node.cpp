@@ -2,6 +2,7 @@
 
 bool LvglHmwStateNode::carInitialized_ = false;
 int  LvglHmwStateNode::carTargetScale_ = 0;
+const char* LvglHmwStateNode::currentGifSrc_ = nullptr;
 
 LvglHmwStateNode::LvglHmwStateNode(int layer, DISPLAY_ITEM_ID entityType,
                                      lv_obj_t* roadStrip, const char* gifSrc,
@@ -35,9 +36,10 @@ static void hmwCarScaleYAnimCb(void* obj, int32_t val)
 
 void LvglHmwStateNode::onBecomeVisible()
 {
-    if (roadStrip_)
+    if (roadStrip_ && currentGifSrc_ != gifSrc_)
     {
         lv_gif_set_src(roadStrip_, gifSrc_);
+        currentGifSrc_ = gifSrc_;
     }
 
     if (forwardCar_)
@@ -101,5 +103,8 @@ void LvglHmwStateNode::onBecomeInvisible()
     // Reset target so next onBecomeVisible will trigger animation
     if (carTargetScale_ == carScaleX_) {
         carTargetScale_ = 0;
+    }
+    if (currentGifSrc_ == gifSrc_) {
+        currentGifSrc_ = nullptr;
     }
 }
