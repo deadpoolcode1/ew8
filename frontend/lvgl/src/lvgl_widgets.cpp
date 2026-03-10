@@ -108,7 +108,7 @@ LvglWidgets::StatusBarWidgets LvglWidgets::createStatusBar(lv_obj_t* parent)
     lv_obj_set_pos(rightRow, logoRightEdge + 2, -5);
     styleTransparent(rightRow);
     lv_obj_set_flex_flow(rightRow, LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_pad_column(rightRow, 3, 0);
+    lv_obj_set_style_pad_column(rightRow, 0, 0);
     lv_obj_set_flex_align(rightRow, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_END);
 
     // Helper: create a fixed-size slot in the flex row, stacking icons inside
