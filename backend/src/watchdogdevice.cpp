@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef _WIN32
 #include <unistd.h>
 #include <fcntl.h>
-
-#ifndef WIN32
 #include <sys/ioctl.h>
 #include <linux/watchdog.h>
 #endif

@@ -4,9 +4,23 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# SDL2
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SDL2 REQUIRED sdl2)
+# SDL2 — cross-platform detection
+if(WIN32)
+    # Try pkg-config first (MSYS2/MinGW), then find_package (vcpkg)
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(SDL2 QUIET sdl2)
+    endif()
+    if(NOT SDL2_FOUND)
+        find_package(SDL2 REQUIRED)
+        if(TARGET SDL2::SDL2)
+            set(SDL2_LIBRARIES SDL2::SDL2 SDL2::SDL2main)
+        endif()
+    endif()
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(SDL2 REQUIRED sdl2)
+endif()
 
 # LVGL configuration
 set(LV_CONF_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lv_conf.h" CACHE STRING "" FORCE)
@@ -89,13 +103,23 @@ target_include_directories(ew8_lvgl PRIVATE
 target_link_libraries(ew8_lvgl PRIVATE
     ew8_backend
     lvgl
-    ${SDL2_LIBRARIES}
-    pthread
 )
+
+# SDL2 linking
+if(WIN32)
+    target_link_libraries(ew8_lvgl PRIVATE SDL2)
+else()
+    target_link_libraries(ew8_lvgl PRIVATE ${SDL2_LIBRARIES} pthread)
+endif()
 
 target_compile_definitions(ew8_lvgl PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
+
+# SDL2 on Windows: we handle main() ourselves
+if(WIN32)
+    target_compile_definitions(ew8_lvgl PRIVATE SDL_MAIN_HANDLED)
+endif()
 
 # Copy shared assets to build directory for runtime access
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../assets/images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
