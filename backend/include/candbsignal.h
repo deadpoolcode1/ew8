@@ -14,10 +14,8 @@
 #include "peglib.h"
 using namespace peg;
 
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-// UDP virtual CAN — can_frame already defined in defs.h
-#elif defined(_WIN32)
-#include "canlib.h"
+#if defined(_WIN32)
+// can_frame already defined in defs.h for Windows
 #else
 #include <linux/types.h>
 #include <net/if.h>
