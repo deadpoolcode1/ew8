@@ -6,13 +6,71 @@
 
 #include "candbsignal.h"
 
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-// UDP virtual CAN - Windows desktop testing
+#if defined(_WIN32)
+// Windows: UDP virtual CAN + runtime Kvaser auto-detection
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 #pragma comment(lib, "ws2_32.lib")
-#elif defined(_WIN32)
-#include "canlib.h"
+
+// Kvaser canlib function signatures (resolved at runtime via LoadLibrary)
+typedef void   (__stdcall *pfn_canInitializeLibrary)(void);
+typedef int    (__stdcall *pfn_canGetNumberOfChannels)(int* channelCount);
+typedef int    (__stdcall *pfn_canOpenChannel)(int channel, int flags);
+typedef int    (__stdcall *pfn_canSetBusParams)(int hnd, long freq, unsigned int tseg1, unsigned int tseg2, unsigned int sjw, unsigned int noSamp, unsigned int syncmode);
+typedef int    (__stdcall *pfn_canBusOn)(int hnd);
+typedef int    (__stdcall *pfn_canBusOff)(int hnd);
+typedef int    (__stdcall *pfn_canClose)(int hnd);
+typedef int    (__stdcall *pfn_canReadWait)(int hnd, long* id, void* msg, unsigned int* dlc, unsigned int* flag, unsigned long* time, unsigned long timeout);
+typedef int    (__stdcall *pfn_canWriteWait)(int hnd, long id, void* msg, unsigned int dlc, unsigned int flag, unsigned long timeout);
+
+// Kvaser constants (from canlib.h — duplicated here to avoid SDK dependency)
+static constexpr int canOK = 0;
+static constexpr int canOPEN_ACCEPT_VIRTUAL = 0x0020;
+static constexpr int canMSG_STD = 0x0002;
+static constexpr int canMSG_ERROR_FRAME = 0x0020;
+static constexpr long canBITRATE_1M   = -1;
+static constexpr long canBITRATE_500K = -2;
+static constexpr long canBITRATE_250K = -3;
+static constexpr long canBITRATE_125K = -4;
+
+// Runtime-loaded Kvaser function pointers
+static struct {
+    HMODULE dll;
+    pfn_canInitializeLibrary    canInitializeLibrary;
+    pfn_canGetNumberOfChannels  canGetNumberOfChannels;
+    pfn_canOpenChannel          canOpenChannel;
+    pfn_canSetBusParams         canSetBusParams;
+    pfn_canBusOn                canBusOn;
+    pfn_canBusOff               canBusOff;
+    pfn_canClose                canClose;
+    pfn_canReadWait             canReadWait;
+    pfn_canWriteWait            canWriteWait;
+} kvaser = {};
+
+static bool loadKvaserDll()
+{
+    kvaser.dll = LoadLibraryA("canlib32.dll");
+    if (!kvaser.dll) return false;
+
+    #define LOAD_FN(name) \
+        kvaser.name = (pfn_##name)GetProcAddress(kvaser.dll, #name); \
+        if (!kvaser.name) { FreeLibrary(kvaser.dll); kvaser.dll = nullptr; return false; }
+
+    LOAD_FN(canInitializeLibrary)
+    LOAD_FN(canGetNumberOfChannels)
+    LOAD_FN(canOpenChannel)
+    LOAD_FN(canSetBusParams)
+    LOAD_FN(canBusOn)
+    LOAD_FN(canBusOff)
+    LOAD_FN(canClose)
+    LOAD_FN(canReadWait)
+    LOAD_FN(canWriteWait)
+
+    #undef LOAD_FN
+    return true;
+}
+
 #else
 #include <unistd.h>
 #include <linux/can/netlink.h>
@@ -54,11 +112,11 @@
 class AMJsonConfigReader;
 
 #if !defined(_WIN32)
-#ifndef VIRTUAL_CAN0
-const char * CanManager::can_if_name = "can0";
-#else
-const char * CanManager::can_if_name = "vcan0";
-#endif
+    #ifndef VIRTUAL_CAN0
+    const char * CanManager::can_if_name = "can0";
+    #else
+    const char * CanManager::can_if_name = "vcan0";
+    #endif
 #endif
 
 CanManager::CanManager(IAlertDisplay * alertdisp)
@@ -92,6 +150,17 @@ CanManager::~CanManager()
         delete itsThread;
     }
     delete itsDisconnectionReport;
+
+#if defined(_WIN32)
+    if (useKvaser_) {
+        if (kvaser.canBusOff) kvaser.canBusOff(kvaserHandle_);
+        if (kvaser.canClose) kvaser.canClose(kvaserHandle_);
+        if (kvaserDll_) FreeLibrary(kvaserDll_);
+    } else {
+        closesocket(udpSock_);
+        WSACleanup();
+    }
+#endif
 }
 
 void CanManager::launch(void)
@@ -365,77 +434,15 @@ void CanManager::init(void)
 
     coreDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-    // UDP Virtual CAN — no hardware drivers needed
-    {
-        WSADATA wsaData;
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            coreDebug() << "WSAStartup failed";
-        }
-
-        udpSock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (udpSock_ == INVALID_SOCKET) {
-            coreDebug() << "Failed to create UDP socket for virtual CAN";
-        } else {
-            // Allow address reuse
-            int optval = 1;
-            setsockopt(udpSock_, SOL_SOCKET, SO_REUSEADDR,
-                       reinterpret_cast<const char*>(&optval), sizeof(optval));
-
-            memset(&udpAddr_, 0, sizeof(udpAddr_));
-            udpAddr_.sin_family = AF_INET;
-            udpAddr_.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-            udpAddr_.sin_port = htons(UDP_CAN_PORT);
-
-            if (bind(udpSock_, reinterpret_cast<struct sockaddr*>(&udpAddr_),
-                     sizeof(udpAddr_)) == SOCKET_ERROR) {
-                coreDebug() << "Failed to bind UDP virtual CAN socket on port" << UDP_CAN_PORT;
-            } else {
-                coreDebug() << "UDP virtual CAN listening on port" << UDP_CAN_PORT;
-            }
-        }
+#if defined(_WIN32)
+    // Runtime auto-detection: try Kvaser hardware first, fall back to UDP
+    useKvaser_ = tryInitKvaser(bdr);
+    if (useKvaser_) {
+        coreDebug() << "Using Kvaser CAN hardware";
+    } else {
+        coreDebug() << "No CAN hardware found, using UDP virtual CAN";
+        initUdp();
     }
-#elif defined(_WIN32)
-      canInitializeLibrary();
-
-      //Channel initialization
-      hnd = canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
-
-      //canSetBusOutputControl(hnd, canDRIVER_NORMAL);
-
-      long canBITRATE;
-
-      switch (bdr)
-      {
-      case 1000:
-           coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-                canBITRATE = canBITRATE_1M;
-                break;
-      case 500:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_500K;
-          break;
-      case 250:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_250K;
-          break;
-
-      case 125:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_125K;
-          break;
-
-
-      default:
-          coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
-          canBITRATE = canBITRATE_500K;
-      }
-
-
-      stat = canSetBusParams(hnd, canBITRATE, 0, 0, 0, 0, 0);
-      stat = canBusOn(hnd);
-
-      //TODO add filter,sampling point and normal mode
 #else
 
     //CAN interface configuration:
@@ -560,49 +567,51 @@ void CanManager::init(void)
 
 void CanManager::read_frame(void)
 {
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-    // UDP Virtual CAN: receive 13-byte packet [4B id LE][1B dlc][8B data]
-    uint8_t buf[13];
-    struct sockaddr_in srcAddr;
-    int srcLen = sizeof(srcAddr);
-
-    int nbytes = recvfrom(udpSock_, reinterpret_cast<char*>(buf), sizeof(buf), 0,
-                          reinterpret_cast<struct sockaddr*>(&srcAddr), &srcLen);
-
-    if (nbytes >= 13) {
+#if defined(_WIN32)
+    if (useKvaser_) {
+        // Kvaser hardware CAN
         struct can_frame frame;
-        frame.can_id = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
-        frame.can_dlc = buf[4];
-        if (frame.can_dlc > 8) frame.can_dlc = 8;
-        memcpy(frame.data, buf + 5, 8);
+        unsigned int flags;
+        unsigned long time;
 
-        coreDebug() << "udp-vcan rx:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":"
-                   << (void*) static_cast<uintptr_t>(frame.data[0])
-                   << (void*) static_cast<uintptr_t>(frame.data[1])
-                   << (void*) static_cast<uintptr_t>(frame.data[2])
-                   << (void*) static_cast<uintptr_t>(frame.data[3])
-                   << (void*) static_cast<uintptr_t>(frame.data[4])
-                   << (void*) static_cast<uintptr_t>(frame.data[5])
-                   << (void*) static_cast<uintptr_t>(frame.data[6])
-                   << (void*) static_cast<uintptr_t>(frame.data[7])
-                   << "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
+        int stat = kvaser.canReadWait(kvaserHandle_, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
+        if (stat == canOK) {
+            if (flags & canMSG_ERROR_FRAME) {
+                printf("***ERROR FRAME RECEIVED***");
+            } else {
+                parse_frame(&frame);
+            }
+        }
+    } else {
+        // UDP Virtual CAN: receive 13-byte packet [4B id LE][1B dlc][8B data]
+        uint8_t buf[13];
+        struct sockaddr_in srcAddr;
+        int srcLen = sizeof(srcAddr);
 
-        parse_frame(&frame);
+        int nbytes = recvfrom(udpSock_, reinterpret_cast<char*>(buf), sizeof(buf), 0,
+                              reinterpret_cast<struct sockaddr*>(&srcAddr), &srcLen);
+
+        if (nbytes >= 13) {
+            struct can_frame frame;
+            frame.can_id = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+            frame.can_dlc = buf[4];
+            if (frame.can_dlc > 8) frame.can_dlc = 8;
+            memcpy(frame.data, buf + 5, 8);
+
+            coreDebug() << "udp-vcan rx:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":"
+                       << (void*) static_cast<uintptr_t>(frame.data[0])
+                       << (void*) static_cast<uintptr_t>(frame.data[1])
+                       << (void*) static_cast<uintptr_t>(frame.data[2])
+                       << (void*) static_cast<uintptr_t>(frame.data[3])
+                       << (void*) static_cast<uintptr_t>(frame.data[4])
+                       << (void*) static_cast<uintptr_t>(frame.data[5])
+                       << (void*) static_cast<uintptr_t>(frame.data[6])
+                       << (void*) static_cast<uintptr_t>(frame.data[7])
+                       << "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
+
+            parse_frame(&frame);
+        }
     }
-#elif defined(_WIN32)
-      struct can_frame frame;
-      unsigned int flags;
-      DWORD time;
-
-      stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
-      if (stat == canOK){
-        if (flags & canMSG_ERROR_FRAME){
-          printf("***ERROR FRAME RECEIVED***");
-        }
-        else {
-          parse_frame(&frame);
-        }
-      }
 #else
     struct can_frame frame;
     ssize_t nbytes = 0;
@@ -636,34 +645,33 @@ void CanManager::read_frame(void)
 
 void CanManager::write_frame(struct can_frame * frame_ptr)
 {
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-    // UDP Virtual CAN: send 13-byte packet to TX port
-    uint8_t buf[13];
-    buf[0] = (frame_ptr->can_id >>  0) & 0xFF;
-    buf[1] = (frame_ptr->can_id >>  8) & 0xFF;
-    buf[2] = (frame_ptr->can_id >> 16) & 0xFF;
-    buf[3] = (frame_ptr->can_id >> 24) & 0xFF;
-    buf[4] = frame_ptr->can_dlc;
-    memcpy(buf + 5, frame_ptr->data, 8);
+#if defined(_WIN32)
+    if (useKvaser_) {
+        // Kvaser hardware CAN
+        unsigned int flags = canMSG_STD;
+        int stat = kvaser.canWriteWait(kvaserHandle_, (frame_ptr->can_id), (frame_ptr->data), (frame_ptr->can_dlc), flags, 10);
+        if (stat != canOK) {
+            printf("**Transmitted frame is faulty***");
+        }
+    } else {
+        // UDP Virtual CAN: send 13-byte packet to TX port
+        uint8_t buf[13];
+        buf[0] = (frame_ptr->can_id >>  0) & 0xFF;
+        buf[1] = (frame_ptr->can_id >>  8) & 0xFF;
+        buf[2] = (frame_ptr->can_id >> 16) & 0xFF;
+        buf[3] = (frame_ptr->can_id >> 24) & 0xFF;
+        buf[4] = frame_ptr->can_dlc;
+        memcpy(buf + 5, frame_ptr->data, 8);
 
-    struct sockaddr_in txAddr;
-    memset(&txAddr, 0, sizeof(txAddr));
-    txAddr.sin_family = AF_INET;
-    txAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    txAddr.sin_port = htons(UDP_CAN_TX_PORT);
+        struct sockaddr_in txAddr;
+        memset(&txAddr, 0, sizeof(txAddr));
+        txAddr.sin_family = AF_INET;
+        txAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        txAddr.sin_port = htons(UDP_CAN_TX_PORT);
 
-    sendto(udpSock_, reinterpret_cast<const char*>(buf), 13, 0,
-           reinterpret_cast<struct sockaddr*>(&txAddr), sizeof(txAddr));
-#elif defined(_WIN32)
-      stat = canOK;
-      unsigned int flags = canMSG_STD;
-
-      stat = canWriteWait(hnd, (frame_ptr->can_id), (frame_ptr->data), (frame_ptr->can_dlc), flags, 10);
-      if (stat != canOK){
-          if (stat & canMSG_ERROR_FRAME){
-              printf("**Transmitted frame is faulty***");
-          }
-      }
+        sendto(udpSock_, reinterpret_cast<const char*>(buf), 13, 0,
+               reinterpret_cast<struct sockaddr*>(&txAddr), sizeof(txAddr));
+    }
 #else
     ssize_t nbytes = 0;
 
@@ -674,6 +682,112 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
     }
 #endif
 }
+
+#if defined(_WIN32)
+void CanManager::initUdp()
+{
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        coreDebug() << "WSAStartup failed";
+        return;
+    }
+
+    udpSock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (udpSock_ == INVALID_SOCKET) {
+        coreDebug() << "Failed to create UDP socket for virtual CAN";
+        return;
+    }
+
+    int optval = 1;
+    setsockopt(udpSock_, SOL_SOCKET, SO_REUSEADDR,
+               reinterpret_cast<const char*>(&optval), sizeof(optval));
+
+    memset(&udpAddr_, 0, sizeof(udpAddr_));
+    udpAddr_.sin_family = AF_INET;
+    udpAddr_.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    udpAddr_.sin_port = htons(UDP_CAN_PORT);
+
+    if (bind(udpSock_, reinterpret_cast<struct sockaddr*>(&udpAddr_),
+             sizeof(udpAddr_)) == SOCKET_ERROR) {
+        coreDebug() << "Failed to bind UDP virtual CAN socket on port" << UDP_CAN_PORT;
+    } else {
+        coreDebug() << "UDP virtual CAN listening on port" << UDP_CAN_PORT;
+    }
+}
+
+bool CanManager::tryInitKvaser(int32_t bdr)
+{
+    if (!loadKvaserDll()) {
+        coreDebug() << "Kvaser driver not installed (canlib32.dll not found)";
+        return false;
+    }
+
+    kvaser.canInitializeLibrary();
+
+    int channelCount = 0;
+    kvaser.canGetNumberOfChannels(&channelCount);
+    if (channelCount <= 0) {
+        coreDebug() << "No Kvaser CAN channels found";
+        FreeLibrary(kvaser.dll);
+        kvaser.dll = nullptr;
+        return false;
+    }
+
+    coreDebug() << "Found" << channelCount << "Kvaser CAN channel(s)";
+
+    kvaserHandle_ = kvaser.canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
+    if (kvaserHandle_ < 0) {
+        coreDebug() << "Failed to open Kvaser CAN channel 0";
+        FreeLibrary(kvaser.dll);
+        kvaser.dll = nullptr;
+        return false;
+    }
+
+    long canBITRATE;
+    switch (bdr) {
+    case 1000:
+        coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+        canBITRATE = canBITRATE_1M;
+        break;
+    case 500:
+        coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+        canBITRATE = canBITRATE_500K;
+        break;
+    case 250:
+        coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+        canBITRATE = canBITRATE_250K;
+        break;
+    case 125:
+        coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+        canBITRATE = canBITRATE_125K;
+        break;
+    default:
+        coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+        canBITRATE = canBITRATE_500K;
+    }
+
+    int stat = kvaser.canSetBusParams(kvaserHandle_, canBITRATE, 0, 0, 0, 0, 0);
+    if (stat != canOK) {
+        coreDebug() << "Failed to set Kvaser bus params";
+        kvaser.canClose(kvaserHandle_);
+        FreeLibrary(kvaser.dll);
+        kvaser.dll = nullptr;
+        return false;
+    }
+
+    stat = kvaser.canBusOn(kvaserHandle_);
+    if (stat != canOK) {
+        coreDebug() << "Failed to go bus-on";
+        kvaser.canClose(kvaserHandle_);
+        FreeLibrary(kvaser.dll);
+        kvaser.dll = nullptr;
+        return false;
+    }
+
+    kvaserDll_ = kvaser.dll;
+    return true;
+}
+#endif
 
 void CanManager::process()
 {

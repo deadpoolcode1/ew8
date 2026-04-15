@@ -1,13 +1,11 @@
 #ifndef CANMANAGER_H
 #define CANMANAGER_H
 
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
-// UDP virtual CAN - no hardware drivers needed (Windows desktop testing)
+#if defined(_WIN32)
+// Windows: UDP virtual CAN + runtime Kvaser auto-detection
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#elif defined(_WIN32)
-// Kvaser CAN hardware on Windows
-#include "canlib.h"
+#include <windows.h>
 #else
 // SocketCAN on Linux
 #include <linux/types.h>
@@ -70,15 +68,20 @@ private:
     bool parse_frame(struct can_frame * frame);
 
 
-#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+#if defined(_WIN32)
     // UDP virtual CAN members
     SOCKET udpSock_;
     struct sockaddr_in udpAddr_;
     static constexpr int UDP_CAN_PORT = 18700;
     static constexpr int UDP_CAN_TX_PORT = 18701;
-#elif defined(_WIN32)
-    canHandle  hnd;
-    canStatus  stat;
+
+    // Runtime Kvaser auto-detection (loaded dynamically via LoadLibrary)
+    bool useKvaser_ = false;
+    int kvaserHandle_ = -1;
+    HMODULE kvaserDll_ = nullptr;
+
+    void initUdp();
+    bool tryInitKvaser(int32_t bdr);
 #else
     //inner variables
     static const char * can_if_name;

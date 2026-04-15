@@ -86,16 +86,10 @@ endif()
 
 # Platform-specific configuration
 if(WIN32)
-    # Windows desktop: use UDP virtual CAN (no hardware needed)
-    # To build with Kvaser hardware support, set -DEW8_USE_KVASER=ON
-    option(EW8_USE_KVASER "Use Kvaser CAN hardware instead of UDP virtual CAN" OFF)
-
-    if(EW8_USE_KVASER AND NOT (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64"))
-        target_link_libraries(ew8_backend PUBLIC canlib32)
-    else()
-        # UDP virtual CAN — links winsock2
-        target_link_libraries(ew8_backend PUBLIC ws2_32)
-    endif()
+    # Windows: UDP virtual CAN + runtime Kvaser auto-detection (via LoadLibrary)
+    # No Kvaser SDK needed at build time — canlib32.dll is loaded dynamically at runtime.
+    # If a Kvaser device is found, the app uses real CAN; otherwise it falls back to UDP.
+    target_link_libraries(ew8_backend PUBLIC ws2_32)
 else()
     # Ensure POSIX extensions are available (SIGUSR2, etc.)
     target_compile_definitions(ew8_backend PRIVATE _DEFAULT_SOURCE)
