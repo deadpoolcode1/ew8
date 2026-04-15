@@ -4,4 +4,42 @@ cscope.out
 Thumbs.db
 Makefile
 candbgrammar.h
+
+# Build directories
 build/
+build_win/
+frontend/lvgl/build/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/
+
+# Compiled binaries
+*.exe
+*.o
+*.a
+*.so
+*.dll
+*.lib
+*.obj
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# OS files
+.DS_Store
+Desktop.ini

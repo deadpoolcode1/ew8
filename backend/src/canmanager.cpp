@@ -6,7 +6,14 @@
 
 #include "candbsignal.h"
 
-#ifndef WIN32
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+// UDP virtual CAN - Windows desktop testing
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#elif defined(_WIN32)
+#include "canlib.h"
+#else
 #include <unistd.h>
 #include <linux/can/netlink.h>
 #include <libsocketcan.h>
@@ -24,11 +31,6 @@
 
 #include <fcntl.h>
 #include <errno.h>
-
-#else
-
-#include "canlib.h"
-
 #endif
 
 
@@ -51,7 +53,7 @@
 
 class AMJsonConfigReader;
 
-#ifndef WIN32
+#if !defined(_WIN32)
 #ifndef VIRTUAL_CAN0
 const char * CanManager::can_if_name = "can0";
 #else
@@ -363,7 +365,78 @@ void CanManager::init(void)
 
     coreDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
-#ifndef WIN32
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+    // UDP Virtual CAN — no hardware drivers needed
+    {
+        WSADATA wsaData;
+        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+            coreDebug() << "WSAStartup failed";
+        }
+
+        udpSock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if (udpSock_ == INVALID_SOCKET) {
+            coreDebug() << "Failed to create UDP socket for virtual CAN";
+        } else {
+            // Allow address reuse
+            int optval = 1;
+            setsockopt(udpSock_, SOL_SOCKET, SO_REUSEADDR,
+                       reinterpret_cast<const char*>(&optval), sizeof(optval));
+
+            memset(&udpAddr_, 0, sizeof(udpAddr_));
+            udpAddr_.sin_family = AF_INET;
+            udpAddr_.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+            udpAddr_.sin_port = htons(UDP_CAN_PORT);
+
+            if (bind(udpSock_, reinterpret_cast<struct sockaddr*>(&udpAddr_),
+                     sizeof(udpAddr_)) == SOCKET_ERROR) {
+                coreDebug() << "Failed to bind UDP virtual CAN socket on port" << UDP_CAN_PORT;
+            } else {
+                coreDebug() << "UDP virtual CAN listening on port" << UDP_CAN_PORT;
+            }
+        }
+    }
+#elif defined(_WIN32)
+      canInitializeLibrary();
+
+      //Channel initialization
+      hnd = canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
+
+      //canSetBusOutputControl(hnd, canDRIVER_NORMAL);
+
+      long canBITRATE;
+
+      switch (bdr)
+      {
+      case 1000:
+           coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+                canBITRATE = canBITRATE_1M;
+                break;
+      case 500:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_500K;
+          break;
+      case 250:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_250K;
+          break;
+
+      case 125:
+          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
+          canBITRATE = canBITRATE_125K;
+          break;
+
+
+      default:
+          coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
+          canBITRATE = canBITRATE_500K;
+      }
+
+
+      stat = canSetBusParams(hnd, canBITRATE, 0, 0, 0, 0, 0);
+      stat = canBusOn(hnd);
+
+      //TODO add filter,sampling point and normal mode
+#else
 
     //CAN interface configuration:
 
@@ -482,61 +555,56 @@ void CanManager::init(void)
 
     bind(socknum, (struct sockaddr *)&addr, sizeof(addr));
     coreDebug() << "can interface initiated";
-#else
-      canInitializeLibrary();
-
-      //Channel initialization
-      hnd = canOpenChannel(0, canOPEN_ACCEPT_VIRTUAL);
-
-      //canSetBusOutputControl(hnd, canDRIVER_NORMAL);
-
-      long canBITRATE;
-
-      switch (bdr)
-      {
-      case 1000:
-           coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-                canBITRATE = canBITRATE_1M;
-                break;
-      case 500:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_500K;
-          break;
-      case 250:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_250K;
-          break;
-
-      case 125:
-          coreDebug() << "CAN Baudrate:" << bdr << "kbps";
-          canBITRATE = canBITRATE_125K;
-          break;
-
-
-      default:
-          coreDebug() << "CAN Baudrate in config file is not valid, set to 500K";
-          canBITRATE = canBITRATE_500K;
-      }
-
-
-      stat = canSetBusParams(hnd, canBITRATE, 0, 0, 0, 0, 0);
-      stat = canBusOn(hnd);
-
-      //TODO add filter,sampling point and normal mode
-
 #endif
 }
 
 void CanManager::read_frame(void)
 {
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+    // UDP Virtual CAN: receive 13-byte packet [4B id LE][1B dlc][8B data]
+    uint8_t buf[13];
+    struct sockaddr_in srcAddr;
+    int srcLen = sizeof(srcAddr);
 
-#if 0
-    bool isKnownFrameReceived = false;
-#endif
+    int nbytes = recvfrom(udpSock_, reinterpret_cast<char*>(buf), sizeof(buf), 0,
+                          reinterpret_cast<struct sockaddr*>(&srcAddr), &srcLen);
 
-#ifndef WIN32
+    if (nbytes >= 13) {
+        struct can_frame frame;
+        frame.can_id = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+        frame.can_dlc = buf[4];
+        if (frame.can_dlc > 8) frame.can_dlc = 8;
+        memcpy(frame.data, buf + 5, 8);
+
+        coreDebug() << "udp-vcan rx:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":"
+                   << (void*) static_cast<uintptr_t>(frame.data[0])
+                   << (void*) static_cast<uintptr_t>(frame.data[1])
+                   << (void*) static_cast<uintptr_t>(frame.data[2])
+                   << (void*) static_cast<uintptr_t>(frame.data[3])
+                   << (void*) static_cast<uintptr_t>(frame.data[4])
+                   << (void*) static_cast<uintptr_t>(frame.data[5])
+                   << (void*) static_cast<uintptr_t>(frame.data[6])
+                   << (void*) static_cast<uintptr_t>(frame.data[7])
+                   << "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
+
+        parse_frame(&frame);
+    }
+#elif defined(_WIN32)
+      struct can_frame frame;
+      unsigned int flags;
+      DWORD time;
+
+      stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
+      if (stat == canOK){
+        if (flags & canMSG_ERROR_FRAME){
+          printf("***ERROR FRAME RECEIVED***");
+        }
+        else {
+          parse_frame(&frame);
+        }
+      }
+#else
     struct can_frame frame;
-
     ssize_t nbytes = 0;
 
     nbytes = read(socknum, &frame, sizeof(struct can_frame));
@@ -550,7 +618,6 @@ void CanManager::read_frame(void)
     }
     else
     {
-#if 1
         coreDebug() << "can interface:" << (void*) static_cast<uintptr_t>(frame.can_id) << ":" <<
                    (void*) static_cast<uintptr_t>(frame.data[0]) <<
                    (void*) static_cast<uintptr_t>(frame.data[1]) <<
@@ -561,70 +628,33 @@ void CanManager::read_frame(void)
                    (void*) static_cast<uintptr_t>(frame.data[6]) <<
                    (void*) static_cast<uintptr_t>(frame.data[7]) <<
                    "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
-#endif
 
-#if 0
-            isKnownFrameReceived =
-#endif
-            parse_frame(&frame);
+        parse_frame(&frame);
     }
-
-#else
-      stat = canOK;
-
-      struct can_frame frame;
-
-      unsigned int flags;
-
-      /*
-      long id;
-      unsigned int dlc, flags;
-      unsigned char data[8];
-      */
-      DWORD time;
-
-      //Waits up to 100 ms for a message
-         stat = canReadWait(hnd, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
-         if (stat == canOK){
-           if (flags & canMSG_ERROR_FRAME){
-             printf("***ERROR FRAME RECEIVED***");
-           }
-           else {
-#if 0
-            isKnownFrameReceived =
-#endif
-            parse_frame(&frame);
-           }
-         }
-         //Break the loop if something goes wrong
-         else if (stat != canERR_NOMSG){
-
-         }
-
-
-#endif
-
-
-//NOTE: For disconnection timer reset keepAlive msg only used
-#if 0
-         if(isKnownFrameReceived)
-         {
-           emit resetConnectionTimeout();
-         }
 #endif
 }
 
 void CanManager::write_frame(struct can_frame * frame_ptr)
 {
-#ifndef WIN32
-    ssize_t nbytes = 0;
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+    // UDP Virtual CAN: send 13-byte packet to TX port
+    uint8_t buf[13];
+    buf[0] = (frame_ptr->can_id >>  0) & 0xFF;
+    buf[1] = (frame_ptr->can_id >>  8) & 0xFF;
+    buf[2] = (frame_ptr->can_id >> 16) & 0xFF;
+    buf[3] = (frame_ptr->can_id >> 24) & 0xFF;
+    buf[4] = frame_ptr->can_dlc;
+    memcpy(buf + 5, frame_ptr->data, 8);
 
-    nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
+    struct sockaddr_in txAddr;
+    memset(&txAddr, 0, sizeof(txAddr));
+    txAddr.sin_family = AF_INET;
+    txAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    txAddr.sin_port = htons(UDP_CAN_TX_PORT);
 
-    if (nbytes < 0) {
-         coreDebug() << "Can not write to the CAN bus socket!";
-    }
-#else
+    sendto(udpSock_, reinterpret_cast<const char*>(buf), 13, 0,
+           reinterpret_cast<struct sockaddr*>(&txAddr), sizeof(txAddr));
+#elif defined(_WIN32)
       stat = canOK;
       unsigned int flags = canMSG_STD;
 
@@ -634,6 +664,14 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
               printf("**Transmitted frame is faulty***");
           }
       }
+#else
+    ssize_t nbytes = 0;
+
+    nbytes = write(socknum, frame_ptr, sizeof(struct can_frame));
+
+    if (nbytes < 0) {
+         coreDebug() << "Can not write to the CAN bus socket!";
+    }
 #endif
 }
 

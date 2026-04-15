@@ -1,13 +1,19 @@
 #ifndef CANMANAGER_H
 #define CANMANAGER_H
 
-#ifndef WIN32
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+// UDP virtual CAN - no hardware drivers needed (Windows desktop testing)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#elif defined(_WIN32)
+// Kvaser CAN hardware on Windows
+#include "canlib.h"
+#else
+// SocketCAN on Linux
 #include <linux/types.h>
 #include <net/if.h>
 #include <sys/socket.h>
 #include <linux/can.h>
-#else
-#include "canlib.h"
 #endif
 
 #include "defs.h"
@@ -64,17 +70,22 @@ private:
     bool parse_frame(struct can_frame * frame);
 
 
-#ifndef WIN32
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+    // UDP virtual CAN members
+    SOCKET udpSock_;
+    struct sockaddr_in udpAddr_;
+    static constexpr int UDP_CAN_PORT = 18700;
+    static constexpr int UDP_CAN_TX_PORT = 18701;
+#elif defined(_WIN32)
+    canHandle  hnd;
+    canStatus  stat;
+#else
     //inner variables
-
     static const char * can_if_name;
     int32_t socknum;
     struct sockaddr_can addr;
     struct ifreq ifr;
     struct can_filter * rfilter;
-#else
-    canHandle  hnd;
-    canStatus  stat;
 #endif
 
     IAlertDisplay * itsDisplay;

@@ -137,7 +137,144 @@ All test scripts work with both Qt and LVGL frontends running on the same CAN bu
 ## Target Hardware
 
 - **Display:** 320x240 TFT
-- **Platform:** ARM (Yocto Linux) for production, x86_64 Linux for development
-- **CAN:** SocketCAN interface (real or virtual)
+- **Platform:** ARM (Yocto Linux) for production, x86_64 Linux for development, Windows for development
+- **CAN:** SocketCAN (Linux), UDP virtual CAN (Windows)
 
 Desktop builds automatically define `REMOVE_EW8_HW` to disable hardware-specific code (watchdog, brightness GPIO, etc.).
+
+---
+
+## Windows Development
+
+The LVGL frontend builds and runs natively on Windows using MSYS2/MinGW. Instead of SocketCAN (Linux-only), a **UDP virtual CAN** transport is used — the app listens on `localhost:18700` for CAN frames, and test tools send frames via UDP. No CAN hardware or drivers are required.
+
+### Prerequisites
+
+1. **MSYS2** — provides MinGW GCC, CMake, and SDL2:
+
+   ```
+   winget install -e --id MSYS2.MSYS2
+   ```
+
+2. **MinGW packages** — open an MSYS2 terminal and run:
+
+   ```bash
+   pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-SDL2 mingw-w64-x86_64-make
+   ```
+
+3. **Python** (for testing):
+
+   ```
+   pip install cantools python-can
+   ```
+
+   Or run `Tests/depinstall.bat`.
+
+### Building on Windows
+
+From a Git Bash or MSYS2 MinGW64 shell:
+
+```bash
+# Add MinGW to PATH
+export PATH="/c/msys64/mingw64/bin:$PATH"
+
+# Configure — set BASE_TARGET_DIR to the project root
+cmake -B build_win -S frontend/lvgl \
+  -G "MinGW Makefiles" \
+  -DCMAKE_C_COMPILER=/c/msys64/mingw64/bin/gcc.exe \
+  -DCMAKE_CXX_COMPILER=/c/msys64/mingw64/bin/g++.exe \
+  -DCMAKE_MAKE_PROGRAM=/c/msys64/mingw64/bin/mingw32-make.exe \
+  -DBASE_TARGET_DIR="C:/workspace/ew8/"
+
+# Build
+mingw32-make -C build_win -j$(nproc)
+```
+
+The resulting executable is `build_win/ew8_lvgl.exe`.
+
+### Running on Windows
+
+```bash
+export PATH="/c/msys64/mingw64/bin:$PATH"
+cd build_win
+./ew8_lvgl.exe
+```
+
+The app will open an SDL2 window (320x240) and print:
+```
+Using UDP virtual CAN on port 18700 (send CAN frames via cansend.py)
+```
+
+### Testing on Windows
+
+All tests use the UDP virtual CAN transport automatically on Windows.
+
+#### Quick smoke test
+
+With the app running, open another terminal:
+
+```bash
+# Send a single CAN frame
+python Tests/cansend.py can0 700#0000190100800001
+
+# Run the basic test (10 iterations of core messages)
+bash Tests/scripts/basic_crossplatform.sh
+```
+
+#### E2E test suite
+
+Runs 8 test scenarios (keepalive, FCW, HMW, LDW, TSR, ISA, speed, clear) and reports results:
+
+```bash
+python Tests/e2e_test.py
+```
+
+Options:
+- `--delay 1.0` — seconds between test steps (default 2.0)
+- `--port 18700` — UDP port (default 18700)
+
+#### Interactive test
+
+```bash
+python Tests/general_test.py
+```
+
+Press any key to advance through alert states (FCW, HMW, lane warnings, TSR signs).
+
+#### DBC-based tests
+
+```bash
+python Tests/isa2tsr_test.py
+```
+
+Requires DBC files in `~/canquick/DBC/` (same as Linux).
+
+### Cross-platform test tools
+
+| Tool | Description |
+|------|-------------|
+| `Tests/cansend.py` | Drop-in `cansend` replacement — UDP on Windows, native `cansend` on Linux |
+| `Tests/cansend_wrapper.sh` | Shell wrapper that auto-selects the right sender |
+| `Tests/e2e_test.py` | Full E2E test suite (8 scenarios, works on both platforms) |
+| `Tests/scripts/basic_crossplatform.sh` | Cross-platform version of `basic.sh` |
+
+### How UDP virtual CAN works
+
+```
+   Test Tool (cansend.py)          EW8 App (ew8_lvgl.exe)
+   ─────────────────────           ──────────────────────
+   Encodes CAN frame as:           Listens on UDP port 18700
+   [4B CAN ID, LE]                 Decodes 13-byte packets
+   [1B DLC]                        Feeds frames to CanManager
+   [8B data, zero-padded]          Same processing as SocketCAN
+          │                                   │
+          └──── UDP localhost:18700 ──────────┘
+```
+
+The wire format is 13 bytes: 4-byte CAN ID (little-endian) + 1-byte DLC + 8-byte data. This is handled transparently by `cansend.py` and the backend.
+
+### Notes
+
+- The `can0` interface argument in test scripts is accepted for compatibility but ignored on Windows (UDP always targets `localhost:18700`).
+- The existing Linux bash test scripts (`test_all_entities.sh`, `replay_FCW.sh`, etc.) require `cansend` from `can-utils` and do not run on Windows. Use the cross-platform equivalents (`basic_crossplatform.sh`, `e2e_test.py`) instead.
+- To build with Kvaser CAN hardware instead of UDP, pass `-DEW8_USE_KVASER=ON` to cmake.

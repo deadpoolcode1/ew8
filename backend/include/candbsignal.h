@@ -14,13 +14,15 @@
 #include "peglib.h"
 using namespace peg;
 
-#ifndef WIN32
+#if defined(_WIN32) && defined(REMOVE_EW8_HW)
+// UDP virtual CAN — can_frame already defined in defs.h
+#elif defined(_WIN32)
+#include "canlib.h"
+#else
 #include <linux/types.h>
 #include <net/if.h>
 #include <sys/socket.h>
 #include <linux/can.h>
-#else
-#include "canlib.h"
 #endif
 
 class AMJsonProtocol;

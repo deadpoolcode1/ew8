@@ -81,10 +81,15 @@
 
 #endif // QT_CORE_LIB
 
-// Process (replaces QProcess - simplified version using fork/exec)
+// Process (replaces QProcess - simplified version)
 #include <cstdlib>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <sys/wait.h>
 #include <unistd.h>
+#endif
 
 namespace core {
 
@@ -96,10 +101,38 @@ public:
         Running
     };
 
+#ifdef _WIN32
+    Process() : state_(NotRunning) {
+        memset(&pi_, 0, sizeof(pi_));
+    }
+#else
     Process() : pid_(-1), state_(NotRunning) {}
+#endif
 
     void start(const std::string& program, const std::vector<std::string>& args = {}) {
         state_ = Starting;
+
+#ifdef _WIN32
+        std::string cmdLine = program;
+        for (const auto& arg : args) {
+            cmdLine += " " + arg;
+        }
+
+        STARTUPINFOA si;
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+        memset(&pi_, 0, sizeof(pi_));
+
+        std::vector<char> cmdBuf(cmdLine.begin(), cmdLine.end());
+        cmdBuf.push_back('\0');
+
+        if (CreateProcessA(nullptr, cmdBuf.data(), nullptr, nullptr,
+                           FALSE, 0, nullptr, nullptr, &si, &pi_)) {
+            state_ = Running;
+        } else {
+            state_ = NotRunning;
+        }
+#else
         pid_ = fork();
 
         if (pid_ == 0) {
@@ -118,9 +151,28 @@ public:
         } else {
             state_ = NotRunning;
         }
+#endif
     }
 
     bool waitForFinished(int msecs = -1) {
+#ifdef _WIN32
+        if (pi_.hProcess == nullptr) return true;
+
+        DWORD waitTime = (msecs < 0) ? INFINITE : static_cast<DWORD>(msecs);
+        DWORD result = WaitForSingleObject(pi_.hProcess, waitTime);
+
+        if (result == WAIT_OBJECT_0) {
+            DWORD code = 0;
+            GetExitCodeProcess(pi_.hProcess, &code);
+            exitCode_ = static_cast<int>(code);
+            CloseHandle(pi_.hProcess);
+            CloseHandle(pi_.hThread);
+            memset(&pi_, 0, sizeof(pi_));
+            state_ = NotRunning;
+            return true;
+        }
+        return false;
+#else
         if (pid_ <= 0) return true;
 
         int status;
@@ -144,6 +196,7 @@ public:
         state_ = NotRunning;
         pid_ = -1;
         return true;
+#endif
     }
 
     int exitCode() const { return exitCode_; }
@@ -158,6 +211,30 @@ public:
 
     // Replacement for QProcess::startDetached - launches a process detached from parent
     static bool startDetached(const std::string& program, const std::vector<std::string>& args = {}) {
+#ifdef _WIN32
+        std::string cmdLine = program;
+        for (const auto& arg : args) {
+            cmdLine += " " + arg;
+        }
+
+        STARTUPINFOA si;
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+        PROCESS_INFORMATION pi;
+        memset(&pi, 0, sizeof(pi));
+
+        std::vector<char> cmdBuf(cmdLine.begin(), cmdLine.end());
+        cmdBuf.push_back('\0');
+
+        if (CreateProcessA(nullptr, cmdBuf.data(), nullptr, nullptr,
+                           FALSE, CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS,
+                           nullptr, nullptr, &si, &pi)) {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            return true;
+        }
+        return false;
+#else
         pid_t pid = fork();
 
         if (pid == 0) {
@@ -190,6 +267,7 @@ public:
         }
 
         return false; // fork failed
+#endif
     }
 
     // Overload that takes a single string command (parses it)
@@ -217,7 +295,11 @@ public:
     }
 
 private:
+#ifdef _WIN32
+    PROCESS_INFORMATION pi_;
+#else
     pid_t pid_;
+#endif
     ProcessState state_;
     int exitCode_ = 0;
 };

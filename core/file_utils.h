@@ -8,9 +8,24 @@
 #include <cstdio>
 #include <cstdint>
 #include <sys/stat.h>
+#include <cstring>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <direct.h>
+#include <io.h>
+#ifndef PATH_MAX
+#define PATH_MAX MAX_PATH
+#endif
+#define access _access
+#define R_OK 4
+#define W_OK 2
+#define X_OK 0  // Windows doesn't have execute permission check; treat as existence
+#define F_OK 0
+#else
 #include <dirent.h>
 #include <unistd.h>
-#include <cstring>
+#endif
 
 #include "types.h"
 
@@ -208,7 +223,11 @@ public:
     // Create directory
     bool mkdir(const std::string& dirName) const {
         std::string fullPath = path_ + "/" + dirName;
+#ifdef _WIN32
+        return ::_mkdir(fullPath.c_str()) == 0;
+#else
         return ::mkdir(fullPath.c_str(), 0755) == 0;
+#endif
     }
 
     static bool mkdir(const std::string& path, bool createParents = false) {
@@ -216,12 +235,16 @@ public:
             // Create parent directories as needed
             std::string current;
             for (size_t i = 0; i < path.size(); ++i) {
-                if (path[i] == '/' || i == path.size() - 1) {
-                    if (i == path.size() - 1 && path[i] != '/') {
+                if (path[i] == '/' || path[i] == '\\' || i == path.size() - 1) {
+                    if (i == path.size() - 1 && path[i] != '/' && path[i] != '\\') {
                         current += path[i];
                     }
                     if (!current.empty() && !Dir::exists(current)) {
+#ifdef _WIN32
+                        if (::_mkdir(current.c_str()) != 0) {
+#else
                         if (::mkdir(current.c_str(), 0755) != 0) {
+#endif
                             return false;
                         }
                     }
@@ -230,18 +253,40 @@ public:
             }
             return true;
         }
+#ifdef _WIN32
+        return ::_mkdir(path.c_str()) == 0;
+#else
         return ::mkdir(path.c_str(), 0755) == 0;
+#endif
     }
 
     // Remove directory
     bool rmdir(const std::string& dirName) const {
         std::string fullPath = path_ + "/" + dirName;
+#ifdef _WIN32
+        return ::_rmdir(fullPath.c_str()) == 0;
+#else
         return ::rmdir(fullPath.c_str()) == 0;
+#endif
     }
 
     // List directory entries
     std::vector<std::string> entryList() const {
         std::vector<std::string> entries;
+#ifdef _WIN32
+        std::string searchPath = path_ + "\\*";
+        WIN32_FIND_DATAA fd;
+        HANDLE hFind = FindFirstFileA(searchPath.c_str(), &fd);
+        if (hFind != INVALID_HANDLE_VALUE) {
+            do {
+                if (strcmp(fd.cFileName, ".") != 0 &&
+                    strcmp(fd.cFileName, "..") != 0) {
+                    entries.push_back(fd.cFileName);
+                }
+            } while (FindNextFileA(hFind, &fd));
+            FindClose(hFind);
+        }
+#else
         DIR* dir = opendir(path_.c_str());
         if (dir) {
             struct dirent* entry;
@@ -253,6 +298,7 @@ public:
             }
             closedir(dir);
         }
+#endif
         return entries;
     }
 
@@ -270,17 +316,28 @@ public:
 
     // Get absolute path
     std::string absolutePath() const {
+#ifdef _WIN32
+        char resolved[PATH_MAX];
+        if (_fullpath(resolved, path_.c_str(), PATH_MAX) != nullptr) {
+            return std::string(resolved);
+        }
+#else
         char resolved[PATH_MAX];
         if (realpath(path_.c_str(), resolved) != nullptr) {
             return std::string(resolved);
         }
+#endif
         return path_;
     }
 
     // Get current directory
     static std::string currentPath() {
         char cwd[PATH_MAX];
+#ifdef _WIN32
+        if (_getcwd(cwd, sizeof(cwd)) != nullptr) {
+#else
         if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+#endif
             return std::string(cwd);
         }
         return ".";
@@ -288,13 +345,26 @@ public:
 
     // Set current directory
     static bool setCurrent(const std::string& path) {
+#ifdef _WIN32
+        return _chdir(path.c_str()) == 0;
+#else
         return chdir(path.c_str()) == 0;
+#endif
     }
 
     // Get home directory
     static std::string homePath() {
+#ifdef _WIN32
+        const char* home = getenv("USERPROFILE");
+        if (home) return std::string(home);
+        const char* drive = getenv("HOMEDRIVE");
+        const char* hpath = getenv("HOMEPATH");
+        if (drive && hpath) return std::string(drive) + std::string(hpath);
+        return "C:\\";
+#else
         const char* home = getenv("HOME");
         return home ? std::string(home) : "/";
+#endif
     }
 
     // Get temp directory
@@ -305,20 +375,34 @@ public:
         if (tmp) return std::string(tmp);
         tmp = getenv("TEMP");
         if (tmp) return std::string(tmp);
+#ifdef _WIN32
+        return "C:\\Temp";
+#else
         return "/tmp";
+#endif
     }
 
     // Path separator
-    static char separator() { return '/'; }
+    static char separator() {
+#ifdef _WIN32
+        return '\\';
+#else
+        return '/';
+#endif
+    }
 
     // Clean path (remove redundant separators, . and ..)
     static std::string cleanPath(const std::string& path) {
         std::vector<std::string> parts;
         std::string current;
-        bool absolute = !path.empty() && path[0] == '/';
+        bool absolute = !path.empty() && (path[0] == '/' || path[0] == '\\');
+#ifdef _WIN32
+        // Handle drive letter (e.g., C:\)
+        if (path.size() >= 2 && path[1] == ':') absolute = true;
+#endif
 
         for (size_t i = 0; i < path.size(); ++i) {
-            if (path[i] == '/') {
+            if (path[i] == '/' || path[i] == '\\') {
                 if (!current.empty()) {
                     if (current == "..") {
                         if (!parts.empty() && parts.back() != "..") {
@@ -398,7 +482,15 @@ public:
     bool exists() const { return File::exists(path_); }
 
     std::string fileName() const {
-        size_t pos = path_.rfind('/');
+        size_t posSlash = path_.rfind('/');
+        size_t posBack = path_.rfind('\\');
+        size_t pos = std::string::npos;
+        if (posSlash != std::string::npos && posBack != std::string::npos)
+            pos = (posSlash > posBack) ? posSlash : posBack;
+        else if (posSlash != std::string::npos)
+            pos = posSlash;
+        else
+            pos = posBack;
         return pos != std::string::npos ? path_.substr(pos + 1) : path_;
     }
 
@@ -415,7 +507,15 @@ public:
     }
 
     std::string absolutePath() const {
-        size_t pos = path_.rfind('/');
+        size_t posSlash = path_.rfind('/');
+        size_t posBack = path_.rfind('\\');
+        size_t pos = std::string::npos;
+        if (posSlash != std::string::npos && posBack != std::string::npos)
+            pos = (posSlash > posBack) ? posSlash : posBack;
+        else if (posSlash != std::string::npos)
+            pos = posSlash;
+        else
+            pos = posBack;
         std::string dir = pos != std::string::npos ? path_.substr(0, pos) : ".";
         return Dir(dir).absolutePath();
     }

@@ -8,6 +8,10 @@
 #include <csignal>
 #include <chrono>
 #include <thread>
+#include <SDL2/SDL.h>
+#ifdef _WIN32
+#include <process.h>  // for _exit on MSVC
+#endif
 
 core::ElapsedTimer bootUpTimer;
 
@@ -24,14 +28,23 @@ static void signalHandler(int sig)
 
 int main(int argc, char* argv[])
 {
+#ifdef SDL_MAIN_HANDLED
+    SDL_SetMainReady();
+#endif
+
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
     bootUpTimer.start();
     printf("EW8 LVGL Frontend starting...\n");
 
-    // Setup vcan0 for desktop builds
+    // Setup virtual CAN for desktop builds
 #ifdef REMOVE_EW8_HW
+#ifdef _WIN32
+    // Windows: UDP virtual CAN is used — no system setup needed
+    printf("Using UDP virtual CAN on port 18700 (send CAN frames via cansend.py)\n");
+#else
+    // Linux: set up vcan kernel module
     if (system("ip link show can0 > /dev/null 2>&1") != 0) {
         printf("Setting up vcan interface can0...\n");
         int r = 0;
@@ -46,6 +59,7 @@ int main(int argc, char* argv[])
     } else {
         printf("CAN interface can0 already exists.\n");
     }
+#endif
 #endif
 
     // Initialize backend (reads JSON signal configs, parses DBC files)
