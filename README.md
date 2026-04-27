@@ -190,15 +190,57 @@ cmake -B build_win -S frontend/lvgl \
 mingw32-make -C build_win -j$(nproc)
 ```
 
+Or from a **PowerShell** prompt:
+
+```powershell
+# Add MinGW to PATH (this PowerShell session only)
+$env:PATH = "C:\msys64\mingw64\bin;$env:PATH"
+
+# Configure — set BASE_TARGET_DIR to the project root
+cmake -B build_win -S frontend/lvgl `
+  -G "MinGW Makefiles" `
+  -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/gcc.exe `
+  -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe `
+  -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe `
+  -DBASE_TARGET_DIR="C:/workspace/ew8/"
+
+# Build
+mingw32-make -C build_win -j$env:NUMBER_OF_PROCESSORS
+```
+
 The resulting executable is `build_win/ew8_lvgl.exe`.
 
 ### Running on Windows
+
+From Git Bash / MSYS2 MinGW64:
 
 ```bash
 export PATH="/c/msys64/mingw64/bin:$PATH"
 cd build_win
 ./ew8_lvgl.exe
 ```
+
+From **PowerShell**:
+
+```powershell
+$env:PATH = "C:\msys64\mingw64\bin;$env:PATH"
+cd build_win
+.\ew8_lvgl.exe
+```
+
+> **Note:** `C:\msys64\mingw64\bin` *must* be on `PATH` before launching the
+> executable — otherwise `SDL2.dll` and the MinGW C++ runtime can't be found
+> and the process exits silently with no output.
+>
+> To make the change persistent for your user account (then reopen PowerShell):
+>
+> ```powershell
+> [Environment]::SetEnvironmentVariable(
+>   "PATH",
+>   "C:\msys64\mingw64\bin;" + [Environment]::GetEnvironmentVariable("PATH","User"),
+>   "User"
+> )
+> ```
 
 The app will open an SDL2 window (320x240) and print:
 ```
