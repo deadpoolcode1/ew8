@@ -9,6 +9,7 @@ candbgrammar.h
 build/
 build_win/
 frontend/lvgl/build/
+install/
 
 # IDE / Editor
 .vscode/

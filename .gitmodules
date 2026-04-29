@@ -1,3 +1,4 @@
 [submodule "lvgl_poc/lvgl"]
 	path = frontend/lvgl/lvgl
 	url = https://github.com/lvgl/lvgl.git
+	ignore = dirty
