@@ -78,6 +78,14 @@ private:
     // Runtime Kvaser auto-detection (loaded dynamically via LoadLibrary)
     bool useKvaser_ = false;
     int kvaserHandle_ = -1;
+    // Passive peer handle on a second virtual channel. The Kvaser virtual CAN
+    // bus needs an *active* second endpoint for ACKs to land reliably —
+    // without one, lone writes intermittently return canERR_TIMEOUT (-7).
+    // We additionally run a small read thread on the peer so it stays active
+    // (matches what tools like CANking do in production).
+    int kvaserPeerHandle_ = -1;
+    core::Thread* kvaserPeerThread_ = nullptr;
+    volatile bool kvaserPeerStop_ = false;
     HMODULE kvaserDll_ = nullptr;
 
     void initUdp();

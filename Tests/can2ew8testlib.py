@@ -16,7 +16,9 @@ except ImportError:
 import time
 
 BITRATE = 500000
-CHANNEL = 0
+# Backend hardcodes Kvaser channel 0 (canmanager.cpp:738). The test sender
+# uses channel 1 — both share the same Kvaser virtual bus.
+CHANNEL = 1
 
 # UDP virtual CAN settings (Windows)
 UDP_CAN_PORT = 18700

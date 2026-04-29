@@ -2,20 +2,23 @@
 """
 Cross-platform cansend replacement for EW8 testing.
 
-On Linux:  uses the real `cansend` utility (can-utils) via socketcan
-On Windows: sends CAN frames via UDP to the EW8 app (port 18700)
+On Linux:    uses the real `cansend` utility (can-utils) via socketcan
+On Windows:  prefers Kvaser virtual CAN if canlib32.dll is loadable
+             (matches what tools like CANking drive on real deployments);
+             falls back to UDP virtual CAN (port 18700) otherwise.
 
-Usage (same as Linux cansend):
+Force a transport with --transport={udp,kvaser,socketcan}.
+
+Usage (same shape as Linux cansend):
     python cansend.py <interface> <can_id>#<hex_data>
-
-Examples:
-    python cansend.py can0 700#0000190100800001
-    python cansend.py can0 7BC#5A0032120000
+    python cansend.py --transport=udp can0 700#0000190100800001
+    python cansend.py --transport=kvaser can0 7BC#5A0032120000
 
 The <interface> argument is accepted for compatibility but ignored on Windows
-(UDP always targets localhost:18700).
+(UDP and Kvaser ignore the interface name).
 """
 
+import argparse
 import sys
 import struct
 import platform
@@ -23,6 +26,10 @@ import platform
 # UDP virtual CAN port — must match CanManager::UDP_CAN_PORT in canmanager.h
 UDP_CAN_PORT = 18700
 UDP_CAN_HOST = "127.0.0.1"
+
+# Kvaser channel for the test sender. Backend opens ch 0 (canmanager.cpp:738).
+KVASER_CHANNEL = 1
+KVASER_BITRATE = 500000
 
 
 def parse_cansend_args(args):
@@ -76,8 +83,41 @@ def send_socketcan(interface, can_id, data):
     subprocess.run(['cansend', interface, frame_str], check=True)
 
 
+def send_kvaser(can_id, data, channel=KVASER_CHANNEL, bitrate=KVASER_BITRATE):
+    """Send CAN frame via Kvaser virtual CAN (matches CANking-style traffic)."""
+    from kvaser_can import KvaserBus
+    with KvaserBus(channel=channel, bitrate=bitrate) as bus:
+        stat = bus.send(can_id, data)
+        if stat != 0:
+            print(f"Kvaser tx FAILED: id=0x{can_id:X} stat={stat}", file=sys.stderr)
+            sys.exit(2)
+
+
+def auto_select(system):
+    if system != 'Windows':
+        return 'socketcan'
+    try:
+        from kvaser_can import is_available
+        return 'kvaser' if is_available() else 'udp'
+    except Exception:
+        return 'udp'
+
+
 def main():
-    args = sys.argv
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--transport', choices=['auto', 'udp', 'kvaser', 'socketcan'],
+                        default='auto')
+    parser.add_argument('--kvaser-channel', type=int, default=KVASER_CHANNEL)
+    parser.add_argument('--kvaser-bitrate', type=int, default=KVASER_BITRATE)
+    parser.add_argument('-h', '--help', action='store_true')
+    parser.add_argument('rest', nargs=argparse.REMAINDER)
+    ns = parser.parse_args()
+
+    if ns.help or not ns.rest:
+        print(__doc__)
+        sys.exit(0 if ns.help else 1)
+
+    args = [sys.argv[0]] + ns.rest
 
     # Determine interface name (for Linux compatibility)
     interface = "can0"
@@ -86,9 +126,15 @@ def main():
 
     can_id, data = parse_cansend_args(args)
 
-    if platform.system() == 'Windows':
+    transport = ns.transport
+    if transport == 'auto':
+        transport = auto_select(platform.system())
+
+    if transport == 'udp':
         send_udp(can_id, data)
-    else:
+    elif transport == 'kvaser':
+        send_kvaser(can_id, data, ns.kvaser_channel, ns.kvaser_bitrate)
+    elif transport == 'socketcan':
         send_socketcan(interface, can_id, data)
 
 
