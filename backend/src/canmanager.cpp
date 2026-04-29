@@ -153,6 +153,17 @@ CanManager::~CanManager()
 
 #if defined(_WIN32)
     if (useKvaser_) {
+        if (kvaserPeerThread_) {
+            kvaserPeerStop_ = true;
+            // The reader is in a 100ms canReadWait — let it finish naturally.
+            // We don't join (core::Thread blocking semantics vary); the
+            // process is exiting anyway.
+            kvaserPeerThread_ = nullptr;
+        }
+        if (kvaserPeerHandle_ >= 0 && kvaser.canBusOff) {
+            kvaser.canBusOff(kvaserPeerHandle_);
+            kvaser.canClose(kvaserPeerHandle_);
+        }
         if (kvaser.canBusOff) kvaser.canBusOff(kvaserHandle_);
         if (kvaser.canClose) kvaser.canClose(kvaserHandle_);
         if (kvaserDll_) FreeLibrary(kvaserDll_);
@@ -435,13 +446,16 @@ void CanManager::init(void)
     coreDebug() << "CAN SamplePoint:" << samplepnt << "% (Linux Only)";
 
 #if defined(_WIN32)
-    // Runtime auto-detection: try Kvaser hardware first, fall back to UDP
+    // Always bind the UDP virtual-CAN socket so test tools (cansend.py via
+    // UDP, the e2e_test UDP phase, etc.) keep working regardless of whether
+    // a Kvaser adapter is also present. Kvaser is then enabled in addition
+    // when canlib32.dll is loadable; both transports feed into parse_frame.
+    initUdp();
     useKvaser_ = tryInitKvaser(bdr);
     if (useKvaser_) {
-        coreDebug() << "Using Kvaser CAN hardware";
+        coreDebug() << "Using Kvaser CAN hardware (+ UDP virtual CAN)";
     } else {
-        coreDebug() << "No CAN hardware found, using UDP virtual CAN";
-        initUdp();
+        coreDebug() << "No Kvaser adapter found, using UDP virtual CAN only";
     }
 #else
 
@@ -568,21 +582,10 @@ void CanManager::init(void)
 void CanManager::read_frame(void)
 {
 #if defined(_WIN32)
-    if (useKvaser_) {
-        // Kvaser hardware CAN
-        struct can_frame frame;
-        unsigned int flags;
-        unsigned long time;
-
-        int stat = kvaser.canReadWait(kvaserHandle_, &(frame.can_id), (frame.data), &(frame.can_dlc), &flags, &time, 10);
-        if (stat == canOK) {
-            if (flags & canMSG_ERROR_FRAME) {
-                printf("***ERROR FRAME RECEIVED***");
-            } else {
-                parse_frame(&frame);
-            }
-        }
-    } else {
+    // On Windows we always have UDP bound, and when canlib is present we
+    // also have the Kvaser path. Drain UDP first (non-blocking, so this is
+    // ~free when there's no traffic), then service Kvaser.
+    if (udpSock_ != INVALID_SOCKET) {
         // UDP Virtual CAN: receive 13-byte packet [4B id LE][1B dlc][8B data]
         uint8_t buf[13];
         struct sockaddr_in srcAddr;
@@ -610,6 +613,23 @@ void CanManager::read_frame(void)
                        << "ts:" << core::ElapsedTimer::currentMSecsSinceEpoch();
 
             parse_frame(&frame);
+        }
+    }
+
+    if (useKvaser_) {
+        // Kvaser hardware / virtual CAN
+        struct can_frame frame;
+        unsigned int flags;
+        unsigned long time;
+
+        int stat = kvaser.canReadWait(kvaserHandle_, &(frame.can_id), (frame.data),
+                                      &(frame.can_dlc), &flags, &time, 10);
+        if (stat == canOK) {
+            if (flags & canMSG_ERROR_FRAME) {
+                printf("***ERROR FRAME RECEIVED***");
+            } else {
+                parse_frame(&frame);
+            }
         }
     }
 #else
@@ -647,11 +667,37 @@ void CanManager::write_frame(struct can_frame * frame_ptr)
 {
 #if defined(_WIN32)
     if (useKvaser_) {
-        // Kvaser hardware CAN
+        // Kvaser hardware CAN. Timeout is generous (1 s): on a virtual bus
+        // with no peer the controller may take tens of ms to give up; 10 ms
+        // was producing canERR_TIMEOUT (-7) intermittently at startup.
         unsigned int flags = canMSG_STD;
-        int stat = kvaser.canWriteWait(kvaserHandle_, (frame_ptr->can_id), (frame_ptr->data), (frame_ptr->can_dlc), flags, 10);
+        int stat = kvaser.canWriteWait(kvaserHandle_, (frame_ptr->can_id), (frame_ptr->data), (frame_ptr->can_dlc), flags, 1000);
         if (stat != canOK) {
-            printf("**Transmitted frame is faulty***");
+            // Diagnostic goes to a dedicated file so it survives even when stdio is
+            // redirected/buffered or the launcher swallows stderr.
+            // Common stat: -2 canERR_TIMEOUT (queue full / no ack), -10 canERR_INVHANDLE,
+            // -13 canERR_TXBUFOFL, -20 canERR_HARDWARE (often bus-off), -27 canERR_NOTFOUND.
+            static FILE* s_diag = nullptr;
+            static unsigned long s_failCount = 0;
+            static unsigned long s_lastReport = 0;
+            if (!s_diag) {
+                // Written to current working directory (= build dir when
+                // launched from there). e2e_test.py reads from build_win/.
+                s_diag = fopen("kvaser_diag.log", "w");
+                if (s_diag) {
+                    fprintf(s_diag, "# canmanager kvaser TX diagnostic\n");
+                    fflush(s_diag);
+                }
+            }
+            ++s_failCount;
+            if (s_diag && (s_failCount <= 20 || s_failCount - s_lastReport >= 100)) {
+                fprintf(s_diag,
+                        "[KVASER TX FAILED] id=0x%lX dlc=%u stat=%d count=%lu\n",
+                        (unsigned long)frame_ptr->can_id,
+                        (unsigned)frame_ptr->can_dlc, stat, s_failCount);
+                fflush(s_diag);
+                s_lastReport = s_failCount;
+            }
         }
     } else {
         // UDP Virtual CAN: send 13-byte packet to TX port
@@ -713,6 +759,12 @@ void CanManager::initUdp()
     } else {
         coreDebug() << "UDP virtual CAN listening on port" << UDP_CAN_PORT;
     }
+
+    // Non-blocking — when Kvaser is also active we poll both transports from
+    // the same read loop, so UDP recvfrom must return immediately when no
+    // packet is queued.
+    u_long nonblock = 1;
+    ioctlsocket(udpSock_, FIONBIO, &nonblock);
 }
 
 bool CanManager::tryInitKvaser(int32_t bdr)
@@ -785,6 +837,42 @@ bool CanManager::tryInitKvaser(int32_t bdr)
     }
 
     kvaserDll_ = kvaser.dll;
+
+    // Open an active peer on channel 1 so writes on channel 0 always have an
+    // ACK endpoint on the bus, even when no external tool (CANking, etc.) is
+    // connected. The peer needs to be *actively reading* for canlib to ACK
+    // frames reliably — passive bus-on alone leaves the first ~5–10 writes
+    // failing with canERR_TIMEOUT. Best-effort: if there's no second channel
+    // or the peer open fails, keep going; writes may then time out when
+    // nothing else is on the bus.
+    if (channelCount >= 2) {
+        int peer = kvaser.canOpenChannel(1, canOPEN_ACCEPT_VIRTUAL);
+        if (peer >= 0) {
+            int peerStat = kvaser.canSetBusParams(peer, canBITRATE, 0, 0, 0, 0, 0);
+            if (peerStat == canOK) peerStat = kvaser.canBusOn(peer);
+            if (peerStat == canOK) {
+                kvaserPeerHandle_ = peer;
+                kvaserPeerStop_ = false;
+                kvaserPeerThread_ = new core::Thread();
+                kvaserPeerThread_->started.connect([this]() {
+                    while (!kvaserPeerStop_) {
+                        long id = 0; unsigned int dlc = 0, flag = 0;
+                        unsigned long t = 0;
+                        unsigned char buf[8];
+                        kvaser.canReadWait(kvaserPeerHandle_, &id, buf, &dlc, &flag, &t, 100);
+                    }
+                });
+                kvaserPeerThread_->start();
+                // Give the peer reader a beat to enter its canReadWait loop —
+                // without this, the first few writes can fire before the peer
+                // is actively reading, and time out (canERR_TIMEOUT).
+                Sleep(100);
+            } else {
+                kvaser.canClose(peer);
+            }
+        }
+    }
+
     return true;
 }
 #endif

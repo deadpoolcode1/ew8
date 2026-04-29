@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
     // Setup virtual CAN for desktop builds
 #ifdef REMOVE_EW8_HW
 #ifdef _WIN32
-    // Windows: UDP virtual CAN is used — no system setup needed
-    printf("Using UDP virtual CAN on port 18700 (send CAN frames via cansend.py)\n");
+    // Windows: CanManager auto-detects between Kvaser and UDP virtual CAN
+    // at init time. Don't pre-announce a transport here.
 #else
     // Linux: set up vcan kernel module
     if (system("ip link show can0 > /dev/null 2>&1") != 0) {

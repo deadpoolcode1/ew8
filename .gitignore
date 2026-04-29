@@ -43,3 +43,12 @@ __pycache__/
 # OS files
 .DS_Store
 Desktop.ini
+
+# Build / packaging artifacts
+*.zip
+
+# Runtime / debug logs
+*.log
+
+# Generated E2E reports (Tests/e2e_test.py writes timestamped reports here)
+Tests/reports/
