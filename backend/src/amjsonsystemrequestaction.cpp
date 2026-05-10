@@ -6,6 +6,7 @@
 #include "candebugreport.h"
 #include "watchdogdevice.h"
 #include "core/core.h"
+#include "core/resource_paths.h"
 class VersionMsg;
 class SystemRequestType;
 class BrightnessControl;
@@ -47,7 +48,7 @@ void AMJsonSystemRequestAction::process(void * /*sender*/, Variant extractedCANs
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
-            core::Process::startDetached(std::string(BASE_TARGET_DIR) + "bin/canquick", {"-t"});
+            core::Process::startDetached(core::resourceBaseDir() + "bin/canquick", {"-t"});
 
 
 #elif ! defined(QT_DEBUG)
@@ -65,7 +66,7 @@ void AMJsonSystemRequestAction::process(void * /*sender*/, Variant extractedCANs
         {
 #ifndef WIN32
             WatchDogDevice::disarm();
-            core::Process::startDetachedCommand(std::string(BASE_TARGET_DIR) + "bin/canquick");
+            core::Process::startDetachedCommand(core::resourceBaseDir() + "bin/canquick");
 
 #elif ! defined(QT_DEBUG)
             core::Process::startDetachedCommand("release/canquick");

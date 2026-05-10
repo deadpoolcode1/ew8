@@ -4,6 +4,7 @@
 #include "core/json.h"
 #include "core/file_utils.h"
 #include "core/logger.h"
+#include "core/resource_paths.h"
 
 #include <string>
 #include <map>
@@ -46,7 +47,7 @@ void AMJsonConfigReader::readJsonDocument(const std::string& arg)
 {
     core::JsonDocument jdoc;
 
-    std::string filePath = std::string(BASE_TARGET_DIR) + arg;
+    std::string filePath = core::resourceBaseDir() + arg;
     core::File jsonFile(filePath);
 
     if(jsonFile.exists())
