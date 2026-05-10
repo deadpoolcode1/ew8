@@ -12,6 +12,7 @@ using namespace peg;
 #include "core/file_utils.h"
 #include "core/logger.h"
 #include "core/serialization.h"
+#include "core/resource_paths.h"
 
 #include <string>
 #include <algorithm>
@@ -73,7 +74,7 @@ bool CanDBSignal::readDBCFile(const std::string& protocolName, std::string& extr
 {
     bool ret = true;
 
-    std::string filePath = std::string(BASE_TARGET_DIR) + "dbc/" + protocolName + ".dbc";
+    std::string filePath = core::resourceBaseDir() + "dbc/" + protocolName + ".dbc";
     core::File dbcFile(filePath);
 
     if(dbcFile.exists())
