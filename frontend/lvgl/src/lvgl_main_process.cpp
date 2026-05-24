@@ -17,6 +17,11 @@
 
 extern core::ElapsedTimer bootUpTimer;
 
+// Signal-test screen text uses the IntelOne brand font (Qt's SignalTestSpeed
+// uses IntelOne), not LVGL's built-in Montserrat fallback (IMS-11660).
+LV_FONT_DECLARE(intelone_medium_17);
+LV_FONT_DECLARE(intelone_medium_28);
+
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
 
@@ -430,7 +435,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     lv_obj_t* speedSmallLabel = lv_label_create(signalTestWidget);
     lv_label_set_text(speedSmallLabel, "X");
-    lv_obj_set_style_text_font(speedSmallLabel, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(speedSmallLabel, &intelone_medium_17, 0);
     lv_obj_set_style_text_color(speedSmallLabel, lv_color_hex(0x99a0a6), 0);
     lv_obj_set_pos(speedSmallLabel, 90 + 25, 62 + 25);
     lv_obj_align(speedSmallLabel, LV_ALIGN_DEFAULT, 0, 0);
@@ -449,7 +454,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     lv_obj_t* speedBigLabel = lv_label_create(signalTestWidget);
     lv_label_set_text(speedBigLabel, "X");
-    lv_obj_set_style_text_font(speedBigLabel, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(speedBigLabel, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(speedBigLabel, lv_color_hex(0x99a0a6), 0);
     lv_obj_align(speedBigLabel, LV_ALIGN_CENTER, 0, 49);
     lv_obj_add_flag(speedBigLabel, LV_OBJ_FLAG_HIDDEN);

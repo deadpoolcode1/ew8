@@ -5,6 +5,11 @@
 
 LV_FONT_DECLARE(intelone_bold_18);
 LV_FONT_DECLARE(intelone_bold_20);
+// Menus must use the IntelOne brand font like the Qt frontend, not LVGL's
+// built-in Montserrat fallback (IMS-11660).
+LV_FONT_DECLARE(intelone_medium_14);
+LV_FONT_DECLARE(intelone_medium_17);
+LV_FONT_DECLARE(intelone_medium_28);
 
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
@@ -88,7 +93,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
     brightnessValueLabel_ = lv_label_create(brightnessScreen_);
     lv_label_set_text(brightnessValueLabel_, "5");
-    lv_obj_set_style_text_font(brightnessValueLabel_, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(brightnessValueLabel_, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(brightnessValueLabel_, COLOR_BLUE, 0);
     lv_obj_align(brightnessValueLabel_, LV_ALIGN_TOP_MID, 0, 68);
 
@@ -104,7 +109,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
     volumeValueLabel_ = lv_label_create(volumeScreen_);
     lv_label_set_text(volumeValueLabel_, "0");
-    lv_obj_set_style_text_font(volumeValueLabel_, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(volumeValueLabel_, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(volumeValueLabel_, COLOR_BLUE, 0);
     lv_obj_align(volumeValueLabel_, LV_ALIGN_TOP_MID, 0, 68);
 
@@ -151,13 +156,13 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
         lv_obj_t* lbl = lv_label_create(row);
         lv_label_set_text(lbl, infoLabels[i]);
-        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(lbl, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(lbl, COLOR_WHITE, 0);
         lv_obj_set_pos(lbl, 0, 0);
 
         lv_obj_t* val = lv_label_create(row);
         lv_label_set_text(val, infoValues[i]);
-        lv_obj_set_style_text_font(val, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(val, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(val, COLOR_WHITE, 0);
         lv_obj_set_pos(val, 110, 0);
     }
@@ -194,7 +199,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     // Fallback label (shown below QR code for URL text)
     qrLabel_ = lv_label_create(qrScreen_);
     lv_label_set_text(qrLabel_, "");
-    lv_obj_set_style_text_font(qrLabel_, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_font(qrLabel_, &intelone_medium_14, 0);
     lv_obj_set_style_text_color(qrLabel_, COLOR_WHITE, 0);
     lv_obj_align(qrLabel_, LV_ALIGN_BOTTOM_MID, 0, -10);
 }
@@ -260,7 +265,7 @@ LvglMenuController::ProgressBar LvglMenuController::createProgressBar(
         char buf[8];
         snprintf(buf, sizeof(buf), "%d", i + lowerLimit);
         lv_label_set_text(lbl, buf);
-        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(lbl, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(lbl, COLOR_GRAY, 0);
         lv_obj_align(lbl, LV_ALIGN_TOP_LEFT, segX - 5, y + BAR_HEIGHT + 12);
     }
