@@ -49,6 +49,9 @@ public slots:
 
 private:
 
+    // Trailing-edge flush for the display throttle window (see process()).
+    void onWindowExpired(void);
+
     static MainProcess* instance;
 
     //Objects for signals connection:
