@@ -635,3 +635,19 @@ void LvglMenuController::setVolumeEnabled(bool enabled)
 {
     volumeEnabled_ = enabled;
 }
+
+void LvglMenuController::raiseActiveScreenIfVisible()
+{
+    // Menus/QR are full-screen opaque overlays that must sit above the
+    // left-panel signs (QML z>=20). The main process lifts changed signs with
+    // lv_obj_move_foreground(), which can put a sign above an open menu; move
+    // the visible screen(s) back to the front to cover it again. Order matters
+    // only if several are visible at once (QR ends up on top, as in QML).
+    lv_obj_t* screens[] = { brightnessScreen_, volumeScreen_, isaScreen_,
+                            aboutScreen_, qrScreen_ };
+    for (lv_obj_t* s : screens) {
+        if (s && !lv_obj_has_flag(s, LV_OBJ_FLAG_HIDDEN)) {
+            lv_obj_move_foreground(s);
+        }
+    }
+}

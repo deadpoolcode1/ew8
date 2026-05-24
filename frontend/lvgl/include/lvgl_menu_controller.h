@@ -42,6 +42,14 @@ public:
     // MENU_NONE at the call site.)
     void setVolumeEnabled(bool enabled);
 
+    // Re-assert the top z-order of whichever menu/QR screen is currently
+    // visible. The main process reorders the left-panel signs with
+    // lv_obj_move_foreground(); since the menu screens are siblings of those
+    // signs, a sign that just changed can be lifted above an open menu (the
+    // TSR/ISA speed sign drawn over the menu — IMS-11654). Called each display
+    // update after the sign reordering so opaque menus stay on top (QML z>=20).
+    void raiseActiveScreenIfVisible();
+
 private:
     enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT, MENU_VOLUME };
 

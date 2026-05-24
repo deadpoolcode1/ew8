@@ -1336,6 +1336,14 @@ void LvglMainProcess::applyPendingDisplayUpdate()
             }
         }
 
+        // The sign move_foreground calls above can lift a left-panel sign above
+        // an open menu/QR overlay (signs and menus are all siblings under root),
+        // leaving e.g. the TSR/ISA speed sign drawn on top of the ISA/About menu
+        // (IMS-11654). Re-assert the overlays' top z-order after the reordering.
+        if (menuController_) {
+            menuController_->raiseActiveScreenIfVisible();
+        }
+
         // Host car shift based on LDW activation (QML: 200ms shift, 600ms return)
         if (hostCar_ && lldwNode_ && rldwNode_)
         {
