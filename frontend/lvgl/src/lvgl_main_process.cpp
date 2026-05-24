@@ -34,6 +34,8 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , mainPanel_(nullptr)
     , failsafeNode_(nullptr)
     , hmwValueLabel_(nullptr)
+    , speedNode_(nullptr)
+    , errorNode_(nullptr)
     , menuController_(nullptr)
 {
     coreDebug() << "LvglMainProcess init begin, time:" << bootUpTimer.elapsed();
@@ -531,6 +533,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(generalPanel, disconPanel);
 
     auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, err.errorCodeLabel);
+    errorNode_ = errorNode;
     addChild(disconPanel, errorNode);
 
     auto* disconNode = new LvglDisplayNode(disconWidget, 0, AlertTypes::ALERT_NOCOM);
@@ -646,6 +649,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // speed (LvglSpeedDisplayNode, layer=0, INFO_VEH_SPEED — with MPH conversion support)
     auto* speedNode = new LvglSpeedDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel, speedUnitLabel);
+    speedNode_ = speedNode;
     addChild(statusPanel, speedNode);
 
     // Beam group (mutexGroup=true)
@@ -1188,6 +1192,17 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         alertController_->mutex.lock();
         updateTreeVisibility(displayRoot_, DO_NOT_FORCE_INVISIBILITY);
         alertController_->mutex.unlock();
+
+        // QML isDisplayOfMenusEnabled:
+        //   ((!speed.speed_available) || (0 === speed.canEntityArg)) && !status_error.is_in_err
+        // Block the brightness/ISA/about menus while the vehicle speed is being
+        // shown (available and non-zero) or an error overlay is up. IMS-11648.
+        if (menuController_) {
+            bool speedActive = speedNode_ && speedNode_->getActivSem() > 0
+                            && speedNode_->getSpeedValue() != 0;
+            bool errorActive = errorNode_ && errorNode_->getActivSem() > 0;
+            menuController_->setMenusEnabled(!speedActive && !errorActive);
+        }
 
         // QML: HostCar visible: groupGAG.visible || groupCIPV.visible
         // In QML, these groups become invisible when mainPanel is hidden

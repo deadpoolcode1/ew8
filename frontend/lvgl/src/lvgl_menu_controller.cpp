@@ -73,6 +73,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     , volumeValue_(0), volumeMin_(0), volumeMax_(5)
     , isaMode_(0)
     , isaAvailable_(false)
+    , menusEnabled_(true)
     , autoHideTimer_(nullptr)
     , qrActive_(false)
     , qrActivateTimer_(nullptr)
@@ -404,6 +405,15 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
     case SDLK_RETURN:
         // Cycle menus: none → brightness → [ISA if available] → about → none
         // Volume menu is entered externally via VOLUME_DONE CAN; Return sends mute
+        //
+        // QML isDisplayOfMenusEnabled gate: while the speed display is up (or an
+        // error overlay is showing) the brightness/ISA/about menus must not be
+        // accessible. Return then just clears any of them (it never opens one).
+        // The volume menu is exempt — it is CAN-driven and handles its own keys.
+        if (!menusEnabled_ && currentMenu_ != MENU_VOLUME) {
+            hideAllMenus();
+            break;
+        }
         switch (currentMenu_) {
         case MENU_NONE:
             showMenu(MENU_BRIGHTNESS);
@@ -581,5 +591,23 @@ void LvglMenuController::setIsaAvailable(bool available)
     // If ISA just became unavailable while ISA menu is showing, skip to about
     if (!available && currentMenu_ == MENU_ISA) {
         showMenu(MENU_ABOUT);
+    }
+}
+
+void LvglMenuController::setMenusEnabled(bool enabled)
+{
+    if (enabled == menusEnabled_) {
+        return;
+    }
+    menusEnabled_ = enabled;
+
+    // QML onIsDisplayOfMenusEnabledChanged: when the speed display takes over
+    // (or an error appears), any open speed-gated menu is dismissed at once.
+    // The volume menu and QR overlay are driven by CAN / dual-key, not this
+    // gate, so they are left untouched.
+    if (!enabled &&
+        (currentMenu_ == MENU_BRIGHTNESS || currentMenu_ == MENU_ISA ||
+         currentMenu_ == MENU_ABOUT)) {
+        hideAllMenus();
     }
 }

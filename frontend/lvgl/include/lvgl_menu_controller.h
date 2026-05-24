@@ -29,6 +29,12 @@ public:
     void setIsaAvailable(bool available);
     bool isIsaAvailable() const { return isaAvailable_; }
 
+    // Gates the user-accessible menus (brightness/ISA/about), mirroring the QML
+    // isDisplayOfMenusEnabled property: menus are blocked while the vehicle
+    // speed is being shown or an error overlay is up. When disabled, any open
+    // speed-gated menu is dismissed immediately (QML onIsDisplayOfMenusEnabledChanged).
+    void setMenusEnabled(bool enabled);
+
 private:
     enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT, MENU_VOLUME };
 
@@ -96,6 +102,9 @@ private:
 
     // ISA availability (driven by STATE_ISA_NOT_TSR / STATE_TSR_NOT_ISA)
     bool isaAvailable_;
+
+    // Whether the speed-gated menus may be opened (QML isDisplayOfMenusEnabled).
+    bool menusEnabled_;
 
     // Auto-hide timer
     lv_timer_t* autoHideTimer_;
