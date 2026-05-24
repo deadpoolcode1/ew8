@@ -8,6 +8,7 @@
 #include "lvgl.h"
 
 #include <atomic>
+#include <cstdint>
 
 class LvglDisplayNode;
 class LvglMenuController;
@@ -33,11 +34,21 @@ private:
 
     AlertController* alertController_;
     CanManager* canmgr_;
-    core::Timer* updateDisplayTimeWindow_;
     core::Thread* itsThread_;
     LvglDisplayNode* displayRoot_;
     std::atomic<bool> displayDirty_;
-    bool pendingDisplayUpdate_ = false;
+
+    // CAN -> display update coalescing. process() (CAN reader thread) only flags
+    // that an update is pending and timestamps it; applyPendingDisplayUpdate()
+    // (main/LVGL thread) renders once the bus has been quiet for
+    // DISPLAY_UPDATE_QUIET_MS (batches a burst) or the update has been deferred
+    // for DISPLAY_UPDATE_MAX_DEFER_MS (hard latency cap so continuous real-bus
+    // traffic, which never goes quiet, can't stall the display).
+    std::atomic<bool> pendingDisplayUpdate_{false};
+    std::atomic<int64_t> firstPendingMs_{0};
+    std::atomic<int64_t> lastChangeMs_{0};
+    static constexpr int64_t DISPLAY_UPDATE_QUIET_MS     = 10;
+    static constexpr int64_t DISPLAY_UPDATE_MAX_DEFER_MS = 50;
 
     // Host car widget and LDW nodes for shift animation
     lv_obj_t* hostCar_;

@@ -49,14 +49,12 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     // Build the display tree (registers leaf nodes with EntityType)
     buildDisplayTree(screen);
 
-    // Thread + debounce timer (same pattern as Qt MainProcess)
+    // Worker thread kicks the (now event-driven) display pipeline once at start.
+    // Display commits are coalesced in applyPendingDisplayUpdate() on the main
+    // thread; the previous per-frame core::Timer debounce was removed because
+    // under continuous real-CAN traffic it never expired and froze the display.
     itsThread_ = new core::Thread();
-    updateDisplayTimeWindow_ = new core::Timer();
-    updateDisplayTimeWindow_->setInterval(10);
-    updateDisplayTimeWindow_->setSingleShot(true);
-
     itsThread_->started.connect([this]() { process(); });
-    updateDisplayTimeWindow_->timeout.connect([this]() { process(); });
 
     alertController_->setMessageCallback([](const std::string& msg) {
         coreDebug() << "Message:" << msg;
@@ -71,7 +69,6 @@ LvglMainProcess::~LvglMainProcess()
 {
     delete canmgr_;
     delete alertController_;
-    delete updateDisplayTimeWindow_;
     delete itsThread_;
 }
 
@@ -1132,22 +1129,26 @@ void LvglMainProcess::launch()
 
 void LvglMainProcess::process()
 {
+    // Runs on the CAN reader thread, once per tree-changing frame. Do NOT touch
+    // LVGL or render here (wrong thread): just flag that an update is pending
+    // and timestamp it. applyPendingDisplayUpdate(), on the main/LVGL thread,
+    // decides when to actually render — see the timing policy in the header.
+    //
+    // The previous implementation restarted a 10 ms single-shot timer on every
+    // frame and only rendered once that timer expired with no new frame in
+    // between. A real CAN bus streams frames continuously, so that quiet gap
+    // never arrives: the timer kept resetting and the display froze for seconds
+    // until traffic happened to lull. (UDP virtual CAN in testing sends one
+    // frame at a time, so a gap always exists and the bug stayed hidden.)
     if (alertController_->needsDisplayUpdate())
     {
-        // New CAN message(s) arrived — absorb and restart debounce timer.
-        // Don't set displayDirty_ yet; wait for timer to expire with no new messages.
         alertController_->markUpdateComplete();
-        pendingDisplayUpdate_ = true;
-        updateDisplayTimeWindow_->start();
-    }
-    else if (pendingDisplayUpdate_)
-    {
-        // Timer fired with no new CAN messages — safe to commit display update.
-        // All CAN messages in the batch have been processed.
-        pendingDisplayUpdate_ = false;
-        alertController_->mutex.lock();
-        updateDisplay();
-        alertController_->mutex.unlock();
+        const int64_t now = core::ElapsedTimer::currentMSecsSinceEpoch();
+        if (!pendingDisplayUpdate_.exchange(true))
+        {
+            firstPendingMs_.store(now);
+        }
+        lastChangeMs_.store(now);
     }
 }
 
@@ -1163,6 +1164,25 @@ void LvglMainProcess::carShiftAnimCb(void* obj, int32_t val)
 
 void LvglMainProcess::applyPendingDisplayUpdate()
 {
+    // Promote a pending CAN update to a render once EITHER the bus has been
+    // quiet briefly (coalesce a multi-frame burst into a single render) OR the
+    // update has been deferred for too long. The latency cap is what makes this
+    // robust on a real, continuously-busy bus: traffic that never goes quiet can
+    // no longer defer the display indefinitely — worst-case latency is bounded
+    // to DISPLAY_UPDATE_MAX_DEFER_MS. Runs on the main/LVGL thread, polled every
+    // loop iteration (~1 ms), so no timer thread is spawned per frame.
+    if (pendingDisplayUpdate_.load())
+    {
+        const int64_t now = core::ElapsedTimer::currentMSecsSinceEpoch();
+        const bool quietGap = (now - lastChangeMs_.load())   >= DISPLAY_UPDATE_QUIET_MS;
+        const bool capped   = (now - firstPendingMs_.load()) >= DISPLAY_UPDATE_MAX_DEFER_MS;
+        if (quietGap || capped)
+        {
+            pendingDisplayUpdate_.store(false);
+            updateDisplay();
+        }
+    }
+
     if (displayDirty_.exchange(false))
     {
         alertController_->mutex.lock();
