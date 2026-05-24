@@ -86,7 +86,21 @@ public:
         cv_.notify_all();
 
         if (timerThread_.joinable()) {
-            timerThread_.join();
+            // A single-shot timer's timeout handler may stop (or restart, which
+            // calls stop() first) its own timer from inside the callback — e.g.
+            // SmartItem::fireItsMin/MaxActiveTime call min/maxDurationTimer->stop()
+            // while running on that very timer's thread. Joining here would then
+            // join the calling thread itself: pthread_join returns EDEADLK and
+            // libstdc++ rethrows it as std::system_error("Resource deadlock
+            // avoided"), terminating the process (IMS-11658). Detect the self-stop
+            // and detach instead — stopRequested_ is already set, so the run loop
+            // exits on its own (single-shot threads break right after the
+            // callback returns) and the runtime reaps the detached thread.
+            if (timerThread_.get_id() == std::this_thread::get_id()) {
+                timerThread_.detach();
+            } else {
+                timerThread_.join();
+            }
         }
 
         active_ = false;
