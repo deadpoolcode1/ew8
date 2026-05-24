@@ -883,6 +883,20 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // where left_panel_tsr.is_available = false when ISA is active)
     groupBottom->setBlockingNode(isaNotTsrNode);
 
+    // The speed-limit signs in groupTop are NOT separated into ISA-only and
+    // TSR-only groups (the SLI/TSR speed sign and the ISA speed/highway signs
+    // share groupTop), so the blocking above did not cover them. Without this,
+    // the SLI sign (layer 1) wins over the ISA speed sign (layer 2) by layer
+    // priority, so an active TSR speed value is shown even while ISA is active
+    // — e.g. at startup the unit showed the TSR value instead of the ISA value
+    // (IMS-11657). Qt keeps them mutually exclusive via state_isa ("tsr" vs
+    // "isa"); reproduce that by cross-blocking the individual signs:
+    //   - SLI (TSR speed) hidden while ISA is active.
+    //   - ISA speed / highway hidden while TSR is active.
+    sliNode->setBlockingNode(isaNotTsrNode);
+    isaSpeedNode->setBlockingNode(tsrNotIsaNode);
+    isaHighwayNode->setBlockingNode(tsrNotIsaNode);
+
     auto* sliShowNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_SLI_SHOW);
     addChild(leftPanel, sliShowNode);
 
