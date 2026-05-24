@@ -12,6 +12,7 @@
 
 class LvglDisplayNode;
 class LvglMenuController;
+class LvglSpeedDisplayNode;
 
 class LvglMainProcess {
 public:
@@ -61,6 +62,9 @@ private:
     LvglDisplayNode* mainPanel_;
     LvglDisplayNode* failsafeNode_;
     lv_obj_t* hmwValueLabel_;
+    // Speed + error nodes, used to gate the user menus (QML isDisplayOfMenusEnabled).
+    LvglSpeedDisplayNode* speedNode_;
+    LvglDisplayNode* errorNode_;
     int lastCarOffset_;
     static void carShiftAnimCb(void* obj, int32_t val);
 
