@@ -34,6 +34,9 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , mainPanel_(nullptr)
     , failsafeNode_(nullptr)
     , hmwValueLabel_(nullptr)
+    , hmwDistanceNode_(nullptr)
+    , hmwAlertNode_(nullptr)
+    , hmwMonitorNode_(nullptr)
     , speedNode_(nullptr)
     , errorNode_(nullptr)
     , menuController_(nullptr)
@@ -568,6 +571,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // QML: (canEntityArg/10).toFixed(1) — CAN arg 12 displays as "1.2"
     hmwValueLabel_ = hmw.valueLabel;
     auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel, 10);
+    hmwDistanceNode_ = hmwNode;
     addChild(groupCIPV, hmwNode);
 
     // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
@@ -576,12 +580,14 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* hmwAlertNode = new LvglHmwStateNode(0, ID_ALERT_HMW_ALERT,
                                                hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif",
                                                hmw.forwardCar, 45, 160, 145);
+    hmwAlertNode_ = hmwAlertNode;
     addChild(groupCIPV, hmwAlertNode);
 
     // Monitor: car further away, smaller
     auto* hmwMonitorNode = new LvglHmwStateNode(0, ID_ALERT_HMW_MONITOR,
                                                  hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif",
                                                  hmw.forwardCar, 40, 119, 115);
+    hmwMonitorNode_ = hmwMonitorNode;
     addChild(groupCIPV, hmwMonitorNode);
 
     // PDZ overlay (layer=0, ALERT_PDZ)
@@ -1233,20 +1239,41 @@ void LvglMainProcess::applyPendingDisplayUpdate()
                 lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
         }
 
-        // QML: HMW text hidden when failsafe visible (is_text_hidden: vsn.visible)
-        if (hmwValueLabel_ && failsafeNode_) {
-            bool failsafeActive = failsafeNode_->getActivSem() > 0;
+        // HMW road strip + lead car (CIPV): the container is owned by the
+        // ALERT_HMW_DISTANCE node, so the tree only shows it when a valid headway
+        // distance is present. But the strip and the lead car must appear whenever
+        // HMW monitor/alert is active — even with no valid distance — matching Qt
+        // (the strip follows the monitor/alert state, the forward car follows the
+        // group). Without this the green/red road and the lead car vanish when the
+        // distance is invalid (IMS-11659). The active monitor/alert state node has
+        // already set the correct GIF + car scale during the traversal above.
+        if (hmwValueLabel_) {
             lv_obj_t* hmwContainer = lv_obj_get_parent(hmwValueLabel_);
+            bool mainPanelVisible = mainPanel_ && mainPanel_->getActivSem() > 0
+                                 && !(disconPanel_ && disconPanel_->getActivSem() > 0);
+            bool cipvVisible = mainPanelVisible && groupCIPV_ && groupCIPV_->getActivSem() > 0;
+            bool distActive    = hmwDistanceNode_ && hmwDistanceNode_->getActivSem() > 0;
+            bool monitorActive = hmwMonitorNode_  && hmwMonitorNode_->getActivSem()  > 0;
+            bool alertActive   = hmwAlertNode_    && hmwAlertNode_->getActivSem()    > 0;
+            bool hmwShown = cipvVisible && (distActive || monitorActive || alertActive);
+
             if (hmwContainer) {
-                // Hide the "sec" and value labels (children 2 and 3 of HMW container)
-                // Child 0 = road GIF, child 1 = forward car, child 2 = sec label, child 3 = value label
+                if (hmwShown)
+                    lv_obj_remove_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_add_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
+
+                // QML: units/time text blank unless a valid headway distance is
+                // present (canEntityArg != 0), and hidden entirely under failsafe.
+                bool failsafeActive = failsafeNode_ && failsafeNode_->getActivSem() > 0;
+                bool showText = hmwShown && distActive && !failsafeActive;
                 lv_obj_t* secLabel = lv_obj_get_child(hmwContainer, 2);
-                if (failsafeActive) {
-                    if (secLabel) lv_obj_add_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_add_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
-                } else {
+                if (showText) {
                     if (secLabel) lv_obj_remove_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_remove_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    if (secLabel) lv_obj_add_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
                 }
             }
         }

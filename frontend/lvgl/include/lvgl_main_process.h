@@ -62,6 +62,11 @@ private:
     LvglDisplayNode* mainPanel_;
     LvglDisplayNode* failsafeNode_;
     lv_obj_t* hmwValueLabel_;
+    // HMW nodes — the road strip + lead car (CIPV) must show whenever HMW
+    // monitor/alert is active, not only when a valid headway distance exists.
+    LvglDisplayNode* hmwDistanceNode_;
+    LvglDisplayNode* hmwAlertNode_;
+    LvglDisplayNode* hmwMonitorNode_;
     // Speed + error nodes, used to gate the user menus (QML isDisplayOfMenusEnabled).
     LvglSpeedDisplayNode* speedNode_;
     LvglDisplayNode* errorNode_;
