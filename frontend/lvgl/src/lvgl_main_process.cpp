@@ -1223,10 +1223,17 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         // Block the brightness/ISA/about menus while the vehicle speed is being
         // shown (available and non-zero) or an error overlay is up. IMS-11648.
         if (menuController_) {
+            bool errorActive = errorNode_ && errorNode_->getActivSem() > 0;
             bool speedActive = speedNode_ && speedNode_->getActivSem() > 0
                             && speedNode_->getSpeedValue() != 0;
-            bool errorActive = errorNode_ && errorNode_->getActivSem() > 0;
             menuController_->setMenusEnabled(!speedActive && !errorActive);
+
+            // QML is_remote_menu_request_enabled:
+            //   !(discon_panel.visible || alert_err.visible || groupFCW.visible)
+            // Gates the idle-screen master-volume Up/Down shortcut (IMS-11656).
+            bool disconActive = disconPanel_ && disconPanel_->getActivSem() > 0;
+            bool fcwActive    = groupFCW_ && groupFCW_->getActivSem() > 0;
+            menuController_->setVolumeEnabled(!disconActive && !errorActive && !fcwActive);
         }
 
         // QML: HostCar visible: groupGAG.visible || groupCIPV.visible

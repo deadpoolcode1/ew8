@@ -35,6 +35,13 @@ public:
     // speed-gated menu is dismissed immediately (QML onIsDisplayOfMenusEnabledChanged).
     void setMenusEnabled(bool enabled);
 
+    // Gates the idle-screen master-volume Up/Down shortcut, mirroring the QML
+    // is_volume_enabled / is_remote_menu_request_enabled gate: the volume keys
+    // are live only while no disconnect/error/FCW overlay is up. ("No menu open"
+    // — the other half of is_volume_enabled — is implied by currentMenu_ ==
+    // MENU_NONE at the call site.)
+    void setVolumeEnabled(bool enabled);
+
 private:
     enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT, MENU_VOLUME };
 
@@ -105,6 +112,10 @@ private:
 
     // Whether the speed-gated menus may be opened (QML isDisplayOfMenusEnabled).
     bool menusEnabled_;
+
+    // Whether the idle-screen volume Up/Down shortcut is live (QML
+    // is_remote_menu_request_enabled): false during disconnect/error/FCW.
+    bool volumeEnabled_;
 
     // Auto-hide timer
     lv_timer_t* autoHideTimer_;

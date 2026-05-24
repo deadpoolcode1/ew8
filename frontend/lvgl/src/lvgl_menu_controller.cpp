@@ -79,6 +79,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     , isaMode_(0)
     , isaAvailable_(false)
     , menusEnabled_(true)
+    , volumeEnabled_(true)
     , autoHideTimer_(nullptr)
     , qrActive_(false)
     , qrActivateTimer_(nullptr)
@@ -468,6 +469,14 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             if (canmgr_) canmgr_->sendVolumeUp();
             restartAutoHide(5000);
             break;
+        case MENU_NONE:
+            // QML is_volume_enabled: on the idle screen (no menu open) Up/Down
+            // drive the master volume. The volume menu is opened by the reply
+            // (VOLUME_DONE) to this request — without sending it here the volume
+            // menu was unreachable (IMS-11656). Gated like is_remote_menu_
+            // request_enabled (no disconnect/error/FCW overlay up).
+            if (volumeEnabled_ && canmgr_) canmgr_->sendVolumeUp();
+            break;
         default:
             break;
         }
@@ -497,6 +506,11 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
         case MENU_VOLUME:
             if (canmgr_) canmgr_->sendVolumeDown();
             restartAutoHide(5000);
+            break;
+        case MENU_NONE:
+            // Idle-screen master-volume shortcut — see SDLK_UP/MENU_NONE above
+            // (IMS-11656).
+            if (volumeEnabled_ && canmgr_) canmgr_->sendVolumeDown();
             break;
         default:
             break;
@@ -615,4 +629,9 @@ void LvglMenuController::setMenusEnabled(bool enabled)
          currentMenu_ == MENU_ABOUT)) {
         hideAllMenus();
     }
+}
+
+void LvglMenuController::setVolumeEnabled(bool enabled)
+{
+    volumeEnabled_ = enabled;
 }
