@@ -84,7 +84,7 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
     itsThread->started.connect([this]() { process(); });
 
-    updateDisplayTimeWindow->timeout.connect([this]() { process(); });
+    updateDisplayTimeWindow->timeout.connect([this]() { onWindowExpired(); });
 
     alertController->setMessageCallback([this](const std::string& msg) {
         emit messageDisplayWindow(QVariant(String(msg).toQString()));
@@ -97,7 +97,12 @@ MainProcess::MainProcess(QObject *aComponentObject, QObject * parent) : QObject(
 
 void MainProcess::process()
 {
-
+    // Leading-edge throttle. The first tree-changing frame renders immediately
+    // and opens a window; frames arriving while the window is active are
+    // coalesced (their changes stay flagged but we don't re-render). This keeps
+    // the display responsive while capping the render rate to one per window.
+    // The trailing changes are flushed by onWindowExpired() when the window
+    // closes, so a final update isn't left un-rendered if CAN traffic pauses.
     if (alertController->needsDisplayUpdate())
     {
         if(!updateDisplayTimeWindow->isActive())
@@ -111,6 +116,25 @@ void MainProcess::process()
             alertController->mutex.unlock();
 
         }
+    }
+}
+
+void MainProcess::onWindowExpired(void)
+{
+    // Throttle window closed: flush any changes coalesced while it was open
+    // (trailing edge). Previously the timer's timeout re-entered process(),
+    // which no-ops here because isActive() is still true during the fire — so
+    // the last coalesced update would only render when the next CAN frame
+    // happened to arrive, lagging on a bus that pauses. Do NOT restart the
+    // window here: this runs on the timer's own thread, and start()->stop()
+    // would join the calling thread (deadlock). The next frame reopens it via
+    // process().
+    if (alertController->needsDisplayUpdate())
+    {
+        alertController->markUpdateComplete();
+        alertController->mutex.lock();
+        updateDisplay();
+        alertController->mutex.unlock();
     }
 }
 
