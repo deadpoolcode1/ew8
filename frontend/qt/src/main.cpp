@@ -11,6 +11,7 @@
 #include "defs.h"
 
 #include "core/file_utils.h"
+#include "core/resource_paths.h"
 #include <QScreen>
 #include "brightnesscontrol.h"
 
@@ -101,8 +102,12 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    // Build path as std::string instead of QUrl
-    std::string mainQmlPath = std::string(BASE_TARGET_DIR) + "qml/" + config.mainQmlFileName;
+    // Resolve the QML directory relative to the executable at runtime via
+    // resourceBaseDir() (the same lookup the backend uses for configs/dbc),
+    // instead of the compile-time BASE_TARGET_DIR. The QML files are deployed
+    // next to the binary in qml/, so they load from disk and stay editable
+    // after compilation (IMS-11653).
+    std::string mainQmlPath = core::resourceBaseDir() + "qml/" + config.mainQmlFileName;
 
     // Only construct QUrl inline where required by Qt QML APIs
     QQmlComponent component(&engine, QUrl::fromLocalFile(String(mainQmlPath).toQString()));
