@@ -36,25 +36,34 @@ public:
     void setLevel(LogLevel level) { minLevel_ = level; }
     LogLevel level() const { return minLevel_; }
 
+    // Mirror every log line to a file in addition to stderr, so the output
+    // survives a crash that closes the console window (IMS-11652). The file is
+    // opened for append and each line is flushed immediately, so logs are
+    // preserved even if the process dies abruptly. Passing an empty path (or a
+    // path that cannot be opened) leaves file logging disabled.
+    void setLogFile(const std::string& path) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (logFile_) { fclose(logFile_); logFile_ = nullptr; }
+        if (path.empty()) return;
+        logFile_ = fopen(path.c_str(), "a");
+        if (logFile_) {
+            fprintf(logFile_, "\n===== EW8 log session started =====\n");
+            fflush(logFile_);
+        }
+    }
+
     void log(LogLevel level, const char* /*file*/, int /*line*/, const char* /*func*/, const char* fmt, ...) {
         if (level < minLevel_) return;
 
         std::lock_guard<std::mutex> lock(mutex_);
 
-        va_list args;
-        va_start(args, fmt);
-
-        // Print timestamp
+        // Timestamp
         auto now = std::chrono::system_clock::now();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
             now.time_since_epoch()).count() % 1000;
         auto time = std::chrono::system_clock::to_time_t(now);
         struct tm* tm_info = localtime(&time);
 
-        fprintf(stderr, "[%02d:%02d:%02d.%03d] ",
-                tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, (int)ms);
-
-        // Print level
         const char* levelStr = "";
         switch (level) {
             case LogLevel::Debug:    levelStr = "DEBUG"; break;
@@ -63,19 +72,33 @@ public:
             case LogLevel::Error:    levelStr = "ERROR"; break;
             case LogLevel::Critical: levelStr = "CRIT "; break;
         }
-        fprintf(stderr, "[%s] ", levelStr);
 
-        // Print message
-        vfprintf(stderr, fmt, args);
-        fprintf(stderr, "\n");
-
+        // Format the message body once, then emit the full line to every sink
+        // so stderr and the log file stay identical.
+        char msgbuf[1024];
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(msgbuf, sizeof(msgbuf), fmt, args);
         va_end(args);
+
+        char linebuf[1152];
+        snprintf(linebuf, sizeof(linebuf), "[%02d:%02d:%02d.%03d] [%s] %s\n",
+                 tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, (int)ms,
+                 levelStr, msgbuf);
+
+        fputs(linebuf, stderr);
+        if (logFile_) {
+            fputs(linebuf, logFile_);
+            fflush(logFile_);  // crash-safe: don't rely on buffered exit
+        }
     }
 
 private:
-    Logger() : minLevel_(LogLevel::Debug) {}
+    Logger() : minLevel_(LogLevel::Debug), logFile_(nullptr) {}
+    ~Logger() { if (logFile_) fclose(logFile_); }
     LogLevel minLevel_;
     std::mutex mutex_;
+    FILE* logFile_;
 };
 
 // Stream-style logger for qDebug() << style logging

@@ -2,10 +2,13 @@
 #include "lvgl_main_process.h"
 #include "app_init.h"
 #include "lvgl.h"
+#include "core/logger.h"
+#include "core/resource_paths.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <csignal>
+#include <string>
 #include <chrono>
 #include <thread>
 #include <SDL2/SDL.h>
@@ -34,6 +37,18 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
+
+    // Mirror all logs to a file so they survive a crash that closes the console
+    // window (IMS-11652). EW8_LOG_FILE overrides the default of ew8.log next to
+    // the executable. Each line is flushed immediately, so the file is complete
+    // even if the process dies abruptly.
+    {
+        const char* envLog = std::getenv("EW8_LOG_FILE");
+        std::string logPath = envLog ? std::string(envLog)
+                                     : (core::executableDir() + "ew8.log");
+        core::Logger::instance().setLogFile(logPath);
+        LOG_INFO("EW8 LVGL Frontend starting (log file: %s)", logPath.c_str());
+    }
 
     bootUpTimer.start();
     printf("EW8 LVGL Frontend starting...\n");
@@ -72,6 +87,7 @@ int main(int argc, char* argv[])
     // Initialize SDL2 + LVGL display driver
     lv_display_t* disp = sdl_display_init(DISPLAY_WIDTH, DISPLAY_HEIGHT);
     if (!disp) {
+        LOG_ERROR("Failed to initialize display");
         printf("Failed to initialize display\n");
         return 1;
     }
@@ -89,6 +105,7 @@ int main(int argc, char* argv[])
 
     postLaunchBackend(config);
 
+    LOG_INFO("Entering main loop (Escape or close window to quit)");
     printf("Entering main loop (Escape or close window to quit)...\n");
 
     // Main loop
@@ -119,6 +136,7 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
+    LOG_INFO("Shutting down");
     printf("Shutting down...\n");
     // Backend threads (CAN reader) block on I/O and can't be cleanly joined.
     // Clean up what we can, then force exit.
