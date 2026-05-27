@@ -88,6 +88,12 @@ cmake --build .
 
 - `build/ew8_lvgl` — The executable
 - `build/images/` — Runtime image assets (copied from `assets/images/`)
+- `build/configs/` — Runtime configuration (copied from `configs/`)
+- `build/signals/` — CAN signal definitions (copied from `signals/`)
+- `build/dbc/` — CAN database files (copied from `DBC/`)
+
+All four resource trees are copied next to the executable at CMake
+configure time so the app finds them via `core::resourceBaseDir()`.
 
 ## Running
 

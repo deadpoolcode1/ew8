@@ -121,5 +121,16 @@ if(WIN32)
     target_compile_definitions(ew8_lvgl PRIVATE SDL_MAIN_HANDLED)
 endif()
 
-# Copy shared assets to build directory for runtime access
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../assets/images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Copy shared assets to build directory for runtime access.
+#
+# The app locates its resources via core::resourceBaseDir(), which expects
+# configs/, dbc/ and signals/ alongside the executable. The build used to copy
+# only images/, so a run-from-build (or a packaged build) was missing the other
+# three trees and depended on hand-made symlinks (IMS-11650). Copy all of them.
+# DBC is copied to a lowercase "dbc/" to match the lookup path in
+# candbsignal.cpp on case-sensitive filesystems.
+set(EW8_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+file(COPY ${EW8_REPO_ROOT}/assets/images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${EW8_REPO_ROOT}/configs       DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${EW8_REPO_ROOT}/signals       DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${EW8_REPO_ROOT}/DBC/          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/dbc)
