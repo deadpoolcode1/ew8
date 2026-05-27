@@ -60,7 +60,9 @@ target_include_directories(ew8_backend PUBLIC
 )
 
 # Version numbers (match canquick.pro)
-set(MAJOR_VERSION 3 CACHE STRING "Major version")
+# FW/engine version is 4.x.x (config version lives in configs/EW8_Config.json,
+# currently 5.0.0) — see IMS-11647.
+set(MAJOR_VERSION 4 CACHE STRING "Major version")
 set(MINOR_VERSION 0 CACHE STRING "Minor version")
 set(OTA_TEST_VERSION 0 CACHE STRING "OTA test version")
 
