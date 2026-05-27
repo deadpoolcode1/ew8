@@ -1,5 +1,6 @@
 #include "lvgl_menu_controller.h"
 #include "canmanager.h"
+#include "version_info.h"
 #include <SDL2/SDL.h>
 #include <cstdio>
 
@@ -144,9 +145,13 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     lv_obj_remove_flag(infoContainer, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_flow(infoContainer, LV_FLEX_FLOW_COLUMN);
 
-    // Info rows (label: value)
+    // Info rows (label: value). The version values come from the backend —
+    // engine from the MAJOR/MINOR/OTA build macros, config from ConfigVersion
+    // in configs/EW8_Config.json — instead of the old hardcoded "1.0.0", which
+    // made the About menu always show the wrong values (IMS-11649).
+    VersionInfo version = buildVersionInfo();
     const char* infoLabels[] = { "EW8 App:", "EW8 Config:", "EW8 SN:" };
-    const char* infoValues[] = { "1.0.0", "1.0.0", "N/A" };
+    const std::string infoValues[] = { version.engine, version.config, "N/A" };
     for (int i = 0; i < 3; i++) {
         lv_obj_t* row = lv_obj_create(infoContainer);
         lv_obj_set_size(row, 260, 20);
@@ -162,7 +167,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
         lv_obj_set_pos(lbl, 0, 0);
 
         lv_obj_t* val = lv_label_create(row);
-        lv_label_set_text(val, infoValues[i]);
+        lv_label_set_text(val, infoValues[i].c_str());
         lv_obj_set_style_text_font(val, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(val, COLOR_WHITE, 0);
         lv_obj_set_pos(val, 110, 0);
