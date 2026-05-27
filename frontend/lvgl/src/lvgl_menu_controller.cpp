@@ -120,9 +120,17 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     // --- ISA menu ---
     isaScreen_ = createMenuScreen(parent);
 
+    // ISA title logo at the top, mirroring the QML ISAIndicator (ISA.png). The
+    // LVGL ISA menu had no title — only the big mode icon — so the menu header
+    // was missing (IMS-11655). The big mode icon moves down to the value slot
+    // (y=68), matching the QML value_rectangle and the brightness/volume menus.
+    isaTitle_ = lv_image_create(isaScreen_);
+    lv_image_set_src(isaTitle_, "A:images/isa-menu/ISA.png");
+    lv_obj_align(isaTitle_, LV_ALIGN_TOP_MID, 0, 13);
+
     isaIcon_ = lv_image_create(isaScreen_);
     lv_image_set_src(isaIcon_, ISA_BIG_ICONS[0]);
-    lv_obj_align(isaIcon_, LV_ALIGN_TOP_MID, 0, 20);
+    lv_obj_align(isaIcon_, LV_ALIGN_TOP_MID, 0, 68);
 
     isaBar_ = createProgressBar(isaScreen_, BAR_Y, 3, 0);
     createFooterDots(isaScreen_, 3, 1);
