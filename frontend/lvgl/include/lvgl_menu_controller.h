@@ -100,6 +100,7 @@ private:
     // ISA (modes 0-2)
     int isaMode_;
     lv_obj_t* isaScreen_;
+    lv_obj_t* isaTitle_;   // "ISA" header logo (IMS-11655)
     lv_obj_t* isaIcon_;
     ProgressBar isaBar_;
 
