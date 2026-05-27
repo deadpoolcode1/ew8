@@ -228,11 +228,14 @@ cd build_win
 .\ew8_lvgl.exe
 ```
 
-> **Note:** `C:\msys64\mingw64\bin` *must* be on `PATH` before launching the
-> executable — otherwise `SDL2.dll` and the MinGW C++ runtime can't be found
-> and the process exits silently with no output.
+> **Note:** The build now copies the MinGW C++ runtime and `SDL2.dll`
+> (`libgcc_s_seh-1.dll`, `libstdc++-6.dll`, `libwinpthread-1.dll`, `SDL2.dll`)
+> next to `ew8_lvgl.exe` at build time, so the executable runs without
+> `C:\msys64\mingw64\bin` on `PATH`. If CMake warned that a DLL was not found
+> (uncommon toolchain layout), put `C:\msys64\mingw64\bin` on `PATH` instead —
+> otherwise the missing DLL makes the process exit silently with no output.
 >
-> To make the change persistent for your user account (then reopen PowerShell):
+> To make the PATH change persistent for your user account (then reopen PowerShell):
 >
 > ```powershell
 > [Environment]::SetEnvironmentVariable(
