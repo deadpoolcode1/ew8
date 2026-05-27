@@ -54,16 +54,20 @@ target_compile_definitions(canquick PRIVATE
 qt5_add_resources(QML_RESOURCES qml.qrc)
 target_sources(canquick PRIVATE ${QML_RESOURCES})
 
-# Post-build: create symlinks for runtime resource discovery
-# Build /opt/canquick/qml/ as a directory with symlinks to QML files + shared assets
-add_custom_command(TARGET canquick POST_BUILD
-    COMMAND sudo mkdir -p ${EW8_INSTALL_PREFIX}/bin
-    COMMAND sudo rm -rf ${EW8_INSTALL_PREFIX}/qml
-    COMMAND sudo mkdir -p ${EW8_INSTALL_PREFIX}/qml
-    COMMAND bash -c "sudo ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/qml/*.qml ${CMAKE_CURRENT_SOURCE_DIR}/qml/*.js ${EW8_INSTALL_PREFIX}/qml/"
-    COMMAND sudo ln -sfn ${CMAKE_CURRENT_SOURCE_DIR}/../../assets/images ${EW8_INSTALL_PREFIX}/qml/images
-    COMMAND sudo ln -sfn ${CMAKE_CURRENT_SOURCE_DIR}/../../assets/fonts ${EW8_INSTALL_PREFIX}/qml/fonts
-    COMMAND sudo ln -sfn ${CMAKE_CURRENT_SOURCE_DIR}/../../signals ${EW8_INSTALL_PREFIX}/signals
-    COMMAND sudo ln -sfn ${CMAKE_CURRENT_SOURCE_DIR}/../../configs ${EW8_INSTALL_PREFIX}/configs
-    COMMAND sudo ln -sfn ${CMAKE_CURRENT_SOURCE_DIR}/../../DBC ${EW8_INSTALL_PREFIX}/dbc
-)
+# Deploy QML and runtime resources next to the executable so they are loaded
+# from disk via core::resourceBaseDir() and remain editable after compilation
+# (IMS-11653). This replaces a POST_BUILD step that symlinked everything into
+# /opt/canquick with sudo: that required root, only worked on Linux, and — when
+# sudo was unavailable — failed and made the build delete the linked binary.
+# Layout mirrors the LVGL frontend; QML images/fonts live under qml/ because the
+# .qml files reference them with relative paths. DBC goes to a lowercase "dbc/"
+# to match candbsignal.cpp on case-sensitive filesystems.
+set(EW8_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(EW8_QML_OUT ${CMAKE_CURRENT_BINARY_DIR}/qml)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/qml/ DESTINATION ${EW8_QML_OUT}
+     FILES_MATCHING PATTERN "*.qml" PATTERN "*.js")
+file(COPY ${EW8_REPO_ROOT}/assets/images DESTINATION ${EW8_QML_OUT})
+file(COPY ${EW8_REPO_ROOT}/assets/fonts  DESTINATION ${EW8_QML_OUT})
+file(COPY ${EW8_REPO_ROOT}/configs       DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${EW8_REPO_ROOT}/signals       DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${EW8_REPO_ROOT}/DBC/          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/dbc)
