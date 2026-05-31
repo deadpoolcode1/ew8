@@ -1,10 +1,16 @@
 #include "lvgl_menu_controller.h"
 #include "canmanager.h"
+#include "version_info.h"
 #include <SDL2/SDL.h>
 #include <cstdio>
 
 LV_FONT_DECLARE(intelone_bold_18);
 LV_FONT_DECLARE(intelone_bold_20);
+// Menus must use the IntelOne brand font like the Qt frontend, not LVGL's
+// built-in Montserrat fallback (IMS-11660).
+LV_FONT_DECLARE(intelone_medium_14);
+LV_FONT_DECLARE(intelone_medium_17);
+LV_FONT_DECLARE(intelone_medium_28);
 
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
@@ -73,6 +79,8 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     , volumeValue_(0), volumeMin_(0), volumeMax_(5)
     , isaMode_(0)
     , isaAvailable_(false)
+    , menusEnabled_(true)
+    , volumeEnabled_(true)
     , autoHideTimer_(nullptr)
     , qrActive_(false)
     , qrActivateTimer_(nullptr)
@@ -87,7 +95,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
     brightnessValueLabel_ = lv_label_create(brightnessScreen_);
     lv_label_set_text(brightnessValueLabel_, "5");
-    lv_obj_set_style_text_font(brightnessValueLabel_, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(brightnessValueLabel_, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(brightnessValueLabel_, COLOR_BLUE, 0);
     lv_obj_align(brightnessValueLabel_, LV_ALIGN_TOP_MID, 0, 68);
 
@@ -103,7 +111,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
     volumeValueLabel_ = lv_label_create(volumeScreen_);
     lv_label_set_text(volumeValueLabel_, "0");
-    lv_obj_set_style_text_font(volumeValueLabel_, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(volumeValueLabel_, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(volumeValueLabel_, COLOR_BLUE, 0);
     lv_obj_align(volumeValueLabel_, LV_ALIGN_TOP_MID, 0, 68);
 
@@ -112,9 +120,17 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     // --- ISA menu ---
     isaScreen_ = createMenuScreen(parent);
 
+    // ISA title logo at the top, mirroring the QML ISAIndicator (ISA.png). The
+    // LVGL ISA menu had no title — only the big mode icon — so the menu header
+    // was missing (IMS-11655). The big mode icon moves down to the value slot
+    // (y=68), matching the QML value_rectangle and the brightness/volume menus.
+    isaTitle_ = lv_image_create(isaScreen_);
+    lv_image_set_src(isaTitle_, "A:images/isa-menu/ISA.png");
+    lv_obj_align(isaTitle_, LV_ALIGN_TOP_MID, 0, 13);
+
     isaIcon_ = lv_image_create(isaScreen_);
     lv_image_set_src(isaIcon_, ISA_BIG_ICONS[0]);
-    lv_obj_align(isaIcon_, LV_ALIGN_TOP_MID, 0, 20);
+    lv_obj_align(isaIcon_, LV_ALIGN_TOP_MID, 0, 68);
 
     isaBar_ = createProgressBar(isaScreen_, BAR_Y, 3, 0);
     createFooterDots(isaScreen_, 3, 1);
@@ -137,9 +153,13 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     lv_obj_remove_flag(infoContainer, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_flow(infoContainer, LV_FLEX_FLOW_COLUMN);
 
-    // Info rows (label: value)
+    // Info rows (label: value). The version values come from the backend —
+    // engine from the MAJOR/MINOR/OTA build macros, config from ConfigVersion
+    // in configs/EW8_Config.json — instead of the old hardcoded "1.0.0", which
+    // made the About menu always show the wrong values (IMS-11649).
+    VersionInfo version = buildVersionInfo();
     const char* infoLabels[] = { "EW8 App:", "EW8 Config:", "EW8 SN:" };
-    const char* infoValues[] = { "1.0.0", "1.0.0", "N/A" };
+    const std::string infoValues[] = { version.engine, version.config, "N/A" };
     for (int i = 0; i < 3; i++) {
         lv_obj_t* row = lv_obj_create(infoContainer);
         lv_obj_set_size(row, 260, 20);
@@ -150,13 +170,13 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
 
         lv_obj_t* lbl = lv_label_create(row);
         lv_label_set_text(lbl, infoLabels[i]);
-        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(lbl, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(lbl, COLOR_WHITE, 0);
         lv_obj_set_pos(lbl, 0, 0);
 
         lv_obj_t* val = lv_label_create(row);
-        lv_label_set_text(val, infoValues[i]);
-        lv_obj_set_style_text_font(val, &lv_font_montserrat_16, 0);
+        lv_label_set_text(val, infoValues[i].c_str());
+        lv_obj_set_style_text_font(val, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(val, COLOR_WHITE, 0);
         lv_obj_set_pos(val, 110, 0);
     }
@@ -193,7 +213,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     // Fallback label (shown below QR code for URL text)
     qrLabel_ = lv_label_create(qrScreen_);
     lv_label_set_text(qrLabel_, "");
-    lv_obj_set_style_text_font(qrLabel_, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_font(qrLabel_, &intelone_medium_14, 0);
     lv_obj_set_style_text_color(qrLabel_, COLOR_WHITE, 0);
     lv_obj_align(qrLabel_, LV_ALIGN_BOTTOM_MID, 0, -10);
 }
@@ -259,7 +279,7 @@ LvglMenuController::ProgressBar LvglMenuController::createProgressBar(
         char buf[8];
         snprintf(buf, sizeof(buf), "%d", i + lowerLimit);
         lv_label_set_text(lbl, buf);
-        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(lbl, &intelone_medium_17, 0);
         lv_obj_set_style_text_color(lbl, COLOR_GRAY, 0);
         lv_obj_align(lbl, LV_ALIGN_TOP_LEFT, segX - 5, y + BAR_HEIGHT + 12);
     }
@@ -404,6 +424,15 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
     case SDLK_RETURN:
         // Cycle menus: none → brightness → [ISA if available] → about → none
         // Volume menu is entered externally via VOLUME_DONE CAN; Return sends mute
+        //
+        // QML isDisplayOfMenusEnabled gate: while the speed display is up (or an
+        // error overlay is showing) the brightness/ISA/about menus must not be
+        // accessible. Return then just clears any of them (it never opens one).
+        // The volume menu is exempt — it is CAN-driven and handles its own keys.
+        if (!menusEnabled_ && currentMenu_ != MENU_VOLUME) {
+            hideAllMenus();
+            break;
+        }
         switch (currentMenu_) {
         case MENU_NONE:
             showMenu(MENU_BRIGHTNESS);
@@ -453,6 +482,14 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             if (canmgr_) canmgr_->sendVolumeUp();
             restartAutoHide(5000);
             break;
+        case MENU_NONE:
+            // QML is_volume_enabled: on the idle screen (no menu open) Up/Down
+            // drive the master volume. The volume menu is opened by the reply
+            // (VOLUME_DONE) to this request — without sending it here the volume
+            // menu was unreachable (IMS-11656). Gated like is_remote_menu_
+            // request_enabled (no disconnect/error/FCW overlay up).
+            if (volumeEnabled_ && canmgr_) canmgr_->sendVolumeUp();
+            break;
         default:
             break;
         }
@@ -482,6 +519,11 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
         case MENU_VOLUME:
             if (canmgr_) canmgr_->sendVolumeDown();
             restartAutoHide(5000);
+            break;
+        case MENU_NONE:
+            // Idle-screen master-volume shortcut — see SDLK_UP/MENU_NONE above
+            // (IMS-11656).
+            if (volumeEnabled_ && canmgr_) canmgr_->sendVolumeDown();
             break;
         default:
             break;
@@ -581,5 +623,44 @@ void LvglMenuController::setIsaAvailable(bool available)
     // If ISA just became unavailable while ISA menu is showing, skip to about
     if (!available && currentMenu_ == MENU_ISA) {
         showMenu(MENU_ABOUT);
+    }
+}
+
+void LvglMenuController::setMenusEnabled(bool enabled)
+{
+    if (enabled == menusEnabled_) {
+        return;
+    }
+    menusEnabled_ = enabled;
+
+    // QML onIsDisplayOfMenusEnabledChanged: when the speed display takes over
+    // (or an error appears), any open speed-gated menu is dismissed at once.
+    // The volume menu and QR overlay are driven by CAN / dual-key, not this
+    // gate, so they are left untouched.
+    if (!enabled &&
+        (currentMenu_ == MENU_BRIGHTNESS || currentMenu_ == MENU_ISA ||
+         currentMenu_ == MENU_ABOUT)) {
+        hideAllMenus();
+    }
+}
+
+void LvglMenuController::setVolumeEnabled(bool enabled)
+{
+    volumeEnabled_ = enabled;
+}
+
+void LvglMenuController::raiseActiveScreenIfVisible()
+{
+    // Menus/QR are full-screen opaque overlays that must sit above the
+    // left-panel signs (QML z>=20). The main process lifts changed signs with
+    // lv_obj_move_foreground(), which can put a sign above an open menu; move
+    // the visible screen(s) back to the front to cover it again. Order matters
+    // only if several are visible at once (QR ends up on top, as in QML).
+    lv_obj_t* screens[] = { brightnessScreen_, volumeScreen_, isaScreen_,
+                            aboutScreen_, qrScreen_ };
+    for (lv_obj_t* s : screens) {
+        if (s && !lv_obj_has_flag(s, LV_OBJ_FLAG_HIDDEN)) {
+            lv_obj_move_foreground(s);
+        }
     }
 }

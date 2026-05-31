@@ -29,6 +29,27 @@ public:
     void setIsaAvailable(bool available);
     bool isIsaAvailable() const { return isaAvailable_; }
 
+    // Gates the user-accessible menus (brightness/ISA/about), mirroring the QML
+    // isDisplayOfMenusEnabled property: menus are blocked while the vehicle
+    // speed is being shown or an error overlay is up. When disabled, any open
+    // speed-gated menu is dismissed immediately (QML onIsDisplayOfMenusEnabledChanged).
+    void setMenusEnabled(bool enabled);
+
+    // Gates the idle-screen master-volume Up/Down shortcut, mirroring the QML
+    // is_volume_enabled / is_remote_menu_request_enabled gate: the volume keys
+    // are live only while no disconnect/error/FCW overlay is up. ("No menu open"
+    // — the other half of is_volume_enabled — is implied by currentMenu_ ==
+    // MENU_NONE at the call site.)
+    void setVolumeEnabled(bool enabled);
+
+    // Re-assert the top z-order of whichever menu/QR screen is currently
+    // visible. The main process reorders the left-panel signs with
+    // lv_obj_move_foreground(); since the menu screens are siblings of those
+    // signs, a sign that just changed can be lifted above an open menu (the
+    // TSR/ISA speed sign drawn over the menu — IMS-11654). Called each display
+    // update after the sign reordering so opaque menus stay on top (QML z>=20).
+    void raiseActiveScreenIfVisible();
+
 private:
     enum MenuPage { MENU_NONE, MENU_BRIGHTNESS, MENU_ISA, MENU_ABOUT, MENU_VOLUME };
 
@@ -79,6 +100,7 @@ private:
     // ISA (modes 0-2)
     int isaMode_;
     lv_obj_t* isaScreen_;
+    lv_obj_t* isaTitle_;   // "ISA" header logo (IMS-11655)
     lv_obj_t* isaIcon_;
     ProgressBar isaBar_;
 
@@ -96,6 +118,13 @@ private:
 
     // ISA availability (driven by STATE_ISA_NOT_TSR / STATE_TSR_NOT_ISA)
     bool isaAvailable_;
+
+    // Whether the speed-gated menus may be opened (QML isDisplayOfMenusEnabled).
+    bool menusEnabled_;
+
+    // Whether the idle-screen volume Up/Down shortcut is live (QML
+    // is_remote_menu_request_enabled): false during disconnect/error/FCW.
+    bool volumeEnabled_;
 
     // Auto-hide timer
     lv_timer_t* autoHideTimer_;

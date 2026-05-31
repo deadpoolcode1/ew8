@@ -27,6 +27,10 @@ public:
     void setSpeedShowNode(LvglDisplayNode* node) { speedShowNode_ = node; }
     void onBecomeVisible() override;
 
+    // Raw vehicle speed value last received (km/h, before MPH conversion).
+    // Used to reproduce the QML isDisplayOfMenusEnabled gate (speed.canEntityArg).
+    int getSpeedValue() const { return valueInt_; }
+
 private:
     lv_obj_t* valueLabel_;
     lv_obj_t* unitLabel_;

@@ -17,6 +17,11 @@
 
 extern core::ElapsedTimer bootUpTimer;
 
+// Signal-test screen text uses the IntelOne brand font (Qt's SignalTestSpeed
+// uses IntelOne), not LVGL's built-in Montserrat fallback (IMS-11660).
+LV_FONT_DECLARE(intelone_medium_17);
+LV_FONT_DECLARE(intelone_medium_28);
+
 static const int DISPLAY_WIDTH = 320;
 static const int DISPLAY_HEIGHT = 240;
 
@@ -34,6 +39,11 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , mainPanel_(nullptr)
     , failsafeNode_(nullptr)
     , hmwValueLabel_(nullptr)
+    , hmwDistanceNode_(nullptr)
+    , hmwAlertNode_(nullptr)
+    , hmwMonitorNode_(nullptr)
+    , speedNode_(nullptr)
+    , errorNode_(nullptr)
     , menuController_(nullptr)
 {
     coreDebug() << "LvglMainProcess init begin, time:" << bootUpTimer.elapsed();
@@ -425,7 +435,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     lv_obj_t* speedSmallLabel = lv_label_create(signalTestWidget);
     lv_label_set_text(speedSmallLabel, "X");
-    lv_obj_set_style_text_font(speedSmallLabel, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(speedSmallLabel, &intelone_medium_17, 0);
     lv_obj_set_style_text_color(speedSmallLabel, lv_color_hex(0x99a0a6), 0);
     lv_obj_set_pos(speedSmallLabel, 90 + 25, 62 + 25);
     lv_obj_align(speedSmallLabel, LV_ALIGN_DEFAULT, 0, 0);
@@ -444,7 +454,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     lv_obj_t* speedBigLabel = lv_label_create(signalTestWidget);
     lv_label_set_text(speedBigLabel, "X");
-    lv_obj_set_style_text_font(speedBigLabel, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(speedBigLabel, &intelone_medium_28, 0);
     lv_obj_set_style_text_color(speedBigLabel, lv_color_hex(0x99a0a6), 0);
     lv_obj_align(speedBigLabel, LV_ALIGN_CENTER, 0, 49);
     lv_obj_add_flag(speedBigLabel, LV_OBJ_FLAG_HIDDEN);
@@ -531,6 +541,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     addChild(generalPanel, disconPanel);
 
     auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, err.errorCodeLabel);
+    errorNode_ = errorNode;
     addChild(disconPanel, errorNode);
 
     auto* disconNode = new LvglDisplayNode(disconWidget, 0, AlertTypes::ALERT_NOCOM);
@@ -565,6 +576,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // QML: (canEntityArg/10).toFixed(1) — CAN arg 12 displays as "1.2"
     hmwValueLabel_ = hmw.valueLabel;
     auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel, 10);
+    hmwDistanceNode_ = hmwNode;
     addChild(groupCIPV, hmwNode);
 
     // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
@@ -573,12 +585,14 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     auto* hmwAlertNode = new LvglHmwStateNode(0, ID_ALERT_HMW_ALERT,
                                                hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif",
                                                hmw.forwardCar, 45, 160, 145);
+    hmwAlertNode_ = hmwAlertNode;
     addChild(groupCIPV, hmwAlertNode);
 
     // Monitor: car further away, smaller
     auto* hmwMonitorNode = new LvglHmwStateNode(0, ID_ALERT_HMW_MONITOR,
                                                  hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif",
                                                  hmw.forwardCar, 40, 119, 115);
+    hmwMonitorNode_ = hmwMonitorNode;
     addChild(groupCIPV, hmwMonitorNode);
 
     // PDZ overlay (layer=0, ALERT_PDZ)
@@ -646,6 +660,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
 
     // speed (LvglSpeedDisplayNode, layer=0, INFO_VEH_SPEED — with MPH conversion support)
     auto* speedNode = new LvglSpeedDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel, speedUnitLabel);
+    speedNode_ = speedNode;
     addChild(statusPanel, speedNode);
 
     // Beam group (mutexGroup=true)
@@ -878,6 +893,20 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // to the tree traversal, preventing TSR signs from being shown (matches Qt behavior
     // where left_panel_tsr.is_available = false when ISA is active)
     groupBottom->setBlockingNode(isaNotTsrNode);
+
+    // The speed-limit signs in groupTop are NOT separated into ISA-only and
+    // TSR-only groups (the SLI/TSR speed sign and the ISA speed/highway signs
+    // share groupTop), so the blocking above did not cover them. Without this,
+    // the SLI sign (layer 1) wins over the ISA speed sign (layer 2) by layer
+    // priority, so an active TSR speed value is shown even while ISA is active
+    // — e.g. at startup the unit showed the TSR value instead of the ISA value
+    // (IMS-11657). Qt keeps them mutually exclusive via state_isa ("tsr" vs
+    // "isa"); reproduce that by cross-blocking the individual signs:
+    //   - SLI (TSR speed) hidden while ISA is active.
+    //   - ISA speed / highway hidden while TSR is active.
+    sliNode->setBlockingNode(isaNotTsrNode);
+    isaSpeedNode->setBlockingNode(tsrNotIsaNode);
+    isaHighwayNode->setBlockingNode(tsrNotIsaNode);
 
     auto* sliShowNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_SLI_SHOW);
     addChild(leftPanel, sliShowNode);
@@ -1189,6 +1218,24 @@ void LvglMainProcess::applyPendingDisplayUpdate()
         updateTreeVisibility(displayRoot_, DO_NOT_FORCE_INVISIBILITY);
         alertController_->mutex.unlock();
 
+        // QML isDisplayOfMenusEnabled:
+        //   ((!speed.speed_available) || (0 === speed.canEntityArg)) && !status_error.is_in_err
+        // Block the brightness/ISA/about menus while the vehicle speed is being
+        // shown (available and non-zero) or an error overlay is up. IMS-11648.
+        if (menuController_) {
+            bool errorActive = errorNode_ && errorNode_->getActivSem() > 0;
+            bool speedActive = speedNode_ && speedNode_->getActivSem() > 0
+                            && speedNode_->getSpeedValue() != 0;
+            menuController_->setMenusEnabled(!speedActive && !errorActive);
+
+            // QML is_remote_menu_request_enabled:
+            //   !(discon_panel.visible || alert_err.visible || groupFCW.visible)
+            // Gates the idle-screen master-volume Up/Down shortcut (IMS-11656).
+            bool disconActive = disconPanel_ && disconPanel_->getActivSem() > 0;
+            bool fcwActive    = groupFCW_ && groupFCW_->getActivSem() > 0;
+            menuController_->setVolumeEnabled(!disconActive && !errorActive && !fcwActive);
+        }
+
         // QML: HostCar visible: groupGAG.visible || groupCIPV.visible
         // In QML, these groups become invisible when mainPanel is hidden
         // (e.g., by disconPanel activating OM_POWEROFF/OM_KEEPPWR/OM_PILOT).
@@ -1204,20 +1251,41 @@ void LvglMainProcess::applyPendingDisplayUpdate()
                 lv_obj_add_flag(hostCar_, LV_OBJ_FLAG_HIDDEN);
         }
 
-        // QML: HMW text hidden when failsafe visible (is_text_hidden: vsn.visible)
-        if (hmwValueLabel_ && failsafeNode_) {
-            bool failsafeActive = failsafeNode_->getActivSem() > 0;
+        // HMW road strip + lead car (CIPV): the container is owned by the
+        // ALERT_HMW_DISTANCE node, so the tree only shows it when a valid headway
+        // distance is present. But the strip and the lead car must appear whenever
+        // HMW monitor/alert is active — even with no valid distance — matching Qt
+        // (the strip follows the monitor/alert state, the forward car follows the
+        // group). Without this the green/red road and the lead car vanish when the
+        // distance is invalid (IMS-11659). The active monitor/alert state node has
+        // already set the correct GIF + car scale during the traversal above.
+        if (hmwValueLabel_) {
             lv_obj_t* hmwContainer = lv_obj_get_parent(hmwValueLabel_);
+            bool mainPanelVisible = mainPanel_ && mainPanel_->getActivSem() > 0
+                                 && !(disconPanel_ && disconPanel_->getActivSem() > 0);
+            bool cipvVisible = mainPanelVisible && groupCIPV_ && groupCIPV_->getActivSem() > 0;
+            bool distActive    = hmwDistanceNode_ && hmwDistanceNode_->getActivSem() > 0;
+            bool monitorActive = hmwMonitorNode_  && hmwMonitorNode_->getActivSem()  > 0;
+            bool alertActive   = hmwAlertNode_    && hmwAlertNode_->getActivSem()    > 0;
+            bool hmwShown = cipvVisible && (distActive || monitorActive || alertActive);
+
             if (hmwContainer) {
-                // Hide the "sec" and value labels (children 2 and 3 of HMW container)
-                // Child 0 = road GIF, child 1 = forward car, child 2 = sec label, child 3 = value label
+                if (hmwShown)
+                    lv_obj_remove_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_add_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
+
+                // QML: units/time text blank unless a valid headway distance is
+                // present (canEntityArg != 0), and hidden entirely under failsafe.
+                bool failsafeActive = failsafeNode_ && failsafeNode_->getActivSem() > 0;
+                bool showText = hmwShown && distActive && !failsafeActive;
                 lv_obj_t* secLabel = lv_obj_get_child(hmwContainer, 2);
-                if (failsafeActive) {
-                    if (secLabel) lv_obj_add_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_add_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
-                } else {
+                if (showText) {
                     if (secLabel) lv_obj_remove_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_remove_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    if (secLabel) lv_obj_add_flag(secLabel, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(hmwValueLabel_, LV_OBJ_FLAG_HIDDEN);
                 }
             }
         }
@@ -1266,6 +1334,14 @@ void LvglMainProcess::applyPendingDisplayUpdate()
             } else if (topChanged && topWidget) {
                 lv_obj_move_foreground(topWidget);
             }
+        }
+
+        // The sign move_foreground calls above can lift a left-panel sign above
+        // an open menu/QR overlay (signs and menus are all siblings under root),
+        // leaving e.g. the TSR/ISA speed sign drawn on top of the ISA/About menu
+        // (IMS-11654). Re-assert the overlays' top z-order after the reordering.
+        if (menuController_) {
+            menuController_->raiseActiveScreenIfVisible();
         }
 
         // Host car shift based on LDW activation (QML: 200ms shift, 600ms return)
