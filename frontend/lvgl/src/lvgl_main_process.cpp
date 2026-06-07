@@ -8,6 +8,7 @@
 #include "lvgl_menu_display_node.h"
 #include "lvgl_test_display_node.h"
 #include "lvgl_widgets.h"
+#include "lvgl_notice_loader.h"
 #include "entitytype.h"
 #include "alerttypes_core.h"
 #include "graphicitemsenummap.h"
@@ -374,17 +375,18 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
 
     // 3. Full-screen overlays (created after content so they render on top)
-    // Failsafe (QML z=10)
-    lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
-    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power off");
-    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power On");
-    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot mode");
+    // Failsafe + op-mode notices: layout/text loaded from configs/notices.json
+    // (editable without recompiling). See lvgl_notice_loader.cpp. (QML z=10)
+    lv_obj_t* failsafeWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "failsafe");
+    lv_obj_t* poweroffWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_poweroff");
+    lv_obj_t* keeppwrWidget   = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_keeppwr");
+    lv_obj_t* pilotWidget     = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_pilot");
 
     // RTW alert (QML z=10)
     lv_obj_t* rtwAlertWidget = LvglWidgets::createRTWAlert(rootWidget);
 
-    // Disconnect overlay (QML z=11)
-    lv_obj_t* disconWidget  = LvglWidgets::createDisconnectOverlay(rootWidget);
+    // Disconnect overlay (QML z=11) — layout from configs/notices.json
+    lv_obj_t* disconWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "disconnect");
 
     // --- Bulk 6: Display test overlays (QML z=12) ---
     lv_obj_t* rgbRedWidget   = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(255, 0, 0));
@@ -520,9 +522,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* fcwWidget     = LvglWidgets::createFCWAlert(rootWidget);
     lv_obj_t* pcwWidget     = LvglWidgets::createPCWAlert(rootWidget);
 
-    // Error overlay (QML z=20: above everything except menus)
-    LvglWidgets::ErrorOverlayWidgets err = LvglWidgets::createErrorOverlay(rootWidget);
-    lv_obj_t* errorWidget = err.container;
+    // Error overlay (QML z=20: above everything except menus) — layout from
+    // configs/notices.json; the dynamic error-code label is tagged id "error_code".
+    std::map<std::string, lv_obj_t*> errorEls;
+    lv_obj_t* errorWidget = LvglNotice::createNoticeFromConfig(rootWidget, "error", &errorEls);
+    lv_obj_t* errorCodeLabel = errorEls.count("error_code") ? errorEls["error_code"] : nullptr;
 
     // Menu controller (QML z=20+: highest z-order)
     menuController_ = new LvglMenuController(rootWidget, canmgr_);
@@ -540,7 +544,7 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     disconPanel_ = disconPanel;
     addChild(generalPanel, disconPanel);
 
-    auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, err.errorCodeLabel);
+    auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, errorCodeLabel);
     errorNode_ = errorNode;
     addChild(disconPanel, errorNode);
 
