@@ -39,6 +39,11 @@
         ,"ALERT_RTW_WARN"
         ,"ALERT_RTW_ALERT"
 
+        ,"ALERT_LEFT_LCAI"
+        ,"ALERT_RIGHT_LCAI"
+        ,"ALERT_LEFT_LCAW"
+        ,"ALERT_RIGHT_LCAW"
+
         ,"INFO_VEH_SPEED"
         ,"INFO_FAILSAFE"
         ,"SHAPE_USA"
@@ -323,6 +328,16 @@
                     ]
 
                 }
+            ]
+        }
+        ,
+        {
+            "protocol": "JunctionBox_Protocol_led257",
+            "signals": [
+                {"name": "LCA_Left_Info",  "action": "ALERT_LEFT_LCAI",  "type": "GraphicItem"}
+                ,{"name": "LCA_Right_Info", "action": "ALERT_RIGHT_LCAI", "type": "GraphicItem"}
+                ,{"name": "LCA_Left_Warn",  "action": "ALERT_LEFT_LCAW",  "type": "GraphicItem"}
+                ,{"name": "LCA_Right_Warn", "action": "ALERT_RIGHT_LCAW", "type": "GraphicItem"}
             ]
         }
         ,

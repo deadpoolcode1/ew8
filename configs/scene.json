@@ -5,6 +5,20 @@
     {
       "parent": "mainPanel",
       "type": "group",
+      "id": "lcaPanel",
+      "layer": 1,
+      "_note": "PLCA: all four indicators share layer 0 so left/right and info/warn are independent (the in-group visibility rule only shows the lowest active layer). Warn nodes listed after info so red paints over yellow if both fire on the same side.",
+      "children": [
+        { "type": "image", "graphic_item": "ALERT_LEFT_LCAI",  "src": "A:images/LCA/LCA_Yellow.png", "align": "left_mid",  "offset": [2, 0],  "layer": 0 },
+        { "type": "image", "graphic_item": "ALERT_RIGHT_LCAI", "src": "A:images/LCA/LCA_Yellow.png", "align": "right_mid", "offset": [-2, 0], "layer": 0 },
+        { "type": "image", "graphic_item": "ALERT_LEFT_LCAW",  "src": "A:images/LCA/LCA_Red.png",    "align": "left_mid",  "offset": [2, 0],  "layer": 0 },
+        { "type": "image", "graphic_item": "ALERT_RIGHT_LCAW", "src": "A:images/LCA/LCA_Red.png",    "align": "right_mid", "offset": [-2, 0], "layer": 0 }
+      ]
+    },
+
+    {
+      "parent": "mainPanel",
+      "type": "group",
       "id": "rightPanel",
       "layer": 1,
       "_note": "SmartADAS right panel (migrated from buildDisplayTree). Top group mutex (one primary icon); bottom group non-mutex (secondary icons). Children listed in original widget-creation order; per-node 'layer' preserves mutex priority. Intro: container scale 256->154 over 1100ms, x 92->184 (slide to right edge); bottom adds y 63->92.",
