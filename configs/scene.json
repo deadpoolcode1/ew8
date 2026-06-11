@@ -1,0 +1,197 @@
+{
+  "_comment": "Data-driven display-tree extension for the LVGL frontend. Each entry attaches a node (or subtree) under a named parent group exposed by buildDisplayTree (root, generalPanel, mainPanel, groupCIPV, groupGAG, groupFCW, statusPanel, leftPanel, groupTop, groupBottom). A leaf 'type' is image/value/blink/timed/dummy; 'group' is a logical container (mutex/mode). 'graphic_item' binds the node to a GraphicItem from EW8_Signals.json. 'widget':{'factory':...} delegates geometry to LvglWidgets (left_panel_sign/right_panel_sign/speed_limit_sign), keeping pixels byte-identical to the hand-built tree; otherwise an inline image is built from 'src'. Position with 'pos':[x,y] or 'align'+'offset'. 'scale' 256=1.0. Optional 'intro_anim'/'intro_x'/'intro_y' (container scale + x/y), 'move_to_front', 'divisor' (value), 'blocked_by':<id>. Edit and restart the app — no recompile.",
+
+  "nodes": [
+    {
+      "parent": "mainPanel",
+      "type": "group",
+      "id": "rightPanel",
+      "layer": 1,
+      "_note": "SmartADAS right panel (migrated from buildDisplayTree). Top group mutex (one primary icon); bottom group non-mutex (secondary icons). Children listed in original widget-creation order; per-node 'layer' preserves mutex priority. Intro: container scale 256->154 over 1100ms, x 92->184 (slide to right edge); bottom adds y 63->92.",
+      "children": [
+        {
+          "type": "group", "id": "groupTopSadas", "mutex": true, "layer": 0,
+          "children": [
+            { "type": "image", "graphic_item": "SMART_CROWDED",  "layer": 1, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_crowded.png",     "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_PED_HWY",  "layer": 2, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_ped_highway.png", "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_CYC_HWY",  "layer": 3, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_cyc_highway.png", "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_ROAD", "layer": 5, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_road.png",     "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_HYDRO","layer": 5, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_hydro.png",    "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_FG",   "layer": 6, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_fog.png",      "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_WND",  "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_wind.png",     "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_HAIL", "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_hail.png",     "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_WEA_TSTM", "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_lightening.png","upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_HARSH_DZ", "layer": 4, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_harsh_break.png", "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "image", "graphic_item": "SMART_CA",       "layer": 4, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_ca.png",          "upper": true}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184} },
+            { "type": "dummy", "graphic_item": "SMART_FATIGUE", "layer": 0 },
+            { "type": "dummy", "graphic_item": "SMART_BUMPERS", "layer": 0 }
+          ]
+        },
+        {
+          "type": "group", "id": "groupBottomSadas", "mutex": false, "layer": 0,
+          "children": [
+            { "type": "image", "graphic_item": "SMART_CROWDED_SEC",  "layer": 1, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_crowded.png",     "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_PED_HWY_SEC",  "layer": 2, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_ped_highway.png", "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_CYC_HWY_SEC",  "layer": 3, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_cyc_highway.png", "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_ROAD_SEC", "layer": 5, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_road.png",     "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_HYDRO_SEC","layer": 5, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_hydro.png",    "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_FG_SEC",   "layer": 6, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_fog.png",      "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_WND_SEC",  "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_wind.png",     "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_HAIL_SEC", "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_hail.png",     "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_WEA_TSTM_SEC", "layer": 7, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_w_lightening.png","upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_HARSH_DZ_SEC", "layer": 4, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_harsh_break.png", "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "image", "graphic_item": "SMART_CA_SEC",       "layer": 4, "widget": {"factory": "right_panel_sign", "src": "A:images/right-panel/SADAS/right_ca.png",          "upper": false}, "intro_anim": {"start": 256, "target": 154, "delay": 1100}, "intro_x": {"start": 92, "target": 184}, "intro_y": {"start": 63, "target": 92} },
+            { "type": "dummy", "graphic_item": "SMART_FATIGUE_SEC", "layer": 0 },
+            { "type": "dummy", "graphic_item": "SMART_BUMPERS_SEC", "layer": 0 }
+          ]
+        }
+      ]
+    },
+
+    {
+      "parent": "groupGAG", "type": "group", "id": "groupLanes", "layer": 0,
+      "_note": "LDW lanes. Per side: off(yellow,l0) < active(blink,l1) < on(green,l2). Widgets stay created in C++ (z-order); nodes bound here by widget_id.",
+      "children": [
+        { "type": "group", "id": "groupLanesLeft", "layer": 0, "children": [
+          { "type": "image", "graphic_item": "ALERT_LEFT_LDWOFF", "widget_id": "ldw_off_left", "layer": 0 },
+          { "type": "blink", "id": "lldwNode", "graphic_item": "ALERT_LLDW", "widget_id": "ldw_left", "layer": 1 },
+          { "type": "image", "graphic_item": "ALERT_LEFT_LDWON", "widget_id": "ldw_on_left", "layer": 2 }
+        ]},
+        { "type": "group", "id": "groupLanesRight", "layer": 0, "children": [
+          { "type": "image", "graphic_item": "ALERT_RIGHT_LDWOFF", "widget_id": "ldw_off_right", "layer": 0 },
+          { "type": "blink", "id": "rldwNode", "graphic_item": "ALERT_RLDW", "widget_id": "ldw_right", "layer": 1 },
+          { "type": "image", "graphic_item": "ALERT_RIGHT_LDWON", "widget_id": "ldw_on_right", "layer": 2 }
+        ]}
+      ]
+    },
+
+    { "parent": "groupCIPV",   "type": "image", "id": "pdzNode",      "graphic_item": "ALERT_PDZ",       "widget_id": "pdz",       "layer": 0 },
+    { "parent": "mainPanel",   "type": "image", "id": "rtwAlertNode", "graphic_item": "ALERT_RTW_ALERT", "widget_id": "rtw_alert", "layer": 0 },
+    { "parent": "generalPanel","type": "image", "id": "rgbRedNode",   "graphic_item": "RGB_RED",         "widget_id": "rgb_red",   "layer": 0 },
+    { "parent": "generalPanel","type": "image", "id": "rgbGreenNode", "graphic_item": "RGB_GREEN",       "widget_id": "rgb_green", "layer": 0 },
+    { "parent": "generalPanel","type": "image", "id": "rgbBlueNode",  "graphic_item": "RGB_BLUE",        "widget_id": "rgb_blue",  "layer": 0 },
+    { "parent": "generalPanel","type": "image", "id": "rgbWhiteNode", "graphic_item": "RGB_WHITE",       "widget_id": "rgb_white", "layer": 0 },
+    { "parent": "generalPanel","type": "image", "id": "tvPatternNode","graphic_item": "TV_PATTERN",      "widget_id": "tv_pattern","layer": 0 },
+
+    {
+      "parent": "statusPanel", "type": "group", "id": "beamGroup", "mutex": true, "layer": 0,
+      "children": [
+        { "type": "image", "graphic_item": "ALERT_HI_BEAM",  "widget_id": "sb_hi_beam", "layer": 1 },
+        { "type": "image", "graphic_item": "ALERT_LOW_BEAM", "widget_id": "sb_lo_beam", "layer": 0 }
+      ]
+    },
+    { "parent": "statusPanel", "type": "blink", "graphic_item": "ALERT_BLINKERS", "widget_id": "sb_blinker", "layer": 0 },
+    {
+      "parent": "statusPanel", "type": "group", "id": "signedGroup", "mutex": true, "layer": 0,
+      "children": [
+        { "type": "image", "graphic_item": "INFO_DRIVER_AUTH_IN",      "widget_id": "sb_signed_in",      "layer": 0 },
+        { "type": "blink", "graphic_item": "INFO_DRIVER_AUTH_OUT",     "widget_id": "sb_signed_out",     "layer": 0 },
+        { "type": "image", "graphic_item": "INFO_DRIVER_AUTH_PROCESS", "widget_id": "sb_signed_process", "layer": 0 }
+      ]
+    },
+    { "parent": "statusPanel", "type": "image", "graphic_item": "INFO_NO_GPS", "widget_id": "sb_gps",  "layer": 0 },
+    { "parent": "statusPanel", "type": "image", "graphic_item": "INFO_NO_GSM", "widget_id": "sb_gsm",  "layer": 0 },
+    { "parent": "statusPanel", "type": "image", "graphic_item": "OM_MUTE",     "widget_id": "sb_mute", "layer": 0 },
+    { "parent": "statusPanel", "type": "dummy", "graphic_item": "OM_NORMAL",    "layer": 0 },
+    { "parent": "statusPanel", "type": "dummy", "graphic_item": "INFO_GPS_OK",  "layer": 0 },
+
+    { "parent": "disconPanel", "type": "error", "id": "errorNode", "graphic_item": "ALERT_ERROR", "widget_id": "error_overlay", "code_label_id": "error_code_label", "layer": 0 },
+    { "parent": "disconPanel", "type": "image", "graphic_item": "ALERT_NOCOM", "widget_id": "discon",   "layer": 0 },
+    { "parent": "disconPanel", "type": "image", "graphic_item": "OM_POWEROFF", "widget_id": "poweroff", "layer": 0 },
+    { "parent": "disconPanel", "type": "image", "graphic_item": "OM_KEEPPWR",  "widget_id": "keeppwr",  "layer": 0 },
+    { "parent": "disconPanel", "type": "image", "graphic_item": "OM_PILOT",    "widget_id": "pilot",    "layer": 0 },
+
+    { "parent": "generalPanel", "type": "image", "id": "failsafeNode", "graphic_item": "INFO_FAILSAFE", "widget_id": "failsafe", "layer": 2 },
+
+    { "parent": "groupCIPV", "type": "value", "id": "hmwDistanceNode", "graphic_item": "ALERT_HMW_DISTANCE", "widget_id": "hmw_container", "label_id": "hmw_value_label", "divisor": 10, "layer": 0 },
+    { "parent": "groupCIPV", "type": "hmw_state", "id": "hmwAlertNode",   "graphic_item": "ALERT_HMW_ALERT",   "road_strip_id": "hmw_road_strip", "forward_car_id": "hmw_forward_car", "gif_src": "A:images/hmw/HMW-red-new-1.gif",   "car_margin": 45, "car_scale_x": 160, "car_scale_y": 145, "layer": 0 },
+    { "parent": "groupCIPV", "type": "hmw_state", "id": "hmwMonitorNode", "graphic_item": "ALERT_HMW_MONITOR", "road_strip_id": "hmw_road_strip", "forward_car_id": "hmw_forward_car", "gif_src": "A:images/hmw/HMW-green-new-2.gif", "car_margin": 40, "car_scale_x": 119, "car_scale_y": 115, "layer": 0 },
+
+    { "parent": "groupFCW", "type": "gif", "graphic_item": "ALERT_FCW", "widget_id": "fcw", "gif_id": "fcw_gif", "layer": 1 },
+    { "parent": "groupFCW", "type": "gif", "graphic_item": "ALERT_PCW", "widget_id": "pcw", "gif_id": "pcw_gif", "layer": 0 },
+
+    { "parent": "statusPanel", "type": "speed", "id": "speedNode", "graphic_item": "INFO_VEH_SPEED", "widget_id": "speed", "value_label_id": "speed_value_label", "unit_label_id": "speed_unit_label", "speed_show_node": "showSpeedNode", "layer": 0 },
+    { "parent": "statusPanel", "type": "dummy", "id": "showSpeedNode", "graphic_item": "INFO_SPEED_SHOW", "layer": 0 },
+
+    {
+      "parent": "statusPanel", "type": "group", "id": "isaGroup", "mutex": true, "layer": 0,
+      "children": [
+        { "type": "image", "graphic_item": "ALERT_ISA_ERROR",      "widget_id": "sb_isa_error",    "layer": 0 },
+        { "type": "image", "id": "isaInactiveNode", "graphic_item": "INFO_ISA_INACTIVE", "widget_id": "sb_isa_inactive", "layer": 1 },
+        { "type": "image", "graphic_item": "INFO_ISA_PARTIAL",     "widget_id": "sb_isa_partial",  "layer": 2 },
+        { "type": "image", "graphic_item": "INFO_ISA_FULL_ACTIVE", "widget_id": "sb_isa_active",   "layer": 3 }
+      ]
+    },
+
+    {
+      "parent": "leftPanel", "type": "group", "id": "groupTop", "mutex": true, "layer": 0,
+      "_note": "Top-left sign slot. Intro: container scale 256->187 over 600ms.",
+      "children": [
+        { "type": "image", "graphic_item": "ALERT_RTW_WARN", "widget_id": "rtw_warn", "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600} },
+        { "type": "value", "id": "sliNode", "graphic_item": "ALERT_SLI", "widget_id": "sli", "label_id": "sli_speed_label", "layer": 1, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "blocked_by": "isaNotTsr", "shape_usa_node": "shapeUsa" },
+        { "type": "value", "id": "isaSpeedNode", "graphic_item": "ALERT_ISA_SPEED", "widget_id": "isa_speed", "label_id": "isa_speed_label", "layer": 2, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "blocked_by": "tsrNotIsa" },
+        { "type": "image", "id": "isaHighwayNode", "graphic_item": "ALERT_ISA_HIGHWAY", "widget_id": "isa_highway", "layer": 1, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "blocked_by": "tsrNotIsa" }
+      ]
+    },
+    {
+      "parent": "leftPanel", "type": "group", "id": "groupBottom", "mutex": true, "layer": 0, "blocked_by": "isaNotTsr",
+      "_note": "Bottom-left slot. TSR signs (layer 0/1) + supplementary signs (layer 1). Intro: scale 256->187, y 75->115; supp signs scale 256->139, y 75->95, x 4->10.",
+      "children": [
+        { "type": "timed", "graphic_item": "ALERT_END_ALL_RESTR", "widget_id": "end_all_restr", "max_duration_ms": 5000,  "layer": 1, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "image", "graphic_item": "ALERT_NO_PASS",       "widget_id": "no_pass",                            "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "image", "graphic_item": "ALERT_NO_PASS_END",   "widget_id": "no_pass_end",                        "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_MOTORWAY",      "widget_id": "motorway",      "max_duration_ms": 15000, "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_MOTORWAY_END",  "widget_id": "motorway_end",  "max_duration_ms": 5000,  "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_EXPRESSWAY",    "widget_id": "expressway",    "max_duration_ms": 15000, "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_EXPRESSWAY_END","widget_id": "expressway_end","max_duration_ms": 5000,  "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_PLAYGROUND",    "widget_id": "playground",    "max_duration_ms": 15000, "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "timed", "graphic_item": "ALERT_PLAYGROUND_END","widget_id": "playground_end","max_duration_ms": 5000,  "layer": 0, "intro_anim": {"start": 256, "target": 187, "delay": 600}, "intro_y": {"start": 75, "target": 115}, "intro_x": {"start": 0, "target": 0} },
+        { "type": "supp_sign", "graphic_item": "ALERT_SLI_SUPP",        "widget_id": "sli_supp",        "supp_img_id": "sli_supp_icon",        "label_id": "sli_supp_speed_label", "layer": 1, "intro_anim": {"start": 256, "target": 139, "delay": 600}, "intro_y": {"start": 75, "target": 95}, "intro_x": {"start": 4, "target": 10} },
+        { "type": "supp_sign", "graphic_item": "ALERT_NO_PASS_SUPP",    "widget_id": "no_pass_supp",    "supp_img_id": "no_pass_supp_icon",    "layer": 1, "intro_anim": {"start": 256, "target": 139, "delay": 600}, "intro_y": {"start": 75, "target": 95}, "intro_x": {"start": 4, "target": 10} },
+        { "type": "supp_sign", "graphic_item": "ALERT_MOTORWAY_SUPP",   "widget_id": "motorway_supp",   "supp_img_id": "motorway_supp_icon",   "layer": 1, "intro_anim": {"start": 256, "target": 139, "delay": 600}, "intro_y": {"start": 75, "target": 95}, "intro_x": {"start": 4, "target": 10} },
+        { "type": "supp_sign", "graphic_item": "ALERT_EXPRESSWAY_SUPP", "widget_id": "expressway_supp", "supp_img_id": "expressway_supp_icon", "layer": 1, "intro_anim": {"start": 256, "target": 139, "delay": 600}, "intro_y": {"start": 75, "target": 95}, "intro_x": {"start": 4, "target": 10} },
+        { "type": "supp_sign", "graphic_item": "ALERT_PLAYGROUND_SUPP", "widget_id": "playground_supp", "supp_img_id": "playground_supp_icon", "layer": 1, "intro_anim": {"start": 256, "target": 139, "delay": 600}, "intro_y": {"start": 75, "target": 95}, "intro_x": {"start": 4, "target": 10} }
+      ]
+    },
+    { "parent": "leftPanel", "type": "tsr_state", "id": "tsrNotIsa", "graphic_item": "STATE_TSR_NOT_ISA", "layer": 0 },
+    { "parent": "leftPanel", "type": "isa_state", "id": "isaNotTsr", "graphic_item": "STATE_ISA_NOT_TSR", "layer": 0,
+      "isa_error_widget_id": "sb_isa_error", "isa_inactive_widget_id": "sb_isa_inactive",
+      "isa_speed_node": "isaSpeedNode", "isa_highway_node": "isaHighwayNode", "isa_inactive_node": "isaInactiveNode" },
+    { "parent": "leftPanel", "type": "dummy", "graphic_item": "ALERT_SLI_SHOW", "layer": 0 },
+    { "parent": "leftPanel", "type": "overspeed", "graphic_item": "ALERT_ISA_OVERSPEED", "sli_widget_id": "sli", "isa_speed_widget_id": "isa_speed", "layer": 0 },
+    { "parent": "leftPanel", "type": "shape_usa", "id": "shapeUsa", "graphic_item": "SHAPE_USA", "sli_sign_img_id": "sli_sign_img", "sli_supp_sign_img_id": "sli_supp_sign_img", "sli_speed_label_id": "sli_speed_label", "sli_node": "sliNode", "layer": 0 },
+    { "parent": "leftPanel", "type": "dummy", "graphic_item": "INFO_ISA_VERSION", "layer": 0 },
+    { "parent": "leftPanel", "type": "dummy", "graphic_item": "INFO_ISA_BUNDLE", "layer": 0 },
+
+    { "parent": "statusPanel", "type": "dummy",       "graphic_item": "FUNC_BUTTONS", "layer": 0 },
+    { "parent": "statusPanel", "type": "volume_done", "graphic_item": "VOLUME_DONE",  "layer": 0 },
+    { "parent": "statusPanel", "type": "volume_fail", "graphic_item": "VOLUME_FAIL",  "layer": 0 },
+    { "parent": "statusPanel", "type": "qrcode",      "graphic_item": "INFO_QRCODE",  "layer": 0 },
+
+    {
+      "parent": "generalPanel", "type": "image", "mode": true, "graphic_item": "INFO_TEST_SIGNALS", "widget_id": "signal_test_bg", "layer": 0,
+      "_note": "Signal-test screen (modeGroup): children visible only while the screen is active.",
+      "children": [
+        { "type": "signal_test_item", "graphic_item": "TEST_BRAKES",        "small_img_id": "sig_small_0", "big_img_id": "sig_big_0", "wildcard": "Brake",  "layer": 0 },
+        { "type": "signal_test_item", "graphic_item": "TEST_WIPERS",        "small_img_id": "sig_small_1", "big_img_id": "sig_big_1", "wildcard": "Whip",   "layer": 0 },
+        { "type": "signal_test_item", "graphic_item": "TEST_HIGH_BEAM",     "small_img_id": "sig_small_2", "big_img_id": "sig_big_2", "wildcard": "Lights", "layer": 0 },
+        { "type": "signal_test_item", "graphic_item": "TEST_BLINKER_LEFT",  "small_img_id": "sig_small_3", "big_img_id": "sig_big_3", "wildcard": "Left",   "layer": 0 },
+        { "type": "signal_test_item", "graphic_item": "TEST_BLINKER_RIGHT", "small_img_id": "sig_small_4", "big_img_id": "sig_big_4", "wildcard": "Right",  "layer": 0 },
+        { "type": "signal_test_item", "graphic_item": "TEST_REVERSE",       "small_img_id": "sig_small_5", "big_img_id": "sig_big_5", "wildcard": "R",      "layer": 0 },
+        { "type": "signal_test_speed", "graphic_item": "TEST_SPEED", "small_img_id": "speed_small_img", "big_img_id": "speed_big_img", "small_label_id": "speed_small_label", "big_label_id": "speed_big_label", "layer": 0 },
+        { "type": "dummy", "graphic_item": "TEST_SPEED_VALUE", "layer": 0 }
+      ]
+    },
+    {
+      "parent": "generalPanel", "type": "image", "mode": true, "graphic_item": "INFO_TEST_PERIPHERALS", "widget_id": "peripheral_bg", "layer": 0,
+      "children": [
+        { "type": "peripheral_test_group", "graphic_item": "INFO_TEST_GSM", "container_id": "gsm_row", "result_id": "gsm_result", "layer": 0,
+          "items": [ {"icon_id": "gsm_0", "wildcard": "Test_GSM_1", "range_left": 1, "range_right": 3}, {"icon_id": "gsm_1", "wildcard": "Test_GSM_2", "range_left": 4, "range_right": 7}, {"icon_id": "gsm_2", "wildcard": "Test_GSM_3", "range_left": 8, "range_right": 9} ] },
+        { "type": "peripheral_test_group", "graphic_item": "INFO_TEST_GPS", "container_id": "gps_row", "result_id": "gps_result", "layer": 0,
+          "items": [ {"icon_id": "gps_0", "wildcard": "Test_GPS_1", "range_left": 1, "range_right": 2}, {"icon_id": "gps_1", "wildcard": "Test_GPS_2", "range_left": 3, "range_right": 4} ] },
+        { "type": "peripheral_test_group", "graphic_item": "INFO_TEST_GYRO", "container_id": "gyro_row", "result_id": "gyro_result", "layer": 0,
+          "items": [ {"icon_id": "gyro_0", "wildcard": "Test_Gyro_1", "range_left": 1, "range_right": 1}, {"icon_id": "gyro_1", "wildcard": "Test_Gyro_2", "range_left": 2, "range_right": 2} ] }
+      ]
+    }
+  ]
+}
