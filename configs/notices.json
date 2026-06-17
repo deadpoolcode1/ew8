@@ -1,0 +1,45 @@
+{
+  "_comment": "Notice/overlay screens for the LVGL frontend. Edit text/colour/position/image/font here and restart the app — no recompile needed. Fonts must be one of the compiled names (see lvgl_notice_loader.cpp). Position with either \"pos\":[x,y] (absolute) or \"align\"+\"offset\". Colours are #rrggbb. Image src uses the \"A:\" runtime asset prefix.",
+
+  "disconnect": {
+    "background": "#000000",
+    "elements": [
+      { "type": "image", "src": "A:images/logo/ME_status_logo.png", "align": "top_mid", "offset": [0, 13] },
+      { "type": "image", "src": "A:images/error/disconnect-alert.png", "scale": 212, "align": "center", "offset": [0, 5] },
+      { "type": "label", "text": "Disconnected", "font": "intelone_bold_20", "color": "#111abc", "align": "center", "offset": [0, 75] }
+    ]
+  },
+
+  "failsafe": {
+    "elements": [
+      { "type": "image", "src": "A:images/error/icon_eye.png", "scale": 154, "pivot": [44, 26], "align": "top_mid", "offset": [0, 134] },
+      { "type": "label", "text": "Low Visibility", "font": "intelone_medium_17", "color": "#fed500", "align": "top_mid", "offset": [0, 178] }
+    ]
+  },
+
+  "error": {
+    "elements": [
+      { "type": "image", "src": "A:images/error/error_full_display_324x240.png", "pos": [-2, 20] },
+      { "type": "image", "src": "A:images/logo/ME_status_logo.png", "align": "top_mid", "offset": [0, 13] },
+      { "type": "label", "id": "error_code", "text": "", "font": "intelone_medium_24", "color": "#ffffff", "pos": [205, 16] }
+    ]
+  },
+
+  "opmode_poweroff": {
+    "elements": [
+      { "type": "label", "text": "Power off", "font": "intelone_bold_20", "color": "#111abc", "align": "center", "offset": [0, 75] }
+    ]
+  },
+
+  "opmode_keeppwr": {
+    "elements": [
+      { "type": "label", "text": "Keep Power On", "font": "intelone_bold_20", "color": "#111abc", "align": "center", "offset": [0, 75] }
+    ]
+  },
+
+  "opmode_pilot": {
+    "elements": [
+      { "type": "label", "text": "Pilot mode", "font": "intelone_bold_20", "color": "#111abc", "align": "center", "offset": [0, 75] }
+    ]
+  }
+}

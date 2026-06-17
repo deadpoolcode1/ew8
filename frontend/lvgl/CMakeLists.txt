@@ -73,6 +73,8 @@ set(FRONTEND_SOURCES
     src/lvgl_display_node.cpp
     src/lvgl_main_process.cpp
     src/lvgl_widgets.cpp
+    src/lvgl_notice_loader.cpp
+    src/lvgl_scene_loader.cpp
     src/lvgl_value_display_node.cpp
     src/lvgl_string_display_node.cpp
     src/lvgl_blink_display_node.cpp

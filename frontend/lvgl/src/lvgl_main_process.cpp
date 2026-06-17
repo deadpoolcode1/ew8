@@ -8,7 +8,11 @@
 #include "lvgl_menu_display_node.h"
 #include "lvgl_test_display_node.h"
 #include "lvgl_widgets.h"
+#include "lvgl_notice_loader.h"
+#include "lvgl_scene_loader.h"
 #include "entitytype.h"
+
+#include <map>
 #include "alerttypes_core.h"
 #include "graphicitemsenummap.h"
 #include "display_tree.h"
@@ -344,47 +348,26 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* expresswaySuppIcon = addSuppIcon(expresswaySuppWidget);
     lv_obj_t* playgroundSuppIcon = addSuppIcon(playgroundSuppWidget);
 
-    // Right panel signs — upper slot (primary SmartADAS, mutexGroup=true)
-    lv_obj_t* smartCrowdedWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_crowded.png", true);
-    lv_obj_t* smartPedHwyWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ped_highway.png", true);
-    lv_obj_t* smartCycHwyWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_cyc_highway.png", true);
-    lv_obj_t* smartWeaRoadWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_road.png", true);
-    lv_obj_t* smartWeaHydroWidget  = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_hydro.png", true);
-    lv_obj_t* smartWeaFgWidget     = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_fog.png", true);
-    lv_obj_t* smartWeaWndWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_wind.png", true);
-    lv_obj_t* smartWeaHailWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_hail.png", true);
-    lv_obj_t* smartWeaTstmWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_lightening.png", true);
-    lv_obj_t* smartHarshDzWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_harsh_break.png", true);
-    lv_obj_t* smartCaWidget        = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ca.png", true);
-
-    // Right panel signs — lower slot (secondary SmartADAS, mutexGroup=false)
-    lv_obj_t* smartCrowdedSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_crowded.png", false);
-    lv_obj_t* smartPedHwySecWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ped_highway.png", false);
-    lv_obj_t* smartCycHwySecWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_cyc_highway.png", false);
-    lv_obj_t* smartWeaRoadSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_road.png", false);
-    lv_obj_t* smartWeaHydroSecWidget  = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_hydro.png", false);
-    lv_obj_t* smartWeaFgSecWidget     = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_fog.png", false);
-    lv_obj_t* smartWeaWndSecWidget    = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_wind.png", false);
-    lv_obj_t* smartWeaHailSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_hail.png", false);
-    lv_obj_t* smartWeaTstmSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_w_lightening.png", false);
-    lv_obj_t* smartHarshDzSecWidget   = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_harsh_break.png", false);
-    lv_obj_t* smartCaSecWidget        = LvglWidgets::createRightPanelSign(rootWidget, "A:images/right-panel/SADAS/right_ca.png", false);
+    // Right panel SmartADAS sign widgets + nodes are now created by the scene
+    // loader from configs/scene.json (migrated out of buildDisplayTree). See the
+    // "rightPanel" subtree there.
 
     // 2. Status bar (QML z=1: above content, below full-screen overlays)
     LvglWidgets::StatusBarWidgets sb = LvglWidgets::createStatusBar(rootWidget);
 
     // 3. Full-screen overlays (created after content so they render on top)
-    // Failsafe (QML z=10)
-    lv_obj_t* failsafeWidget  = LvglWidgets::createFailsafeOverlay(rootWidget);
-    lv_obj_t* poweroffWidget  = LvglWidgets::createOpModeOverlay(rootWidget, "Power off");
-    lv_obj_t* keeppwrWidget   = LvglWidgets::createOpModeOverlay(rootWidget, "Keep Power On");
-    lv_obj_t* pilotWidget     = LvglWidgets::createOpModeOverlay(rootWidget, "Pilot mode");
+    // Failsafe + op-mode notices: layout/text loaded from configs/notices.json
+    // (editable without recompiling). See lvgl_notice_loader.cpp. (QML z=10)
+    lv_obj_t* failsafeWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "failsafe");
+    lv_obj_t* poweroffWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_poweroff");
+    lv_obj_t* keeppwrWidget   = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_keeppwr");
+    lv_obj_t* pilotWidget     = LvglNotice::createNoticeFromConfig(rootWidget, "opmode_pilot");
 
     // RTW alert (QML z=10)
     lv_obj_t* rtwAlertWidget = LvglWidgets::createRTWAlert(rootWidget);
 
-    // Disconnect overlay (QML z=11)
-    lv_obj_t* disconWidget  = LvglWidgets::createDisconnectOverlay(rootWidget);
+    // Disconnect overlay (QML z=11) — layout from configs/notices.json
+    lv_obj_t* disconWidget  = LvglNotice::createNoticeFromConfig(rootWidget, "disconnect");
 
     // --- Bulk 6: Display test overlays (QML z=12) ---
     lv_obj_t* rgbRedWidget   = LvglWidgets::createColorOverlay(rootWidget, lv_color_make(255, 0, 0));
@@ -520,9 +503,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     lv_obj_t* fcwWidget     = LvglWidgets::createFCWAlert(rootWidget);
     lv_obj_t* pcwWidget     = LvglWidgets::createPCWAlert(rootWidget);
 
-    // Error overlay (QML z=20: above everything except menus)
-    LvglWidgets::ErrorOverlayWidgets err = LvglWidgets::createErrorOverlay(rootWidget);
-    lv_obj_t* errorWidget = err.container;
+    // Error overlay (QML z=20: above everything except menus) — layout from
+    // configs/notices.json; the dynamic error-code label is tagged id "error_code".
+    std::map<std::string, lv_obj_t*> errorEls;
+    lv_obj_t* errorWidget = LvglNotice::createNoticeFromConfig(rootWidget, "error", &errorEls);
+    lv_obj_t* errorCodeLabel = errorEls.count("error_code") ? errorEls["error_code"] : nullptr;
 
     // Menu controller (QML z=20+: highest z-order)
     menuController_ = new LvglMenuController(rootWidget, canmgr_);
@@ -540,105 +525,37 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     disconPanel_ = disconPanel;
     addChild(generalPanel, disconPanel);
 
-    auto* errorNode = new LvglErrorDisplayNode(errorWidget, 0, ID_ALERT_ERROR, err.errorCodeLabel);
-    errorNode_ = errorNode;
-    addChild(disconPanel, errorNode);
-
-    auto* disconNode = new LvglDisplayNode(disconWidget, 0, AlertTypes::ALERT_NOCOM);
-    addChild(disconPanel, disconNode);
-
-    auto* poweroffNode = new LvglDisplayNode(poweroffWidget, 0, ID_OM_POWEROFF);
-    addChild(disconPanel, poweroffNode);
-
-    auto* keeppwrNode = new LvglDisplayNode(keeppwrWidget, 0, ID_OM_KEEPPWR);
-    addChild(disconPanel, keeppwrNode);
-
-    auto* pilotNode = new LvglDisplayNode(pilotWidget, 0, ID_OM_PILOT);
-    addChild(disconPanel, pilotNode);
+    // disconPanel children (error/disconnect/op-mode overlays) → scene.json.
+    // errorNode_ is fetched from the scene result below (menu/host-car gating).
 
     // main_panel (group, layer=2)
     auto* mainPanel = new LvglDisplayNode(nullptr, 2, false, false);
     mainPanel_ = mainPanel;
     addChild(generalPanel, mainPanel);
 
-    // failsafe overlay (leaf, layer=2 — same as mainPanel, coexists with it)
-    // QML: failsafe is transparent overlay, lanes/car visible behind it
-    auto* failsafeNode = new LvglDisplayNode(failsafeWidget, 2, ID_INFO_FAILSAFE);
-    failsafeNode_ = failsafeNode;
-    addChild(generalPanel, failsafeNode);
+    // failsafe overlay node → scene.json (under generalPanel). failsafeNode_
+    // fetched from the scene result below (HMW text gating).
 
     // groupCIPV (group, layer=1)
     auto* groupCIPV = new LvglDisplayNode(nullptr, 1, false, false);
     groupCIPV_ = groupCIPV;
     addChild(mainPanel, groupCIPV);
 
-    // HMW distance (LvglValueDisplayNode, layer=0, ALERT_HMW_DISTANCE)
-    // QML: (canEntityArg/10).toFixed(1) — CAN arg 12 displays as "1.2"
+    // HMW distance value + HMW alert/monitor state nodes → scene.json (under
+    // groupCIPV). hmwValueLabel_ is a widget the glue needs (HMW text gating);
+    // hmwDistanceNode_/hmwAlertNode_/hmwMonitorNode_ fetched from scene result.
     hmwValueLabel_ = hmw.valueLabel;
-    auto* hmwNode = new LvglValueDisplayNode(hmw.container, 0, ID_ALERT_HMW_DISTANCE, hmw.valueLabel, 10);
-    hmwDistanceNode_ = hmwNode;
-    addChild(groupCIPV, hmwNode);
 
-    // HMW state nodes (layer=0, no widget — change road GIF + car position on visibility)
-    // QML image: 80x61 declared, native 129x111. car_scale applied uniformly on top.
-    // Alert: car closer and bigger than monitor
-    auto* hmwAlertNode = new LvglHmwStateNode(0, ID_ALERT_HMW_ALERT,
-                                               hmw.roadStrip, "A:images/hmw/HMW-red-new-1.gif",
-                                               hmw.forwardCar, 45, 160, 145);
-    hmwAlertNode_ = hmwAlertNode;
-    addChild(groupCIPV, hmwAlertNode);
-
-    // Monitor: car further away, smaller
-    auto* hmwMonitorNode = new LvglHmwStateNode(0, ID_ALERT_HMW_MONITOR,
-                                                 hmw.roadStrip, "A:images/hmw/HMW-green-new-2.gif",
-                                                 hmw.forwardCar, 40, 119, 115);
-    hmwMonitorNode_ = hmwMonitorNode;
-    addChild(groupCIPV, hmwMonitorNode);
-
-    // PDZ overlay (layer=0, ALERT_PDZ)
-    auto* pdzNode = new LvglDisplayNode(pdzWidget, 0, ID_ALERT_PDZ);
-    addChild(groupCIPV, pdzNode);
+    // PDZ overlay node → scene.json ("pdzNode", widget_id "pdz").
 
     // groupGAG (group, layer=1)
     auto* groupGAG = new LvglDisplayNode(nullptr, 1, false, false);
     groupGAG_ = groupGAG;
     addChild(mainPanel, groupGAG);
 
-    // groupLanes (group, layer=0)
-    auto* groupLanes = new LvglDisplayNode(nullptr, 0, false, false);
-    addChild(groupGAG, groupLanes);
-
-    // groupLanesLeft (group, layer=0)
-    auto* groupLanesLeft = new LvglDisplayNode(nullptr, 0, false, false);
-    addChild(groupLanes, groupLanesLeft);
-
-    // Left LDW off (yellow, layer=0)
-    auto* ldwOffLeftNode = new LvglDisplayNode(ldwOffLeftWidget, 0, ID_ALERT_LEFT_LDWOFF);
-    addChild(groupLanesLeft, ldwOffLeftNode);
-
-    // Left LDW active (blinking, layer=1)
-    lldwNode_ = new LvglBlinkDisplayNode(ldwLeftWidget, 1, ID_ALERT_LLDW);
-    addChild(groupLanesLeft, lldwNode_);
-
-    // Left LDW on (green, layer=2)
-    auto* ldwOnLeftNode = new LvglDisplayNode(ldwOnLeftWidget, 2, ID_ALERT_LEFT_LDWON);
-    addChild(groupLanesLeft, ldwOnLeftNode);
-
-    // groupLanesRight (group, layer=0)
-    auto* groupLanesRight = new LvglDisplayNode(nullptr, 0, false, false);
-    addChild(groupLanes, groupLanesRight);
-
-    // Right LDW off (yellow, layer=0)
-    auto* ldwOffRightNode = new LvglDisplayNode(ldwOffRightWidget, 0, ID_ALERT_RIGHT_LDWOFF);
-    addChild(groupLanesRight, ldwOffRightNode);
-
-    // Right LDW active (blinking, layer=1)
-    rldwNode_ = new LvglBlinkDisplayNode(ldwRightWidget, 1, ID_ALERT_RLDW);
-    addChild(groupLanesRight, rldwNode_);
-
-    // Right LDW on (green, layer=2)
-    auto* ldwOnRightNode = new LvglDisplayNode(ldwOnRightWidget, 2, ID_ALERT_RIGHT_LDWON);
-    addChild(groupLanesRight, ldwOnRightNode);
+    // groupLanes/groupLanesLeft/groupLanesRight + LDW off/active/on nodes →
+    // scene.json (under groupGAG). lldwNode_/rldwNode_ are fetched from the
+    // scene result below for the host-car-shift glue.
 
     // groupFCW (group, layer=1, mutexGroup=false — QML has mutexGroup: false)
     // Layer=1 (higher priority than mainPanel/statusPanel at layer=2) so that
@@ -648,492 +565,171 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     groupFCW_ = groupFCW;
     addChild(generalPanel, groupFCW);
 
-    auto* fcwNode = new LvglGifDisplayNode(fcwWidget, 1, ID_ALERT_FCW, lv_obj_get_child(fcwWidget, 0));
-    addChild(groupFCW, fcwNode);
-
-    auto* pcwNode = new LvglGifDisplayNode(pcwWidget, 0, ID_ALERT_PCW, lv_obj_get_child(pcwWidget, 0));
-    addChild(groupFCW, pcwNode);
+    // FCW/PCW gif nodes → scene.json (under groupFCW, widget_id fcw/pcw + gif_id).
 
     // status_panel (group, layer=2)
     auto* statusPanel = new LvglDisplayNode(nullptr, 2, false, false);
     addChild(generalPanel, statusPanel);
 
-    // speed (LvglSpeedDisplayNode, layer=0, INFO_VEH_SPEED — with MPH conversion support)
-    auto* speedNode = new LvglSpeedDisplayNode(speedWidget, 0, ID_INFO_VEH_SPEED, speedValueLabel, speedUnitLabel);
-    speedNode_ = speedNode;
-    addChild(statusPanel, speedNode);
+    // speed node → scene.json (widget_id speed + value/unit labels). speedNode_
+    // fetched from the scene result below (menu gating / speed value).
 
-    // Beam group (mutexGroup=true)
-    auto* beamGroup = new LvglDisplayNode(nullptr, 0, true, false);
-    addChild(statusPanel, beamGroup);
-
-    auto* hiBeamNode = new LvglDisplayNode(sb.hiBeamIcon, 1, ID_ALERT_HI_BEAM);
-    addChild(beamGroup, hiBeamNode);
-
-    auto* loBeamNode = new LvglDisplayNode(sb.loBeamIcon, 0, ID_ALERT_LOW_BEAM);
-    addChild(beamGroup, loBeamNode);
-
-    // Blinker (blink animation)
-    auto* blinkerNode = new LvglBlinkDisplayNode(sb.blinkerIcon, 0, ID_ALERT_BLINKERS);
-    addChild(statusPanel, blinkerNode);
+    // Beam group + blinker nodes → scene.json (widget_id hi_beam/lo_beam/blinker).
 
     // ISA group (mutexGroup=true)
-    auto* isaGroup = new LvglDisplayNode(nullptr, 0, true, false);
-    addChild(statusPanel, isaGroup);
+    // ISA status-bar group (error/inactive/partial/active) → scene.json
+    // ("isaGroup" under statusPanel); isaInactiveNode referenced by isa_state.
 
-    auto* isaErrorNode = new LvglDisplayNode(sb.isaErrorIcon, 0, ID_ALERT_ISA_ERROR);
-    addChild(isaGroup, isaErrorNode);
+    // Signed-driver group + GPS/GSM/mute icons + OM_NORMAL/INFO_GPS_OK dummies
+    // → scene.json (widget_id signed_*/gps/gsm/mute).
 
-    auto* isaInactiveNode = new LvglDisplayNode(sb.isaInactiveIcon, 1, ID_INFO_ISA_INACTIVE);
-    addChild(isaGroup, isaInactiveNode);
-
-    auto* isaPartialNode = new LvglDisplayNode(sb.isaPartialIcon, 2, ID_INFO_ISA_PARTIAL);
-    addChild(isaGroup, isaPartialNode);
-
-    auto* isaActiveNode = new LvglDisplayNode(sb.isaActiveIcon, 3, ID_INFO_ISA_FULL_ACTIVE);
-    addChild(isaGroup, isaActiveNode);
-
-    // Signed group (mutexGroup=true)
-    auto* signedGroup = new LvglDisplayNode(nullptr, 0, true, false);
-    addChild(statusPanel, signedGroup);
-
-    auto* signedInNode = new LvglDisplayNode(sb.signedInIcon, 0, ID_INFO_DRIVER_AUTH_IN);
-    addChild(signedGroup, signedInNode);
-
-    auto* signedOutNode = new LvglBlinkDisplayNode(sb.signedOutIcon, 0, ID_INFO_DRIVER_AUTH_OUT);
-    addChild(signedGroup, signedOutNode);
-
-    auto* signedProcessNode = new LvglDisplayNode(sb.signedProcessIcon, 0, ID_INFO_DRIVER_AUTH_PROCESS);
-    addChild(signedGroup, signedProcessNode);
-
-    // GPS, GSM, mute icons
-    auto* gpsNode = new LvglDisplayNode(sb.gpsIcon, 0, ID_INFO_NO_GPS);
-    addChild(statusPanel, gpsNode);
-
-    auto* gsmNode = new LvglDisplayNode(sb.gsmIcon, 0, ID_INFO_NO_GSM);
-    addChild(statusPanel, gsmNode);
-
-    auto* muteNode = new LvglDisplayNode(sb.muteIcon, 0, ID_OM_MUTE);
-    addChild(statusPanel, muteNode);
-
-    // Dummy leaf nodes (entity registered, no visual)
-    auto* showSpeedNode = new LvglDisplayNode(nullptr, 0, ID_INFO_SPEED_SHOW);
-    addChild(statusPanel, showSpeedNode);
-    speedNode->setSpeedShowNode(showSpeedNode);
-
-    auto* normalModeNode = new LvglDisplayNode(nullptr, 0, ID_OM_NORMAL);
-    addChild(statusPanel, normalModeNode);
-
-    auto* gpsOkNode = new LvglDisplayNode(nullptr, 0, ID_INFO_GPS_OK);
-    addChild(statusPanel, gpsOkNode);
+    // INFO_SPEED_SHOW dummy → scene.json; speedNode->setSpeedShowNode wired
+    // there via "speed_show_node".
 
     // --- Left panel signs (Bulk 3) ---
     // leftPanel (group, layer=1) under mainPanel — QML left_panel layer_pri=1
     auto* leftPanel = new LvglDisplayNode(nullptr, 1, false, false);
     addChild(mainPanel, leftPanel);
+    // groupTop/groupBottom (TSR/SLI/ISA signs + supp signs), ISA/TSR state
+    // machines, overspeed, shape-USA, and the ISA-version/bundle dummies are
+    // built by the scene loader from the scene.json "leftPanel" subtree.
+    // groupTop_/groupBottom_ are fetched from the scene result below.
 
-    // groupTop (group, layer=0, mutexGroup: RTW layer=0, SLI layer=1, ISA_SPEED layer=2, ISA_HIGHWAY layer=1)
-    // NOTE: groupTop is added to leftPanel AFTER groupBottom (below) so that when both
-    // top and bottom signs change simultaneously, the tree processes groupBottom first,
-    // then groupTop — making the top sign's lv_obj_move_foreground the last call,
-    // ensuring the top-left sign renders on top (matching Qt behavior).
-    auto* groupTop = new LvglDisplayNode(nullptr, 0, true, false);
-    groupTop_ = groupTop;
+    // SmartADAS right-panel widgets + nodes are built by the scene loader from
+    // the scene.json "rightPanel" subtree (migrated out of buildDisplayTree).
 
-    // Left panel signs: intro animation scale 256 (1.0) → 187 (0.732), 500ms OutQuad
-    // QML SideIcon pause_duration = 700ms for left panel (quadrants 2/3)
-    auto* rtwWarnNode = new LvglDisplayNode(rtwWarnWidget, 0, ID_ALERT_RTW_WARN);
-    rtwWarnNode->setContainerIntroAnim(256, 187, 600);
+    // Menu entities (FUNC_BUTTONS dummy + VOLUME_DONE/FAIL + INFO_QRCODE) and
+    // the signal/peripheral test screens (modeGroup panels + their item nodes)
+    // are built by the scene loader from scene.json (widget_id refs into the
+    // test-screen widgets registered above).
 
-    addChild(groupTop, rtwWarnNode);
-
-    auto* sliNode = new LvglValueDisplayNode(sliWidget, 1, ID_ALERT_SLI, sliSpeedLabel);
-    sliNode->setContainerIntroAnim(256, 187, 600);
-
-    addChild(groupTop, sliNode);
-
-    auto* isaSpeedNode = new LvglValueDisplayNode(isaSpeedWidget, 2, ID_ALERT_ISA_SPEED, isaSpeedLabel);
-    isaSpeedNode->setContainerIntroAnim(256, 187, 600);
-
-    addChild(groupTop, isaSpeedNode);
-
-    auto* isaHighwayNode = new LvglDisplayNode(isaHighwayWidget, 1, ID_ALERT_ISA_HIGHWAY);
-    isaHighwayNode->setContainerIntroAnim(256, 187, 600);
-
-    addChild(groupTop, isaHighwayNode);
-
-    // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
-    // groupBottom (group, layer=0, mutexGroup=true: TSR signs layer=0, supp signs layer=1)
-    auto* groupBottom = new LvglDisplayNode(nullptr, 0, true, false);
-    groupBottom_ = groupBottom;
-    addChild(leftPanel, groupTop);
-    addChild(leftPanel, groupBottom);
-
-    // Bottom-slot animation constants
-    // Non-supp TSR signs: same size/x as top sign, positioned just below it
-    // Top sign: x=0, y=63, visual height=82px → bottom edge at 145
-    // With pivot (0,112) and scale 187: visual top = y+30, so y=115 → top at 145
-    static const int BOTTOM_TSR_TARGET_Y = 115;
-    static const int BOTTOM_TSR_TARGET_X = 0;
-    static const int BOTTOM_TSR_START_Y = 75;
-    static const int BOTTOM_TSR_START_X = 0;
-    // Supp signs: smaller scale, offset position for supp icon
-    static const int SUPP_START_Y = 75;
-    static const int SUPP_TARGET_Y = 95;
-    static const int SUPP_START_X = 4;
-    static const int SUPP_TARGET_X = 10;
-
-    // TSR signs with auto-dismiss timers (QML maxduration values)
-    // ALERT_END_ALL_RESTR has layer_pri=1 in QML (lower priority than base TSR signs at 0)
-    auto* endAllRestrNode = new LvglTimedDisplayNode(endAllRestrWidget, 1, ID_ALERT_END_ALL_RESTR, 5000);
-    endAllRestrNode->setContainerIntroAnim(256, 187, 600);
-    endAllRestrNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    endAllRestrNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, endAllRestrNode);
-
-    auto* noPassNode = new LvglDisplayNode(noPassWidget, 0, ID_ALERT_NO_PASS);
-    noPassNode->setContainerIntroAnim(256, 187, 600);
-    noPassNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    noPassNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, noPassNode);
-
-    auto* noPassEndNode = new LvglDisplayNode(noPassEndWidget, 0, ID_ALERT_NO_PASS_END);
-    noPassEndNode->setContainerIntroAnim(256, 187, 600);
-    noPassEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    noPassEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, noPassEndNode);
-
-    auto* motorwayNode = new LvglTimedDisplayNode(motorwayWidget, 0, ID_ALERT_MOTORWAY, 15000);
-    motorwayNode->setContainerIntroAnim(256, 187, 600);
-    motorwayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    motorwayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, motorwayNode);
-
-    auto* motorwayEndNode = new LvglTimedDisplayNode(motorwayEndWidget, 0, ID_ALERT_MOTORWAY_END, 5000);
-    motorwayEndNode->setContainerIntroAnim(256, 187, 600);
-    motorwayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    motorwayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, motorwayEndNode);
-
-    auto* expresswayNode = new LvglTimedDisplayNode(expresswayWidget, 0, ID_ALERT_EXPRESSWAY, 15000);
-    expresswayNode->setContainerIntroAnim(256, 187, 600);
-    expresswayNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    expresswayNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, expresswayNode);
-
-    auto* expresswayEndNode = new LvglTimedDisplayNode(expresswayEndWidget, 0, ID_ALERT_EXPRESSWAY_END, 5000);
-    expresswayEndNode->setContainerIntroAnim(256, 187, 600);
-    expresswayEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    expresswayEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, expresswayEndNode);
-
-    auto* playgroundNode = new LvglTimedDisplayNode(playgroundWidget, 0, ID_ALERT_PLAYGROUND, 15000);
-    playgroundNode->setContainerIntroAnim(256, 187, 600);
-    playgroundNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    playgroundNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, playgroundNode);
-
-    auto* playgroundEndNode = new LvglTimedDisplayNode(playgroundEndWidget, 0, ID_ALERT_PLAYGROUND_END, 5000);
-    playgroundEndNode->setContainerIntroAnim(256, 187, 600);
-    playgroundEndNode->setContainerIntroYAnim(BOTTOM_TSR_START_Y, BOTTOM_TSR_TARGET_Y);
-    playgroundEndNode->setContainerIntroXAnim(BOTTOM_TSR_START_X, BOTTOM_TSR_TARGET_X);
-    addChild(groupBottom, playgroundEndNode);
-
-    // Supplementary signs (layer=1 in groupBottom — shown when base TSR is not active)
-    // Use LvglSuppSignNode to update the supp icon image based on CAN arg value
-    // QML supp intro: start_scale=0.82(210), target_scale=0.54252(139)
-    // QML: bottomMargin 41→-7.7, scale 0.82→0.54, transform origin=center
-    // Mapped to LVGL pivot (0,112): start visual top=97, end visual top=162
-
-    auto* sliSuppNode = new LvglSuppSignNode(sliSuppWidget, 1, ID_ALERT_SLI_SUPP, sliSuppIcon, sliSuppSpeedLabel);
-    sliSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
-    sliSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
-    sliSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
-    addChild(groupBottom, sliSuppNode);
-
-    auto* noPassSuppNode = new LvglSuppSignNode(noPassSuppWidget, 1, ID_ALERT_NO_PASS_SUPP, noPassSuppIcon);
-    noPassSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
-    noPassSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
-    noPassSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
-    addChild(groupBottom, noPassSuppNode);
-
-    auto* motorwaySuppNode = new LvglSuppSignNode(motorwaySuppWidget, 1, ID_ALERT_MOTORWAY_SUPP, motorwaySuppIcon);
-    motorwaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
-    motorwaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
-    motorwaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
-    addChild(groupBottom, motorwaySuppNode);
-
-    auto* expresswaySuppNode = new LvglSuppSignNode(expresswaySuppWidget, 1, ID_ALERT_EXPRESSWAY_SUPP, expresswaySuppIcon);
-    expresswaySuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
-    expresswaySuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
-    expresswaySuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
-    addChild(groupBottom, expresswaySuppNode);
-
-    auto* playgroundSuppNode = new LvglSuppSignNode(playgroundSuppWidget, 1, ID_ALERT_PLAYGROUND_SUPP, playgroundSuppIcon);
-    playgroundSuppNode->setContainerIntroAnim(256, SUPP_SIGN_SCALE, 600);
-    playgroundSuppNode->setContainerIntroYAnim(SUPP_START_Y, SUPP_TARGET_Y);
-    playgroundSuppNode->setContainerIntroXAnim(SUPP_START_X, SUPP_TARGET_X);
-    addChild(groupBottom, playgroundSuppNode);
-
-    // RTW alert (full-screen, under mainPanel at layer=0 — QML has it inside main_panel)
-    auto* rtwAlertNode = new LvglDisplayNode(rtwAlertWidget, 0, ID_ALERT_RTW_ALERT);
-    addChild(mainPanel, rtwAlertNode);
-
-    // ISA/TSR state machine nodes: notify menu controller of ISA availability
-    auto* tsrNotIsaNode = new LvglTsrStateNode(0, ID_STATE_TSR_NOT_ISA, menuController_);
-    addChild(leftPanel, tsrNotIsaNode);
-
-    auto* isaNotTsrNode = new LvglIsaStateNode(0, ID_STATE_ISA_NOT_TSR, menuController_);
-    isaNotTsrNode->setIsaWidgets(sb.isaErrorIcon, sb.isaInactiveIcon);
-    isaNotTsrNode->setIsaSignNodes(isaSpeedNode, isaHighwayNode);
-    isaNotTsrNode->setIsaInactiveNode(isaInactiveNode);
-    addChild(leftPanel, isaNotTsrNode);
-
-    // ISA/TSR mutual exclusion: when ISA is active, groupBottom should appear inactive
-    // to the tree traversal, preventing TSR signs from being shown (matches Qt behavior
-    // where left_panel_tsr.is_available = false when ISA is active)
-    groupBottom->setBlockingNode(isaNotTsrNode);
-
-    // The speed-limit signs in groupTop are NOT separated into ISA-only and
-    // TSR-only groups (the SLI/TSR speed sign and the ISA speed/highway signs
-    // share groupTop), so the blocking above did not cover them. Without this,
-    // the SLI sign (layer 1) wins over the ISA speed sign (layer 2) by layer
-    // priority, so an active TSR speed value is shown even while ISA is active
-    // — e.g. at startup the unit showed the TSR value instead of the ISA value
-    // (IMS-11657). Qt keeps them mutually exclusive via state_isa ("tsr" vs
-    // "isa"); reproduce that by cross-blocking the individual signs:
-    //   - SLI (TSR speed) hidden while ISA is active.
-    //   - ISA speed / highway hidden while TSR is active.
-    sliNode->setBlockingNode(isaNotTsrNode);
-    isaSpeedNode->setBlockingNode(tsrNotIsaNode);
-    isaHighwayNode->setBlockingNode(tsrNotIsaNode);
-
-    auto* sliShowNode = new LvglDisplayNode(nullptr, 0, ID_ALERT_SLI_SHOW);
-    addChild(leftPanel, sliShowNode);
-
-    auto* isaOverspeedNode = new LvglOverspeedBlinkNode(0, ID_ALERT_ISA_OVERSPEED, sliWidget, isaSpeedWidget);
-    addChild(leftPanel, isaOverspeedNode);
-
-    // SHAPE_USA: switch SLI from circular to rectangular sign image
-    // Get the image child (first child) from each SLI sign container
-    lv_obj_t* sliSignImg = lv_obj_get_child(sliWidget, 0);
-    lv_obj_t* sliSuppSignImg = lv_obj_get_child(sliSuppWidget, 0);
-    auto* shapeUsaNode = new LvglShapeUsaNode(0, ID_SHAPE_USA, sliSignImg, sliSuppSignImg, sliSpeedLabel);
-    addChild(leftPanel, shapeUsaNode);
-    sliNode->setShapeUsaNode(shapeUsaNode);
-    shapeUsaNode->setSliNode(sliNode);
-
-    auto* isaVersionNode = new LvglDisplayNode(nullptr, 0, ID_INFO_ISA_VERSION);
-    addChild(leftPanel, isaVersionNode);
-
-    auto* isaBundleNode = new LvglDisplayNode(nullptr, 0, ID_INFO_ISA_BUNDLE);
-    addChild(leftPanel, isaBundleNode);
-
-    // --- Right panel SmartADAS signs (Bulk 4) ---
-    // QML: IMS_SmartADAS_Restricted_Items, layer_pri=1, under mainPanel
-    auto* rightPanel = new LvglDisplayNode(nullptr, 1, false, false);
-    addChild(mainPanel, rightPanel);
-
-    // groupTopSadas (mutexGroup=true): only one primary icon visible at a time
-    auto* groupTopSadas = new LvglDisplayNode(nullptr, 0, true, false);
-    addChild(rightPanel, groupTopSadas);
-
-    // Right panel signs: container transform_scale intro animation 256→154
-    // Container is 136x136 with pivot top-right. At start (scale 256=1.0x), sign is full 136px.
-    // Start X: sign center at screen center → 160 - 68 = 92. End X: 320 - 136 = 184.
-    // QML SideIcon.qml: pause_duration=1500ms for Q1/Q4 (right panel) before animating
-    static const int SADAS_START_X = 92;
-    static const int SADAS_TARGET_X = 184;  // DISPLAY_WIDTH - RIGHT_PANEL_SIGN_NATIVE
-    // Top SADAS: y=63 (MAIN_PANEL_Y+12). Bottom SADAS: y=92 (240-12-136).
-    // Both start from same screen position (top sign's coords).
-    static const int SADAS_TOP_Y = 63;      // MAIN_PANEL_Y + RIGHT_PANEL_MARGIN
-    static const int SADAS_BOTTOM_Y = 92;    // DISPLAY_HEIGHT - RIGHT_PANEL_MARGIN - 136
-    auto mkSadasTop = [&](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
-        auto* node = new LvglDisplayNode(w, layer, id);
-        node->setContainerIntroAnim(256, 154, 1100);
-        node->setContainerIntroXAnim(SADAS_START_X, SADAS_TARGET_X);
-        return node;
+    // --- Data-driven scene extension (configs/scene.json) ---
+    // Attach any config-defined nodes under the named parent groups below. This
+    // is what makes a whole new alert/indicator addable by configuration alone
+    // (graphic item + CAN binding + image + placement), with no recompile —
+    // matching the Qt/QML frontend's "feature by config" capability. The
+    // hand-built tree above is untouched, so existing behaviour is unchanged.
+    std::map<std::string, LvglDisplayNode*> sceneParents = {
+        {"root", displayRoot_},
+        {"generalPanel", generalPanel},
+        {"mainPanel", mainPanel},
+        {"disconPanel", disconPanel},
+        {"groupCIPV", groupCIPV},
+        {"groupGAG", groupGAG},
+        {"groupFCW", groupFCW},
+        {"statusPanel", statusPanel},
+        {"leftPanel", leftPanel},
     };
-    auto mkSadasBottom = [&](lv_obj_t* w, int layer, DISPLAY_ITEM_ID id) {
-        auto* node = new LvglDisplayNode(w, layer, id);
-        node->setContainerIntroAnim(256, 154, 1100);
-        node->setContainerIntroXAnim(SADAS_START_X, SADAS_TARGET_X);
-        node->setContainerIntroYAnim(SADAS_TOP_Y, SADAS_BOTTOM_Y);
-        return node;
+    // Widgets created above and registered here by id can be referenced from
+    // scene.json via "widget_id", so a node's assembly can move to config while
+    // its widget stays created in C++ (preserving creation order / z-order).
+    std::map<std::string, lv_obj_t*> sceneWidgets = {
+        {"pdz", pdzWidget},
+        {"rtw_alert", rtwAlertWidget},
+        {"rgb_red", rgbRedWidget},
+        {"rgb_green", rgbGreenWidget},
+        {"rgb_blue", rgbBlueWidget},
+        {"rgb_white", rgbWhiteWidget},
+        {"tv_pattern", tvPatternWidget},
+        {"ldw_off_left", ldwOffLeftWidget},
+        {"ldw_off_right", ldwOffRightWidget},
+        {"ldw_left", ldwLeftWidget},
+        {"ldw_right", ldwRightWidget},
+        {"ldw_on_left", ldwOnLeftWidget},
+        {"ldw_on_right", ldwOnRightWidget},
+        {"sb_hi_beam", sb.hiBeamIcon},
+        {"sb_lo_beam", sb.loBeamIcon},
+        {"sb_blinker", sb.blinkerIcon},
+        {"sb_signed_in", sb.signedInIcon},
+        {"sb_signed_out", sb.signedOutIcon},
+        {"sb_signed_process", sb.signedProcessIcon},
+        {"sb_gps", sb.gpsIcon},
+        {"sb_gsm", sb.gsmIcon},
+        {"sb_mute", sb.muteIcon},
+        {"hmw_container", hmw.container},
+        {"hmw_value_label", hmw.valueLabel},
+        {"hmw_road_strip", hmw.roadStrip},
+        {"hmw_forward_car", hmw.forwardCar},
+        {"fcw", fcwWidget},
+        {"fcw_gif", lv_obj_get_child(fcwWidget, 0)},
+        {"pcw", pcwWidget},
+        {"pcw_gif", lv_obj_get_child(pcwWidget, 0)},
+        {"speed", speedWidget},
+        {"speed_value_label", speedValueLabel},
+        {"speed_unit_label", speedUnitLabel},
+        {"error_overlay", errorWidget},
+        {"error_code_label", errorCodeLabel},
+        {"discon", disconWidget},
+        {"poweroff", poweroffWidget},
+        {"keeppwr", keeppwrWidget},
+        {"pilot", pilotWidget},
+        {"failsafe", failsafeWidget},
+        {"sb_isa_error", sb.isaErrorIcon},
+        {"sb_isa_inactive", sb.isaInactiveIcon},
+        {"sb_isa_partial", sb.isaPartialIcon},
+        {"sb_isa_active", sb.isaActiveIcon},
+        {"rtw_warn", rtwWarnWidget},
+        {"sli", sliWidget},
+        {"sli_speed_label", sliSpeedLabel},
+        {"sli_sign_img", lv_obj_get_child(sliWidget, 0)},
+        {"isa_speed", isaSpeedWidget},
+        {"isa_speed_label", isaSpeedLabel},
+        {"isa_highway", isaHighwayWidget},
+        {"end_all_restr", endAllRestrWidget},
+        {"no_pass", noPassWidget},
+        {"no_pass_end", noPassEndWidget},
+        {"motorway", motorwayWidget},
+        {"motorway_end", motorwayEndWidget},
+        {"expressway", expresswayWidget},
+        {"expressway_end", expresswayEndWidget},
+        {"playground", playgroundWidget},
+        {"playground_end", playgroundEndWidget},
+        {"sli_supp", sliSuppWidget},
+        {"sli_supp_speed_label", sliSuppSpeedLabel},
+        {"sli_supp_icon", sliSuppIcon},
+        {"sli_supp_sign_img", lv_obj_get_child(sliSuppWidget, 0)},
+        {"no_pass_supp", noPassSuppWidget},
+        {"no_pass_supp_icon", noPassSuppIcon},
+        {"motorway_supp", motorwaySuppWidget},
+        {"motorway_supp_icon", motorwaySuppIcon},
+        {"expressway_supp", expresswaySuppWidget},
+        {"expressway_supp_icon", expresswaySuppIcon},
+        {"playground_supp", playgroundSuppWidget},
+        {"playground_supp_icon", playgroundSuppIcon},
+        {"signal_test_bg", signalTestWidget},
+        {"speed_small_img", speedSmallImg},
+        {"speed_big_img", speedBigImg},
+        {"speed_small_label", speedSmallLabel},
+        {"speed_big_label", speedBigLabel},
+        {"peripheral_bg", peripheralTestWidget},
+        {"gsm_row", gsmRow}, {"gsm_0", gsmIcons[0]}, {"gsm_1", gsmIcons[1]}, {"gsm_2", gsmIcons[2]}, {"gsm_result", gsmResult},
+        {"gps_row", gpsRow}, {"gps_0", gpsIcons[0]}, {"gps_1", gpsIcons[1]}, {"gps_result", gpsResult},
+        {"gyro_row", gyroRow}, {"gyro_0", gyroIcons[0]}, {"gyro_1", gyroIcons[1]}, {"gyro_result", gyroResult},
     };
-
-    auto* smartCrowdedNode  = mkSadasTop(smartCrowdedWidget,  1, ID_SMART_CROWDED);
-    addChild(groupTopSadas, smartCrowdedNode);
-
-    auto* smartPedHwyNode   = mkSadasTop(smartPedHwyWidget,   2, ID_SMART_PED_HWY);
-    addChild(groupTopSadas, smartPedHwyNode);
-
-    auto* smartCycHwyNode   = mkSadasTop(smartCycHwyWidget,   3, ID_SMART_CYC_HWY);
-    addChild(groupTopSadas, smartCycHwyNode);
-
-    auto* smartHarshDzNode  = mkSadasTop(smartHarshDzWidget,  4, ID_SMART_HARSH_DZ);
-    addChild(groupTopSadas, smartHarshDzNode);
-
-    auto* smartCaNode       = mkSadasTop(smartCaWidget,       4, ID_SMART_CA);
-    addChild(groupTopSadas, smartCaNode);
-
-    auto* smartWeaRoadNode  = mkSadasTop(smartWeaRoadWidget,  5, ID_SMART_WEA_ROAD);
-    addChild(groupTopSadas, smartWeaRoadNode);
-
-    auto* smartWeaHydroNode = mkSadasTop(smartWeaHydroWidget, 5, ID_SMART_WEA_HYDRO);
-    addChild(groupTopSadas, smartWeaHydroNode);
-
-    auto* smartWeaFgNode    = mkSadasTop(smartWeaFgWidget,    6, ID_SMART_WEA_FG);
-    addChild(groupTopSadas, smartWeaFgNode);
-
-    auto* smartWeaWndNode   = mkSadasTop(smartWeaWndWidget,   7, ID_SMART_WEA_WND);
-    addChild(groupTopSadas, smartWeaWndNode);
-
-    auto* smartWeaHailNode  = mkSadasTop(smartWeaHailWidget,  7, ID_SMART_WEA_HAIL);
-    addChild(groupTopSadas, smartWeaHailNode);
-
-    auto* smartWeaTstmNode  = mkSadasTop(smartWeaTstmWidget,  7, ID_SMART_WEA_TSTM);
-    addChild(groupTopSadas, smartWeaTstmNode);
-
-    // groupBottomSadas (mutexGroup=false): secondary icons, multiple can be visible
-    // Bottom signs start from same screen coords as top, then animate to lower position
-    auto* groupBottomSadas = new LvglDisplayNode(nullptr, 0, false, false);
-    addChild(rightPanel, groupBottomSadas);
-
-    auto* smartCrowdedSecNode  = mkSadasBottom(smartCrowdedSecWidget,  1, ID_SMART_CROWDED_SEC);
-    addChild(groupBottomSadas, smartCrowdedSecNode);
-
-    auto* smartPedHwySecNode   = mkSadasBottom(smartPedHwySecWidget,   2, ID_SMART_PED_HWY_SEC);
-    addChild(groupBottomSadas, smartPedHwySecNode);
-
-    auto* smartCycHwySecNode   = mkSadasBottom(smartCycHwySecWidget,   3, ID_SMART_CYC_HWY_SEC);
-    addChild(groupBottomSadas, smartCycHwySecNode);
-
-    auto* smartHarshDzSecNode  = mkSadasBottom(smartHarshDzSecWidget,  4, ID_SMART_HARSH_DZ_SEC);
-    addChild(groupBottomSadas, smartHarshDzSecNode);
-
-    auto* smartCaSecNode       = mkSadasBottom(smartCaSecWidget,       4, ID_SMART_CA_SEC);
-    addChild(groupBottomSadas, smartCaSecNode);
-
-    auto* smartWeaRoadSecNode  = mkSadasBottom(smartWeaRoadSecWidget,  5, ID_SMART_WEA_ROAD_SEC);
-    addChild(groupBottomSadas, smartWeaRoadSecNode);
-
-    auto* smartWeaHydroSecNode = mkSadasBottom(smartWeaHydroSecWidget, 5, ID_SMART_WEA_HYDRO_SEC);
-    addChild(groupBottomSadas, smartWeaHydroSecNode);
-
-    auto* smartWeaFgSecNode    = mkSadasBottom(smartWeaFgSecWidget,    6, ID_SMART_WEA_FG_SEC);
-    addChild(groupBottomSadas, smartWeaFgSecNode);
-
-    auto* smartWeaWndSecNode   = mkSadasBottom(smartWeaWndSecWidget,   7, ID_SMART_WEA_WND_SEC);
-    addChild(groupBottomSadas, smartWeaWndSecNode);
-
-    auto* smartWeaHailSecNode  = mkSadasBottom(smartWeaHailSecWidget,  7, ID_SMART_WEA_HAIL_SEC);
-    addChild(groupBottomSadas, smartWeaHailSecNode);
-
-    auto* smartWeaTstmSecNode  = mkSadasBottom(smartWeaTstmSecWidget,  7, ID_SMART_WEA_TSTM_SEC);
-    addChild(groupBottomSadas, smartWeaTstmSecNode);
-
-    // SMART_FATIGUE / SMART_BUMPERS: in JSON + QML but no UI in QML (placeholders)
-    auto* smartFatigueNode = new LvglDisplayNode(nullptr, 0, ID_SMART_FATIGUE);
-    addChild(groupTopSadas, smartFatigueNode);
-
-    auto* smartBumpersNode = new LvglDisplayNode(nullptr, 0, ID_SMART_BUMPERS);
-    addChild(groupTopSadas, smartBumpersNode);
-
-    auto* smartFatigueSecNode = new LvglDisplayNode(nullptr, 0, ID_SMART_FATIGUE_SEC);
-    addChild(groupBottomSadas, smartFatigueSecNode);
-
-    auto* smartBumpersSecNode = new LvglDisplayNode(nullptr, 0, ID_SMART_BUMPERS_SEC);
-    addChild(groupBottomSadas, smartBumpersSecNode);
-
-    // --- Bulk 5: Menu entities (not part of display tree — handled by menu controller) ---
-    // FUNC_BUTTONS: registered as dummy (keyboard events handled via SDL)
-    auto* funcButtonsNode = new LvglDisplayNode(nullptr, 0, ID_FUNC_BUTTONS);
-    addChild(statusPanel, funcButtonsNode);
-
-    // VOLUME_DONE: forwards activation to menu controller
-    auto* volumeDoneNode = new LvglVolumeDoneNode(0, ID_VOLUME_DONE, menuController_);
-    addChild(statusPanel, volumeDoneNode);
-
-    // VOLUME_FAIL: forwards activation to menu controller
-    auto* volumeFailNode = new LvglVolumeFailNode(0, ID_VOLUME_FAIL, menuController_);
-    addChild(statusPanel, volumeFailNode);
-
-    // INFO_QRCODE: forwards activation to menu controller
-    auto* qrCodeNode = new LvglQRCodeNode(0, ID_INFO_QRCODE, menuController_);
-    addChild(statusPanel, qrCodeNode);
-
-    // --- Bulk 6: Display tests (full-screen overlays, high z-order) ---
-    // These are full-screen test screens at the top of the tree (under generalPanel)
-    auto* rgbRedNode   = new LvglDisplayNode(rgbRedWidget,   0, ID_RGB_RED);
-    addChild(generalPanel, rgbRedNode);
-
-    auto* rgbGreenNode = new LvglDisplayNode(rgbGreenWidget, 0, ID_RGB_GREEN);
-    addChild(generalPanel, rgbGreenNode);
-
-    auto* rgbBlueNode  = new LvglDisplayNode(rgbBlueWidget,  0, ID_RGB_BLUE);
-    addChild(generalPanel, rgbBlueNode);
-
-    auto* rgbWhiteNode = new LvglDisplayNode(rgbWhiteWidget, 0, ID_RGB_WHITE);
-    addChild(generalPanel, rgbWhiteNode);
-
-    auto* tvPatternNode = new LvglDisplayNode(tvPatternWidget, 0, ID_TV_PATTERN);
-    addChild(generalPanel, tvPatternNode);
-
-    // --- Signal test screen (modeGroup: children only visible when parent active) ---
-    auto* signalTestPanel = new LvglDisplayNode(signalTestWidget, 0, ID_INFO_TEST_SIGNALS, true);
-    addChild(generalPanel, signalTestPanel);
-
-    // Signal test items: each has small + big icon
-    DISPLAY_ITEM_ID signalEntityIds[] = {
-        ID_TEST_BRAKES, ID_TEST_WIPERS, ID_TEST_HIGH_BEAM,
-        ID_TEST_BLINKER_LEFT, ID_TEST_BLINKER_RIGHT, ID_TEST_REVERSE
-    };
-    for (int i = 0; i < 6; i++) {
-        auto* node = new LvglSignalTestItemNode(
-            sigSmallImgs[i], sigBigImgs[i], 0, signalEntityIds[i],
-            signalItems[i].wildcard);
-        addChild(signalTestPanel, node);
+    // Signal-test icon arrays (registered by index for scene.json widget_id refs).
+    for (int i = 0; i < 6; ++i) {
+        char k[24];
+        snprintf(k, sizeof(k), "sig_small_%d", i); sceneWidgets[k] = sigSmallImgs[i];
+        snprintf(k, sizeof(k), "sig_big_%d", i);   sceneWidgets[k] = sigBigImgs[i];
     }
+    LvglScene::Result sceneResult =
+        LvglScene::loadInto(rootWidget, sceneParents, sceneWidgets, menuController_);
 
-    // Signal test speed node
-    auto* testSpeedNode = new LvglSignalTestSpeedNode(
-        speedSmallImg, speedBigImg, speedSmallLabel, speedBigLabel,
-        0, ID_TEST_SPEED);
-    addChild(signalTestPanel, testSpeedNode);
-
-    // TEST_SPEED_VALUE: in JSON, value-only entity used alongside TEST_SPEED
-    auto* testSpeedValueNode = new LvglDisplayNode(nullptr, 0, ID_TEST_SPEED_VALUE);
-    addChild(signalTestPanel, testSpeedValueNode);
-
-    // --- Peripheral test screen (modeGroup) ---
-    auto* peripheralTestPanel = new LvglDisplayNode(peripheralTestWidget, 0, ID_INFO_TEST_PERIPHERALS, true);
-    addChild(generalPanel, peripheralTestPanel);
-
-    // GSM group: Module(_left=1,_right=3), N/W(_left=4,_right=7), Upload(_left=8,_right=9)
-    std::vector<PeripheralSubItem> gsmItems = {
-        {gsmIcons[0], "Test_GSM_1", 1, 3},
-        {gsmIcons[1], "Test_GSM_2", 4, 7},
-        {gsmIcons[2], "Test_GSM_3", 8, 9},
+    // Bind migrated nodes that the post-traversal glue needs by id.
+    auto sceneNode = [&](const char* id) -> LvglDisplayNode* {
+        auto it = sceneResult.nodes.find(id);
+        return it != sceneResult.nodes.end() ? it->second : nullptr;
     };
-    auto* gsmTestNode = new LvglPeripheralTestGroupNode(gsmRow, 0, ID_INFO_TEST_GSM, gsmItems, gsmResult);
-    addChild(peripheralTestPanel, gsmTestNode);
-
-    // GPS group: MSGs(_left=1,_right=2), Locked(_left=3,_right=4)
-    std::vector<PeripheralSubItem> gpsItems = {
-        {gpsIcons[0], "Test_GPS_1", 1, 2},
-        {gpsIcons[1], "Test_GPS_2", 3, 4},
-    };
-    auto* gpsTestNode = new LvglPeripheralTestGroupNode(gpsRow, 0, ID_INFO_TEST_GPS, gpsItems, gpsResult);
-    addChild(peripheralTestPanel, gpsTestNode);
-
-    // Gyro group: MSG(_left=1,_right=1), Range(_left=2,_right=2)
-    std::vector<PeripheralSubItem> gyroItems = {
-        {gyroIcons[0], "Test_Gyro_1", 1, 1},
-        {gyroIcons[1], "Test_Gyro_2", 2, 2},
-    };
-    auto* gyroTestNode = new LvglPeripheralTestGroupNode(gyroRow, 0, ID_INFO_TEST_GYRO, gyroItems, gyroResult);
-    addChild(peripheralTestPanel, gyroTestNode);
+    lldwNode_ = sceneNode("lldwNode");
+    rldwNode_ = sceneNode("rldwNode");
+    errorNode_ = sceneNode("errorNode");
+    failsafeNode_ = sceneNode("failsafeNode");
+    hmwDistanceNode_ = sceneNode("hmwDistanceNode");
+    hmwAlertNode_ = sceneNode("hmwAlertNode");
+    hmwMonitorNode_ = sceneNode("hmwMonitorNode");
+    speedNode_ = dynamic_cast<LvglSpeedDisplayNode*>(sceneNode("speedNode"));
+    groupTop_ = sceneNode("groupTop");
+    groupBottom_ = sceneNode("groupBottom");
 }
 
 void LvglMainProcess::handleKeyEvent(int sdlKey)
