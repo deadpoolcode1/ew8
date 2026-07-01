@@ -74,7 +74,11 @@ lv_display_t* sdl_display_init(int width, int height)
         return nullptr;
     }
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+    // Linear (bilinear) sampling so the framebuffer stays smooth when the SDL
+    // window is resized / viewed on HiDPI / captured and upscaled for comparison.
+    // At the native 320x240 1:1 blit this is a no-op, but "nearest" made every
+    // scaled view blocky vs the Qt scene graph (issue: items look pixelated).
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
     texture = SDL_CreateTexture(
         renderer,

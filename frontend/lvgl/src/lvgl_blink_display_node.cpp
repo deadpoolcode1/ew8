@@ -17,15 +17,15 @@ void LvglBlinkDisplayNode::onBecomeVisible()
         lv_obj_set_style_opa(widget_, LV_OPA_COVER, 0);
         lv_obj_remove_flag(widget_, LV_OBJ_FLAG_HIDDEN);
 
-        // QML BlinkingLine.qml: 404ms fade, InOutQuad
-        // Reduced to 200ms — LVGL's timer tick appears slower than Qt's,
-        // so shorter duration is needed to match Qt's perceived blink rate
+        // QML BlinkingLine.qml: opacity 1->0 over 404ms then 0->1 over 404ms,
+        // Easing.InOutQuad, looped (period 808ms). Match it exactly now that the
+        // display update latency (leading-edge apply + 16ms refresh) is fixed.
         lv_anim_t anim;
         lv_anim_init(&anim);
         lv_anim_set_var(&anim, widget_);
         lv_anim_set_values(&anim, LV_OPA_COVER, LV_OPA_TRANSP);
-        lv_anim_set_duration(&anim, 200);
-        lv_anim_set_playback_duration(&anim, 200);
+        lv_anim_set_duration(&anim, 404);
+        lv_anim_set_playback_duration(&anim, 404);
         lv_anim_set_playback_delay(&anim, 0);
         lv_anim_set_repeat_delay(&anim, 0);
         lv_anim_set_repeat_count(&anim, LV_ANIM_REPEAT_INFINITE);

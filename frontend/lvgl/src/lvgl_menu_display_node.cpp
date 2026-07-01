@@ -13,13 +13,26 @@ LvglVolumeDoneNode::LvglVolumeDoneNode(int layer, DISPLAY_ITEM_ID entityType, Lv
 
 void LvglVolumeDoneNode::onBecomeVisible()
 {
-    // valueInt_ = volume, valueFrac_ = min, unit_ = max
-    ctrl_->showVolumeMenu(valueInt_, valueFrac_, unit_);
+    // valueInt_ = volume, valueFrac_ = min, unit_ = max.
+    // Show/refresh only on an activation transition or an actual value/limit
+    // change — updateTreeVisibility() calls onBecomeVisible() on every still-
+    // active node each frame, so without this guard an unrelated CAN update
+    // (e.g. a speed change) would re-pop the volume menu after it auto-hid.
+    // A local previous-value cache is used rather than the base justArgsChanged_
+    // flag, which nothing clears for this node (it would latch true forever).
+    if (!shown_ || valueInt_ != lastVal_ || valueFrac_ != lastMin_ || unit_ != lastMax_) {
+        shown_ = true;
+        lastVal_ = valueInt_; lastMin_ = valueFrac_; lastMax_ = unit_;
+        ctrl_->showVolumeMenu(valueInt_, valueFrac_, unit_);
+    }
 }
 
 void LvglVolumeDoneNode::onBecomeInvisible()
 {
-    ctrl_->hideVolumeMenu();
+    if (shown_) {
+        shown_ = false;
+        ctrl_->hideVolumeMenu();
+    }
 }
 
 // --- VOLUME_FAIL ---
@@ -145,6 +158,11 @@ LvglShapeUsaNode::LvglShapeUsaNode(int layer, DISPLAY_ITEM_ID entityType,
 
 void LvglShapeUsaNode::onBecomeVisible()
 {
+    // Rising-edge only. onBecomeVisible() runs on EVERY tree traversal while
+    // SHAPE_USA is active; the sliNode_->replayIntroAnim() below would then re-fire
+    // the US TSR/SLI intro on every unrelated CAN event (speed/HW-warning/etc.).
+    // Qt only re-animates on a real shape/value change (issue: ReINIT US TSR).
+    if (wasUsaActive_) return;
     wasUsaActive_ = true;
     // Switch to rectangular sign image (98x112 vs circular 112x112)
     if (sliSignImg_) {
@@ -293,9 +311,15 @@ void LvglIsaStateNode::onBecomeVisible()
 
     ctrl_->setIsaAvailable(true);
 
-    // QML: "isa_init" state — force ALERT_ISA_ERROR widget visible for 700ms
-    // Only on hidden→visible transition, when no ISA sign is showing and inactive was requested
-    if (isaErrorWidget_ && firstShow && shouldShowInitPhase()) {
+    // QML "isa_init" state: force the ALERT_ISA_ERROR/init icon for the full ~1s
+    // transition INTO ISA (main.qml is_forced: state==="isa_init"), regardless of
+    // the ISA sub-state (inactive/partial/full). The previous gate
+    // (shouldShowInitPhase(): only when INFO_ISA_INACTIVE active AND no ISA sign
+    // visible) hid the init indicator on normal transitions, e.g. straight to
+    // FULL_ACTIVE — so the ISA init state appeared "missing". firstShow is the
+    // rising edge of STATE_ISA_NOT_TSR = "entering ISA from non-ISA", matching
+    // Qt's state !== "isa" guard.
+    if (isaErrorWidget_ && firstShow) {
         isaInitPhase_ = true;
         lv_obj_remove_flag(isaErrorWidget_, LV_OBJ_FLAG_HIDDEN);
         if (isaInactiveWidget_) {
@@ -304,7 +328,7 @@ void LvglIsaStateNode::onBecomeVisible()
         if (initTimer_) {
             lv_timer_delete(initTimer_);
         }
-        initTimer_ = lv_timer_create(initTimerCb, 700, this);
+        initTimer_ = lv_timer_create(initTimerCb, 1000, this);
         lv_timer_set_repeat_count(initTimer_, 1);
     }
 }

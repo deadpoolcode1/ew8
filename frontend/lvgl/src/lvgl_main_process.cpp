@@ -46,6 +46,7 @@ LvglMainProcess::LvglMainProcess(lv_obj_t* screen)
     , hmwDistanceNode_(nullptr)
     , hmwAlertNode_(nullptr)
     , hmwMonitorNode_(nullptr)
+    , pdzNode_(nullptr)
     , speedNode_(nullptr)
     , errorNode_(nullptr)
     , menuController_(nullptr)
@@ -246,10 +247,13 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // 1. Content widgets (lowest visual layer)
     // Creation order = LVGL visual z-order (later = on top).
     // QML z-values: HMW(1) < lanes(4) < forward_car(5) < host_car(6)
-    LvglWidgets::HMWWidgets hmw = LvglWidgets::createHMWDisplay(rootWidget);
-
-    // PDZ overlay
+    // PDZ (pedestrian danger-zone) overlay — created FIRST so the HMW road strip
+    // and forward car render on top of it (QML: alert_pdz z:1 < forward_car z:5,
+    // so the CIPV/forward car draws over the pedestrian — fixes PED_DZ/CIPV overlap).
     lv_obj_t* pdzWidget = LvglWidgets::createPDZOverlay(rootWidget);
+
+    // HMW display (road strip + forward car) — above PDZ.
+    LvglWidgets::HMWWidgets hmw = LvglWidgets::createHMWDisplay(rootWidget);
 
     // LDW indicators: created after HMW so they render on top (QML z:4)
     lv_obj_t* ldwOffLeftWidget  = LvglWidgets::createLDWOffIndicator(rootWidget, true);
@@ -557,11 +561,14 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     // scene.json (under groupGAG). lldwNode_/rldwNode_ are fetched from the
     // scene result below for the host-car-shift glue.
 
-    // groupFCW (group, layer=1, mutexGroup=false — QML has mutexGroup: false)
-    // Layer=1 (higher priority than mainPanel/statusPanel at layer=2) so that
-    // when FCW/PCW activates, the tree force-hides all layer=2 siblings
-    // (signs, status bar, etc.), matching QML z=15 behavior.
-    auto* groupFCW = new LvglDisplayNode(nullptr, 1, false, false);
+    // groupFCW (group, layer=2 — SAME layer as mainPanel/statusPanel, matching
+    // QML main.qml groupFCW layer_pri:2 "Decreased from 1 to prevent reinit of
+    // SLI and TSR". At equal layer the tree does NOT force-hide the panels; the
+    // full-screen opaque FCW/PCW GIF (raised to the front after the scene loads,
+    // see below) occludes them by z-order instead. This keeps the left/right-
+    // panel signs and the SADAS panel CAN-active (their intro animations do not
+    // replay when the alert clears — fixes "ReINIT SADAS/TSR-supp after Focus").
+    auto* groupFCW = new LvglDisplayNode(nullptr, 2, false, false);
     groupFCW_ = groupFCW;
     addChild(generalPanel, groupFCW);
 
@@ -715,6 +722,16 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     LvglScene::Result sceneResult =
         LvglScene::loadInto(rootWidget, sceneParents, sceneWidgets, menuController_);
 
+    // The scene loader creates the SADAS right-panel (and other) widgets last, so
+    // they sit above the FCW/PCW GIFs in z-order. Now that groupFCW shares the
+    // panels' layer (no tree force-hide), the full-screen FCW/PCW alert must
+    // occlude those panels by z-order — lift the GIFs above the loader widgets.
+    // They stay HIDDEN until activated, and the disconnect/error/op-mode overlays
+    // (disconPanel) still cover FCW because they force-hide generalPanel (which
+    // contains groupFCW) via the tree, independent of z-order.
+    if (fcwWidget) lv_obj_move_foreground(fcwWidget);
+    if (pcwWidget) lv_obj_move_foreground(pcwWidget);
+
     // Bind migrated nodes that the post-traversal glue needs by id.
     auto sceneNode = [&](const char* id) -> LvglDisplayNode* {
         auto it = sceneResult.nodes.find(id);
@@ -727,6 +744,11 @@ void LvglMainProcess::buildDisplayTree(lv_obj_t* screen)
     hmwDistanceNode_ = sceneNode("hmwDistanceNode");
     hmwAlertNode_ = sceneNode("hmwAlertNode");
     hmwMonitorNode_ = sceneNode("hmwMonitorNode");
+    pdzNode_ = sceneNode("pdzNode");
+    isaErrorNode_    = sceneNode("isaErrorNode");
+    isaInactiveNode_ = sceneNode("isaInactiveNode");
+    isaPartialNode_  = sceneNode("isaPartialNode");
+    isaActiveNode_   = sceneNode("isaActiveNode");
     speedNode_ = dynamic_cast<LvglSpeedDisplayNode*>(sceneNode("speedNode"));
     groupTop_ = sceneNode("groupTop");
     groupBottom_ = sceneNode("groupBottom");
@@ -799,9 +821,15 @@ void LvglMainProcess::applyPendingDisplayUpdate()
     if (pendingDisplayUpdate_.load())
     {
         const int64_t now = core::ElapsedTimer::currentMSecsSinceEpoch();
+        // Leading-edge like Qt (mainprocess.cpp onCanReceived): render the first
+        // frame of a burst immediately (0ms added latency), then coalesce the
+        // trailing frames. On the leading frame process() stamps first==last, so
+        // this fires exactly once per burst; later frames only bump lastChangeMs_
+        // and fall back to the quiet-gap / hard-cap window.
+        const bool leadingEdge = (firstPendingMs_.load() == lastChangeMs_.load());
         const bool quietGap = (now - lastChangeMs_.load())   >= DISPLAY_UPDATE_QUIET_MS;
         const bool capped   = (now - firstPendingMs_.load()) >= DISPLAY_UPDATE_MAX_DEFER_MS;
-        if (quietGap || capped)
+        if (leadingEdge || quietGap || capped)
         {
             pendingDisplayUpdate_.store(false);
             updateDisplay();
@@ -830,6 +858,17 @@ void LvglMainProcess::applyPendingDisplayUpdate()
             bool disconActive = disconPanel_ && disconPanel_->getActivSem() > 0;
             bool fcwActive    = groupFCW_ && groupFCW_->getActivSem() > 0;
             menuController_->setVolumeEnabled(!disconActive && !errorActive && !fcwActive);
+
+            // QML isa_menu.displayedValue: derive the ISA menu's shown mode from
+            // which status-bar ISA icon is active (inactive/error->0, partial->1,
+            // active->2) so the menu always opens in the correct state.
+            bool isaErr   = isaErrorNode_    && isaErrorNode_->getActivSem()    > 0;
+            bool isaInact = isaInactiveNode_ && isaInactiveNode_->getActivSem() > 0;
+            bool isaPart  = isaPartialNode_  && isaPartialNode_->getActivSem()  > 0;
+            bool isaAct   = isaActiveNode_   && isaActiveNode_->getActivSem()   > 0;
+            if (isaErr || isaInact || isaPart || isaAct) {
+                menuController_->setIsaMode((isaErr || isaInact) ? 0 : (isaPart ? 1 : 2));
+            }
         }
 
         // QML: HostCar visible: groupGAG.visible || groupCIPV.visible
@@ -870,6 +909,20 @@ void LvglMainProcess::applyPendingDisplayUpdate()
                     lv_obj_remove_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_add_flag(hmwContainer, LV_OBJ_FLAG_HIDDEN);
+
+                // QML main.qml:818 — the scrolling road strip plays only when NOT
+                // (LDW or PED) active; otherwise it freezes on the current frame.
+                // The strip is child 0 of the HMW container (an lv_gif).
+                lv_obj_t* roadStrip = lv_obj_get_child(hmwContainer, 0);
+                if (roadStrip) {
+                    bool pedActive = pdzNode_  && pdzNode_->getActivSem()  > 0;
+                    bool ldwActive = (lldwNode_ && lldwNode_->getActivSem() > 0)
+                                  || (rldwNode_ && rldwNode_->getActivSem() > 0);
+                    if (hmwShown && !pedActive && !ldwActive)
+                        lv_gif_resume(roadStrip);
+                    else
+                        lv_gif_pause(roadStrip);
+                }
 
                 // QML: units/time text blank unless a valid headway distance is
                 // present (canEntityArg != 0), and hidden entirely under failsafe.

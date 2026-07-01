@@ -65,6 +65,116 @@ QML animations are replicated using `lv_anim_t`:
 | Host car shift | 200ms (left/right), 600ms (center) | InOutQuad |
 | HMW car transition | 700ms | InOutQuad |
 
+## Configuration Framework
+
+Most of the display can be changed **without recompiling**. Three JSON files
+under `configs/` drive the UI; edit one, save, and restart `ew8_lvgl` — the app
+re-reads them at startup. This is the LVGL equivalent of the old Qt/QML
+"describe the scene in markup" model: fonts, animations, positions, z-order, and
+even whole new signal-driven alerts are config, not C++.
+
+> The files are copied next to the executable at CMake **configure** time. For a
+> dev build you can re-copy without reconfiguring:
+> `cp configs/scene.json frontend/lvgl/build/configs/`.
+
+| File | Drives | Reload |
+|---|---|---|
+| `configs/scene.json` | The display tree — every on-screen node, its parent, widget, position, layer, and intro animation | Restart |
+| `configs/notices.json` | Full-screen notice/overlay screens (disconnect, failsafe, error, op-mode) | Restart |
+| `configs/EW8_Config.json` | Hardware config (illuminance/brightness curves, CAN baud) | Restart |
+
+### `scene.json` — the display tree
+
+The C++ `buildDisplayTree()` creates only a skeleton of named **parent groups**
+plus the Tier-2 logic-bearing widgets. Everything else — which node hangs where,
+what image it shows, how it animates in — lives in `scene.json` and is assembled
+by `lvgl_scene_loader.cpp`. Each entry attaches a node (or a subtree via
+`children`) under a named parent:
+
+```json
+{
+  "parent": "mainPanel",
+  "type": "image",
+  "graphic_item": "ALERT_LEFT_LCAI",
+  "src": "A:images/LCA/LCA_Yellow.png",
+  "align": "left_mid", "offset": [2, 0],
+  "layer": 0
+}
+```
+
+**Named parents** you can attach to (seeded by `buildDisplayTree`):
+`root`, `generalPanel`, `mainPanel`, `disconPanel`, `groupCIPV`, `groupGAG`,
+`groupFCW`, `statusPanel`, `leftPanel`. Nodes you give an `"id"` can also be
+used as parents by later entries and as cross-reference targets.
+
+**How nodes are chosen for display:** the tree is evaluated top-down each update
+cycle. Siblings compete by `layer` (higher wins); within a `mutex` group only the
+single highest-priority active child shows; a node named in another node's
+`blocked_by` is suppressed while the blocker is active. A node owning a widget
+toggles `LV_OBJ_FLAG_HIDDEN`. Creation order in the file = LVGL z-order (later
+siblings paint on top).
+
+**Common fields (most node types):**
+
+| Field | Meaning |
+|---|---|
+| `type` | Node kind (see table below). Required. |
+| `parent` | Named parent group (top-level entries only). |
+| `id` | Optional handle for parenting / cross-refs / C++ glue lookup. |
+| `graphic_item` | Binds the node to a `GraphicItem` entity from `EW8_Signals.json` (drives when it activates). Omit for pure containers. |
+| `layer` | Priority among siblings (int, higher = wins). |
+| `mutex` / `mode` | On `group` nodes: mutual-exclusion / mode-group semantics. |
+| `children` | Array of child specs (recursive). |
+| `pos` `[x,y]` | Absolute position, **or**… |
+| `align` + `offset` `[dx,dy]` | Align to a nine-point anchor (`top_left`, `top_mid`, `center`, `left_mid`, `right_mid`, `bottom_mid`, …) plus offset. |
+| `scale` | Image scale, 256 = 1.0. |
+| `pivot` `[x,y]` | Image scale/rotate pivot. |
+| `src` | Inline image path (`A:` = runtime asset drive). |
+| `widget` `{factory, src, upper}` | Build the widget via a geometry factory instead of an inline image: `left_panel_sign`, `right_panel_sign`, `speed_limit_sign`. Keeps pixels byte-identical to the old hand-built tree. |
+| `widget_id` | Reuse a widget created in C++ and registered by id (preserves creation order / z-order for logic-bearing widgets). |
+| `intro_anim` `{start,target,delay}` | Container scale intro (256 = 1.0) after `delay` ms. |
+| `intro_x` / `intro_y` `{start,target}` | Container slide intro. |
+| `move_to_front` | Raise to front on show. |
+| `blocked_by` | Id of a node that suppresses this one while active. |
+
+**Node `type` values** (see `makeNode` in `lvgl_scene_loader.cpp` for the exact
+constructor args each one reads):
+
+`group`, `dummy`, `image`, `blink`, `timed` (`max_duration_ms`), `value`
+(`divisor`, `label_id`/factory), `string`, `speed`, `error`, `gif`,
+`hmw_state`, `supp_sign`, `shape_usa`, `overspeed`, `isa_state`, `tsr_state`,
+`volume_done`, `volume_fail`, `qrcode`, and the test-screen nodes
+`signal_test_item`, `signal_test_speed`, `peripheral_test_group`.
+
+The logic-bearing types (`shape_usa`, `overspeed`, `isa_state`, `hmw_state`, …)
+reference C++-created widgets by id (`sli_widget_id`, `road_strip_id`, etc.) and
+cross-reference other nodes by id (`sli_node`, `shape_usa_node`,
+`isa_speed_node`, …) in a second wiring pass, so ordering within the file
+doesn't matter for references.
+
+### Changing things without recompiling
+
+- **Positions / layout** — edit `pos` or `align`+`offset` on the node. (Two
+  pixel-parity anchors, e.g. the HMW container x, are still set in
+  `lvgl_widgets.cpp`; everything attached in `scene.json` is config.)
+- **Animations** — edit `intro_anim` / `intro_x` / `intro_y` (delay + start/target)
+  for slide/scale intros; blink timings live in the blink nodes. Durations map
+  1:1 to the Qt SideIcon / BlinkingLine values.
+- **Fonts** — labels use a **compiled** IntelOne font registry (bitmaps baked in
+  at build time for pixel parity). Pick from the available sizes; adding a *new*
+  size means adding the `.c` font and an `LV_FONT_DECLARE`. Available:
+  `intelone_medium_{14,17,20,22,24,26,28,32,36,37,44}`,
+  `intelone_bold_{18,20,26,28,32,37}`. In `notices.json` set `"font"` to one of
+  these names.
+- **Notice screens** — text, colour (`#rrggbb`), position, image, and font of the
+  disconnect / failsafe / error / op-mode overlays are all in `notices.json`.
+- **A whole new alert, config-only** — add the signal to the DBC + `EW8_Signals.json`
+  (so a `GraphicItem` entity fires), drop the image under `images/`, and add a
+  `scene.json` node with the matching `graphic_item`. No C++. The **PLCA
+  lane-change alert** was added this way — see
+  `docs/Configuring-Lane-Change-Alert.docx` and the `lcaPanel` entry in
+  `scene.json` for the worked example.
+
 ## Building
 
 ### Prerequisites

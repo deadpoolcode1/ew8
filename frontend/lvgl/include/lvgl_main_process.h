@@ -67,9 +67,16 @@ private:
     LvglDisplayNode* hmwDistanceNode_;
     LvglDisplayNode* hmwAlertNode_;
     LvglDisplayNode* hmwMonitorNode_;
+    LvglDisplayNode* pdzNode_;   // ALERT_PDZ — freezes the road strip GIF when active (QML main.qml:818)
     // Speed + error nodes, used to gate the user menus (QML isDisplayOfMenusEnabled).
     LvglSpeedDisplayNode* speedNode_;
     LvglDisplayNode* errorNode_;
+    // Status-bar ISA nodes — feed the ISA menu its real displayed mode
+    // (QML isa_menu.displayedValue: derived from the active status-bar ISA icon).
+    LvglDisplayNode* isaErrorNode_ = nullptr;
+    LvglDisplayNode* isaInactiveNode_ = nullptr;
+    LvglDisplayNode* isaPartialNode_ = nullptr;
+    LvglDisplayNode* isaActiveNode_ = nullptr;
     int lastCarOffset_;
     static void carShiftAnimCb(void* obj, int32_t val);
 

@@ -38,6 +38,10 @@
 #define LV_HOR_RES_MAX 320
 #define LV_VER_RES_MAX 240
 #define LV_DPI_DEF 100
+/* Match Qt's ~60 FPS. LVGL's default fallback is 33ms (30 FPS); this constant
+   is also the lv_anim step period, so lowering it smooths every animation and
+   cuts the residual event->frame latency (IMS: ~15s display-lag follow-up). */
+#define LV_DEF_REFR_PERIOD 16
 
 /*====================
    FEATURE CONFIGURATION

@@ -252,7 +252,9 @@ LvglWidgets::HMWWidgets LvglWidgets::createHMWDisplay(lv_obj_t* parent)
     // groupCIPV is in main_panel (below status bar)
     w.container = lv_obj_create(parent);
     lv_obj_set_size(w.container, 220, MAIN_PANEL_HEIGHT);
-    lv_obj_set_pos(w.container, (DISPLAY_WIDTH - 220) / 2, MAIN_PANEL_Y);
+    // x=48 to match Qt (groupCIPV anchors.leftMargin:-2 → left x=48, center 159),
+    // vs the plain centered (320-220)/2=50. (issue: item positions vs Qt)
+    lv_obj_set_pos(w.container, 48, MAIN_PANEL_Y);
     styleTransparent(w.container);
     lv_obj_add_flag(w.container, LV_OBJ_FLAG_HIDDEN);
 

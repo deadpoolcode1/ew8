@@ -13,6 +13,11 @@ public:
     void onBecomeInvisible() override;
 private:
     LvglMenuController* ctrl_;
+    // Transition state: (re)show the volume menu only on an activation edge or a
+    // real value/limit change — not on every tree traversal (which would re-pop
+    // the auto-hidden menu on any unrelated CAN event, e.g. a speed change).
+    bool shown_ = false;
+    uint8_t lastVal_ = 0, lastMin_ = 0, lastMax_ = 0;
 };
 
 // Display node that forwards VOLUME_FAIL activation to menu controller

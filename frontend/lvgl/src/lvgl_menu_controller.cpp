@@ -100,7 +100,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     lv_obj_align(brightnessValueLabel_, LV_ALIGN_TOP_MID, 0, 68);
 
     brightnessBar_ = createProgressBar(brightnessScreen_, BAR_Y, 5, 1);
-    createFooterDots(brightnessScreen_, 3, 0);
+    brightnessFooter_ = createFooterDots(brightnessScreen_, 3, 0);
 
     // --- Volume menu ---
     volumeScreen_ = createMenuScreen(parent);
@@ -158,9 +158,37 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
     // in configs/EW8_Config.json — instead of the old hardcoded "1.0.0", which
     // made the About menu always show the wrong values (IMS-11649).
     VersionInfo version = buildVersionInfo();
+
+    // ME8 SN row — top row, matching Qt AboutMenu ("ME8 SN", value=mesn, shown
+    // only when is_available_mesn). The serial arrives live on the INFO_QRCODE
+    // string argument; hidden until then (IMS: missing ME8 SN on INFO menu).
+    me8SnRow_ = lv_obj_create(infoContainer);
+    lv_obj_set_size(me8SnRow_, 260, 20);
+    lv_obj_set_style_bg_opa(me8SnRow_, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(me8SnRow_, 0, 0);
+    lv_obj_set_style_pad_all(me8SnRow_, 0, 0);
+    lv_obj_remove_flag(me8SnRow_, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(me8SnRow_, LV_OBJ_FLAG_HIDDEN);
+    {
+        lv_obj_t* lbl = lv_label_create(me8SnRow_);
+        lv_label_set_text(lbl, "ME8 SN:");
+        lv_obj_set_style_text_font(lbl, &intelone_medium_17, 0);
+        lv_obj_set_style_text_color(lbl, COLOR_WHITE, 0);
+        lv_obj_set_pos(lbl, 0, 0);
+
+        me8SnValueLabel_ = lv_label_create(me8SnRow_);
+        lv_label_set_text(me8SnValueLabel_, "");
+        lv_obj_set_style_text_font(me8SnValueLabel_, &intelone_medium_17, 0);
+        lv_obj_set_style_text_color(me8SnValueLabel_, COLOR_WHITE, 0);
+        lv_obj_set_pos(me8SnValueLabel_, 110, 0);
+    }
+
+    // Qt AboutMenu hides the "EW8 SN" row when the serial is "NA"; mirror that by
+    // skipping any row whose value is "N/A" (so the menu matches Qt's 3 rows).
     const char* infoLabels[] = { "EW8 App:", "EW8 Config:", "EW8 SN:" };
     const std::string infoValues[] = { version.engine, version.config, "N/A" };
     for (int i = 0; i < 3; i++) {
+        if (infoValues[i] == "N/A") continue;
         lv_obj_t* row = lv_obj_create(infoContainer);
         lv_obj_set_size(row, 260, 20);
         lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
@@ -181,7 +209,7 @@ LvglMenuController::LvglMenuController(lv_obj_t* parent, CanManager* canmgr)
         lv_obj_set_pos(val, 110, 0);
     }
 
-    createFooterDots(aboutScreen_, 3, 2);
+    aboutFooter_ = createFooterDots(aboutScreen_, 3, 2);
 
     // --- QR Code screen ---
     qrScreen_ = createMenuScreen(parent);
@@ -303,13 +331,32 @@ void LvglMenuController::updateProgressBar(ProgressBar& pb, int value, int lower
 
 lv_obj_t* LvglMenuController::createFooterDots(lv_obj_t* parent, int numDots, int activeDot)
 {
+    // Transparent full-width container holding the dots, so the count can be
+    // rebuilt when ISA presence changes the number of carousel pages. Dots sit
+    // at y=0 inside a container at FOOTER_Y, so absolute positions are unchanged.
+    lv_obj_t* cont = lv_obj_create(parent);
+    lv_obj_set_size(cont, DISPLAY_WIDTH, FOOTER_DOT_SIZE + 6);
+    lv_obj_set_pos(cont, 0, FOOTER_Y);
+    lv_obj_set_style_bg_opa(cont, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(cont, 0, 0);
+    lv_obj_set_style_pad_all(cont, 0, 0);
+    lv_obj_set_style_radius(cont, 0, 0);
+    lv_obj_remove_flag(cont, LV_OBJ_FLAG_SCROLLABLE);
+    rebuildFooterDots(cont, numDots, activeDot);
+    return cont;
+}
+
+void LvglMenuController::rebuildFooterDots(lv_obj_t* cont, int numDots, int activeDot)
+{
+    if (!cont) return;
+    lv_obj_clean(cont);
     int totalWidth = numDots * FOOTER_DOT_SIZE + (numDots - 1) * FOOTER_SPACING;
     int startX = (DISPLAY_WIDTH - totalWidth) / 2;
 
     for (int i = 0; i < numDots; i++) {
-        lv_obj_t* dot = lv_obj_create(parent);
+        lv_obj_t* dot = lv_obj_create(cont);
         lv_obj_set_size(dot, FOOTER_DOT_SIZE, FOOTER_DOT_SIZE);
-        lv_obj_set_pos(dot, startX + i * (FOOTER_DOT_SIZE + FOOTER_SPACING), FOOTER_Y);
+        lv_obj_set_pos(dot, startX + i * (FOOTER_DOT_SIZE + FOOTER_SPACING), 0);
         lv_obj_set_style_bg_color(dot, (i == activeDot) ? COLOR_BLUE : COLOR_GRAY, 0);
         lv_obj_set_style_bg_opa(dot, LV_OPA_COVER, 0);
         lv_obj_set_style_border_width(dot, 0, 0);
@@ -317,8 +364,6 @@ lv_obj_t* LvglMenuController::createFooterDots(lv_obj_t* parent, int numDots, in
         lv_obj_set_style_pad_all(dot, 0, 0);
         lv_obj_remove_flag(dot, LV_OBJ_FLAG_SCROLLABLE);
     }
-
-    return nullptr;
 }
 
 void LvglMenuController::autoHideTimerCb(lv_timer_t* timer)
@@ -343,6 +388,8 @@ void LvglMenuController::showMenu(MenuPage page)
 
     switch (page) {
     case MENU_BRIGHTNESS:
+        // QML pages binding: carousel is 3 pages with ISA, 2 without.
+        rebuildFooterDots(brightnessFooter_, isaAvailable_ ? 3 : 2, 0);
         lv_obj_remove_flag(brightnessScreen_, LV_OBJ_FLAG_HIDDEN);
         updateBrightnessDisplay();
         restartAutoHide(5000);
@@ -353,12 +400,20 @@ void LvglMenuController::showMenu(MenuPage page)
         restartAutoHide(5000);
         break;
     case MENU_ABOUT:
+        // About is the last page: dot index 2 of 3 (with ISA) or 1 of 2 (without).
+        rebuildFooterDots(aboutFooter_, isaAvailable_ ? 3 : 2, isaAvailable_ ? 2 : 1);
         lv_obj_remove_flag(aboutScreen_, LV_OBJ_FLAG_HIDDEN);
         restartAutoHide(120000);
         break;
     default:
         break;
     }
+
+    // A left-panel sign may have been lifted above the menu screens by
+    // lv_obj_move_foreground() during a prior display update; re-assert the
+    // opaque menu on top so signs (e.g. TSR/ISA speed) don't show over it
+    // (IMS-11654 follow-up: cover the key-press open path, not just CAN updates).
+    raiseActiveScreenIfVisible();
 }
 
 void LvglMenuController::hideAllMenus()
@@ -467,14 +522,13 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             restartAutoHide(5000);
             break;
         case MENU_ISA:
-            if (isaMode_ < 2) {
-                isaMode_++;
-                updateISADisplay();
-                // Send ISA CAN command (QML: isaMenu.up())
-                if (canmgr_) {
-                    if (isaMode_ == 1) canmgr_->sendISAPartDeact();      // was 0, now 1
-                    else if (isaMode_ == 2) canmgr_->sendISAFullActivate(); // was 1, now 2
-                }
+            // QML isa_menu.up() is request-only: it sends the CAN command based
+            // on the CURRENT (real) ISA state; the menu icon updates when the ECU
+            // reports the new state back via setIsaMode(). No optimistic local
+            // increment (that fought the real state — IMS: ISA menu wrong state).
+            if (canmgr_) {
+                if (isaMode_ == 0) canmgr_->sendISAPartDeact();
+                else if (isaMode_ == 1) canmgr_->sendISAFullActivate();
             }
             restartAutoHide(5000);
             break;
@@ -505,14 +559,10 @@ void LvglMenuController::handleKeyEvent(int sdlKey)
             restartAutoHide(5000);
             break;
         case MENU_ISA:
-            if (isaMode_ > 0) {
-                isaMode_--;
-                updateISADisplay();
-                // Send ISA CAN command (QML: isaMenu.down())
-                if (canmgr_) {
-                    if (isaMode_ == 0) canmgr_->sendISAFullDeact();      // was 1, now 0
-                    else if (isaMode_ == 1) canmgr_->sendISAPartDeact(); // was 2, now 1
-                }
+            // QML isa_menu.down(): request-only, based on the current real state.
+            if (canmgr_) {
+                if (isaMode_ == 1) canmgr_->sendISAFullDeact();
+                else if (isaMode_ == 2) canmgr_->sendISAPartDeact();
             }
             restartAutoHide(5000);
             break;
@@ -543,6 +593,7 @@ void LvglMenuController::showVolumeMenu(uint8_t value, uint8_t min, uint8_t max)
     lv_obj_remove_flag(volumeScreen_, LV_OBJ_FLAG_HIDDEN);
     updateVolumeDisplay();
     restartAutoHide(5000);
+    raiseActiveScreenIfVisible();
 }
 
 void LvglMenuController::hideVolumeMenu()
@@ -556,6 +607,7 @@ void LvglMenuController::showVolumeFail()
     lv_image_set_src(volumeIcon_, "A:images/master-volume/m_red alert.png");
     lv_obj_remove_flag(volumeScreen_, LV_OBJ_FLAG_HIDDEN);
     restartAutoHide(5000);
+    raiseActiveScreenIfVisible();
 }
 
 void LvglMenuController::activateQRCode(const std::string& data)
@@ -563,6 +615,25 @@ void LvglMenuController::activateQRCode(const std::string& data)
     // QML: setVisibleSlotStr stores data and sets is_active = true, but does NOT show QR
     qrData_ = data;
     qrActive_ = true;
+    // The INFO_QRCODE string arg is the ME8 serial number (Qt: about_menu.mesn);
+    // surface it on the About menu's ME8 SN row.
+    setMe8Sn(data);
+}
+
+void LvglMenuController::setMe8Sn(const std::string& sn)
+{
+    if (sn.empty() || !me8SnRow_ || !me8SnValueLabel_) return;
+    lv_label_set_text(me8SnValueLabel_, sn.c_str());
+    lv_obj_remove_flag(me8SnRow_, LV_OBJ_FLAG_HIDDEN);
+}
+
+void LvglMenuController::setIsaMode(int mode)
+{
+    if (mode < 0) mode = 0;
+    if (mode > 2) mode = 2;
+    if (mode == isaMode_) return;
+    isaMode_ = mode;
+    if (currentMenu_ == MENU_ISA) updateISADisplay();   // live-refresh if open
 }
 
 void LvglMenuController::deactivateQRCode()

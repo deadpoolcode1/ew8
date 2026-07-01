@@ -22,6 +22,15 @@ public:
     void activateQRCode(const std::string& data);
     void deactivateQRCode();
 
+    // Populate the About menu's "ME8 SN" row. The serial number arrives on the
+    // INFO_QRCODE string argument (Qt: about_menu.mesn / is_available_mesn).
+    void setMe8Sn(const std::string& sn);
+
+    // Sync the ISA menu's displayed mode to the real status-bar ISA state
+    // (0=full-deact/error, 1=partial, 2=full-active), mirroring the QML
+    // isa_menu.displayedValue binding. Pushed from the main process each update.
+    void setIsaMode(int mode);
+
     // Dual-key press handler for QR activation (Up+Down held simultaneously)
     void handleDualKeyPress();
 
@@ -74,6 +83,9 @@ private:
     void updateProgressBar(ProgressBar& pb, int value, int lowerLimit, int numSegments);
 
     lv_obj_t* createFooterDots(lv_obj_t* parent, int numDots, int activeDot);
+    // Rebuild the dots inside a footer container so the page count can change
+    // when ISA presence adds/removes the ISA carousel page (QML pages binding).
+    void rebuildFooterDots(lv_obj_t* cont, int numDots, int activeDot);
 
     static void autoHideTimerCb(lv_timer_t* timer);
     static void qrActivateTimerCb(lv_timer_t* timer);
@@ -89,6 +101,7 @@ private:
     lv_obj_t* brightnessIcon_;
     lv_obj_t* brightnessValueLabel_;
     ProgressBar brightnessBar_;
+    lv_obj_t* brightnessFooter_;   // footer-dots container (rebuilt per ISA presence)
 
     // Volume
     uint8_t volumeValue_, volumeMin_, volumeMax_;
@@ -106,6 +119,9 @@ private:
 
     // About
     lv_obj_t* aboutScreen_;
+    lv_obj_t* aboutFooter_;         // footer-dots container (rebuilt per ISA presence)
+    lv_obj_t* me8SnRow_;            // "ME8 SN" row, hidden until the SN arrives
+    lv_obj_t* me8SnValueLabel_;     // ME8 serial-number value label
 
     // QR code
     lv_obj_t* qrScreen_;
