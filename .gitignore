@@ -53,3 +53,9 @@ Desktop.ini
 
 # Generated E2E reports (Tests/e2e_test.py writes timestamped reports here)
 Tests/reports/
+
+# Scratch: headless visual-harness scenarios, screenshots and logs
+Tests/_tmp/
+
+# Local JIRA working folders
+jira/
